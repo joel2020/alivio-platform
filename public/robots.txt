@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /onboarding
+Disallow: /roles
+Disallow: /pipeline
+Disallow: /outreach
+Disallow: /agents
+Disallow: /settings
+Disallow: /login
+Disallow: /signup
+
+Sitemap: https://aliviosearchpartners.com/sitemap.xml
