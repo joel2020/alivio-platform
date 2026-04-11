@@ -1,5 +1,3 @@
-import { Link } from 'react-router-dom';
-
 const team = [
   { name: 'Jordan Merritt', title: 'CEO', background: 'Previously SVP Product at Workday, Stanford MBA' },
   { name: 'Priya Nair', title: 'CTO', background: 'Previously Principal Engineer at Stripe, MIT CSAIL' },

@@ -80,7 +80,7 @@ function ProgressIndicator({ step }: { step: 1 | 2 }) {
 
 export default function OnboardingRolePage() {
   const navigate = useNavigate();
-  const { session, user, loading } = useAuth();
+  const { session, loading } = useAuth();
   const skillInputRef = useRef<HTMLInputElement>(null);
 
   const [jobTitle, setJobTitle] = useState('');

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './lib/auth';
 import { ThemeProvider } from './lib/theme';
+import { isSupabaseConfigured, supabaseConfigError } from './lib/supabase';
 import MarketingLayout from './components/marketing/MarketingLayout';
 import AppLayout from './components/app/AppLayout';
 
@@ -30,6 +31,22 @@ import RoleSettingsPage from './pages/app/RoleSettingsPage';
 import SettingsPage from './pages/app/SettingsPage';
 
 export default function App() {
+  if (!isSupabaseConfigured) {
+    return (
+      <ThemeProvider>
+        <div className="min-h-screen flex items-center justify-center p-6" style={{ backgroundColor: 'var(--bg-base)' }}>
+          <div className="max-w-xl w-full rounded-xl border p-6" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)' }}>
+            <h1 className="text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Supabase environment not configured</h1>
+            <p className="text-sm mb-3" style={{ color: 'var(--text-secondary)' }}>{supabaseConfigError}</p>
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+              Create a local <code>.env</code> file from <code>.env.example</code>, then restart the dev server.
+            </p>
+          </div>
+        </div>
+      </ThemeProvider>
+    );
+  }
+
   return (
     <ThemeProvider>
     <AuthProvider>

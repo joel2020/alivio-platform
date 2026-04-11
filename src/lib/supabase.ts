@@ -1,6 +1,20 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+export const supabaseConfigError = isSupabaseConfigured
+  ? null
+  : 'Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY. Add both variables to your .env file.';
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+function createUnconfiguredClient(): SupabaseClient {
+  return new Proxy({} as SupabaseClient, {
+    get() {
+      throw new Error(supabaseConfigError ?? 'Supabase is not configured.');
+    },
+  });
+}
+
+export const supabase = isSupabaseConfigured
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : createUnconfiguredClient();
