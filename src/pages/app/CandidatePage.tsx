@@ -1,14 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, ThumbsUp, ThumbsDown, ChevronDown, Sparkles, RefreshCw, CheckCircle, Mic, Clock } from 'lucide-react';
-import { supabase } from '../../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import type { Candidate, VoiceCall, VoiceTranscript, AgentActivityLog, CandidateFeedback, PipelineStage, Role } from '../../lib/types';
 import { AGENT_COLORS, PIPELINE_STAGES, STAGE_LABELS } from '../../lib/types';
 import ScoreExplainer from '../../components/app/ScoreExplainer';
-
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
 
 function ScoreRing({ score }: { score: number }) {
   const pct = score * 100;
@@ -53,6 +50,12 @@ interface GeneratedOutreach {
   variant: number;
 }
 
+interface ExtractedData {
+  credentials?: Record<string, { status?: string; detail?: string }>;
+  availability?: Record<string, string | number | boolean>;
+  compensation?: Record<string, string | number | boolean>;
+}
+
 function OutreachTab({ candidate, role }: { candidate: Candidate; role: Role | null }) {
   const [generated, setGenerated] = useState<GeneratedOutreach | null>(null);
   const [generating, setGenerating] = useState(false);
@@ -73,12 +76,13 @@ function OutreachTab({ candidate, role }: { candidate: Candidate; role: Role | n
     if (typingRef.current) clearInterval(typingRef.current);
 
     try {
-      const res = await fetch(`${SUPABASE_URL}/functions/v1/generate-outreach`, {
+      if (!isSupabaseConfigured) throw new Error('Supabase env missing');
+      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-outreach`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          'Apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          'Apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
         },
         body: JSON.stringify({ candidate, role, variant: nextVariant }),
       });
@@ -392,6 +396,7 @@ export default function CandidatePage() {
   }
 
   const selectedCall = calls.find(c => c.id === selectedCallId) || null;
+  const extractedData = selectedCall?.extracted_data as ExtractedData | null;
   const filteredEntries = transcript?.entries.filter(e =>
     !transcriptSearch || e.text.toLowerCase().includes(transcriptSearch.toLowerCase())
   ) || [];
@@ -729,18 +734,18 @@ export default function CandidatePage() {
                       )}
                     </div>
 
-                    {selectedCall.extracted_data && selectedCall.status === 'completed' && (
+                    {extractedData && selectedCall.status === 'completed' && (
                       <div
                         className="p-5 rounded-xl border"
                         style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)', boxShadow: 'var(--shadow)' }}
                       >
                         <h2 className="text-sm font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>Extracted Data</h2>
                         <div className="grid md:grid-cols-2 gap-6">
-                          {(selectedCall.extracted_data as Record<string, Record<string, Record<string, string>>>).credentials && (
+                          {extractedData.credentials && (
                             <div>
                               <p className="text-xs font-semibold mb-3" style={{ color: 'var(--text-muted)' }}>Credential Verification</p>
                               <div className="space-y-2">
-                                {Object.entries((selectedCall.extracted_data as Record<string, Record<string, Record<string, string>>>).credentials).map(([key, val]) => {
+                                {Object.entries(extractedData.credentials).map(([key, val]) => {
                                   const icon = val.status === 'confirmed' ? '✓' : val.status === 'unclear' ? '?' : '✗';
                                   const color = val.status === 'confirmed' ? 'var(--success)' : val.status === 'unclear' ? 'var(--warning)' : 'var(--error)';
                                   return (
@@ -757,27 +762,27 @@ export default function CandidatePage() {
                             </div>
                           )}
                           <div className="space-y-4">
-                            {(selectedCall.extracted_data as Record<string, unknown>).availability && (
+                            {extractedData.availability && (
                               <div>
                                 <p className="text-xs font-semibold mb-2" style={{ color: 'var(--text-muted)' }}>Availability</p>
                                 <div className="space-y-1">
-                                  {Object.entries((selectedCall.extracted_data as Record<string, Record<string, string>>).availability).map(([k, v]) => (
+                                  {Object.entries(extractedData.availability).map(([k, v]) => (
                                     <div key={k} className="flex justify-between">
                                       <span className="text-xs capitalize" style={{ color: 'var(--text-muted)' }}>{k.replace(/_/g, ' ')}</span>
-                                      <span className="text-xs font-medium" style={{ color: 'var(--text-primary)' }}>{v}</span>
+                                      <span className="text-xs font-medium" style={{ color: 'var(--text-primary)' }}>{String(v)}</span>
                                     </div>
                                   ))}
                                 </div>
                               </div>
                             )}
-                            {(selectedCall.extracted_data as Record<string, unknown>).compensation && (
+                            {extractedData.compensation && (
                               <div>
                                 <p className="text-xs font-semibold mb-2" style={{ color: 'var(--text-muted)' }}>Compensation</p>
                                 <div className="space-y-1">
-                                  {Object.entries((selectedCall.extracted_data as Record<string, unknown>).compensation as Record<string, string>).map(([k, v]) => (
+                                  {Object.entries(extractedData.compensation).map(([k, v]) => (
                                     <div key={k} className="flex justify-between">
                                       <span className="text-xs capitalize" style={{ color: 'var(--text-muted)' }}>{k.replace(/_/g, ' ')}</span>
-                                      <span className="text-xs font-medium" style={{ color: v === 'within_range' ? 'var(--success)' : v === 'above_range' ? 'var(--error)' : 'var(--text-secondary)' }}>{v}</span>
+                                      <span className="text-xs font-medium" style={{ color: v === 'within_range' ? 'var(--success)' : v === 'above_range' ? 'var(--error)' : 'var(--text-secondary)' }}>{String(v)}</span>
                                     </div>
                                   ))}
                                 </div>

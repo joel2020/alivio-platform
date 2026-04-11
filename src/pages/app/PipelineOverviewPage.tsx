@@ -222,7 +222,7 @@ function StageBadge({
   );
 }
 
-function ActionsMenu({ candidateId }: { candidateId: string }) {
+function ActionsMenu() {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -825,7 +825,7 @@ export default function PipelineOverviewPage() {
                       </span>
                     </td>
                     <td style={{ padding: '14px 16px', paddingRight: '16px' }}>
-                      <ActionsMenu candidateId={candidate.id} />
+                      <ActionsMenu />
                     </td>
                   </tr>
                 ))}

@@ -33,10 +33,6 @@ interface Role {
   must_have_requirements: string[];
 }
 
-function pickRandom<T>(arr: T[]): T {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
 function formatComp(min: number | null, max: number | null, currency: string): string {
   if (!min && !max) return "competitive compensation";
   const fmt = (n: number) => `$${Math.round(n / 1000)}K`;

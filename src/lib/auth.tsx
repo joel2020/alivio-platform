@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, useMemo, useCallback, ReactNode } from 'react';
 import { User as SupabaseUser, Session } from '@supabase/supabase-js';
-import { supabase } from './supabase';
+import { supabase, isSupabaseConfigured, supabaseConfigError } from './supabase';
 import type { User, Organization } from './types';
 
 interface AuthContextType {
@@ -67,6 +67,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [loadUserData]);
 
   useEffect(() => {
+    if (!isSupabaseConfigured) {
+      console.error(supabaseConfigError);
+      setLoading(false);
+      return;
+    }
     let mounted = true;
     const init = async () => {
       try {

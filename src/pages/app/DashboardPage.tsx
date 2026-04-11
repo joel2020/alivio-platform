@@ -13,6 +13,8 @@ interface RoleWithStats extends Role {
   scheduled: number;
 }
 
+type CandidateMetricsRow = Pick<Candidate, 'id' | 'score' | 'pipeline_stage' | 'role_id'>;
+
 const AGENT_DOT_COLORS: Record<string, string> = {
   scout: '#3B82F6',
   enrich: '#10B981',
@@ -206,7 +208,7 @@ export default function DashboardPage() {
       supabase.from('voice_calls').select('qualification_status').eq('org_id', user.org_id).eq('status', 'completed'),
     ]);
 
-    const allCandidates: Candidate[] = candidatesRes.data || [];
+    const allCandidates: CandidateMetricsRow[] = candidatesRes.data || [];
     const allCalls = callsRes.data || [];
 
     const rolesWithStats: RoleWithStats[] = (rolesRes.data || []).map((role: Role) => {

@@ -201,29 +201,29 @@ ${sender}`,
   }),
 ];
 
-const LINKEDIN_PROFESSIONAL: Array<(c: FakeCandidate, role: string, _desc: string, sender: string) => GeneratedMessage> = [
-  (c, role, _desc, _sender) => ({
+const LINKEDIN_PROFESSIONAL: Array<(c: FakeCandidate, role: string, desc: string, sender: string) => GeneratedMessage> = [
+  (c, role) => ({
     body: `Hi ${firstName(c.name)}, your clinical experience in ${topSkills(c.skills, 2)}${c.company ? ` and your work at ${c.company}` : ''} caught my attention for a ${role} opportunity I'm working on. Your ${c.experience}-year track record is a strong match. Would you be open to a brief conversation to learn more?`,
   }),
-  (c, role, _desc, _sender) => ({
+  (c, role) => ({
     body: `${firstName(c.name)}, I came across your background in ${topSkills(c.skills, 2)} and wanted to reach out about a ${role} role. Your ${c.experience} years of clinical experience${c.company ? ` at ${c.company}` : ''} aligns closely with what we're hiring for. Happy to share details if you're open to it.`,
   }),
 ];
 
-const LINKEDIN_CONVERSATIONAL: Array<(c: FakeCandidate, role: string, _desc: string, _sender: string) => GeneratedMessage> = [
-  (c, role, _desc, _sender) => ({
+const LINKEDIN_CONVERSATIONAL: Array<(c: FakeCandidate, role: string, desc: string, sender: string) => GeneratedMessage> = [
+  (c, role) => ({
     body: `Hey ${firstName(c.name)} — your experience in ${topSkills(c.skills, 2)}${c.company ? ` at ${c.company}` : ''} stood out to me. We're looking for a ${role} and I think you could be a great fit. Would you be up for a quick chat?`,
   }),
-  (c, role, _desc, _sender) => ({
+  (c, role) => ({
     body: `Hi ${firstName(c.name)}, saw your ${c.experience} years in ${topSkills(c.skills, 2)} — solid clinical career. We're hiring a ${role} and your background is genuinely relevant. Open to hearing more?`,
   }),
 ];
 
-const LINKEDIN_CASUAL: Array<(c: FakeCandidate, role: string, _desc: string, _sender: string) => GeneratedMessage> = [
-  (c, role, _desc, _sender) => ({
+const LINKEDIN_CASUAL: Array<(c: FakeCandidate, role: string, desc: string, sender: string) => GeneratedMessage> = [
+  (c, role) => ({
     body: `Hey ${firstName(c.name)}! Your ${topSkills(c.skills)} background really caught my eye. We've got a ${role} opening that seems like a great match. Want to hear more?`,
   }),
-  (c, role, _desc, _sender) => ({
+  (c, role) => ({
     body: `Hi ${firstName(c.name)}! Saw your ${c.experience} years with ${topSkills(c.skills, 2)} — impressive clinical background. We're building a strong care team and have a ${role} role open. Worth a quick chat?`,
   }),
 ];
