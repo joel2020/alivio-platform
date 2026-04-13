@@ -2,53 +2,89 @@ import { useEffect, useRef, useState } from 'react';
 import AnimateInView from '../AnimateInView';
 
 const metrics = [
-  { label: 'Candidates sourced in beta', num: 847, suffix: '+' },
+  { label: 'Candidates sourced in beta', num: 10000, suffix: '+' },
   { label: 'Average match accuracy on scored candidates', num: 94, suffix: '%' },
-  { label: 'Faster than traditional agency timelines', num: 3, suffix: 'x' },
+  { label: 'Faster than traditional agency timelines', num: 5, suffix: 'x' },
 ];
 
-function CountUpNumber({ target, suffix }: { target: number; suffix: string }) {
+function CountUpNumber({ target, suffix, shouldAnimate }: { target: number; suffix: string; shouldAnimate: boolean }) {
   const [count, setCount] = useState(0);
-  const ref = useRef<HTMLSpanElement>(null);
   const hasAnimated = useRef(false);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
+    if (!shouldAnimate || hasAnimated.current) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated.current) {
-          hasAnimated.current = true;
-          observer.disconnect();
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (mediaQuery.matches) {
+      setCount(target);
+      hasAnimated.current = true;
+      return;
+    }
 
-          const duration = 1200;
-          const startTime = performance.now();
-          const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
+    hasAnimated.current = true;
+    const duration = 2000;
+    const startTime = performance.now();
+    const easeOutQuart = (t: number) => 1 - Math.pow(1 - t, 4);
+    let frameId = 0;
 
-          const animate = (now: number) => {
-            const elapsed = now - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            setCount(Math.round(easeOut(progress) * target));
-            if (progress < 1) requestAnimationFrame(animate);
-          };
+    const animate = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      setCount(Math.round(easeOutQuart(progress) * target));
 
-          requestAnimationFrame(animate);
-        }
-      },
-      { threshold: 0.3 }
-    );
+      if (progress < 1) {
+        frameId = requestAnimationFrame(animate);
+        return;
+      }
 
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [target]);
+      setCount(target);
+    };
 
-  return <span ref={ref}>{count}{suffix}</span>;
+    frameId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frameId);
+  }, [shouldAnimate, target]);
+
+  return <span>{count}{suffix}</span>;
 }
 
 export default function MetricsSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [shouldAnimate, setShouldAnimate] = useState(false);
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const triggerAnimation = () => {
+      if (hasAnimated.current) return;
+      hasAnimated.current = true;
+      setShouldAnimate(true);
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          triggerAnimation();
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    observer.observe(section);
+
+    const rect = section.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      triggerAnimation();
+      observer.disconnect();
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section style={{ padding: '60px 0', background: '#F4F4F5' }}>
+    <section ref={sectionRef} style={{ padding: '60px 0', background: '#F4F4F5' }}>
       <div className="mkt-container">
         <AnimateInView>
           <div className="metrics-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', marginBottom: '64px' }}>
@@ -74,7 +110,7 @@ export default function MetricsSection() {
                   letterSpacing: '-0.03em',
                   fontVariantNumeric: 'tabular-nums',
                 }}>
-                  <CountUpNumber target={m.num} suffix={m.suffix} />
+                  <CountUpNumber target={m.num} suffix={m.suffix} shouldAnimate={shouldAnimate} />
                 </div>
                 <p style={{ fontSize: '14px', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>{m.label}</p>
               </div>
