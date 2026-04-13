@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import AuthBrandPanel from '../../components/auth/AuthBrandPanel';
+import { getSafeNextPath, withNextParam } from '../../lib/redirects';
 
 const inputStyle = {
   width: '100%',
@@ -29,7 +30,10 @@ const labelStyle = {
 
 export default function SignupPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { session, user, loading } = useAuth();
+  const nextPath = getSafeNextPath(location.search, '/dashboard');
+  const onboardingPath = withNextParam('/onboarding', nextPath);
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -42,10 +46,10 @@ export default function SignupPage() {
 
   useEffect(() => {
     if (!loading) {
-      if (session && user) navigate('/dashboard', { replace: true });
-      else if (session && !user) navigate('/onboarding', { replace: true });
+      if (session && user) navigate(nextPath, { replace: true });
+      else if (session && !user) navigate(onboardingPath, { replace: true });
     }
-  }, [loading, session, user, navigate]);
+  }, [loading, session, user, navigate, nextPath, onboardingPath]);
 
   function validate() {
     const errs: Record<string, string> = {};
@@ -88,7 +92,7 @@ export default function SignupPage() {
           setSubmitting(false);
           return;
         }
-        navigate('/onboarding');
+        navigate(onboardingPath);
         return;
       }
       setError(authError.message);
@@ -96,13 +100,13 @@ export default function SignupPage() {
       return;
     }
 
-    navigate('/onboarding');
+    navigate(onboardingPath);
   }
 
   async function handleGoogleSignup() {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/onboarding` },
+      options: { redirectTo: `${window.location.origin}${location.pathname}${location.search}` },
     });
   }
 
@@ -341,7 +345,7 @@ export default function SignupPage() {
           >
             Already have an account?{' '}
             <Link
-              to="/login"
+              to={`/login${location.search}`}
               style={{ color: '#2563EB', textDecoration: 'none', fontWeight: 500 }}
             >
               Sign in

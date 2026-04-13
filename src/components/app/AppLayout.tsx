@@ -1,9 +1,11 @@
-import { Outlet, Navigate } from 'react-router-dom';
+import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import { useAuth } from '../../lib/auth';
+import { withNextParam } from '../../lib/redirects';
 
 export default function AppLayout() {
   const { session, loading, needsOrg } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return (
@@ -42,7 +44,7 @@ export default function AppLayout() {
   }
 
   if (!session) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to={withNextParam('/login', location.pathname)} replace />;
   }
 
   if (needsOrg) {

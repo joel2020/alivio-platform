@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import AuthBrandPanel from '../../components/auth/AuthBrandPanel';
+import { getSafeNextPath, withNextParam } from '../../lib/redirects';
 
 const inputStyle = {
   width: '100%',
@@ -29,7 +30,10 @@ const labelStyle = {
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { session, user, loading } = useAuth();
+  const nextPath = getSafeNextPath(location.search, '/dashboard');
+  const onboardingPath = withNextParam('/onboarding', nextPath);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -40,10 +44,10 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (!loading) {
-      if (session && user) navigate('/dashboard', { replace: true });
-      else if (session && !user) navigate('/onboarding', { replace: true });
+      if (session && user) navigate(nextPath, { replace: true });
+      else if (session && !user) navigate(onboardingPath, { replace: true });
     }
-  }, [loading, session, user, navigate]);
+  }, [loading, session, user, navigate, nextPath, onboardingPath]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -57,14 +61,14 @@ export default function LoginPage() {
       setError('Invalid email or password. Please try again.');
       setSubmitting(false);
     } else {
-      navigate('/dashboard');
+      navigate(nextPath);
     }
   }
 
   async function handleGoogleLogin() {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/dashboard` },
+      options: { redirectTo: `${window.location.origin}${location.pathname}${location.search}` },
     });
   }
 
@@ -287,7 +291,7 @@ export default function LoginPage() {
           >
             Don't have an account?{' '}
             <Link
-              to="/signup"
+              to={`/signup${location.search}`}
               style={{ color: '#2563EB', textDecoration: 'none', fontWeight: 500 }}
             >
               Sign up

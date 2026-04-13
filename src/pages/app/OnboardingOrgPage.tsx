@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
+import { getSafeNextPath, withNextParam } from '../../lib/redirects';
 
 const inputStyle = {
   width: '100%',
@@ -80,7 +81,11 @@ function ProgressIndicator({ step }: { step: 1 | 2 }) {
 
 export default function OnboardingOrgPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { session, user, loading, refreshProfile } = useAuth();
+  const nextPath = getSafeNextPath(location.search, '/dashboard');
+  const loginPath = withNextParam('/login', nextPath);
+  const nextOnboardingStep = withNextParam('/onboarding/first-role', nextPath);
 
   const [companyName, setCompanyName] = useState('');
   const [companySize, setCompanySize] = useState('');
@@ -93,12 +98,12 @@ export default function OnboardingOrgPage() {
   useEffect(() => {
     if (!loading) {
       if (!session) {
-        navigate('/login', { replace: true });
+        navigate(loginPath, { replace: true });
       } else if (user) {
-        navigate('/dashboard', { replace: true });
+        navigate(nextPath, { replace: true });
       }
     }
-  }, [loading, session, user, navigate]);
+  }, [loading, session, user, navigate, loginPath, nextPath]);
 
   async function createOrg(name: string, size: string) {
     const { data: { session: currentSession } } = await supabase.auth.getSession();
@@ -132,7 +137,7 @@ export default function OnboardingOrgPage() {
     try {
       await createOrg(companyName.trim(), companySize);
       await refreshProfile();
-      navigate('/onboarding/first-role');
+      navigate(nextOnboardingStep);
     } catch {
       setError('Failed to set up your organization. Please try again.');
       setSubmitting(false);
@@ -147,7 +152,7 @@ export default function OnboardingOrgPage() {
         currentSession?.user?.email?.split('@')[1]?.split('.')[0] || 'My Company';
       await createOrg(defaultName, '1-10');
       await refreshProfile();
-      navigate('/onboarding/first-role');
+      navigate(nextOnboardingStep);
     } catch {
       setError('Something went wrong. Please try again.');
       setSubmitting(false);
