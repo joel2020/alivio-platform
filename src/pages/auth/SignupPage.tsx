@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import AuthBrandPanel from '../../components/auth/AuthBrandPanel';
+import { getSafeNextPath, withNextParam } from '../../lib/nextRedirect';
 
 const inputStyle = {
   width: '100%',
@@ -29,7 +30,9 @@ const labelStyle = {
 
 export default function SignupPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { session, user, loading } = useAuth();
+  const safeNext = getSafeNextPath(searchParams.get('next'));
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -42,10 +45,10 @@ export default function SignupPage() {
 
   useEffect(() => {
     if (!loading) {
-      if (session && user) navigate('/dashboard', { replace: true });
-      else if (session && !user) navigate('/onboarding', { replace: true });
+      if (session && user) navigate(safeNext ?? '/dashboard', { replace: true });
+      else if (session && !user) navigate(withNextParam('/onboarding', safeNext), { replace: true });
     }
-  }, [loading, session, user, navigate]);
+  }, [loading, session, user, navigate, safeNext]);
 
   function validate() {
     const errs: Record<string, string> = {};
@@ -88,7 +91,7 @@ export default function SignupPage() {
           setSubmitting(false);
           return;
         }
-        navigate('/onboarding');
+        navigate(withNextParam('/onboarding', safeNext));
         return;
       }
       setError(authError.message);
@@ -96,13 +99,13 @@ export default function SignupPage() {
       return;
     }
 
-    navigate('/onboarding');
+    navigate(withNextParam('/onboarding', safeNext));
   }
 
   async function handleGoogleSignup() {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/onboarding` },
+      options: { redirectTo: `${window.location.origin}${withNextParam('/signup', safeNext)}` },
     });
   }
 
@@ -341,7 +344,7 @@ export default function SignupPage() {
           >
             Already have an account?{' '}
             <Link
-              to="/login"
+              to={withNextParam('/login', safeNext)}
               style={{ color: '#2563EB', textDecoration: 'none', fontWeight: 500 }}
             >
               Sign in

@@ -1,8 +1,10 @@
-import { Outlet, Navigate } from 'react-router-dom';
+import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import { useAuth } from '../../lib/auth';
+import { withNextParam } from '../../lib/nextRedirect';
 
 export default function AppLayout() {
+  const location = useLocation();
   const { session, loading, needsOrg } = useAuth();
 
   if (loading) {
@@ -42,11 +44,11 @@ export default function AppLayout() {
   }
 
   if (!session) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to={withNextParam('/login', location.pathname)} replace />;
   }
 
   if (needsOrg) {
-    return <Navigate to="/onboarding" replace />;
+    return <Navigate to={withNextParam('/onboarding', location.pathname)} replace />;
   }
 
   return (
