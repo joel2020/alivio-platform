@@ -10,19 +10,9 @@ export default function LogoBarSection() {
           <p style={{ textAlign: 'center', fontSize: '13px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '32px' }}>
             Trusted by forward-thinking hiring teams
           </p>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '48px', flexWrap: 'wrap' }}>
+          <div className="trusted-logos-strip">
             {companies.map(name => (
-              <div key={name} style={{ opacity: 0.35, filter: 'grayscale(1)' }}>
-                <div style={{
-                  height: '28px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                }}>
-                  <div style={{ width: '24px', height: '24px', background: 'var(--text-secondary)', borderRadius: '6px', opacity: 0.6 }} />
-                  <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>{name}</span>
-                </div>
-              </div>
+              <span key={name} className="trusted-logo-text">{name}</span>
             ))}
           </div>
         </AnimateInView>
