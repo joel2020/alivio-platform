@@ -408,3 +408,47 @@ a:focus-visible, button:focus-visible {
     border-radius: 0 16px 16px 0;
   }
 }
+
+.blog-markdown {
+  color: var(--text-secondary);
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.blog-markdown h1,
+.blog-markdown h2,
+.blog-markdown h3,
+.blog-markdown h4,
+.blog-markdown h5,
+.blog-markdown h6 {
+  color: var(--text-primary);
+  margin: 26px 0 12px;
+  line-height: 1.25;
+}
+
+.blog-markdown p {
+  margin: 14px 0;
+}
+
+.blog-markdown ul,
+.blog-markdown ol {
+  margin: 14px 0 14px 22px;
+}
+
+.blog-markdown code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 0.95em;
+  color: var(--text-primary);
+}
+
+.blog-markdown a {
+  color: var(--accent);
+}
+
+.blog-markdown strong {
+  color: var(--text-primary);
+}
