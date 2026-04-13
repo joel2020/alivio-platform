@@ -9,6 +9,8 @@ import HomePage from './pages/marketing/HomePage';
 import ProductPage from './pages/marketing/ProductPage';
 import PricingPage from './pages/marketing/PricingPage';
 import DevelopersPage from './pages/marketing/DevelopersPage';
+import PrivacyPage from './pages/marketing/PrivacyPage';
+import TermsPage from './pages/marketing/TermsPage';
 
 import LoginPage from './pages/auth/LoginPage';
 import SignupPage from './pages/auth/SignupPage';
@@ -56,6 +58,8 @@ export default function App() {
             <Route path="/product" element={<ProductPage />} />
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/developers" element={<DevelopersPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
           </Route>
 
           <Route path="/about/*" element={<Navigate to="/" replace />} />

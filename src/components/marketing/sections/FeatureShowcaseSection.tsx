@@ -142,7 +142,7 @@ const features = [
 
 export default function FeatureShowcaseSection() {
   return (
-    <section style={{ padding: '60px 0', background: '#FFFFFF' }}>
+    <section id="features" style={{ padding: '60px 0', background: '#FFFFFF' }}>
       <div className="mkt-container">
         <div style={{ display: 'flex', flexDirection: 'column', gap: '80px' }}>
           {features.map((f) => (
