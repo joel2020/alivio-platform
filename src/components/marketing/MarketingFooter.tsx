@@ -1,5 +1,28 @@
 import { Link } from 'react-router-dom';
-import { Linkedin, Twitter } from 'lucide-react';
+import { Linkedin, Mail } from 'lucide-react';
+
+const productLinks = [
+  { label: 'How It Works', href: '/#how-it-works' },
+  { label: 'Pricing', href: '/#pricing' },
+  { label: 'Features', href: '/#features' },
+];
+
+const companyLinks = [
+  { label: 'Contact', href: 'mailto:admin@aliviosearchpartners.com', external: false },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/alivio-search-partners/', external: true },
+];
+
+const legalLinks = [
+  { label: 'Privacy Policy', to: '/privacy' },
+  { label: 'Terms of Service', to: '/terms' },
+];
+
+const linkStyle = {
+  fontSize: '14px',
+  color: 'var(--text-muted)',
+  textDecoration: 'none',
+  transition: 'color 0.15s ease',
+};
 
 export default function MarketingFooter() {
   return (
@@ -7,19 +30,16 @@ export default function MarketingFooter() {
       <div className="mkt-container" style={{ paddingTop: '64px', paddingBottom: '48px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '48px', marginBottom: '48px' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
               <span style={{ width: '28px', height: '28px', background: 'var(--accent)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '14px', fontWeight: 700 }}>A</span>
               <span style={{ fontSize: '18px', fontWeight: 700, color: '#FAFAFA', letterSpacing: '-0.02em' }}>Alivio</span>
             </div>
-            <p style={{ fontSize: '14px', lineHeight: 1.6, color: 'var(--text-muted)', maxWidth: '240px', margin: '0 0 20px 0' }}>
-              The AI-powered talent engine.
-            </p>
             <div style={{ display: 'flex', gap: '12px' }}>
-              <a href="#" aria-label="LinkedIn" style={{ color: 'var(--text-muted)', transition: 'color 0.15s ease' }} onMouseEnter={e => (e.currentTarget.style.color = '#FAFAFA')} onMouseLeave={e => (e.currentTarget.style.color = '#A1A1AA')}>
+              <a href="https://www.linkedin.com/company/alivio-search-partners/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" style={{ color: 'var(--text-muted)', transition: 'color 0.15s ease' }} onMouseEnter={e => (e.currentTarget.style.color = '#FAFAFA')} onMouseLeave={e => (e.currentTarget.style.color = '#A1A1AA')}>
                 <Linkedin size={18} />
               </a>
-              <a href="#" aria-label="Twitter" style={{ color: 'var(--text-muted)', transition: 'color 0.15s ease' }} onMouseEnter={e => (e.currentTarget.style.color = '#FAFAFA')} onMouseLeave={e => (e.currentTarget.style.color = '#A1A1AA')}>
-                <Twitter size={18} />
+              <a href="mailto:admin@aliviosearchpartners.com" aria-label="Contact email" style={{ color: 'var(--text-muted)', transition: 'color 0.15s ease' }} onMouseEnter={e => (e.currentTarget.style.color = '#FAFAFA')} onMouseLeave={e => (e.currentTarget.style.color = '#A1A1AA')}>
+                <Mail size={18} />
               </a>
             </div>
           </div>
@@ -27,12 +47,12 @@ export default function MarketingFooter() {
           <div>
             <p style={{ fontSize: '13px', fontWeight: 600, color: '#fff', marginBottom: '16px', letterSpacing: '0.02em' }}>Product</p>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {['Dashboard', 'Pipeline', 'Agents', 'Outreach', 'Scoring'].map(item => (
-                <li key={item}>
-                  <Link to="#" style={{ fontSize: '14px', color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.15s ease' }}
+              {productLinks.map(item => (
+                <li key={item.label}>
+                  <a href={item.href} style={linkStyle}
                     onMouseEnter={e => (e.currentTarget.style.color = '#FAFAFA')}
                     onMouseLeave={e => (e.currentTarget.style.color = '#A1A1AA')}
-                  >{item}</Link>
+                  >{item.label}</a>
                 </li>
               ))}
             </ul>
@@ -41,12 +61,18 @@ export default function MarketingFooter() {
           <div>
             <p style={{ fontSize: '13px', fontWeight: 600, color: '#fff', marginBottom: '16px', letterSpacing: '0.02em' }}>Company</p>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {['About', 'Blog', 'Changelog', 'Careers'].map(item => (
-                <li key={item}>
-                  <Link to="#" style={{ fontSize: '14px', color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.15s ease' }}
+              {companyLinks.map(item => (
+                <li key={item.label}>
+                  <a
+                    href={item.href}
+                    target={item.external ? '_blank' : undefined}
+                    rel={item.external ? 'noopener noreferrer' : undefined}
+                    style={linkStyle}
                     onMouseEnter={e => (e.currentTarget.style.color = '#FAFAFA')}
                     onMouseLeave={e => (e.currentTarget.style.color = '#A1A1AA')}
-                  >{item}</Link>
+                  >
+                    {item.label}
+                  </a>
                 </li>
               ))}
             </ul>
@@ -55,12 +81,12 @@ export default function MarketingFooter() {
           <div>
             <p style={{ fontSize: '13px', fontWeight: 600, color: '#fff', marginBottom: '16px', letterSpacing: '0.02em' }}>Legal</p>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {['Privacy Policy', 'Terms of Service', 'Security'].map(item => (
-                <li key={item}>
-                  <Link to="#" style={{ fontSize: '14px', color: 'var(--text-muted)', textDecoration: 'none', transition: 'color 0.15s ease' }}
+              {legalLinks.map(item => (
+                <li key={item.label}>
+                  <Link to={item.to} style={linkStyle}
                     onMouseEnter={e => (e.currentTarget.style.color = '#FAFAFA')}
                     onMouseLeave={e => (e.currentTarget.style.color = '#A1A1AA')}
-                  >{item}</Link>
+                  >{item.label}</Link>
                 </li>
               ))}
             </ul>

@@ -51,7 +51,7 @@ const plans = [
 
 export default function PricingSection() {
   return (
-    <section style={{ padding: '60px 0', background: '#FFFFFF' }}>
+    <section id="pricing" style={{ padding: '60px 0', background: '#FFFFFF' }}>
       <div className="mkt-container">
         <AnimateInView>
           <div style={{ textAlign: 'center', marginBottom: '56px' }}>
