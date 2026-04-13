@@ -7,6 +7,7 @@ const navLinks = [
   { label: 'How It Works', href: '/#how-it-works' },
   { label: 'Pricing', href: '/pricing' },
   { label: 'Changelog', href: '/developers' },
+  { label: 'Blog', href: '/blog' },
 ];
 
 function handleHashLink(href: string, e: React.MouseEvent, closeMenu?: () => void) {

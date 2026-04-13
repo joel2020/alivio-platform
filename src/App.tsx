@@ -11,6 +11,8 @@ import PricingPage from './pages/marketing/PricingPage';
 import DevelopersPage from './pages/marketing/DevelopersPage';
 import PrivacyPage from './pages/marketing/PrivacyPage';
 import TermsPage from './pages/marketing/TermsPage';
+import BlogPage from './pages/marketing/BlogPage';
+import BlogPostPage from './pages/marketing/BlogPostPage';
 
 import LoginPage from './pages/auth/LoginPage';
 import SignupPage from './pages/auth/SignupPage';
@@ -60,6 +62,8 @@ export default function App() {
             <Route path="/developers" element={<DevelopersPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms" element={<TermsPage />} />
+            <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blog/:slug" element={<BlogPostPage />} />
           </Route>
 
           <Route path="/about/*" element={<Navigate to="/" replace />} />
