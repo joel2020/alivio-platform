@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef, KeyboardEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { X, Loader2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
+import { getSafeNextPath, withNextParam } from '../../lib/nextRedirect';
 
 const inputStyle = {
   width: '100%',
@@ -80,8 +81,10 @@ function ProgressIndicator({ step }: { step: 1 | 2 }) {
 
 export default function OnboardingRolePage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { session, loading } = useAuth();
   const skillInputRef = useRef<HTMLInputElement>(null);
+  const safeNext = getSafeNextPath(searchParams.get('next'));
 
   const [jobTitle, setJobTitle] = useState('');
   const [seniority, setSeniority] = useState('');
@@ -95,9 +98,9 @@ export default function OnboardingRolePage() {
 
   useEffect(() => {
     if (!loading && !session) {
-      navigate('/login', { replace: true });
+      navigate(withNextParam('/login', safeNext), { replace: true });
     }
-  }, [loading, session, navigate]);
+  }, [loading, session, navigate, safeNext]);
 
   function addSkill(value: string) {
     const trimmed = value.trim();
@@ -164,7 +167,7 @@ export default function OnboardingRolePage() {
       if (insertError) throw insertError;
 
       sessionStorage.setItem('onboarding_role_created', jobTitle.trim());
-      navigate('/dashboard');
+      navigate(safeNext ?? '/dashboard');
     } catch {
       setError('Failed to create your role. Please try again.');
       setSubmitting(false);
@@ -172,7 +175,7 @@ export default function OnboardingRolePage() {
   }
 
   function handleSkip() {
-    navigate('/dashboard');
+    navigate(safeNext ?? '/dashboard');
   }
 
   function getFocusStyle(field: string) {

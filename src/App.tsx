@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './lib/auth';
 import { ThemeProvider } from './lib/theme';
 import { isSupabaseConfigured, supabaseConfigError } from './lib/supabase';
@@ -9,7 +9,6 @@ import HomePage from './pages/marketing/HomePage';
 import ProductPage from './pages/marketing/ProductPage';
 import PricingPage from './pages/marketing/PricingPage';
 import DevelopersPage from './pages/marketing/DevelopersPage';
-import AboutPage from './pages/marketing/AboutPage';
 
 import LoginPage from './pages/auth/LoginPage';
 import SignupPage from './pages/auth/SignupPage';
@@ -57,8 +56,16 @@ export default function App() {
             <Route path="/product" element={<ProductPage />} />
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/developers" element={<DevelopersPage />} />
-            <Route path="/about" element={<AboutPage />} />
           </Route>
+
+          <Route path="/about/*" element={<Navigate to="/" replace />} />
+          <Route path="/services/*" element={<Navigate to="/" replace />} />
+          <Route path="/contact/*" element={<Navigate to="/" replace />} />
+          <Route path="/team/*" element={<Navigate to="/" replace />} />
+          <Route path="/careers/*" element={<Navigate to="/" replace />} />
+          <Route path="/case-studies/*" element={<Navigate to="/" replace />} />
+          <Route path="/industries/*" element={<Navigate to="/" replace />} />
+          <Route path="/resources/*" element={<Navigate to="/" replace />} />
 
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />

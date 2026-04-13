@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
+import { getSafeNextPath, withNextParam } from '../../lib/nextRedirect';
 
 const inputStyle = {
   width: '100%',
@@ -80,7 +81,9 @@ function ProgressIndicator({ step }: { step: 1 | 2 }) {
 
 export default function OnboardingOrgPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { session, user, loading, refreshProfile } = useAuth();
+  const safeNext = getSafeNextPath(searchParams.get('next'));
 
   const [companyName, setCompanyName] = useState('');
   const [companySize, setCompanySize] = useState('');
@@ -93,12 +96,12 @@ export default function OnboardingOrgPage() {
   useEffect(() => {
     if (!loading) {
       if (!session) {
-        navigate('/login', { replace: true });
+        navigate(withNextParam('/login', safeNext), { replace: true });
       } else if (user) {
-        navigate('/dashboard', { replace: true });
+        navigate(safeNext ?? '/dashboard', { replace: true });
       }
     }
-  }, [loading, session, user, navigate]);
+  }, [loading, session, user, navigate, safeNext]);
 
   async function createOrg(name: string, size: string) {
     const { data: { session: currentSession } } = await supabase.auth.getSession();
@@ -132,7 +135,7 @@ export default function OnboardingOrgPage() {
     try {
       await createOrg(companyName.trim(), companySize);
       await refreshProfile();
-      navigate('/onboarding/first-role');
+      navigate(withNextParam('/onboarding/first-role', safeNext));
     } catch {
       setError('Failed to set up your organization. Please try again.');
       setSubmitting(false);
@@ -147,7 +150,7 @@ export default function OnboardingOrgPage() {
         currentSession?.user?.email?.split('@')[1]?.split('.')[0] || 'My Company';
       await createOrg(defaultName, '1-10');
       await refreshProfile();
-      navigate('/onboarding/first-role');
+      navigate(withNextParam('/onboarding/first-role', safeNext));
     } catch {
       setError('Something went wrong. Please try again.');
       setSubmitting(false);
