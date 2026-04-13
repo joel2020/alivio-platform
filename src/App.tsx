@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import { AuthProvider } from './lib/auth';
 import { ThemeProvider } from './lib/theme';
 import { isSupabaseConfigured, supabaseConfigError } from './lib/supabase';
@@ -94,6 +95,7 @@ export default function App() {
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
+      <Analytics />
     </AuthProvider>
     </ThemeProvider>
   );
