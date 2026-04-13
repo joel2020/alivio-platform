@@ -99,7 +99,7 @@ export default function MarketingFooter() {
 
         <div style={{ borderTop: '1px solid #27272A', paddingTop: '24px' }}>
           <p style={{ fontSize: '13px', color: '#71717A', margin: 0 }}>
-            &copy; 2025 Alivio. All rights reserved.
+            &copy; 2026 alivio search partners all rights reserved.
           </p>
         </div>
       </div>

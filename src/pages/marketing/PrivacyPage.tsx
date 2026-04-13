@@ -25,85 +25,116 @@ export default function PrivacyPage() {
 
           <div className="space-y-8">
             <section>
-              <h2 style={sectionTitleStyle}>1. Information We Collect</h2>
+              <h2 style={sectionTitleStyle}>1. Scope and Roles</h2>
               <p style={paragraphStyle}>
-                Alivio Search Partners collects information you provide directly, information generated through platform use, and technical data collected automatically.
-                This may include account registration details, employer and recruiter profile information, job requisition data, candidate pipeline data,
-                communication preferences, billing details, support interactions, device information, log data, and usage analytics.
+                This Privacy Policy explains how Alivio Search Partners, Inc. ("Alivio," "we," "us," or "our") collects, uses, discloses, and protects personal information when you use our website, software platform, APIs, and related services (collectively, the "Services").
+                In many cases, our business customers act as controllers or businesses and Alivio acts as a processor or service provider for candidate and workforce data they submit to the platform.
               </p>
             </section>
 
             <section>
-              <h2 style={sectionTitleStyle}>2. How We Use Information</h2>
+              <h2 style={sectionTitleStyle}>2. Categories of Information We Collect</h2>
               <p style={paragraphStyle}>
-                We use collected information to provide and improve our healthcare staffing and recruiting SaaS services, operate platform features,
-                personalize workflows, process transactions, monitor performance and security, respond to inquiries, send operational communications,
-                and comply with legal obligations.
+                We collect: (a) account and profile data (name, work email, company, role, login credentials); (b) recruiting and candidate workflow data uploaded by customers;
+                (c) communications and support records; (d) transaction and billing metadata; (e) technical and device data such as IP address, browser type, logs, and session identifiers;
+                and (f) usage analytics and diagnostic data to operate, secure, and improve the Services.
               </p>
             </section>
 
             <section>
-              <h2 style={sectionTitleStyle}>3. Data Sharing and Third Parties</h2>
+              <h2 style={sectionTitleStyle}>3. Sources of Information</h2>
               <p style={paragraphStyle}>
-                We do not sell personal information. We may share information with trusted service providers that support hosting, analytics,
-                customer support, communications, payment processing, and infrastructure operations. We may also disclose information when required by law,
-                to protect rights and safety, or in connection with a merger, acquisition, financing, or asset sale.
+                We obtain information directly from users and customers, automatically through interaction with the Services, from integrations configured by customers,
+                and from service providers that support identity verification, security, infrastructure, communications, and payments.
               </p>
             </section>
 
             <section>
-              <h2 style={sectionTitleStyle}>4. Cookies and Tracking Technologies</h2>
+              <h2 style={sectionTitleStyle}>4. Purposes and Legal Bases for Processing</h2>
               <p style={paragraphStyle}>
-                We use cookies and similar technologies to maintain session functionality, remember preferences, analyze traffic, and improve user experience.
-                You can control cookie preferences through browser settings; however, disabling certain cookies may affect site functionality.
+                We process personal information to provide contracted services, authenticate users, secure systems, perform analytics, provide customer support,
+                comply with legal obligations, and enforce agreements. Where applicable under GDPR/UK GDPR, our legal bases include performance of a contract,
+                legitimate interests, compliance with law, and consent (for example, for optional non-essential cookies where required).
               </p>
             </section>
 
             <section>
-              <h2 style={sectionTitleStyle}>5. Data Security</h2>
+              <h2 style={sectionTitleStyle}>5. Cookies and Similar Technologies</h2>
               <p style={paragraphStyle}>
-                We maintain administrative, technical, and organizational safeguards designed to protect information against unauthorized access,
-                disclosure, alteration, and destruction. No system is completely secure, but we continually evaluate and enhance our controls.
+                We use cookies and similar technologies for essential session management, security, preferences, and platform performance. Where legally required,
+                we obtain consent before placing non-essential cookies. Browser settings may allow you to refuse cookies, but some functionality may be degraded.
               </p>
             </section>
 
             <section>
-              <h2 style={sectionTitleStyle}>6. User Rights (CCPA/GDPR Basics)</h2>
+              <h2 style={sectionTitleStyle}>6. Disclosures to Third Parties</h2>
               <p style={paragraphStyle}>
-                Depending on your location, you may have rights to request access to, correction of, deletion of, or portability of your personal data,
-                and to object to or restrict certain processing. California residents may have rights under CCPA/CPRA, and users in the EEA/UK may have rights under GDPR.
-                To exercise rights, contact us using the email below. We may need to verify identity before processing requests.
+                We may disclose information to subprocessors and vendors that help operate the Services (e.g., hosting, authentication, support, and payment providers),
+                to professional advisors, and to authorities when required by law. We do not sell personal information for monetary consideration.
+                We do not share personal information for cross-context behavioral advertising except as may be permitted by customer configuration and applicable law.
               </p>
             </section>
 
             <section>
-              <h2 style={sectionTitleStyle}>7. Data Retention</h2>
+              <h2 style={sectionTitleStyle}>7. International Transfers</h2>
               <p style={paragraphStyle}>
-                We retain information for as long as necessary to provide services, meet contractual commitments, resolve disputes,
-                enforce agreements, and comply with legal obligations. Retention periods vary based on data category, legal requirements, and business needs.
+                If personal information is transferred across borders, we use lawful transfer mechanisms where required, which may include Standard Contractual Clauses,
+                adequacy decisions, or comparable safeguards.
               </p>
             </section>
 
             <section>
-              <h2 style={sectionTitleStyle}>8. Changes to This Policy</h2>
+              <h2 style={sectionTitleStyle}>8. Data Retention</h2>
               <p style={paragraphStyle}>
-                We may update this Privacy Policy from time to time. If we make material changes, we will update the "Last updated" date and,
-                where required, provide additional notice.
+                We retain personal information for as long as needed to deliver Services, satisfy contractual commitments, resolve disputes, maintain audit trails,
+                and comply with legal, tax, and accounting requirements. Retention periods vary by data type, customer instructions, and legal obligations.
               </p>
             </section>
 
             <section>
-              <h2 style={sectionTitleStyle}>9. Contact Information</h2>
+              <h2 style={sectionTitleStyle}>9. Security</h2>
               <p style={paragraphStyle}>
-                Alivio Search Partners<br />
+                We maintain administrative, technical, and organizational safeguards designed to protect personal information, including access controls,
+                role-based permissions, encryption in transit, and security monitoring. No method of storage or transmission is completely secure.
+              </p>
+            </section>
+
+            <section>
+              <h2 style={sectionTitleStyle}>10. Your Privacy Rights</h2>
+              <p style={paragraphStyle}>
+                Depending on your jurisdiction, you may have rights to access, correct, delete, restrict, object to processing, and request portability of personal information,
+                and to appeal certain decisions. U.S. state residents may have rights under laws such as the CCPA/CPRA. If we process data on behalf of a customer,
+                we will direct your request to the relevant customer when appropriate.
+              </p>
+            </section>
+
+            <section>
+              <h2 style={sectionTitleStyle}>11. Children</h2>
+              <p style={paragraphStyle}>
+                The Services are intended for business users and are not directed to children under 16. If you believe information from a child was provided to us,
+                please contact us so we can take appropriate action.
+              </p>
+            </section>
+
+            <section>
+              <h2 style={sectionTitleStyle}>12. Changes to This Policy</h2>
+              <p style={paragraphStyle}>
+                We may update this Privacy Policy periodically. If we make material changes, we will update the "Last updated" date and provide additional notice when required by law.
+              </p>
+            </section>
+
+            <section>
+              <h2 style={sectionTitleStyle}>13. Contact Us</h2>
+              <p style={paragraphStyle}>
+                Alivio Search Partners, Inc.<br />
                 Website: aliviosearchpartners.com<br />
-                Email: hello@aliviosearchpartners.com
+                Email: privacy@aliviosearchpartners.com
               </p>
             </section>
           </div>
 
           <p className="text-xs mt-12 pt-6 border-t" style={{ color: '#6B6B6B', borderColor: '#1E1E1E' }}>
-            © 2026 Alivio. All rights reserved.
+            © 2026 Alivio Search Partners. All rights reserved.
           </p>
         </div>
       </section>
