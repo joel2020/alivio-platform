@@ -1,60 +1,56 @@
-# Alivio Search Partners Multi-Agent Backend
+# Alivio Backend (Express + TypeScript)
 
-Production-style Express + TypeScript backend for internal healthcare recruiting operations.
+This folder is a local backend service that runs in **mock mode by default** and exposes provider-based AI-agent endpoints.
 
-## Features
-- Modular provider architecture (`RetrievalProvider`, `LLMProvider`, `ResumeParserProvider`, `MonitoringProvider`)
-- Agent modules: ScoutReady, MatchReady, EnrichReady, SignalReady, EngageReady, MonitorReady, Parse Resume
-- Mock mode runs locally without Google credentials
-- Live mode uses Vertex AI Search / Discovery Engine retrieval via REST + `google-auth-library`
-- OpenAI-compatible LLM integration for reasoning/generation
-- In-memory monitoring + `/api/metrics`
-- Lightweight dashboard at `/dashboard`
+## Implemented endpoints
 
-## Setup
+- `GET /health`
+- `GET /api/health`
+- `POST /api/agents/scoutready/run`
+- `POST /api/agents/matchready/run`
+- `POST /api/agents/enrichready/run`
+- `POST /api/agents/signalready/run`
+- `POST /api/agents/engageready/run`
+- `POST /api/agents/monitorready/run`
+- `POST /api/agents/parse-resume/run`
+
+## Architecture
+
+- **Providers** (swappable): retrieval, LLM, monitoring, resume parsing.
+- **Services**: search, matching, enrichment, fit scoring, outreach, monitoring, resume parsing.
+- **Agents**: ScoutReady, MatchReady, EnrichReady, SignalReady, EngageReady, MonitorReady, Parse Resume.
+
+## Quick start
+
 ```bash
+cd backend
 npm install
-npm run backend:start
+npm run dev
 ```
+
+Backend starts on `http://localhost:8787` by default.
 
 ## Environment variables
-Copy from `../.env.example`.
 
-Key variables:
-- `APP_MODE=mock|live`
-- `GOOGLE_PROJECT_ID`, `GOOGLE_LOCATION`, `GOOGLE_ENGINE_ID`, `GOOGLE_SERVING_CONFIG`
-- `GOOGLE_SERVICE_ACCOUNT_EMAIL`, `GOOGLE_SERVICE_ACCOUNT_KEY`
-- `LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL`
+Copy `.env.example` to `.env` and adjust values as needed.
 
-## Mock mode vs live mode
-- **Mock mode (`APP_MODE=mock`)**: uses local seed datasets (40 candidates, 20 jobs, 10 clients).
-- **Live mode (`APP_MODE=live`)**: swaps retrieval to Vertex Discovery Engine provider while scoring logic remains deterministic in app services.
+Pre-filled Google settings:
 
-## Vertex usage across agents
-- ScoutReady/MatchReady/JobSearch/CandidateSearch call the shared retrieval provider.
-- In live mode these flow through `VertexDiscoveryEngineProvider`.
-- SignalReady and EngageReady first receive retrieval-scoped entities, then apply LLM reasoning.
+- `GOOGLE_PROJECT_ID=alivio-475419`
+- `GOOGLE_ENGINE_ID=AQ.Ab8RN6Ik78BXLwMDA05UnoNhsV6lgiDGUFHcSaGyCyT6p-20UQ`
+- `GOOGLE_SERVICE_ACCOUNT_EMAIL=vertex-express@alivio-475419.iam.gserviceaccount.com`
 
-## Switch LLM providers
-- Set `LLM_API_KEY` to enable `OpenAICompatibleLLMProvider`.
-- Without API key, app uses deterministic `MockLLMProvider`.
+### Modes
 
-## Run locally
+- `APP_MODE=mock` (default): uses seeded in-memory data.
+- `APP_MODE=live`: uses Vertex AI Search provider for retrieval.
+
+## Example request
+
 ```bash
-npm run backend:start
-# Dashboard: http://localhost:8787/dashboard
+curl -X POST http://localhost:8787/api/agents/scoutready/run \
+  -H "Content-Type: application/json" \
+  -d '{"role":"Director of Nursing","geography":"California","limit":5}'
 ```
 
-## Sample curl commands
-```bash
-curl -X POST http://localhost:8787/api/agents/scoutready/run -H 'content-type: application/json' -d '{"role":"Director of Nursing","geography":"NY"}'
-curl -X POST http://localhost:8787/api/agents/matchready/run -H 'content-type: application/json' -d '{"jobId":"job-1"}'
-curl -X POST http://localhost:8787/api/agents/parse-resume/run -H 'content-type: application/json' -d '{"resumeText":"Jordan Patel\nRN\nDirector of Nursing\nMiami, FL\n12 years experience"}'
-```
-
-## n8n / Supabase Edge integration
-- n8n HTTP nodes can trigger each `/api/agents/*/run` route and persist responses in CRM tables.
-- Supabase Edge Functions can proxy to this backend for orchestration while keeping auth/session policies centralized.
-
-## Sample outputs
-See JSON artifacts in `../backend/examples/*.sample.json`.
+Sample payloads and outputs are available in `backend/examples/*.json`.
