@@ -33,6 +33,9 @@ import AgentsPage from './pages/app/AgentsPage';
 import CandidatePage from './pages/app/CandidatePage';
 import RoleSettingsPage from './pages/app/RoleSettingsPage';
 import SettingsPage from './pages/app/SettingsPage';
+import CrmPage from './pages/app/crm/CrmPage';
+import CrmClientPage from './pages/app/crm/CrmClientPage';
+import CrmTemplatesPage from './pages/app/crm/CrmTemplatesPage';
 
 export default function App() {
   if (!isSupabaseConfigured) {
@@ -93,6 +96,9 @@ export default function App() {
             <Route path="/agents" element={<AgentsPage />} />
             <Route path="/candidates/:id" element={<CandidatePage />} />
             <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/dashboard/crm" element={<CrmPage />} />
+            <Route path="/dashboard/crm/templates" element={<CrmTemplatesPage />} />
+            <Route path="/dashboard/crm/:id" element={<CrmClientPage />} />
           </Route>
 
           <Route path="/og" element={<OGImagePage />} />
