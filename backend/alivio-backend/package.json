@@ -13,8 +13,9 @@
     "smoke:vertex": "node scripts/smoke-vertex.js",
     "smoke:recruiter": "node scripts/smoke-recruiter.js",
     "validate:recruiter-shape": "node scripts/validate-recruiter-shape.js",
-    "lint": "node --check server.js"
-    "smoke:live": "node scripts/smoke-test-live.js"
+    "lint": "node --check server.js",
+    "smoke:live": "node scripts/smoke-test-live.js",
+    "seed:vertex": "node scripts/seed-vertex-data.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

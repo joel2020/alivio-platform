@@ -1,0 +1,92 @@
+[
+  {
+    "id": "candidate-icu-rn-001",
+    "title": "Senior ICU Registered Nurse",
+    "role": "ICU Nurse",
+    "location": "Houston, TX",
+    "specialization": "Cardiovascular ICU",
+    "yearsExperience": 8,
+    "summary": "Magnet hospital ICU nurse with expertise in post-CABG and ECMO patient care, precepting new RNs on high-acuity protocols."
+  },
+  {
+    "id": "candidate-icu-rn-002",
+    "title": "Night Shift Trauma ICU RN",
+    "role": "ICU Nurse",
+    "location": "Phoenix, AZ",
+    "specialization": "Trauma ICU",
+    "yearsExperience": 6,
+    "summary": "Trauma ICU nurse experienced in rapid response, ventilator management, and multidisciplinary handoffs in Level I settings."
+  },
+  {
+    "id": "candidate-don-001",
+    "title": "Director of Nursing - Long Term Care",
+    "role": "Director of Nursing",
+    "location": "Columbus, OH",
+    "specialization": "Long-Term Care Operations",
+    "yearsExperience": 14,
+    "summary": "Leads 120-bed long-term care nursing operations, improving retention and reducing agency spend through staffing redesign."
+  },
+  {
+    "id": "candidate-don-002",
+    "title": "Interim Director of Nursing",
+    "role": "Director of Nursing",
+    "location": "Tampa, FL",
+    "specialization": "Survey Readiness and Compliance",
+    "yearsExperience": 11,
+    "summary": "Interim DON with strong CMS survey outcomes, implementing QA plans and nurse leadership coaching in skilled nursing facilities."
+  },
+  {
+    "id": "candidate-snf-admin-001",
+    "title": "Licensed Nursing Home Administrator",
+    "role": "SNF Administrator",
+    "location": "Nashville, TN",
+    "specialization": "Skilled Nursing Facility Leadership",
+    "yearsExperience": 13,
+    "summary": "Licensed administrator overseeing SNF census growth, reimbursement optimization, and interdisciplinary care planning."
+  },
+  {
+    "id": "candidate-snf-admin-002",
+    "title": "Regional SNF Operations Administrator",
+    "role": "SNF Administrator",
+    "location": "Cleveland, OH",
+    "specialization": "Multi-Site SNF Operations",
+    "yearsExperience": 16,
+    "summary": "Regional SNF administrator with a track record of lifting quality metrics and occupancy across three post-acute campuses."
+  },
+  {
+    "id": "candidate-vp-001",
+    "title": "Vice President of Clinical Services",
+    "role": "Healthcare VP",
+    "location": "Chicago, IL",
+    "specialization": "Home Health and Hospice",
+    "yearsExperience": 18,
+    "summary": "Healthcare executive leading clinical strategy for home health and hospice lines, scaling outcomes-based quality programs."
+  },
+  {
+    "id": "candidate-vp-002",
+    "title": "VP of Patient Care Operations",
+    "role": "Healthcare VP",
+    "location": "Seattle, WA",
+    "specialization": "Hospital Throughput and Care Delivery",
+    "yearsExperience": 20,
+    "summary": "VP operator improving discharge velocity, patient satisfaction, and labor productivity through enterprise care redesign."
+  },
+  {
+    "id": "candidate-travel-rn-001",
+    "title": "Travel ICU Nurse",
+    "role": "Travel Nurse",
+    "location": "Nationwide (Compact License)",
+    "specialization": "Critical Care Float",
+    "yearsExperience": 7,
+    "summary": "Travel ICU RN with 15 completed assignments, adaptable to Cerner and Epic, strong performance in surge and float pools."
+  },
+  {
+    "id": "candidate-travel-rn-002",
+    "title": "Travel Med-Surg Nurse",
+    "role": "Travel Nurse",
+    "location": "Nationwide",
+    "specialization": "Med-Surg and Stepdown",
+    "yearsExperience": 5,
+    "summary": "Travel nurse focused on med-surg and stepdown units, recognized for fast onboarding and consistent patient throughput support."
+  }
+]
