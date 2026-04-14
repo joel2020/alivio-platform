@@ -55,3 +55,13 @@ curl -X POST http://localhost:8787/api/agents/scoutready/run \
 ```
 
 Sample payloads and outputs are available in `backend/examples/*.json`.
+
+## Recruiter prompt fixtures
+
+Reusable prompt fixtures and workflow examples live in `shared/prompt-library/`:
+
+- `shared/prompt-library/recruiter-prompts.fixtures.json`
+- `shared/prompt-library/recruiter-workflow-examples.json`
+- `shared/prompt-library/prompt-taxonomy.md`
+
+These fixtures are designed to be consumed by frontend prompt pickers, backend test/examples, and future recruiter-agent workflows.

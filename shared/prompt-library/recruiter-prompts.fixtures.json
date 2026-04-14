@@ -1,0 +1,287 @@
+{
+  "version": "2026-04-14",
+  "description": "Reusable recruiter prompt fixtures for Alivio Search Partners workflows.",
+  "promptTypes": [
+    {
+      "id": "candidate-search-healthcare-don",
+      "useCase": "candidate_search",
+      "title": "Director of Nursing short-list search",
+      "audience": "recruiter",
+      "roleFamily": "healthcare",
+      "targetRoles": [
+        "Director of Nursing"
+      ],
+      "goal": "Generate a shortlist of qualified Director of Nursing candidates for skilled nursing facilities.",
+      "systemPrompt": "You are an executive healthcare recruiter assistant. Return concise, recruiter-ready candidate summaries with reasons to engage.",
+      "userPromptTemplate": "Find {result_count} Director of Nursing candidates in {location}. Prioritize skilled nursing, survey readiness, staffing stabilization, and leadership tenure. Include active license status hints, years in post-acute leadership, and immediate outreach angle.",
+      "outputShape": {
+        "fields": [
+          "candidate_name",
+          "current_title",
+          "location",
+          "years_experience",
+          "fit_reasons",
+          "outreach_hook",
+          "risk_flags"
+        ],
+        "maxResults": 10
+      },
+      "notes": "Use for first-pass sourcing when hiring managers need interviewable candidates in under 24 hours."
+    },
+    {
+      "id": "candidate-search-tech-staff-frontend",
+      "useCase": "candidate_search",
+      "title": "Staff Frontend Engineer search",
+      "audience": "recruiter",
+      "roleFamily": "tech",
+      "targetRoles": [
+        "Staff Frontend Engineer"
+      ],
+      "goal": "Source high-signal staff-level frontend engineers with product shipping experience.",
+      "systemPrompt": "You are a technical recruiter copilot. Bias for evidence of ownership, architecture influence, and shipped customer impact.",
+      "userPromptTemplate": "Find {result_count} Staff Frontend Engineers in {location_or_remote_scope}. Prioritize TypeScript, React, performance optimization, and design-system leadership. Provide concise evidence snippets and recommended outreach pitch.",
+      "outputShape": {
+        "fields": [
+          "candidate_name",
+          "current_company",
+          "location",
+          "core_stack",
+          "impact_evidence",
+          "seniority_signal",
+          "outreach_hook"
+        ],
+        "maxResults": 10
+      },
+      "notes": "Use as a cross-industry baseline fixture for non-healthcare searches."
+    },
+    {
+      "id": "job-search-healthcare-lnha",
+      "useCase": "job_search",
+      "title": "Licensed Nursing Home Administrator job search",
+      "audience": "recruiter",
+      "roleFamily": "healthcare",
+      "targetRoles": [
+        "Licensed Nursing Home Administrator"
+      ],
+      "goal": "Find open LNHA roles that match a prequalified candidate profile.",
+      "systemPrompt": "You are a healthcare placement assistant. Surface realistic openings and placement constraints recruiters care about.",
+      "userPromptTemplate": "Find current Licensed Nursing Home Administrator openings in {region}. Prioritize facility census {census_band}, quality rating {rating_threshold}+ stars, and relocation package availability. Include compensation ranges when available.",
+      "outputShape": {
+        "fields": [
+          "organization",
+          "job_title",
+          "location",
+          "setting",
+          "comp_range",
+          "must_haves",
+          "placement_notes"
+        ],
+        "maxResults": 12
+      },
+      "notes": "Use when reverse-marketing a candidate and building target account list."
+    },
+    {
+      "id": "job-search-tech-data-platform",
+      "useCase": "job_search",
+      "title": "Data Platform Engineer opportunity search",
+      "audience": "recruiter",
+      "roleFamily": "tech",
+      "targetRoles": [
+        "Senior Data Platform Engineer"
+      ],
+      "goal": "Identify roles aligned to candidate strengths in distributed data infrastructure.",
+      "systemPrompt": "You are a recruiter assistant focused on role relevance and compensation transparency.",
+      "userPromptTemplate": "Find {result_count} Senior Data Platform Engineer jobs in {market_scope}. Require Python, Spark, and cloud data warehouses. Flag roles with on-call expectations and preferred domain expertise.",
+      "outputShape": {
+        "fields": [
+          "organization",
+          "job_title",
+          "location",
+          "tech_requirements",
+          "comp_range",
+          "constraints",
+          "why_fit"
+        ],
+        "maxResults": 12
+      },
+      "notes": "Use for placement-oriented searches in technology accounts."
+    },
+    {
+      "id": "job-to-candidate-match-healthcare-mds",
+      "useCase": "job_to_candidate_match",
+      "title": "MDS Coordinator role-to-candidate match",
+      "audience": "recruiter",
+      "roleFamily": "healthcare",
+      "targetRoles": [
+        "MDS Coordinator"
+      ],
+      "goal": "Match a single MDS Coordinator opening to ranked candidates.",
+      "systemPrompt": "You are a clinical recruiting matcher. Rank candidates by likely hireability and early productivity.",
+      "userPromptTemplate": "Given this MDS Coordinator job summary: {job_summary}. Rank top {result_count} candidates from the pool. Score on MDS 3.0 accuracy, care plan coordination, PDPM fluency, and survey readiness support.",
+      "outputShape": {
+        "fields": [
+          "candidate_name",
+          "match_score",
+          "top_match_reasons",
+          "concerns",
+          "interview_focus"
+        ],
+        "maxResults": 8
+      },
+      "notes": "Use after candidate sourcing to decide same-day interview slate."
+    },
+    {
+      "id": "job-to-candidate-match-tech-security",
+      "useCase": "job_to_candidate_match",
+      "title": "Security Engineer role-to-candidate match",
+      "audience": "recruiter",
+      "roleFamily": "tech",
+      "targetRoles": [
+        "Senior Security Engineer"
+      ],
+      "goal": "Rank candidates against security engineering role requirements.",
+      "systemPrompt": "You are a recruiting analyst assistant. Rank candidates by technical overlap, domain depth, and hiring risk.",
+      "userPromptTemplate": "Match this Senior Security Engineer role: {job_summary}. Rank top {result_count} candidates and justify using cloud security controls, incident response depth, and stakeholder communication examples.",
+      "outputShape": {
+        "fields": [
+          "candidate_name",
+          "match_score",
+          "fit_evidence",
+          "risk_flags",
+          "recommended_next_step"
+        ],
+        "maxResults": 8
+      },
+      "notes": "Use as generalized technology matching fixture."
+    },
+    {
+      "id": "candidate-to-job-match-healthcare-physician",
+      "useCase": "candidate_to_job_match",
+      "title": "Physician profile to target jobs",
+      "audience": "recruiter",
+      "roleFamily": "healthcare",
+      "targetRoles": [
+        "Hospitalist",
+        "Primary Care Physician"
+      ],
+      "goal": "Find best-fit physician openings for a specific candidate profile.",
+      "systemPrompt": "You are a physician recruiting assistant. Prioritize credential alignment, schedule fit, and compensation realism.",
+      "userPromptTemplate": "Given this physician candidate profile: {candidate_profile}. Identify top {result_count} openings in {region_scope}. Prioritize board certification match, visa constraints, call burden, and shift model preferences.",
+      "outputShape": {
+        "fields": [
+          "job_title",
+          "organization",
+          "location",
+          "match_score",
+          "fit_reasons",
+          "tradeoffs",
+          "pitch_angle"
+        ],
+        "maxResults": 10
+      },
+      "notes": "Use for candidate-first marketing and retention-sensitive moves."
+    },
+    {
+      "id": "candidate-to-job-match-healthcare-lnha",
+      "useCase": "candidate_to_job_match",
+      "title": "LNHA profile to target jobs",
+      "audience": "recruiter",
+      "roleFamily": "healthcare",
+      "targetRoles": [
+        "Licensed Nursing Home Administrator"
+      ],
+      "goal": "Match an LNHA candidate to best-fit administrator openings.",
+      "systemPrompt": "You are a post-acute executive recruiting assistant. Prioritize license alignment, facility complexity fit, and compensation realism.",
+      "userPromptTemplate": "Given this LNHA candidate profile: {candidate_profile}. Identify top {result_count} openings in {region_scope}. Prioritize state licensure compatibility, census complexity, quality recovery expectations, and relocation support.",
+      "outputShape": {
+        "fields": [
+          "job_title",
+          "organization",
+          "location",
+          "match_score",
+          "fit_reasons",
+          "tradeoffs",
+          "pitch_angle"
+        ],
+        "maxResults": 10
+      },
+      "notes": "Use for candidate-first marketing of nursing home administrator talent."
+    },
+    {
+      "id": "candidate-to-job-match-tech-product",
+      "useCase": "candidate_to_job_match",
+      "title": "Product Manager profile to target jobs",
+      "audience": "recruiter",
+      "roleFamily": "tech",
+      "targetRoles": [
+        "Senior Product Manager"
+      ],
+      "goal": "Map a PM candidate profile to relevant openings with concrete fit rationale.",
+      "systemPrompt": "You are a product recruiting assistant. Optimize for candidate acceptance likelihood and role relevance.",
+      "userPromptTemplate": "Use this product manager profile: {candidate_profile}. Find {result_count} openings and rank by domain fit, seniority alignment, stakeholder complexity, and compensation trajectory.",
+      "outputShape": {
+        "fields": [
+          "job_title",
+          "company",
+          "location",
+          "match_score",
+          "alignment_summary",
+          "possible_objections",
+          "closing_strategy"
+        ],
+        "maxResults": 10
+      },
+      "notes": "Use when candidate expectations drive job selection strategy."
+    },
+    {
+      "id": "recruiter-copilot-healthcare-allied",
+      "useCase": "recruiter_copilot",
+      "title": "Allied health recruiting daily copilot",
+      "audience": "recruiter",
+      "roleFamily": "healthcare",
+      "targetRoles": [
+        "Physical Therapist",
+        "Occupational Therapist",
+        "Speech Language Pathologist"
+      ],
+      "goal": "Generate a recruiter daily plan for allied health pipelines.",
+      "systemPrompt": "You are a healthcare staffing copilot. Be concise, operational, and action-oriented.",
+      "userPromptTemplate": "Create today's recruiter plan for allied health openings in {markets}. Include: top 5 outreach priorities, 3 at-risk reqs, 3 candidates likely to close this week, and 2 manager updates.",
+      "outputShape": {
+        "fields": [
+          "priority_actions",
+          "at_risk_roles",
+          "likely_closures",
+          "manager_updates",
+          "recommended_messages"
+        ],
+        "maxResults": 1
+      },
+      "notes": "Use as daily standup prep and execution checklist."
+    },
+    {
+      "id": "recruiter-copilot-tech-fullcycle",
+      "useCase": "recruiter_copilot",
+      "title": "Tech full-cycle recruiter copilot",
+      "audience": "recruiter",
+      "roleFamily": "tech",
+      "targetRoles": [
+        "Engineering Manager",
+        "Senior Software Engineer"
+      ],
+      "goal": "Create practical execution plan for active technical reqs.",
+      "systemPrompt": "You are a high-velocity tech recruiting copilot. Recommend practical next steps and communication snippets.",
+      "userPromptTemplate": "Create today's execution plan for tech recruiting desk. Include: outreach by req priority, interview prep points, offer-risk watchlist, and candidate follow-up message drafts.",
+      "outputShape": {
+        "fields": [
+          "daily_plan",
+          "interview_focus",
+          "offer_risk_watchlist",
+          "followup_templates"
+        ],
+        "maxResults": 1
+      },
+      "notes": "Use for recruiter workflow support outside healthcare domain."
+    }
+  ]
+}
