@@ -58,3 +58,24 @@ Then open these URLs:
 
 - No credentials, secrets, or live API calls are used.
 - Files are intentionally framework-agnostic (plain HTML/CSS/JS).
+
+## Synthetic fixture pack for backend/docs/demo workflows
+
+Additional synthetic fixtures live under `examples/fixtures/`:
+
+- `examples/fixtures/requests/*.json`
+  - Request payload examples for `candidate_search`, `job_search`, `match` (both directions), and `copilot` workflow flows.
+  - Designed to align with `/api/webhook/n8n` payload shape (`workflow_type`, `query`, `pageSize`, `metadata`).
+- `examples/fixtures/responses/grounded-search.response.json`
+  - Grounded response example aligned with `/api/vertex-search` response shape (`ok`, `query`, `grounded`).
+- `examples/fixtures/responses/recruiter-search-generated.response.json`
+  - Recruiter-generated response example aligned with `/api/recruiter-search` output shape (`ok`, `query`, `grounded`, `generated`).
+
+Intended uses:
+
+- docs and API examples
+- smoke test payload references
+- frontend rendering mocks
+- recruiter demo scenarios
+
+All records are synthetic and non-sensitive.
