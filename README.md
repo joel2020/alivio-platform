@@ -2,6 +2,8 @@
 
 [![Open in Bolt](https://bolt.new/static/open-in-bolt.svg)](https://bolt.new/~/sb1-ycamq1gd)
 
+[![CI](https://github.com/aliviosearchpartners/alivio-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/aliviosearchpartners/alivio-platform/actions/workflows/ci.yml)
+
 ## Local setup
 
 1. Install dependencies:

@@ -13,6 +13,7 @@
     "smoke:vertex": "node scripts/smoke-vertex.js",
     "smoke:recruiter": "node scripts/smoke-recruiter.js",
     "validate:recruiter-shape": "node scripts/validate-recruiter-shape.js",
+    "lint": "node --check server.js"
     "smoke:live": "node scripts/smoke-test-live.js"
   },
   "dependencies": {

@@ -11,6 +11,9 @@ const { runVertexSearch } = require('./vertex');
 const { buildGroundedPayload, validateGroundedPayload } = require('./normalize');
 const { buildRankedGrounding } = require('./ranking');
 
+const mockVertexFixture = require('./examples/mock-fixtures/recruiter-search-result-list.json');
+const mockRecruiterFixture = require('./examples/mock-fixtures/recruiter-copilot-answer-card.json');
+
 const app = express();
 app.use(express.json({ limit: config.maxRequestBytes }));
 
@@ -48,9 +51,19 @@ if (config.enableCors) {
 }
 
 const openai = new OpenAI({ apiKey: config.openai.apiKey });
+const isMockMode = config.appMode === 'mock';
 
 function getRequestId(req) {
   return req.requestId || crypto.randomUUID();
+}
+
+
+function buildMockResponse(template, query, requestId) {
+  return {
+    ...template,
+    query,
+    requestId: requestId || `mock-${crypto.randomUUID()}`
+  };
 }
 
 function parseSearchInput(body, pageBounds) {
@@ -137,6 +150,11 @@ app.get('/health', (_req, res) => {
 app.post('/api/vertex-search', async (req, res, next) => {
   try {
     const { query, pageSize } = parseSearchInput(req.body, config.vertex);
+
+    if (isMockMode) {
+      return res.json(buildMockResponse(mockVertexFixture, query, getRequestId(req)));
+    }
+
     const vertexResponse = await runVertexSearch({ query, pageSize, config: config.vertex });
     const grounded = buildGroundedPayload(vertexResponse);
 
@@ -161,6 +179,11 @@ app.post('/api/recruiter-search', async (req, res, next) => {
   const requestId = getRequestId(req);
 
   try {
+    if (isMockMode) {
+      const { query } = parseSearchInput(req.body, config.vertex);
+      return res.json(buildMockResponse(mockRecruiterFixture, query, requestId));
+    }
+
     if (!config.openai.apiKey) {
       throw new AppError('LLM_API_KEY (or OPENAI_API_KEY) is required for recruiter generation', {
         status: 500,
@@ -170,6 +193,7 @@ app.post('/api/recruiter-search', async (req, res, next) => {
     }
 
     const { query, pageSize } = parseSearchInput(req.body, config.vertex);
+
     const vertexResponse = await runVertexSearch({ query, pageSize, config: config.vertex });
     const grounded = buildGroundedPayload(vertexResponse);
 
@@ -270,7 +294,8 @@ app.listen(config.port, () => {
     port: config.port,
     corsEnabled: config.enableCors,
     hasGoogleCredentialsPath: Boolean(process.env.GOOGLE_APPLICATION_CREDENTIALS),
-    hasOpenAiApiKey: Boolean(config.openai.apiKey)
+    hasOpenAiApiKey: Boolean(config.openai.apiKey),
+    appMode: config.appMode
   });
   logger.info('sample_query_ready', {
     sampleRecruiterQuery: config.defaults.sampleRecruiterQuery
