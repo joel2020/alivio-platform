@@ -1,4 +1,5 @@
 import { FormEvent, useState } from 'react';
+import { supabase } from '../../lib/supabase';
 
 const CAL_COM_BOOKING_URL = 'https://cal.com/alivio/intro-call30';
 
@@ -7,14 +8,46 @@ export default function ContactPage() {
   const [email, setEmail] = useState('');
   const [facility, setFacility] = useState('');
   const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitState, setSubmitState] = useState<{ kind: 'success' | 'error'; message: string } | null>(null);
 
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const subject = encodeURIComponent(`Website inquiry from ${name || 'Healthcare hiring team'}`);
-    const body = encodeURIComponent(
+    setSubmitState(null);
+    setIsSubmitting(true);
+
+    const subject = `Website inquiry from ${name || 'Healthcare hiring team'}`;
+    const body = (
       `Name: ${name}\nEmail: ${email}\nOrganization: ${facility}\n\nMessage:\n${message}`
     );
-    window.location.href = `mailto:hello@aliviosearchpartners.com?subject=${subject}&body=${body}`;
+
+    const { error } = await supabase.functions.invoke<{ data?: { id: string } }>('send-outreach-email', {
+      body: {
+        to: 'hello@aliviosearchpartners.com',
+        subject,
+        body,
+        from: 'Alivio Contact Form <noreply@aliviosearchpartners.com>',
+      },
+    });
+
+    if (error) {
+      setSubmitState({
+        kind: 'error',
+        message: 'Sorry — something went wrong while sending your message. Please try again.',
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
+    setName('');
+    setEmail('');
+    setFacility('');
+    setMessage('');
+    setSubmitState({
+      kind: 'success',
+      message: 'Thanks — your message has been sent. Our team will get back to you soon.',
+    });
+    setIsSubmitting(false);
   };
 
   return (
@@ -34,9 +67,22 @@ export default function ContactPage() {
               <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Work email" className="w-full rounded border px-3 py-2 text-white" style={{ background: '#0A0A0A', borderColor: '#2A2A2A' }} />
               <input required value={facility} onChange={(e) => setFacility(e.target.value)} placeholder="Hospital or health system" className="w-full rounded border px-3 py-2 text-white" style={{ background: '#0A0A0A', borderColor: '#2A2A2A' }} />
               <textarea required value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Roles to fill (RN, ICU, Med-Surg, etc.)" rows={5} className="w-full rounded border px-3 py-2 text-white" style={{ background: '#0A0A0A', borderColor: '#2A2A2A' }} />
-              <button type="submit" className="inline-block px-6 py-3 rounded font-medium text-white" style={{ backgroundColor: '#4F46E5' }}>
-                Send Message
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="inline-block px-6 py-3 rounded font-medium text-white"
+                style={{ backgroundColor: '#4F46E5', opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
+              >
+                {isSubmitting ? 'Sending...' : 'Send Message'}
               </button>
+              {submitState && (
+                <p
+                  role="status"
+                  style={{ color: submitState.kind === 'success' ? '#22C55E' : '#F87171', fontSize: '14px', lineHeight: 1.5 }}
+                >
+                  {submitState.message}
+                </p>
+              )}
             </div>
           </form>
 
