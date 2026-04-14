@@ -4,12 +4,7 @@ node_modules/
 !.env.example
 
 # credentials / service account files
-service-account.json
-dev-service-account.json
-gcp-key.json
 *service-account*.json
+gcp-key.json
 *-key.json
 *credentials*.json
-
-npm-debug.log*
-.DS_Store

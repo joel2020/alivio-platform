@@ -6,12 +6,35 @@
 
 ## Table of contents
 
+- [Repository structure](#repository-structure)
+- [What to deploy (first Vercel production release)](#what-to-deploy-first-vercel-production-release)
 - [Local setup](#local-setup)
 - [Checks](#checks)
 - [Email Agent (IMAP + AI) setup](#email-agent-imap--ai-setup)
 - [Alivio Multi-Agent Backend](#alivio-multi-agent-backend)
 - [Alivio recruiter dashboard (vanilla HTML)](#alivio-recruiter-dashboard-vanilla-html)
 - [Custom Domain Setup (Production)](CUSTOM-DOMAIN-SETUP.md)
+
+## Repository structure
+
+- `backend/alivio-backend/` — **canonical production backend** (Vertex AI Search + OpenAI-compatible LLM, Vercel-ready).
+- `backend/` — future TypeScript multi-agent layer (mock/live agent orchestration, not the canonical production deployment target yet).
+- `frontend/` — recruiter dashboard UI assets.
+- `shared/` — shared prompt library and fixtures.
+- `docs/` — architecture/workflow/integration/deployment docs.
+
+See also: `ARCHITECTURE.md`.
+
+## What to deploy (first Vercel production release)
+
+Deploy **`backend/alivio-backend/`** to Vercel.
+
+- Use `backend/alivio-backend/vercel.json`.
+- Configure runtime env vars in Vercel (not in git), especially:
+  - `GOOGLE_APPLICATION_CREDENTIALS_JSON`
+  - `LLM_API_KEY`
+  - `LLM_MODEL`
+  - `CORS_ORIGIN` (if frontend is on a different domain)
 
 ## Local setup
 
@@ -65,7 +88,7 @@ The migration `20260414113000_add_email_agent_pipeline.sql` schedules `email-pip
 
 
 ## Alivio Multi-Agent Backend
-See `backend/README.md` for the new production-style agent backend and API routes.
+See `backend/README.md` for the TypeScript multi-agent backend and API routes (future layer, not the first Vercel production deploy target).
 
 ## Alivio recruiter dashboard (vanilla HTML)
 
