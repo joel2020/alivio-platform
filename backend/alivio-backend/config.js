@@ -18,6 +18,7 @@ module.exports = {
   requestIdHeader: process.env.REQUEST_ID_HEADER || 'x-request-id',
   enableCors: process.env.ENABLE_CORS === 'true',
   corsOrigin: process.env.CORS_ORIGIN || '',
+  webhookSecret: process.env.WEBHOOK_SECRET || '',
   vertex: {
     endpoint: process.env.VERTEX_SEARCH_ENDPOINT || DEFAULT_VERTEX_SEARCH_ENDPOINT,
     servingConfig:
