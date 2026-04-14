@@ -18,6 +18,31 @@ const app = express();
 app.use(express.json({ limit: config.maxRequestBytes }));
 
 app.use((req, res, next) => {
+  const startTime = process.hrtime.bigint();
+
+  res.on('finish', () => {
+    if (res.statusCode < 400) {
+      return;
+    }
+
+    const durationMs = Number(process.hrtime.bigint() - startTime) / 1e6;
+    const errorContext = res.locals.errorContext || {};
+
+    logger.error('request_failed', {
+      timestamp: new Date().toISOString(),
+      requestId: req.requestId || null,
+      route: req.originalUrl || req.path,
+      statusCode: res.statusCode,
+      errorCode: errorContext.errorCode || 'HTTP_ERROR',
+      message: errorContext.message || 'Request failed',
+      durationMs: Number(durationMs.toFixed(2))
+    });
+  });
+
+  next();
+});
+
+app.use((req, res, next) => {
   const incomingRequestId = req.headers[config.requestIdHeader];
   const requestId =
     typeof incomingRequestId === 'string' && incomingRequestId.trim()
@@ -147,6 +172,19 @@ app.get('/health', (_req, res) => {
   });
 });
 
+app.get('/api/status', (_req, res) => {
+  res.status(200).json({
+    ok: true,
+    version: process.env.npm_package_version,
+    uptime: process.uptime(),
+    mode: process.env.APP_MODE || 'live',
+    vertexEndpoint: config.vertex.endpoint ? 'configured' : 'missing',
+    openaiKey: config.openai.apiKey ? 'configured' : 'missing',
+    gcpCredentials: process.env.GOOGLE_APPLICATION_CREDENTIALS ? 'configured' : 'missing',
+    timestamp: new Date().toISOString()
+  });
+});
+
 app.post('/api/vertex-search', async (req, res, next) => {
   try {
     const { query, pageSize } = parseSearchInput(req.body, config.vertex);
@@ -272,14 +310,10 @@ app.use((error, req, res, _next) => {
   const { status, payload } = errorToResponse(error);
   const requestId = getRequestId(req);
 
-  logger.error('request_error', {
-    requestId,
-    method: req.method,
-    path: req.path,
-    status,
-    code: payload.error.code,
+  res.locals.errorContext = {
+    errorCode: payload.error.code,
     message: payload.error.message
-  });
+  };
 
   res.status(status).json({
     ...payload,
@@ -287,7 +321,7 @@ app.use((error, req, res, _next) => {
   });
 });
 
-app.listen(config.port, () => {
+const server = app.listen(config.port, () => {
   logger.info('server_started', {
     service: config.serviceName,
     env: config.env,
@@ -300,4 +334,42 @@ app.listen(config.port, () => {
   logger.info('sample_query_ready', {
     sampleRecruiterQuery: config.defaults.sampleRecruiterQuery
   });
+});
+
+let isShuttingDown = false;
+
+function logFatalAndExit(kind, error) {
+  if (isShuttingDown) {
+    return;
+  }
+  isShuttingDown = true;
+
+  const details =
+    error instanceof Error
+      ? { message: error.message, stack: error.stack }
+      : { message: String(error) };
+
+  console.error(
+    JSON.stringify({
+      severity: 'ERROR',
+      message: kind,
+      timestamp: new Date().toISOString(),
+      meta: details
+    })
+  );
+
+  const forceExitTimer = setTimeout(() => process.exit(1), 5000);
+  forceExitTimer.unref();
+
+  server.close(() => {
+    process.exit(1);
+  });
+}
+
+process.on('unhandledRejection', (reason) => {
+  logFatalAndExit('unhandled_rejection', reason);
+});
+
+process.on('uncaughtException', (error) => {
+  logFatalAndExit('uncaught_exception', error);
 });
