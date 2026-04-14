@@ -51,3 +51,7 @@ supabase functions deploy email-pipeline
 ```
 
 The migration `20260414113000_add_email_agent_pipeline.sql` schedules `email-pipeline` every 30 minutes (`*/30 * * * *`) via `pg_cron`.
+
+
+## Alivio Multi-Agent Backend
+See `backend/README.md` for the new production-style agent backend and API routes.
