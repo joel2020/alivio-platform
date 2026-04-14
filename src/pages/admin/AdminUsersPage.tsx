@@ -1,0 +1,107 @@
+import { useEffect, useMemo, useState } from 'react';
+import { supabase } from '../../lib/supabase';
+
+interface AdminUserRow {
+  id: string;
+  email: string;
+  created_at: string;
+  last_sign_in_at: string | null;
+}
+
+const safeDate = (value: string | null) => (value ? new Date(value).toLocaleString() : '—');
+
+export default function AdminUsersPage() {
+  const [users, setUsers] = useState<AdminUserRow[]>([]);
+  const [search, setSearch] = useState('');
+  const [selectedUser, setSelectedUser] = useState<AdminUserRow | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const load = async () => {
+      const { data, error: authError } = await supabase
+        .schema('auth')
+        .from('users')
+        .select('id, email, created_at, last_sign_in_at')
+        .order('created_at', { ascending: false });
+
+      if (!authError) {
+        setUsers((data as AdminUserRow[]) ?? []);
+        return;
+      }
+
+      const fallback = await supabase.from('users').select('id, email, created_at').order('created_at', { ascending: false });
+      if (fallback.error) {
+        setError(authError.message);
+        return;
+      }
+
+      setUsers(((fallback.data ?? []) as Array<{ id: string; email: string; created_at: string }>).map((user) => ({
+        ...user,
+        last_sign_in_at: null,
+      })));
+    };
+
+    void load();
+  }, []);
+
+  const filtered = useMemo(() => {
+    if (!search.trim()) return users;
+    const term = search.toLowerCase();
+    return users.filter((user) => user.email.toLowerCase().includes(term));
+  }, [search, users]);
+
+  return (
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-base)' }}>
+      <div className="page-header">
+        <h1 style={{ fontSize: '0.9375rem', fontWeight: 700, letterSpacing: '-0.025em', color: 'var(--text-primary)' }}>Admin • Users</h1>
+      </div>
+
+      <div className="page-content space-y-4">
+        {error && <div className="card p-4" style={{ color: 'var(--danger)' }}>Could not load users: {error}</div>}
+
+        <div className="card p-4">
+          <input
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Search by email"
+            className="input w-full"
+          />
+        </div>
+
+        <div className="card overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left" style={{ color: 'var(--text-muted)' }}>
+                <th className="p-3">Email</th>
+                <th className="p-3">Created At</th>
+                <th className="p-3">Last Sign In</th>
+                <th className="p-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((user) => (
+                <tr key={user.id} className="border-t" style={{ borderColor: 'var(--border)' }}>
+                  <td className="p-3" style={{ color: 'var(--text-primary)' }}>{user.email}</td>
+                  <td className="p-3" style={{ color: 'var(--text-secondary)' }}>{safeDate(user.created_at)}</td>
+                  <td className="p-3" style={{ color: 'var(--text-secondary)' }}>{safeDate(user.last_sign_in_at)}</td>
+                  <td className="p-3">
+                    <button className="btn-secondary" onClick={() => setSelectedUser(user)}>View</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {selectedUser && (
+          <div className="card p-4">
+            <h2 style={{ color: 'var(--text-primary)', fontWeight: 600 }}>User Details</h2>
+            <p style={{ color: 'var(--text-secondary)', marginTop: '0.5rem' }}><strong>Email:</strong> {selectedUser.email}</p>
+            <p style={{ color: 'var(--text-secondary)' }}><strong>Created:</strong> {safeDate(selectedUser.created_at)}</p>
+            <p style={{ color: 'var(--text-secondary)' }}><strong>Last Sign In:</strong> {safeDate(selectedUser.last_sign_in_at)}</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
