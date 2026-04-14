@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alivio Recruiter Dashboard</title>
+    <style>
+      :root {
+        --bg: #f5f7fb;
+        --card: #ffffff;
+        --text: #1c2230;
+        --muted: #667085;
+        --accent: #2a63f6;
+        --accent-dark: #1f4dca;
+        --success: #067647;
+        --error: #b42318;
+        --border: #d0d5dd;
+        --shadow: 0 8px 30px rgba(16, 24, 40, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      .container {
+        width: min(1080px, 94vw);
+        margin: 1.25rem auto 2rem;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #0f1f42, #1a3f8f);
+        color: white;
+        border-radius: 14px;
+        padding: 1.2rem 1.25rem;
+        box-shadow: var(--shadow);
+      }
+
+      .header h1 {
+        margin: 0;
+        font-size: 1.3rem;
+      }
+
+      .header p {
+        margin: 0.45rem 0 0;
+        opacity: 0.92;
+        font-size: 0.95rem;
+      }
+
+      .panel {
+        margin-top: 1rem;
+        background: var(--card);
+        border-radius: 14px;
+        padding: 1rem;
+        box-shadow: var(--shadow);
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 2.2fr 1fr auto;
+        gap: 0.75rem;
+        align-items: end;
+      }
+
+      label {
+        display: block;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 0.45rem;
+      }
+
+      input,
+      select,
+      button,
+      textarea {
+        font: inherit;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 0.68rem 0.75rem;
+        color: var(--text);
+        background: white;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: var(--accent);
+        outline: 2px solid rgba(42, 99, 246, 0.15);
+      }
+
+      button {
+        border: 0;
+        border-radius: 10px;
+        background: var(--accent);
+        color: white;
+        cursor: pointer;
+        padding: 0.7rem 1rem;
+        font-weight: 600;
+      }
+
+      button:hover {
+        background: var(--accent-dark);
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: wait;
+      }
+
+      .helper {
+        margin-top: 0.5rem;
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .status {
+        margin-top: 0.75rem;
+        font-size: 0.93rem;
+        color: var(--muted);
+      }
+
+      .loading {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+      }
+
+      .spinner {
+        width: 16px;
+        height: 16px;
+        border: 2px solid #d0d5dd;
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      .error-box {
+        border: 1px solid #fecdca;
+        border-left: 5px solid var(--error);
+        background: #fffbfa;
+        color: #7a271a;
+        padding: 0.75rem;
+        border-radius: 8px;
+      }
+
+      .grid {
+        margin-top: 1rem;
+        display: grid;
+        grid-template-columns: 1.7fr 1fr;
+        gap: 1rem;
+      }
+
+      .cards {
+        display: grid;
+        gap: 0.7rem;
+      }
+
+      .card {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 0.8rem;
+      }
+
+      .row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+
+      .title {
+        margin: 0;
+        font-size: 1rem;
+      }
+
+      .subtitle {
+        margin: 0.2rem 0 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .badge {
+        background: #ecfdf3;
+        color: var(--success);
+        border: 1px solid #abefc6;
+        border-radius: 999px;
+        padding: 0.2rem 0.6rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .section-title {
+        margin: 0 0 0.5rem;
+        font-size: 1rem;
+      }
+
+      ul {
+        margin: 0.35rem 0 0.1rem;
+        padding-left: 1rem;
+      }
+
+      li {
+        margin: 0.15rem 0;
+      }
+
+      .copy-row {
+        display: flex;
+        gap: 0.6rem;
+        align-items: center;
+      }
+
+      .copy-row button {
+        flex-shrink: 0;
+      }
+
+      .copy-msg {
+        font-size: 0.82rem;
+        color: var(--success);
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 880px) {
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <section class="header">
+        <h1>Alivio Search Partners</h1>
+        <p>Recruiter search dashboard for candidates, jobs, and AI copilot workflows.</p>
+      </section>
+
+      <section class="panel">
+        <form id="searchForm" novalidate>
+          <div class="form-grid">
+            <div>
+              <label for="queryInput">Search Query</label>
+              <input
+                id="queryInput"
+                name="query"
+                type="text"
+                placeholder="Find Directors of Nursing in NJ with multi-site SNF leadership..."
+                required
+              />
+            </div>
+
+            <div>
+              <label for="workflowSelect">Workflow</label>
+              <select id="workflowSelect" name="workflow">
+                <option value="candidate_search">Candidate Search</option>
+                <option value="job_search">Job Search</option>
+                <option value="job_to_candidate_match">Job-to-Candidate Match</option>
+                <option value="candidate_to_job_match">Candidate-to-Job Match</option>
+                <option value="recruiter_copilot">Recruiter Copilot</option>
+              </select>
+            </div>
+
+            <button id="submitButton" type="submit">Run Search</button>
+          </div>
+          <p id="queryHelp" class="helper"></p>
+        </form>
+
+        <div id="loadingState" class="status hidden" role="status" aria-live="polite">
+          <span class="loading"><span class="spinner" aria-hidden="true"></span>Loading results from API...</span>
+        </div>
+
+        <div id="errorState" class="status hidden"></div>
+      </section>
+
+      <section class="panel">
+        <h2 class="section-title">Ranked Matches</h2>
+        <div id="resultsPanel" class="cards">
+          <p class="helper">Submit a query to view ranked match cards.</p>
+        </div>
+      </section>
+
+      <section class="grid">
+        <article class="panel">
+          <h2 class="section-title">Explanation</h2>
+          <p id="explanationText" class="helper">No explanation yet.</p>
+        </article>
+
+        <article class="panel">
+          <h2 class="section-title">Outreach Draft</h2>
+          <div class="copy-row">
+            <button id="copyButton" type="button" disabled>Copy Draft</button>
+            <span id="copyMessage" class="copy-msg hidden">Copied.</span>
+          </div>
+          <textarea id="outreachText" rows="10" readonly placeholder="Outreach draft appears here..."></textarea>
+        </article>
+      </section>
+    </main>
+
+    <script src="./alivio-api-client.js"></script>
+    <script>
+      (function () {
+        'use strict';
+
+        var API_BASE = window.ALIVIO_API_BASE || 'https://api.aliviosearchpartners.com';
+        var workflowExamples = {
+          candidate_search: 'Find Directors of Nursing in New Jersey with SNF turnaround and census growth experience.',
+          job_search: 'Find open Director of Nursing and Administrator roles in Florida skilled nursing networks.',
+          job_to_candidate_match: 'Given this role: multi-site SNF Regional DON in NJ, match top candidates with leadership outcomes.',
+          candidate_to_job_match: 'Given this candidate profile: RN leader with 7 years acute + SNF oversight, find best-fit open roles.',
+          recruiter_copilot: 'Draft a recruiter-ready shortlist and outreach for DON leaders in New Jersey with multi-site SNF experience.'
+        };
+
+        var routeByWorkflow = {
+          candidate_search: 'recruiter',
+          job_search: 'vertex',
+          job_to_candidate_match: 'recruiter',
+          candidate_to_job_match: 'recruiter',
+          recruiter_copilot: 'recruiter'
+        };
+
+        var client = window.AlivioApiClient.createClient({ baseUrl: API_BASE });
+
+        var els = {
+          form: document.getElementById('searchForm'),
+          query: document.getElementById('queryInput'),
+          workflow: document.getElementById('workflowSelect'),
+          submit: document.getElementById('submitButton'),
+          help: document.getElementById('queryHelp'),
+          loading: document.getElementById('loadingState'),
+          error: document.getElementById('errorState'),
+          results: document.getElementById('resultsPanel'),
+          explanation: document.getElementById('explanationText'),
+          outreach: document.getElementById('outreachText'),
+          copyButton: document.getElementById('copyButton'),
+          copyMsg: document.getElementById('copyMessage')
+        };
+
+        function escapeHtml(value) {
+          return String(value || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+        }
+
+        function fitPercent(item) {
+          var raw = Number(item.fit_score || item.fitScore || 0);
+          if (!Number.isFinite(raw) || raw <= 0) return 'N/A';
+          return Math.round(raw * 100) + '%';
+        }
+
+        function buildCard(match, index) {
+          var displayName = match.candidate_name || match.job_title || match.name || 'Unknown match';
+          var role = match.job_title || match.title || 'Title unavailable';
+          var summary = match.summary || match.fit_summary || 'No fit summary provided.';
+          var strengths = Array.isArray(match.match_reasons) ? match.match_reasons : (Array.isArray(match.strengths) ? match.strengths : []);
+          var gaps = Array.isArray(match.gaps) ? match.gaps : [];
+
+          var strengthsHtml = strengths.length
+            ? '<ul>' + strengths.map(function (item) { return '<li>' + escapeHtml(item) + '</li>'; }).join('') + '</ul>'
+            : '<p class="helper">No strengths provided.</p>';
+
+          var gapsHtml = gaps.length
+            ? '<ul>' + gaps.map(function (item) { return '<li>' + escapeHtml(item) + '</li>'; }).join('') + '</ul>'
+            : '<p class="helper">No explicit gaps identified.</p>';
+
+          return (
+            '<article class="card">' +
+            '<div class="row">' +
+            '<div>' +
+            '<h3 class="title">#' + (match.rank || index + 1) + ' · ' + escapeHtml(displayName) + '</h3>' +
+            '<p class="subtitle">' + escapeHtml(role) + '</p>' +
+            '</div>' +
+            '<span class="badge">Confidence ' + fitPercent(match) + '</span>' +
+            '</div>' +
+            '<p><strong>Fit summary:</strong> ' + escapeHtml(summary) + '</p>' +
+            '<p><strong>Strengths:</strong></p>' + strengthsHtml +
+            '<p><strong>Gaps:</strong></p>' + gapsHtml +
+            '</article>'
+          );
+        }
+
+        function setLoading(isLoading) {
+          els.submit.disabled = isLoading;
+          els.loading.classList.toggle('hidden', !isLoading);
+        }
+
+        function clearError() {
+          els.error.classList.add('hidden');
+          els.error.innerHTML = '';
+        }
+
+        function showError(error) {
+          var requestId = error && error.requestId ? error.requestId : 'n/a';
+          var message = (error && error.message) || 'Unknown error';
+          els.error.classList.remove('hidden');
+          els.error.innerHTML =
+            '<div class="error-box"><strong>Request failed.</strong> ' +
+            escapeHtml(message) +
+            '<br /><small>Request ID: ' +
+            escapeHtml(requestId) +
+            '</small></div>';
+        }
+
+        function renderResponse(response) {
+          var generated = response.generated || {};
+          var ranked = Array.isArray(generated.ranked_matches) ? generated.ranked_matches : [];
+
+          if (!ranked.length && response.grounded && Array.isArray(response.grounded.results)) {
+            ranked = response.grounded.results.map(function (item, idx) {
+              return {
+                rank: idx + 1,
+                candidate_name: item.title || item.name,
+                job_title: item.source || 'Grounded result',
+                fit_summary: item.snippet || item.summary || 'Grounded result returned by Vertex retrieval.',
+                match_reasons: item.snippet ? [item.snippet] : [],
+                fit_score: item.score || 0
+              };
+            });
+          }
+
+          els.results.innerHTML = ranked.length
+            ? ranked.map(buildCard).join('')
+            : '<p class="helper">No ranked matches returned for this query.</p>';
+
+          els.explanation.textContent = generated.explanation || 'No explanation returned.';
+          els.outreach.value = generated.outreach_draft || '';
+          els.copyButton.disabled = !els.outreach.value.trim();
+          els.copyMsg.classList.add('hidden');
+        }
+
+        function updateExample() {
+          var workflow = els.workflow.value;
+          var example = workflowExamples[workflow] || '';
+          els.query.placeholder = example;
+          els.help.textContent = 'Example: ' + example;
+        }
+
+        async function submitSearch(event) {
+          event.preventDefault();
+          clearError();
+
+          var query = els.query.value.trim();
+          var workflow = els.workflow.value;
+
+          if (!query) {
+            showError(new Error('Please enter a query before submitting.'));
+            return;
+          }
+
+          setLoading(true);
+
+          try {
+            var payload = { query: query, workflow: workflow };
+            var route = routeByWorkflow[workflow] || 'recruiter';
+            var response =
+              route === 'vertex'
+                ? await client.vertexSearch(payload)
+                : await client.recruiterSearch(payload);
+
+            renderResponse(response);
+          } catch (error) {
+            showError(error);
+          } finally {
+            setLoading(false);
+          }
+        }
+
+        async function copyOutreach() {
+          var text = els.outreach.value;
+          if (!text) return;
+
+          try {
+            await navigator.clipboard.writeText(text);
+            els.copyMsg.classList.remove('hidden');
+          } catch (_err) {
+            showError(new Error('Clipboard copy failed. You can still copy manually.'));
+          }
+        }
+
+        els.form.addEventListener('submit', submitSearch);
+        els.workflow.addEventListener('change', updateExample);
+        els.copyButton.addEventListener('click', copyOutreach);
+
+        updateExample();
+      })();
+    </script>
+  </body>
+</html>

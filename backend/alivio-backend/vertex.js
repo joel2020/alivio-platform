@@ -2,6 +2,10 @@ const { GoogleAuth } = require('google-auth-library');
 const { AppError } = require('./errors');
 
 const auth = new GoogleAuth({
+  credentials: process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON
+    ? JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON)
+    : undefined,
+  keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
   scopes: ['https://www.googleapis.com/auth/cloud-platform']
 });
 
