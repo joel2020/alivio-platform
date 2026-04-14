@@ -21,14 +21,51 @@ cp .env.example .env
 npm run dev
 ```
 
-Server defaults to `http://localhost:8080`.
+Server binds to `process.env.PORT` and defaults to `8080` when unset.
 
-## Environment variables
+## Docker build and run
+
+```bash
+cd backend/alivio-backend
+docker build -t alivio-backend:local .
+docker run --rm -p 8080:8080 \
+  -e PORT=8080 \
+  -e OPENAI_API_KEY="$OPENAI_API_KEY" \
+  -e GOOGLE_APPLICATION_CREDENTIALS=/var/secrets/google/key.json \
+  -v "$PWD/dev-service-account.json:/var/secrets/google/key.json:ro" \
+  alivio-backend:local
+```
+
+Notes:
+
+- For local Docker runs only, `GOOGLE_APPLICATION_CREDENTIALS` can point to a mounted key file.
+- In Cloud Run, prefer attached service account identity instead of key files.
+
+## Cloud Run deployment approach
+
+Example deployment (adjust region, artifact image, and secret refs):
+
+```bash
+gcloud run deploy alivio-search-backend \
+  --project alivio-475419 \
+  --region us-central1 \
+  --image us-central1-docker.pkg.dev/alivio-475419/alivio/alivio-backend:latest \
+  --service-account vertex-express@alivio-475419.iam.gserviceaccount.com \
+  --allow-unauthenticated \
+  --set-env-vars NODE_ENV=production,SERVICE_NAME=alivio-search-partners-backend,VERTEX_SEARCH_ENDPOINT=https://discoveryengine.googleapis.com/v1alpha/projects/807488403515/locations/global/collections/default_collection/engines/alivio-search_1776189054215/servingConfigs/default_search:search,VERTEX_SEARCH_SERVING_CONFIG=projects/807488403515/locations/global/collections/default_collection/engines/alivio-search_1776189054215/servingConfigs/default_search \
+  --set-secrets OPENAI_API_KEY=OPENAI_API_KEY:latest
+```
+
+Cloud Run injects `PORT`; this app already listens on `process.env.PORT`.
+
+`GET /health` returns `200` JSON with a small readiness payload and is suitable for health checks.
+
+## Environment variables and secrets
 
 See `.env.example` for the full list. Key variables:
 
 - `PORT` (default `8080`)
-- `GOOGLE_APPLICATION_CREDENTIALS` (service-account key file path for local/dev)
+- `GOOGLE_APPLICATION_CREDENTIALS` (local/dev key file path only)
 - `VERTEX_SEARCH_ENDPOINT` (defaults to exact Alivio endpoint)
 - `VERTEX_SEARCH_SERVING_CONFIG` (defaults to exact Alivio serving config)
 - `VERTEX_TIMEOUT_MS` (default `15000`)
@@ -36,6 +73,31 @@ See `.env.example` for the full list. Key variables:
 - `OPENAI_MODEL` (default `gpt-4o-mini`)
 - `OPENAI_TIMEOUT_MS` (default `30000`)
 - `ENABLE_CORS` and `CORS_ORIGIN` (optional; disabled by default)
+
+Secret guidance:
+
+- Never commit real credentials, `.env` files, or service-account keys.
+- Use Secret Manager + runtime secret injection (`--set-secrets`) for `OPENAI_API_KEY`.
+- Use runtime env vars (`--set-env-vars`) for non-secret config.
+
+## Service account expectations
+
+Intended runtime identity:
+
+- `vertex-express@alivio-475419.iam.gserviceaccount.com`
+
+Expected behavior:
+
+- Cloud Run workload identity should authenticate to Vertex AI Search.
+- No frontend or browser code should hold Google or OpenAI credentials.
+- Keep this backend as the only auth boundary for Google/OpenAI calls.
+
+## Runtime caveats
+
+- `OPENAI_API_KEY` is required only for `POST /api/recruiter-search`.
+- `POST /api/vertex-search` can work with Google auth only.
+- Structured logs are JSON lines and include request-safe metadata only (no secret values).
+- Request IDs are accepted from `x-request-id` (or configured header) and generated when missing.
 
 ## Website integration contract
 
@@ -59,54 +121,6 @@ Request fields:
 - `query` (string, required, max 500 chars)
 - `pageSize` (integer, optional, clamped to 1-20, default 10)
 
-Success response (`200`):
-
-```json
-{
-  "ok": true,
-  "query": "Find ICU travel nurses in Texas with active compact RN license",
-  "grounded": {
-    "totalSize": 8,
-    "attributionToken": "token_abc123",
-    "results": [
-      {
-        "rank": 1,
-        "id": "candidate_001",
-        "title": "ICU RN - Austin, TX",
-        "role": "ICU Travel Nurse",
-        "location": "Austin, TX",
-        "sourceType": "candidate",
-        "uri": "https://aliviosearchpartners.com/candidates/candidate_001",
-        "snippet": "8 years ICU experience, compact RN license, rapid response team.",
-        "snippets": [
-          "8 years ICU experience, compact RN license, rapid response team."
-        ],
-        "extractiveSegments": [
-          {
-            "rank": 1,
-            "content": "Compact RN license and 4 travel ICU assignments.",
-            "pageNumber": 1,
-            "confidenceScore": null
-          }
-        ],
-        "metadata": {
-          "source": "ATS",
-          "company": "Alivio Search Partners",
-          "location": "Austin, TX",
-          "structured": {
-            "compensation": null,
-            "skills": ["ICU", "Rapid Response"],
-            "seniority": "Senior",
-            "employmentType": "Contract"
-          }
-        },
-        "rawDocumentName": "projects/.../documents/candidate_001"
-      }
-    ]
-  }
-}
-```
-
 ### `POST /api/recruiter-search`
 
 Use this for recruiter copilot responses grounded on Vertex results. Flow:
@@ -125,38 +139,6 @@ Request JSON:
 }
 ```
 
-Success response (`200`):
-
-```json
-{
-  "ok": true,
-  "query": "Match this role to likely candidates: Director of Nursing in New Jersey, SNF and multi-site leadership required",
-  "grounded": {
-    "totalSize": 10,
-    "attributionToken": "token_xyz789",
-    "results": []
-  },
-  "generated": {
-    "ranked_matches": [
-      {
-        "rank": 1,
-        "id": "candidate_204",
-        "title": "Director of Nursing - Newark",
-        "role": "Director of Nursing",
-        "location": "Newark, NJ",
-        "sourceType": "candidate",
-        "fitScore": 17,
-        "evidence": [
-          "Multi-site SNF oversight with survey turnaround outcomes."
-        ]
-      }
-    ],
-    "explanation": "Top matches prioritize SNF multi-site history in New Jersey and direct DON scope.",
-    "outreach_draft": "Hi <Candidate Name>, your multi-site SNF leadership in New Jersey aligns with a Director of Nursing search we are running..."
-  }
-}
-```
-
 Error response shape (`4xx/5xx`):
 
 ```json
@@ -169,47 +151,11 @@ Error response shape (`4xx/5xx`):
       "field": "query"
     }
   },
-  "requestId": "req_1713000000000"
+  "requestId": "ff4fc321-86f7-4df5-9f2a-198870130ca1"
 }
 ```
 
-## Frontend example (website/chat widget)
-
-A minimal browser integration example is available at `examples/recruiter-search-widget.html`.
-
-Quick inline snippet:
-
-```html
-<script>
-  async function runRecruiterSearch(query) {
-    const response = await fetch('https://api.aliviosearchpartners.com/api/recruiter-search', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query, pageSize: 8 })
-    });
-
-    const data = await response.json();
-    if (!response.ok || !data.ok) {
-      throw new Error(data?.error?.message || 'Recruiter search failed');
-    }
-
-    return data.generated;
-  }
-</script>
-```
-
-## Deployment pathing recommendation
-
-Keep frontend and backend separated:
-
-1. Deploy backend as either:
-   - subdomain (`https://api.aliviosearchpartners.com`), or
-   - API path behind same domain (`https://aliviosearchpartners.com/api/...`).
-2. Website frontend calls backend endpoints only.
-3. Backend handles Google auth and OpenAI auth privately.
-4. Never expose `GOOGLE_APPLICATION_CREDENTIALS` or `OPENAI_API_KEY` to frontend code.
-
-## Optional CORS guidance (cross-origin frontend/backend)
+## Optional CORS guidance
 
 If frontend and backend are on different origins, enable strict CORS:
 
@@ -221,114 +167,3 @@ Current server behavior when enabled:
 - Allows `POST,GET,OPTIONS`
 - Allows `Content-Type` and request-id header
 - Returns `204` for preflight `OPTIONS`
-
-## Practical recruiter prompts by workflow
-
-Use these prompts in website widgets, recruiter console, or internal tooling.
-
-### 1) Candidate search
-
-- `Find ICU travel nurses in Texas with active compact RN license and charge nurse experience.`
-- `Find Directors of Nursing in New Jersey with SNF turnaround and survey readiness history.`
-
-### 2) Job search
-
-- `Find open Director of Nursing roles in New Jersey requiring multi-site SNF leadership.`
-- `Find healthcare operations roles needing interim leadership in Northeast markets.`
-
-### 3) Job-to-candidate matching
-
-- `Given this job req, identify top 5 candidate matches and note strongest evidence for each.`
-- `Match this ICU nurse manager role to candidates with Magnet facility and staffing-ratio improvement outcomes.`
-
-### 4) Candidate-to-job matching
-
-- `Given candidate profile C-204, suggest top matching open roles ranked by fit and location alignment.`
-- `For this candidate's SNF leadership background, suggest roles where they can start within 30 days.`
-
-### 5) Recruiter copilot
-
-- `Draft a concise recruiter brief summarizing top matches and key risks for stakeholder review.`
-- `Prepare a candidate outreach angle for the top 3 matches using only grounded search evidence.`
-
-## Deployment notes
-
-- Intended service account: `vertex-express@alivio-475419.iam.gserviceaccount.com`.
-- For cloud deployment, prefer workload identity / attached service account over JSON key files.
-- Keep this backend as the only place with Google credentials and OpenAI secrets.
-
-## Runtime validation status
-
-Code is hardened and structured for production use, but this repository alone does **not** claim live runtime validation of IAM, network path, or external API quotas.
-
-
-## Recruiter-facing response contract
-
-The backend now returns a stable recruiter contract for grounded retrieval and generated recruiter-assist outputs.
-
-### Grounded result fields (`grounded.results[]`)
-
-- `id`: stable document id from Vertex when available
-- `title`: best display title fallback chain
-- `role`: normalized role/job title field when present
-- `location`: normalized location string when present
-- `snippets`: evidence snippets from Vertex
-- `sourceType`: inferred type (`candidate`, `job`, `document`)
-- `metadata`: includes source/company/location and `structured` fields
-
-### Generated recruiter fields (`generated`)
-
-- `ranked_matches`: shortlist for candidate search/job search/matching workflows
-- `explanation`: concise grounded rationale
-- `outreach_draft`: recruiter-ready initial message draft
-
-### Sample recruiter payload
-
-```json
-{
-  "ok": true,
-  "query": "Find Directors of Nursing in New Jersey with SNF experience and multi-site leadership",
-  "grounded": {
-    "totalSize": 3,
-    "attributionToken": "token_abc",
-    "results": [
-      {
-        "rank": 1,
-        "id": "candidate_204",
-        "title": "Director of Nursing - Newark",
-        "role": "Director of Nursing",
-        "location": "Newark, NJ",
-        "snippets": ["Led 3-site SNF operations across Essex County."],
-        "sourceType": "candidate",
-        "metadata": {
-          "source": "ATS",
-          "company": "Alivio Search Partners",
-          "location": "Newark, NJ",
-          "structured": {
-            "compensation": null,
-            "skills": ["SNF", "Survey Readiness"],
-            "seniority": "Director",
-            "employmentType": "Full-time"
-          }
-        }
-      }
-    ]
-  },
-  "generated": {
-    "ranked_matches": [
-      {
-        "rank": 1,
-        "id": "candidate_204",
-        "title": "Director of Nursing - Newark",
-        "role": "Director of Nursing",
-        "location": "Newark, NJ",
-        "sourceType": "candidate",
-        "fitScore": 17,
-        "evidence": ["Led 3-site SNF operations across Essex County."]
-      }
-    ],
-    "explanation": "Ranked for direct DON alignment, New Jersey location fit, and multi-site SNF evidence.",
-    "outreach_draft": "Hi <Candidate Name>, I am reaching out about a Director of Nursing opportunity in New Jersey where your multi-site SNF background looks highly relevant."
-  }
-}
-```
