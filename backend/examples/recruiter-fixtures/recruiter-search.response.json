@@ -1,0 +1,83 @@
+{
+  "ok": true,
+  "query": "find healthcare leadership and clinical candidates for post-acute and hospital roles",
+  "grounded": {
+    "totalSize": 5,
+    "attributionToken": "demo-token-synthetic-fixture",
+    "results": [
+      {
+        "rank": 1,
+        "id": "cand-don-001",
+        "title": "Alex Morgan",
+        "role": "Director of Nursing",
+        "location": "Phoenix, AZ",
+        "uri": "https://example.synthetic.alivio.dev/candidates/cand-don-001",
+        "snippet": "Director-level nursing leader with multi-site SNF oversight and survey-readiness focus.",
+        "snippets": [
+          "14 years of post-acute leadership and quality oversight."
+        ],
+        "extractiveSegments": [],
+        "sourceType": "candidate",
+        "metadata": {
+          "source": "demo-fixture",
+          "company": "Sunrise Post Acute",
+          "location": "Phoenix, AZ",
+          "structured": {
+            "compensation": {
+              "min": 125000,
+              "max": 150000,
+              "currency": "USD"
+            },
+            "skills": ["SNF operations", "survey readiness", "leadership"],
+            "seniority": "director",
+            "employmentType": "full-time"
+          }
+        },
+        "rawDocumentName": "documents/candidates/cand-don-001"
+      }
+    ]
+  },
+  "generated": {
+    "ranked_matches": [
+      {
+        "rank": 1,
+        "id": "cand-don-001",
+        "title": "Alex Morgan",
+        "role": "Director of Nursing",
+        "location": "Phoenix, AZ",
+        "sourceType": "candidate",
+        "fitScore": 15,
+        "evidence": [
+          "14 years of post-acute leadership and quality oversight.",
+          "Director-level nursing leader with multi-site SNF oversight and survey-readiness focus."
+        ]
+      },
+      {
+        "rank": 2,
+        "id": "cand-lnha-001",
+        "title": "Jordan Patel",
+        "role": "Licensed Nursing Home Administrator (LNHA)",
+        "location": "Tampa, FL",
+        "sourceType": "candidate",
+        "fitScore": 13,
+        "evidence": [
+          "Owned full-facility operations, compliance, and budget for long-term care campuses."
+        ]
+      },
+      {
+        "rank": 3,
+        "id": "cand-mds-001",
+        "title": "Taylor Brooks",
+        "role": "MDS Coordinator (RN)",
+        "location": "Cleveland, OH",
+        "sourceType": "candidate",
+        "fitScore": 12,
+        "evidence": [
+          "Strong MDS 3.0 and PDPM documentation accuracy in SNF environments."
+        ]
+      }
+    ],
+    "explanation": "The top matches prioritize post-acute healthcare leadership depth, required clinical credentials, and relevance to SNF and hospital workflows described in the query.",
+    "outreach_draft": "Hi Alex — we are supporting a healthcare organization seeking leadership talent across post-acute operations. Your director-level SNF background and survey-readiness outcomes stand out. Are you open to a brief conversation this week about a Director of Nursing opportunity in Phoenix?"
+  }
+}
