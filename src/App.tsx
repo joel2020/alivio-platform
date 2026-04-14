@@ -36,6 +36,7 @@ import SettingsPage from './pages/app/SettingsPage';
 import CrmPage from './pages/app/crm/CrmPage';
 import CrmClientPage from './pages/app/crm/CrmClientPage';
 import CrmTemplatesPage from './pages/app/crm/CrmTemplatesPage';
+import EmailInboxPage from './pages/app/admin/EmailInboxPage';
 import { useSeo } from './lib/seo';
 
 
@@ -90,7 +91,7 @@ function SeoManager() {
     title = 'Sign Up | Alivio Search Partners';
     description = 'Create your Alivio Search Partners account to accelerate healthcare recruiting and staffing workflows.';
     robots = 'noindex, nofollow';
-  } else if (pathname === '/dashboard/crm' || pathname.startsWith('/onboarding') || pathname.startsWith('/dashboard') || pathname.startsWith('/pipeline') || pathname.startsWith('/roles') || pathname.startsWith('/outreach') || pathname.startsWith('/agents') || pathname.startsWith('/candidates') || pathname.startsWith('/settings')) {
+  } else if (pathname === '/dashboard/crm' || pathname.startsWith('/onboarding') || pathname.startsWith('/dashboard') || pathname.startsWith('/pipeline') || pathname.startsWith('/roles') || pathname.startsWith('/outreach') || pathname.startsWith('/agents') || pathname.startsWith('/candidates') || pathname.startsWith('/settings') || pathname.startsWith('/admin')) {
     title = 'Alivio Platform | Healthcare Recruiting Workspace';
     description = 'Manage healthcare recruiting campaigns, role requirements, and clinician pipelines inside the Alivio platform.';
     robots = 'noindex, nofollow';
@@ -210,6 +211,7 @@ export default function App() {
             <Route path="/dashboard/crm" element={<CrmPage />} />
             <Route path="/dashboard/crm/templates" element={<CrmTemplatesPage />} />
             <Route path="/dashboard/crm/:id" element={<CrmClientPage />} />
+            <Route path="/admin/email-inbox" element={<EmailInboxPage />} />
           </Route>
 
           <Route path="/og" element={<OGImagePage />} />

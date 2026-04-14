@@ -25,3 +25,29 @@
 - `npm run lint`
 - `npm run typecheck`
 - `npm run build`
+
+## Email Agent (IMAP + AI) setup
+
+Set these Supabase project secrets before deploying the new email functions:
+
+```bash
+supabase secrets set \
+  IMAP_HOST=your_imap_host \
+  IMAP_PORT=993 \
+  IMAP_USER=joel@aliviosearchpartners.com \
+  IMAP_PASSWORD=your_email_password \
+  IMAP_TLS=true \
+  OPENROUTER_API_KEY=your_openrouter_api_key \
+  RESEND_API_KEY=your_resend_api_key
+```
+
+Deploy functions:
+
+```bash
+supabase functions deploy fetch-emails
+supabase functions deploy ai-process-email
+supabase functions deploy ai-parse-email-resume
+supabase functions deploy email-pipeline
+```
+
+The migration `20260414113000_add_email_agent_pipeline.sql` schedules `email-pipeline` every 30 minutes (`*/30 * * * *`) via `pg_cron`.

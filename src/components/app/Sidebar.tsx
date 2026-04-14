@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, GitBranch, Briefcase, Mail, Zap, Settings, LogOut, Menu, X, Sun, Moon, Building2 } from 'lucide-react';
+import { LayoutDashboard, GitBranch, Briefcase, Mail, Zap, Settings, LogOut, Menu, X, Sun, Moon, Building2, Inbox } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../lib/auth';
 import { useTheme } from '../../lib/theme';
@@ -8,7 +8,7 @@ import { supabase } from '../../lib/supabase';
 export default function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, org, signOut } = useAuth();
+  const { user, org, signOut, supabaseUser } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [activeRoleCount, setActiveRoleCount] = useState(0);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -24,6 +24,7 @@ export default function Sidebar() {
   }, [user?.org_id]);
 
   const canAccessCrm = user?.role === 'admin' || user?.role === 'owner';
+  const canAccessEmailInbox = (supabaseUser?.email || '').toLowerCase() === 'joel@aliviosearchpartners.com';
 
   const navItems = [
     { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -31,6 +32,7 @@ export default function Sidebar() {
     { label: 'Roles', href: '/roles', icon: Briefcase, badge: activeRoleCount },
     { label: 'Outreach', href: '/outreach', icon: Mail },
     ...(canAccessCrm ? [{ label: 'CRM', href: '/dashboard/crm', icon: Building2 }] : []),
+    ...(canAccessEmailInbox ? [{ label: 'Email Inbox', href: '/admin/email-inbox', icon: Inbox }] : []),
     { label: 'Agents', href: '/agents', icon: Zap },
     { label: 'Settings', href: '/settings', icon: Settings },
   ];
