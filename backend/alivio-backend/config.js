@@ -27,8 +27,8 @@ module.exports = {
     defaultPageSize: 10
   },
   openai: {
-    apiKey: process.env.OPENAI_API_KEY || '',
-    model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
+    apiKey: process.env.LLM_API_KEY || process.env.OPENAI_API_KEY || '',
+    model: process.env.LLM_MODEL || process.env.OPENAI_MODEL || 'gpt-4o-mini',
     timeoutMs: Number.parseInt(process.env.OPENAI_TIMEOUT_MS || '30000', 10)
   },
   defaults: {
