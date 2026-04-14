@@ -23,6 +23,84 @@ npm run dev
 
 Server binds to `process.env.PORT` and defaults to `8080` when unset.
 
+
+## Smoke tests, payload fixtures, and response validation
+
+These scripts are intentionally lightweight and framework-agnostic, so you can validate backend behavior while the main implementation thread continues independently.
+
+### Base URL assumptions
+
+All scripts use `ALIVIO_API_BASE_URL` and default to `http://localhost:8080` when unset.
+
+```bash
+export ALIVIO_API_BASE_URL=http://localhost:8080
+```
+
+### Run smoke tests
+
+From `backend/alivio-backend`:
+
+```bash
+npm run smoke:health
+npm run smoke:vertex
+npm run smoke:recruiter
+npm run smoke
+```
+
+Optional payload override examples:
+
+```bash
+node scripts/smoke-vertex.js examples/payloads/job-search.json
+node scripts/smoke-recruiter.js examples/payloads/recruiter-copilot.json
+```
+
+### Success vs failure interpretation
+
+- **Success**: script exits with code `0` and prints a pass message with high-level counts/fields.
+- **Failure**: script exits non-zero and prints HTTP status and response body (or validation errors).
+
+A failing smoke test usually indicates one of:
+
+- backend not running at `ALIVIO_API_BASE_URL`
+- request validation error (`query`, `pageSize`)
+- upstream dependency issue (Vertex/OpenAI auth, timeout, or API error)
+- response-shape regression
+
+### Required response fields for grounded and generated flows
+
+For `POST /api/vertex-search`, smoke checks expect:
+
+- `ok`
+- `query`
+- `grounded.results` (array)
+
+For `POST /api/recruiter-search`, smoke + shape validation expect:
+
+- `ok`
+- `query`
+- `grounded.results` (array)
+- `generated.ranked_matches` (array)
+- `generated.explanation` (string)
+- `generated.outreach_draft` (string)
+
+Use the standalone validator against a saved response:
+
+```bash
+npm run validate:recruiter-shape -- /tmp/recruiter-response.json
+# or
+cat /tmp/recruiter-response.json | npm run validate:recruiter-shape
+```
+
+### Reusable healthcare recruiting payload fixtures
+
+`examples/payloads/` includes practical samples aligned to Alivio Search Partners workflows:
+
+- `candidate-search.json`
+- `job-search.json`
+- `job-to-candidate-matching.json`
+- `candidate-to-job-matching.json`
+- `recruiter-copilot.json`
+
 ## Docker build and run
 
 ```bash
