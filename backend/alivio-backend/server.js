@@ -282,21 +282,10 @@ async function runRecruiterSearch(body, requestId) {
   const completion = await openai.chat.completions.create({
     model: config.openai.model,
     temperature: 0.1,
-    messages: [
-      {
-        role: 'system',
-        content:
-          'You are an Alivio recruiter copilot. Use only provided grounded JSON results. Never fabricate details. Respond with strict JSON containing keys: ranked_matches (array), explanation (string), outreach_draft (string).'
-      },
-      {
-        role: 'user',
-        content: JSON.stringify({
-          query,
-          grounded,
-          deterministic_ranking: deterministicRanking
-        })
-      }
-    ],
+    messages: buildRecruiterPrompt(query, {
+      ...grounded,
+      deterministic_ranking: deterministicRanking
+    }),
     timeout: config.openai.timeoutMs
   });
 
@@ -399,6 +388,7 @@ app.post('/api/recruiter-search', async (req, res, next) => {
     return next(error);
   }
 });
+app.post('/api/webhook/n8n', async (req, res, next) => {
 app.post('/api/webhook/n8n', async (req, res, next) => {
   const requestId = getRequestId(req);
 
