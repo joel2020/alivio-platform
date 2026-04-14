@@ -99,6 +99,35 @@ Expected behavior:
 - Structured logs are JSON lines and include request-safe metadata only (no secret values).
 - Request IDs are accepted from `x-request-id` (or configured header) and generated when missing.
 
+## Frontend integration package (framework-agnostic)
+
+### Files
+
+- `frontend/alivio-api-client.js`
+  - Lightweight reusable API client for website use.
+  - Exposes `window.AlivioApiClient.createClient(...)` in browsers.
+  - Also supports CommonJS import (`require(...)`) for server-rendered pages.
+- `examples/website-integration-example.html`
+  - Minimal website flow (query input -> backend call -> render ranked matches and outreach draft).
+
+### Client usage
+
+```html
+<script src="/path/to/alivio-api-client.js"></script>
+<script>
+  const client = window.AlivioApiClient.createClient({
+    baseUrl: 'https://api.aliviosearchpartners.com'
+  });
+
+  const recruiterResult = await client.recruiterSearch({
+    query: 'Find Directors of Nursing in New Jersey with SNF experience',
+    pageSize: 10
+  });
+</script>
+```
+
+If your backend is reverse-proxied on the same domain under `/api`, set `baseUrl` to an empty string and keep API paths relative.
+
 ## Website integration contract
 
 This backend is the only layer that talks to Google Cloud and OpenAI. The website should call these API routes and should **not** contain Google or OpenAI credentials.
@@ -121,6 +150,28 @@ Request fields:
 - `query` (string, required, max 500 chars)
 - `pageSize` (integer, optional, clamped to 1-20, default 10)
 
+Success response shape (high-level):
+
+```json
+{
+  "ok": true,
+  "query": "...",
+  "grounded": {
+    "totalSize": 12,
+    "attributionToken": "...",
+    "results": [
+      {
+        "rank": 1,
+        "title": "...",
+        "role": "...",
+        "location": "...",
+        "sourceType": "candidate"
+      }
+    ]
+  }
+}
+```
+
 ### `POST /api/recruiter-search`
 
 Use this for recruiter copilot responses grounded on Vertex results. Flow:
@@ -139,6 +190,14 @@ Request JSON:
 }
 ```
 
+Success response rendering fields:
+
+- `generated.ranked_matches` (array): render as ranked cards/list rows.
+- `generated.explanation` (string): render as why-these-matches summary.
+- `generated.outreach_draft` (string): render in recruiter outreach editor.
+- `grounded.results` (array): optional evidence/debug panel for confidence and provenance.
+- `requestId` (string, on errors and many proxies): surface in support logs and incident tickets when available.
+
 Error response shape (`4xx/5xx`):
 
 ```json
@@ -155,9 +214,48 @@ Error response shape (`4xx/5xx`):
 }
 ```
 
+## Website deployment topology and routing
+
+Use either topology; keep auth backend-only in both.
+
+### Topology A: dedicated API subdomain
+
+- Website origin: `https://aliviosearchpartners.com`
+- Backend origin: `https://api.aliviosearchpartners.com`
+- Frontend client config: `baseUrl: 'https://api.aliviosearchpartners.com'`
+
+When using this topology, browser CORS is typically required.
+
+### Topology B: backend mounted under `/api` on same origin
+
+- Website origin: `https://aliviosearchpartners.com`
+- Backend routed behind same domain path prefix, e.g. `/api/*`
+- Frontend client config: `baseUrl: ''` and call relative backend paths
+
+This avoids cross-origin calls and usually avoids CORS configuration.
+
+### Routing assumptions to keep consistent
+
+- Backend routes are fixed at `/api/vertex-search` and `/api/recruiter-search`.
+- If an ingress/proxy rewrites paths, ensure rewritten destination still matches these backend routes.
+- Preserve request/response JSON and `x-request-id` header for debugging across layers.
+
+## Alivio sample recruiter queries by workflow
+
+- Candidate search:
+  - `Find senior healthcare operations candidates in New Jersey with SNF and multi-site leadership experience.`
+- Job search:
+  - `Find open Director of Nursing roles in New Jersey requiring SNF and multi-site leadership background.`
+- Job-to-candidate matching:
+  - `Match this role to likely candidates: Director of Nursing in New Jersey, SNF and multi-site leadership required.`
+- Candidate-to-job matching:
+  - `Given this candidate profile: RN leader with SNF and multi-site oversight in NJ, find best-fit open roles.`
+- Recruiter copilot:
+  - `Draft a recruiter-ready shortlist and outreach for Directors of Nursing in New Jersey with SNF experience and multi-site leadership.`
+
 ## Optional CORS guidance
 
-If frontend and backend are on different origins, enable strict CORS:
+Enable CORS only if frontend and backend are on different origins.
 
 - `ENABLE_CORS=true`
 - `CORS_ORIGIN=https://aliviosearchpartners.com`
