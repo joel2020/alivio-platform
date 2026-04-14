@@ -113,9 +113,13 @@ export default function RoleNewPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [toast, setToast] = useState<string | null>(null);
+  const [isDescriptionAIGenerated, setIsDescriptionAIGenerated] = useState(false);
 
   function handleChange(partial: Partial<RoleFormData>) {
     setData(prev => ({ ...prev, ...partial }));
+    if (Object.prototype.hasOwnProperty.call(partial, 'description')) {
+      setIsDescriptionAIGenerated(false);
+    }
     const clearedErrors = { ...errors };
     Object.keys(partial).forEach(k => delete clearedErrors[k]);
     setErrors(clearedErrors);
@@ -291,7 +295,13 @@ export default function RoleNewPage() {
             <StepBasics data={data} onChange={handleChange} errors={errors} />
           )}
           {step === 2 && (
-            <StepRequirements data={data} onChange={handleChange} />
+            <StepRequirements
+              data={data}
+              onChange={handleChange}
+              isAIGenerated={isDescriptionAIGenerated}
+              onAIGeneratedChange={setIsDescriptionAIGenerated}
+              onGenerationError={setToast}
+            />
           )}
           {step === 3 && (
             <StepScoring data={data} onChange={handleChange} />
