@@ -12,6 +12,7 @@ export default function Sidebar() {
   const { theme, toggleTheme } = useTheme();
   const [activeRoleCount, setActiveRoleCount] = useState(0);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isPlatformAdmin, setIsPlatformAdmin] = useState(false);
 
   useEffect(() => {
     if (!user?.org_id) return;
@@ -23,8 +24,20 @@ export default function Sidebar() {
       .then(({ count }) => setActiveRoleCount(count ?? 0));
   }, [user?.org_id]);
 
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!supabaseUser) {
+      setIsPlatformAdmin(false);
+      return;
+    }
+    supabase.rpc('is_platform_admin').then(({ data, error }) => {
+      if (!cancelled) setIsPlatformAdmin(!error && !!data);
+    });
+    return () => { cancelled = true; };
+  }, [supabaseUser]);
   const canAccessCrm = user?.role === 'admin' || user?.role === 'owner';
-  const isAdminUser = supabaseUser?.email === 'joel@aliviosearchpartners.com';
+  const isAdminUser = isPlatformAdmin;
   const adminNavItems = [
     { label: 'Admin Dashboard', href: '/admin', icon: Shield },
     { label: 'Email Inbox', href: '/admin/email-inbox', icon: Inbox },
