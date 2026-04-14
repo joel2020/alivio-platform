@@ -39,6 +39,14 @@ import CrmTemplatesPage from './pages/app/crm/CrmTemplatesPage';
 import EmailInboxPage from './pages/app/admin/EmailInboxPage';
 import { useSeo } from './lib/seo';
 
+import AdminRoute from './components/admin/AdminRoute';
+import AdminDashboardPage from './pages/admin/AdminDashboardPage';
+import AdminUsersPage from './pages/admin/AdminUsersPage';
+import AdminOrganizationsPage from './pages/admin/AdminOrganizationsPage';
+import AdminCrmPage from './pages/admin/AdminCrmPage';
+import AdminBlogPage from './pages/admin/AdminBlogPage';
+import AdminAiMonitorPage from './pages/admin/AdminAiMonitorPage';
+import AdminEmailsPage from './pages/admin/AdminEmailsPage';
 
 
 const SITE_URL = 'https://aliviosearchpartners.com';
@@ -92,6 +100,7 @@ function SeoManager() {
     description = 'Create your Alivio Search Partners account to accelerate healthcare recruiting and staffing workflows.';
     robots = 'noindex, nofollow';
   } else if (pathname === '/dashboard/crm' || pathname.startsWith('/onboarding') || pathname.startsWith('/dashboard') || pathname.startsWith('/pipeline') || pathname.startsWith('/roles') || pathname.startsWith('/outreach') || pathname.startsWith('/agents') || pathname.startsWith('/candidates') || pathname.startsWith('/settings') || pathname.startsWith('/admin')) {
+  } else if (pathname.startsWith('/onboarding') || pathname.startsWith('/dashboard') || pathname.startsWith('/pipeline') || pathname.startsWith('/roles') || pathname.startsWith('/outreach') || pathname.startsWith('/agents') || pathname.startsWith('/candidates') || pathname.startsWith('/settings') || pathname.startsWith('/admin')) {
     title = 'Alivio Platform | Healthcare Recruiting Workspace';
     description = 'Manage healthcare recruiting campaigns, role requirements, and clinician pipelines inside the Alivio platform.';
     robots = 'noindex, nofollow';
@@ -212,6 +221,16 @@ export default function App() {
             <Route path="/dashboard/crm/templates" element={<CrmTemplatesPage />} />
             <Route path="/dashboard/crm/:id" element={<CrmClientPage />} />
             <Route path="/admin/email-inbox" element={<EmailInboxPage />} />
+            <Route path="/dashboard/crm" element={<Navigate to="/admin/crm" replace />} />
+            <Route element={<AdminRoute />}>
+              <Route path="/admin" element={<AdminDashboardPage />} />
+              <Route path="/admin/users" element={<AdminUsersPage />} />
+              <Route path="/admin/organizations" element={<AdminOrganizationsPage />} />
+              <Route path="/admin/crm" element={<AdminCrmPage />} />
+              <Route path="/admin/blog" element={<AdminBlogPage />} />
+              <Route path="/admin/ai-monitor" element={<AdminAiMonitorPage />} />
+              <Route path="/admin/emails" element={<AdminEmailsPage />} />
+            </Route>
           </Route>
 
           <Route path="/og" element={<OGImagePage />} />
