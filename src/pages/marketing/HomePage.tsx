@@ -7,14 +7,8 @@ import ComparisonSection from '../../components/marketing/sections/ComparisonSec
 import MetricsSection from '../../components/marketing/sections/MetricsSection';
 import PricingSection from '../../components/marketing/sections/PricingSection';
 import FinalCTASection from '../../components/marketing/sections/FinalCTASection';
-import { useSeo } from '../../lib/seo';
 
 export default function HomePage() {
-  useSeo({
-    title: 'Alivio — AI-Powered Healthcare Staffing Platform',
-    description: 'Alivio is an AI-powered healthcare staffing platform that sources, scores, and engages qualified nurses, clinicians, and healthcare leaders. Fill roles faster with AI recruiting agents.',
-    keywords: 'AI healthcare staffing, nurse recruiting software, clinician sourcing platform, director of nursing hiring, healthcare talent acquisition',
-  });
 
   return (
     <>

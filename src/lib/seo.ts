@@ -1,5 +1,9 @@
 import { useEffect } from 'react';
 
+type StructuredData = Record<string, unknown>;
+
+const STRUCTURED_DATA_SCRIPT_ID = 'alivio-structured-data';
+
 function upsertMeta(nameOrProperty: 'name' | 'property', key: string, content: string) {
   const selector = `meta[${nameOrProperty}="${key}"]`;
   let tag = document.head.querySelector(selector) as HTMLMetaElement | null;
@@ -13,22 +17,60 @@ function upsertMeta(nameOrProperty: 'name' | 'property', key: string, content: s
   tag.setAttribute('content', content);
 }
 
+function upsertCanonical(url: string) {
+  let tag = document.head.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+
+  if (!tag) {
+    tag = document.createElement('link');
+    tag.setAttribute('rel', 'canonical');
+    document.head.appendChild(tag);
+  }
+
+  tag.setAttribute('href', url);
+}
+
+function upsertStructuredData(data: StructuredData | StructuredData[]) {
+  let tag = document.getElementById(STRUCTURED_DATA_SCRIPT_ID) as HTMLScriptElement | null;
+
+  if (!tag) {
+    tag = document.createElement('script');
+    tag.id = STRUCTURED_DATA_SCRIPT_ID;
+    tag.type = 'application/ld+json';
+    document.head.appendChild(tag);
+  }
+
+  const payload = Array.isArray(data) ? data : [data];
+  tag.textContent = JSON.stringify(payload.length === 1 ? payload[0] : payload);
+}
+
 export function useSeo(options: {
   title: string;
   description: string;
   keywords?: string;
   ogTitle?: string;
   ogDescription?: string;
+  canonicalUrl?: string;
+  ogImage?: string;
+  ogType?: string;
+  twitterCard?: string;
+  robots?: string;
+  structuredData?: StructuredData | StructuredData[];
 }) {
-  const { title, description, keywords, ogTitle, ogDescription } = options;
+  const {
+    title,
+    description,
+    keywords,
+    ogTitle,
+    ogDescription,
+    canonicalUrl,
+    ogImage,
+    ogType,
+    twitterCard,
+    robots,
+    structuredData,
+  } = options;
 
   useEffect(() => {
-    const previousTitle = document.title;
-    const previousDescription = document.querySelector('meta[name="description"]')?.getAttribute('content') || '';
-    const previousKeywords = document.querySelector('meta[name="keywords"]')?.getAttribute('content') || '';
-    const previousOgTitle = document.querySelector('meta[property="og:title"]')?.getAttribute('content') || '';
-    const previousOgDescription = document.querySelector('meta[property="og:description"]')?.getAttribute('content') || '';
-
     document.title = title;
     upsertMeta('name', 'description', description);
 
@@ -36,17 +78,46 @@ export function useSeo(options: {
       upsertMeta('name', 'keywords', keywords);
     }
 
-    upsertMeta('property', 'og:title', ogTitle ?? title);
-    upsertMeta('property', 'og:description', ogDescription ?? description);
+    const effectiveOgTitle = ogTitle ?? title;
+    const effectiveOgDescription = ogDescription ?? description;
 
-    return () => {
-      document.title = previousTitle;
-      upsertMeta('name', 'description', previousDescription);
-      if (keywords) {
-        upsertMeta('name', 'keywords', previousKeywords);
-      }
-      upsertMeta('property', 'og:title', previousOgTitle);
-      upsertMeta('property', 'og:description', previousOgDescription);
-    };
-  }, [description, keywords, ogDescription, ogTitle, title]);
+    upsertMeta('property', 'og:title', effectiveOgTitle);
+    upsertMeta('property', 'og:description', effectiveOgDescription);
+    upsertMeta('property', 'og:type', ogType ?? 'website');
+    upsertMeta('property', 'og:site_name', 'Alivio Search Partners');
+
+    if (canonicalUrl) {
+      upsertCanonical(canonicalUrl);
+      upsertMeta('property', 'og:url', canonicalUrl);
+    }
+
+    if (ogImage) {
+      upsertMeta('property', 'og:image', ogImage);
+      upsertMeta('name', 'twitter:image', ogImage);
+    }
+
+    upsertMeta('name', 'twitter:card', twitterCard ?? 'summary_large_image');
+    upsertMeta('name', 'twitter:title', effectiveOgTitle);
+    upsertMeta('name', 'twitter:description', effectiveOgDescription);
+
+    if (robots) {
+      upsertMeta('name', 'robots', robots);
+    }
+
+    if (structuredData) {
+      upsertStructuredData(structuredData);
+    }
+  }, [
+    canonicalUrl,
+    description,
+    keywords,
+    ogDescription,
+    ogImage,
+    ogTitle,
+    ogType,
+    robots,
+    structuredData,
+    title,
+    twitterCard,
+  ]);
 }
