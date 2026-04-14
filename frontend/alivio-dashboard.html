@@ -3,18 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Alivio Recruiter Dashboard</title>
+    <title>Alivio Search Partners | Recruiter Dashboard</title>
+    <link rel="icon" href="/favicon.ico" />
     <style>
       :root {
-        --bg: #f5f7fb;
+        --bg: #f8fafc;
         --card: #ffffff;
         --text: #1c2230;
         --muted: #667085;
-        --accent: #2a63f6;
-        --accent-dark: #1f4dca;
+        --primary: #1b4fcc;
+        --primary-dark: #143ca0;
+        --accent: #00c48c;
         --success: #067647;
         --error: #b42318;
         --border: #d0d5dd;
+        --warning: #facc15;
+        --low: #dc2626;
         --shadow: 0 8px 30px rgba(16, 24, 40, 0.08);
       }
 
@@ -35,7 +39,7 @@
       }
 
       .header {
-        background: linear-gradient(135deg, #0f1f42, #1a3f8f);
+        background: linear-gradient(135deg, var(--primary-dark), var(--primary));
         color: white;
         border-radius: 14px;
         padding: 1.2rem 1.25rem;
@@ -96,14 +100,14 @@
       input:focus,
       select:focus,
       textarea:focus {
-        border-color: var(--accent);
-        outline: 2px solid rgba(42, 99, 246, 0.15);
+        border-color: var(--primary);
+        outline: 2px solid rgba(27, 79, 204, 0.15);
       }
 
       button {
         border: 0;
         border-radius: 10px;
-        background: var(--accent);
+        background: var(--primary);
         color: white;
         cursor: pointer;
         padding: 0.7rem 1rem;
@@ -111,12 +115,23 @@
       }
 
       button:hover {
-        background: var(--accent-dark);
+        background: var(--primary-dark);
       }
 
       button:disabled {
         opacity: 0.6;
         cursor: wait;
+      }
+      .btn-secondary {
+        background: #eef2ff;
+        color: var(--primary);
+        border: 1px solid #c7d2fe;
+      }
+      .btn-secondary:hover {
+        background: #e0e7ff;
+      }
+      .btn-secondary:disabled {
+        cursor: not-allowed;
       }
 
       .helper {
@@ -145,7 +160,7 @@
         width: 16px;
         height: 16px;
         border: 2px solid #d0d5dd;
-        border-top-color: var(--accent);
+        border-top-color: var(--primary);
         border-radius: 50%;
         animation: spin 0.8s linear infinite;
       }
@@ -174,7 +189,45 @@
       .card {
         border: 1px solid var(--border);
         border-radius: 10px;
-        padding: 0.8rem;
+        padding: 0.9rem;
+        background: #fff;
+      }
+
+      .match-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.6rem;
+        align-items: flex-start;
+      }
+
+      .rank-wrap {
+        display: flex;
+        gap: 0.55rem;
+        align-items: flex-start;
+      }
+
+      .rank-badge {
+        min-width: 30px;
+        height: 30px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.85rem;
+      }
+
+      .rank-high {
+        background: var(--success);
+      }
+
+      .rank-medium {
+        background: #ca8a04;
+      }
+
+      .rank-low {
+        background: var(--low);
       }
 
       .row {
@@ -196,14 +249,36 @@
       }
 
       .badge {
-        background: #ecfdf3;
-        color: var(--success);
-        border: 1px solid #abefc6;
+        background: #eff6ff;
+        color: var(--primary);
+        border: 1px solid #bfdbfe;
         border-radius: 999px;
         padding: 0.2rem 0.6rem;
         font-size: 0.75rem;
         font-weight: 700;
         white-space: nowrap;
+      }
+      .pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin-top: 0.3rem;
+      }
+      .pill {
+        border-radius: 999px;
+        padding: 0.22rem 0.58rem;
+        font-size: 0.78rem;
+        border: 1px solid transparent;
+      }
+      .pill-strength {
+        color: #085d3a;
+        background: #ecfdf3;
+        border-color: #abefc6;
+      }
+      .pill-gap {
+        color: #344054;
+        background: #f2f4f7;
+        border-color: #d0d5dd;
       }
 
       .section-title {
@@ -224,6 +299,7 @@
         display: flex;
         gap: 0.6rem;
         align-items: center;
+        margin-bottom: 0.55rem;
       }
 
       .copy-row button {
@@ -233,6 +309,43 @@
       .copy-msg {
         font-size: 0.82rem;
         color: var(--success);
+      }
+      .outreach-input {
+        min-height: 220px;
+        resize: vertical;
+        line-height: 1.45;
+      }
+      .form-meta,
+      .history-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.6rem;
+        margin-top: 0.55rem;
+      }
+      .char-count {
+        font-size: 0.82rem;
+        color: var(--muted);
+      }
+      .query-history {
+        margin-top: 0.65rem;
+      }
+      .history-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.4rem;
+      }
+      .history-chip {
+        background: #eef2ff;
+        color: var(--primary);
+        border: 1px solid #c7d2fe;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        padding: 0.25rem 0.62rem;
+        max-width: 100%;
+        text-overflow: ellipsis;
+        overflow: hidden;
       }
 
       .footer {
@@ -282,6 +395,22 @@
         .grid {
           grid-template-columns: 1fr;
         }
+        #submitButton,
+        #clearButton {
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 640px) {
+        body {
+          font-size: 15px;
+        }
+        .header h1 {
+          font-size: 1.15rem;
+        }
+        .title {
+          font-size: 0.95rem;
+        }
       }
     </style>
   </head>
@@ -301,6 +430,7 @@
                 id="queryInput"
                 name="query"
                 type="text"
+                maxlength="500"
                 placeholder="Find Directors of Nursing in NJ with multi-site SNF leadership..."
                 required
               />
@@ -318,8 +448,21 @@
             </div>
 
             <button id="submitButton" type="submit">Run Search</button>
+            <button id="clearButton" class="btn-secondary" type="button">Clear results</button>
           </div>
-          <p id="queryHelp" class="helper"></p>
+          <div class="form-meta">
+            <p id="queryHelp" class="helper"></p>
+            <span id="charCount" class="char-count">0/500</span>
+          </div>
+          <div class="query-history">
+            <div class="history-head">
+              <strong>Recent queries</strong>
+              <small class="helper">Click to re-run</small>
+            </div>
+            <div id="historyList" class="history-list">
+              <p class="helper">No recent queries yet.</p>
+            </div>
+          </div>
         </form>
 
         <div id="loadingState" class="status hidden" role="status" aria-live="polite">
@@ -348,7 +491,7 @@
             <button id="copyButton" type="button" disabled>Copy Draft</button>
             <span id="copyMessage" class="copy-msg hidden">Copied.</span>
           </div>
-          <textarea id="outreachText" rows="10" readonly placeholder="Outreach draft appears here..."></textarea>
+          <textarea id="outreachText" class="outreach-input" rows="10" placeholder="Outreach draft appears here..."></textarea>
         </article>
       </section>
 
@@ -368,7 +511,11 @@
 
         var CONFIG = {
           apiBase: window.ALIVIO_API_BASE || 'https://api.aliviosearchpartners.com',
-          defaultPageSize: 10
+          defaultPageSize: 10,
+          maxQueryLength: 500,
+          queryHistoryKey: 'alivio_dashboard_query_history',
+          queryHistoryLimit: 5,
+          submitDebounceMs: 500
         };
         var workflowExamples = {
           candidate_search: 'Find Directors of Nursing in New Jersey with SNF turnaround and census growth experience.',
@@ -402,8 +549,20 @@
           copyButton: document.getElementById('copyButton'),
           copyMsg: document.getElementById('copyMessage'),
           envIndicator: document.getElementById('envIndicator'),
-          connectionDot: document.getElementById('connectionDot')
+          connectionDot: document.getElementById('connectionDot'),
+          clearButton: document.getElementById('clearButton'),
+          historyList: document.getElementById('historyList'),
+          charCount: document.getElementById('charCount')
         };
+        var isSubmitting = false;
+        var submitCooldownUntil = 0;
+
+        function confidenceLevel(match) {
+          var raw = Number(match.fit_score || match.fitScore || 0);
+          if (raw >= 0.75) return 'high';
+          if (raw >= 0.5) return 'medium';
+          return 'low';
+        }
 
         function updateConnectionState(isOk) {
           els.connectionDot.classList.remove('ok', 'error');
@@ -441,21 +600,22 @@
           var summary = match.summary || match.fit_summary || 'No fit summary provided.';
           var strengths = Array.isArray(match.match_reasons) ? match.match_reasons : (Array.isArray(match.strengths) ? match.strengths : []);
           var gaps = Array.isArray(match.gaps) ? match.gaps : [];
-
+          var level = confidenceLevel(match);
           var strengthsHtml = strengths.length
-            ? '<ul>' + strengths.map(function (item) { return '<li>' + escapeHtml(item) + '</li>'; }).join('') + '</ul>'
+            ? '<div class="pill-row">' + strengths.map(function (item) { return '<span class="pill pill-strength">' + escapeHtml(item) + '</span>'; }).join('') + '</div>'
             : '<p class="helper">No strengths provided.</p>';
 
           var gapsHtml = gaps.length
-            ? '<ul>' + gaps.map(function (item) { return '<li>' + escapeHtml(item) + '</li>'; }).join('') + '</ul>'
+            ? '<div class="pill-row">' + gaps.map(function (item) { return '<span class="pill pill-gap">' + escapeHtml(item) + '</span>'; }).join('') + '</div>'
             : '<p class="helper">No explicit gaps identified.</p>';
 
           return (
             '<article class="card">' +
-            '<div class="row">' +
-            '<div>' +
-            '<h3 class="title">#' + (match.rank || index + 1) + ' · ' + escapeHtml(displayName) + '</h3>' +
-            '<p class="subtitle">' + escapeHtml(role) + '</p>' +
+            '<div class="match-header">' +
+            '<div class="rank-wrap">' +
+            '<span class="rank-badge rank-' + level + '">#' + (match.rank || index + 1) + '</span>' +
+            '<div><h3 class="title">' + escapeHtml(displayName) + '</h3>' +
+            '<p class="subtitle">' + escapeHtml(role) + '</p></div>' +
             '</div>' +
             '<span class="badge">Confidence ' + fitPercent(match) + '</span>' +
             '</div>' +
@@ -469,6 +629,45 @@
         function setLoading(isLoading) {
           els.submit.disabled = isLoading;
           els.loading.classList.toggle('hidden', !isLoading);
+        }
+
+        function renderHistory() {
+          var history = readQueryHistory();
+          if (!history.length) {
+            els.historyList.innerHTML = '<p class="helper">No recent queries yet.</p>';
+            return;
+          }
+          els.historyList.innerHTML = history
+            .map(function (item) {
+              return '<button type="button" class="history-chip" data-history-query="' + escapeHtml(item.query) + '" data-history-workflow="' + escapeHtml(item.workflow) + '">' + escapeHtml(item.query) + '</button>';
+            })
+            .join('');
+        }
+
+        function readQueryHistory() {
+          try {
+            var raw = localStorage.getItem(CONFIG.queryHistoryKey);
+            var parsed = JSON.parse(raw || '[]');
+            return Array.isArray(parsed) ? parsed : [];
+          } catch (_error) {
+            return [];
+          }
+        }
+
+        function saveQueryHistory(query, workflow) {
+          var current = readQueryHistory();
+          var deduped = current.filter(function (item) {
+            return !(item && item.query === query && item.workflow === workflow);
+          });
+          deduped.unshift({ query: query, workflow: workflow, timestamp: Date.now() });
+          var trimmed = deduped.slice(0, CONFIG.queryHistoryLimit);
+          localStorage.setItem(CONFIG.queryHistoryKey, JSON.stringify(trimmed));
+          renderHistory();
+        }
+
+        function updateCharCount() {
+          var count = els.query.value.length;
+          els.charCount.textContent = count + '/' + CONFIG.maxQueryLength;
         }
 
         function clearError() {
@@ -515,6 +714,15 @@
           els.copyMsg.classList.add('hidden');
         }
 
+        function clearResults() {
+          clearError();
+          els.results.innerHTML = '<p class="helper">Submit a query to view ranked match cards.</p>';
+          els.explanation.textContent = 'No explanation yet.';
+          els.outreach.value = '';
+          els.copyButton.disabled = true;
+          els.copyMsg.classList.add('hidden');
+        }
+
         function updateExample() {
           var workflow = els.workflow.value;
           var example = workflowExamples[workflow] || '';
@@ -524,6 +732,10 @@
 
         async function submitSearch(event) {
           event.preventDefault();
+          if (isSubmitting || Date.now() < submitCooldownUntil) {
+            return;
+          }
+
           clearError();
 
           var query = els.query.value.trim();
@@ -534,6 +746,8 @@
             return;
           }
 
+          isSubmitting = true;
+          submitCooldownUntil = Date.now() + CONFIG.submitDebounceMs;
           setLoading(true);
 
           try {
@@ -545,9 +759,11 @@
                 : await client.recruiterSearch(payload);
 
             renderResponse(response);
+            saveQueryHistory(query, workflow);
           } catch (error) {
             showError(error);
           } finally {
+            isSubmitting = false;
             setLoading(false);
           }
         }
@@ -566,9 +782,29 @@
 
         els.form.addEventListener('submit', submitSearch);
         els.workflow.addEventListener('change', updateExample);
+        els.query.addEventListener('input', updateCharCount);
         els.copyButton.addEventListener('click', copyOutreach);
+        els.clearButton.addEventListener('click', clearResults);
+        els.historyList.addEventListener('click', function (event) {
+          var target = event.target;
+          if (!(target instanceof HTMLElement)) return;
+          if (!target.matches('button[data-history-query]')) return;
+
+          var q = target.getAttribute('data-history-query');
+          var w = target.getAttribute('data-history-workflow');
+          if (!q) return;
+          els.query.value = q;
+          if (w) {
+            els.workflow.value = w;
+          }
+          updateExample();
+          updateCharCount();
+          els.form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+        });
 
         updateExample();
+        updateCharCount();
+        renderHistory();
         testConnection();
       })();
     </script>
