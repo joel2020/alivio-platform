@@ -87,7 +87,7 @@ export default function AdminDashboardPage() {
           {cards.map((card) => (
             <div key={card.label} className="card p-5">
               <p className="section-label">{card.label}</p>
-              <p className="metric-value mt-2">{loading ? '—' : card.value}</p>
+              {loading ? <div className="mt-2 animate-pulse" style={{ height: 28, borderRadius: 8, backgroundColor: 'var(--bg-subtle)' }} /> : <p className="metric-value mt-2">{card.value}</p>}
             </div>
           ))}
         </div>
