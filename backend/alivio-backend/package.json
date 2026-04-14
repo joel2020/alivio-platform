@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "node server.js",
     "start": "node server.js",
-    "check": "node --check server.js && node --check config.js && node --check vertex.js && node --check normalize.js && node --check ranking.js && node --check errors.js"
+    "check": "node --check server.js && node --check config.js && node --check vertex.js && node --check normalize.js && node --check ranking.js && node --check errors.js && node --check logger.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

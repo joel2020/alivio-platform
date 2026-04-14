@@ -1,9 +1,11 @@
 require('dotenv').config();
 
+const crypto = require('node:crypto');
 const express = require('express');
 const OpenAI = require('openai');
 
 const config = require('./config');
+const logger = require('./logger');
 const { AppError, errorToResponse } = require('./errors');
 const { runVertexSearch } = require('./vertex');
 const { buildGroundedPayload, validateGroundedPayload } = require('./normalize');
@@ -11,6 +13,19 @@ const { buildRankedGrounding } = require('./ranking');
 
 const app = express();
 app.use(express.json({ limit: config.maxRequestBytes }));
+
+app.use((req, res, next) => {
+  const incomingRequestId = req.headers[config.requestIdHeader];
+  const requestId =
+    typeof incomingRequestId === 'string' && incomingRequestId.trim()
+      ? incomingRequestId.trim()
+      : crypto.randomUUID();
+
+  req.requestId = requestId;
+  res.setHeader(config.requestIdHeader, requestId);
+
+  next();
+});
 
 if (config.enableCors) {
   app.use((req, res, next) => {
@@ -22,10 +37,7 @@ if (config.enableCors) {
     }
 
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-    res.setHeader(
-      'Access-Control-Allow-Headers',
-      `Content-Type,${config.requestIdHeader}`
-    );
+    res.setHeader('Access-Control-Allow-Headers', `Content-Type,${config.requestIdHeader}`);
 
     if (req.method === 'OPTIONS') {
       return res.status(204).end();
@@ -38,7 +50,7 @@ if (config.enableCors) {
 const openai = new OpenAI({ apiKey: config.openai.apiKey });
 
 function getRequestId(req) {
-  return req.headers[config.requestIdHeader] || `req_${Date.now()}`;
+  return req.requestId || crypto.randomUUID();
 }
 
 function parseSearchInput(body, pageBounds) {
@@ -113,8 +125,9 @@ function parseGeneratedOutput(raw) {
 }
 
 app.get('/health', (_req, res) => {
-  res.json({
+  res.status(200).json({
     ok: true,
+    status: 'healthy',
     service: config.serviceName,
     env: config.env,
     timestamp: new Date().toISOString()
@@ -235,7 +248,7 @@ app.use((error, req, res, _next) => {
   const { status, payload } = errorToResponse(error);
   const requestId = getRequestId(req);
 
-  console.error('request_error', {
+  logger.error('request_error', {
     requestId,
     method: req.method,
     path: req.path,
@@ -251,6 +264,15 @@ app.use((error, req, res, _next) => {
 });
 
 app.listen(config.port, () => {
-  console.log(`Backend listening on http://localhost:${config.port}`);
-  console.log(`Sample recruiter query: ${config.defaults.sampleRecruiterQuery}`);
+  logger.info('server_started', {
+    service: config.serviceName,
+    env: config.env,
+    port: config.port,
+    corsEnabled: config.enableCors,
+    hasGoogleCredentialsPath: Boolean(process.env.GOOGLE_APPLICATION_CREDENTIALS),
+    hasOpenAiApiKey: Boolean(config.openai.apiKey)
+  });
+  logger.info('sample_query_ready', {
+    sampleRecruiterQuery: config.defaults.sampleRecruiterQuery
+  });
 });
