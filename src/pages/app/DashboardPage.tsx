@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, TrendingUp, Users, Mic, Calendar, ArrowRight, Search } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
@@ -192,12 +192,7 @@ export default function DashboardPage() {
     }
   }, []);
 
-  useEffect(() => {
-    if (!user?.org_id) return;
-    loadData();
-  }, [user?.org_id]);
-
-  async function loadData() {
+  const loadData = useCallback(async () => {
     if (!user?.org_id) return;
     setLoading(true);
 
@@ -234,7 +229,12 @@ export default function DashboardPage() {
       scheduled: allCandidates.filter(c => c.pipeline_stage === 'scheduled').length,
     });
     setLoading(false);
-  }
+  }, [user?.org_id]);
+
+  useEffect(() => {
+    if (!user?.org_id) return;
+    loadData();
+  }, [loadData, user?.org_id]);
 
   const activeRoles = roles.filter(r => r.status === 'active');
   const hasRoles = roles.length > 0;

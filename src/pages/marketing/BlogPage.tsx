@@ -47,9 +47,9 @@ export default function BlogPage() {
     <div className="mkt-container" style={{ paddingTop: '48px', paddingBottom: '72px' }}>
       <header style={{ marginBottom: '28px' }}>
         <p className="mkt-label" style={{ marginBottom: '10px' }}>ALIVIO BLOG</p>
-        <h1 style={{ fontSize: '42px', marginBottom: '10px', letterSpacing: '-0.03em' }}>Insights for modern hiring teams</h1>
+        <h1 style={{ fontSize: '42px', marginBottom: '10px', letterSpacing: '-0.03em' }}>Healthcare Recruiting Insights for Hospitals and Health Systems</h1>
         <p style={{ color: 'var(--text-secondary)', maxWidth: '740px' }}>
-          Actionable guidance, product updates, and best practices for high-velocity recruiting operations.
+          Practical guidance on nurse recruiting, clinical staffing operations, and AI workflows that help reduce vacancy days.
         </p>
       </header>
 

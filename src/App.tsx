@@ -46,8 +46,8 @@ function SeoManager() {
   const pathname = location.pathname;
   const canonicalUrl = `${SITE_URL}${pathname}`;
 
-  let title = 'Alivio Search Partners | Healthcare Recruiting Platform';
-  let description = 'Alivio Search Partners helps healthcare organizations recruit nurses, clinicians, and healthcare leaders faster with AI-powered sourcing and outreach.';
+  let title = 'Alivio Search Partners | AI-Powered Healthcare Recruiting';
+  let description = 'Alivio Search Partners helps hospitals and health systems hire nurses and clinical staff faster using AI. Cut time-to-hire by 60%. Book a free demo today.';
   let keywords = DEFAULT_KEYWORDS;
   let robots = 'index, follow';
 
@@ -64,8 +64,8 @@ function SeoManager() {
     title = 'Contact Alivio Search Partners | Healthcare Recruiting Experts';
     description = 'Talk with Alivio Search Partners about healthcare recruiting strategy, candidate pipelines, and AI-enabled staffing support.';
   } else if (pathname === '/blog') {
-    title = 'Healthcare Recruiting Blog | Alivio Search Partners';
-    description = 'Read healthcare recruiting insights, staffing trends, and best practices for hiring nurses, clinicians, and healthcare leadership talent.';
+    title = 'Healthcare Recruiting Insights | Alivio Search Partners Blog';
+    description = 'Expert insights on healthcare recruiting, nursing shortage solutions, and AI-powered clinical staffing strategies.';
   } else if (pathname.startsWith('/blog/')) {
     title = 'Healthcare Recruiting Insights | Alivio Search Partners Blog';
     description = 'Explore expert content on healthcare recruiting, staffing operations, and talent acquisition performance.';

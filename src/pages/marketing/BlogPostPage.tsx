@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { fetchBlogPostBySlug, formatPublicationDate, type BlogPost } from '../../lib/blog';
 import { renderMarkdownToHtml } from '../../lib/markdown';
+import { useSeo } from '../../lib/seo';
 
 export default function BlogPostPage() {
   const { slug } = useParams();
@@ -35,6 +36,14 @@ export default function BlogPostPage() {
 
     loadPost();
   }, [slug]);
+
+  useSeo({
+    title: post ? `${post.title} | Alivio Search Partners Blog` : 'Healthcare Recruiting Insights | Alivio Search Partners Blog',
+    description: post?.meta_description || post?.excerpt || 'Healthcare recruiting insights and clinical staffing strategies from Alivio Search Partners.',
+    ogTitle: post ? `${post.title} | Alivio Search Partners Blog` : 'Healthcare Recruiting Insights | Alivio Search Partners Blog',
+    ogDescription: post?.meta_description || post?.excerpt || 'Healthcare recruiting insights and clinical staffing strategies from Alivio Search Partners.',
+    ogType: 'article',
+  });
 
   return (
     <article className="mkt-container" style={{ paddingTop: '48px', paddingBottom: '72px', maxWidth: '880px' }}>

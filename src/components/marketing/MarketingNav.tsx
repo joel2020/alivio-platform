@@ -106,7 +106,6 @@ export default function MarketingNav() {
             >
               Book a Demo
             </a>
-            <Link to="/signup" className="mkt-btn-sm-primary">Start Free</Link>
             <button
               onClick={() => setMobileOpen((o) => !o)}
               className="mobile-only"
@@ -185,7 +184,7 @@ export default function MarketingNav() {
           >
             Book a Demo
           </a>
-          <Link to="/signup" className="mkt-btn-primary" style={{ flex: 1, justifyContent: 'center' }}>Start Free</Link>
+          <Link to="/login" className="mkt-btn-primary" style={{ flex: 1, justifyContent: 'center' }}>Sign In</Link>
         </div>
       </div>
 

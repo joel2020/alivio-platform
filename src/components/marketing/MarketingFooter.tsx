@@ -34,7 +34,7 @@ export default function MarketingFooter() {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
               <span style={{ width: '28px', height: '28px', background: 'var(--accent)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '14px', fontWeight: 700 }}>A</span>
-              <span style={{ fontSize: '18px', fontWeight: 700, color: '#FAFAFA', letterSpacing: '-0.02em' }}>Alivio</span>
+              <span style={{ fontSize: '18px', fontWeight: 700, color: '#FAFAFA', letterSpacing: '-0.02em' }}>Alivio Search Partners</span>
             </div>
             <div style={{ display: 'flex', gap: '12px' }}>
               <a href="https://www.linkedin.com/company/aliviosearchpartners/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" style={{ color: 'var(--text-muted)', transition: 'color 0.15s ease' }} onMouseEnter={e => (e.currentTarget.style.color = '#FAFAFA')} onMouseLeave={e => (e.currentTarget.style.color = '#A1A1AA')}>
@@ -49,6 +49,7 @@ export default function MarketingFooter() {
             </div>
             <p style={{ fontSize: '13px', color: '#71717A', marginTop: '14px' }}>Yonkers, NY</p>
             <p style={{ fontSize: '13px', color: '#71717A', marginTop: '6px' }}>hello@aliviosearchpartners.com</p>
+            <p style={{ fontSize: '13px', color: '#71717A', marginTop: '6px' }}>aliviosearchpartners.com</p>
           </div>
 
           <div>

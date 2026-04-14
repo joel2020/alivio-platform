@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Loader2, Play, Zap } from 'lucide-react';
 import { matchCandidates, parseResume, scoreCandidates, sourceCandidates } from '../../lib/ai';
 import { supabase } from '../../lib/supabase';
@@ -24,12 +24,7 @@ export default function AgentsPage() {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [activity, setActivity] = useState<AgentActivityLog[]>([]);
 
-  useEffect(() => {
-    if (!user?.org_id) return;
-    loadContext();
-  }, [user?.org_id]);
-
-  async function loadContext() {
+  const loadContext = useCallback(async () => {
     if (!user?.org_id) return;
     const { data: activeRole } = await supabase.from('roles').select('*').eq('org_id', user.org_id).in('status', ['active', 'paused']).order('updated_at', { ascending: false }).limit(1).maybeSingle();
     setRole(activeRole || null);
@@ -41,7 +36,12 @@ export default function AgentsPage() {
       setCandidates(cands || []);
       setActivity(logs || []);
     }
-  }
+  }, [user?.org_id]);
+
+  useEffect(() => {
+    if (!user?.org_id) return;
+    loadContext();
+  }, [loadContext, user?.org_id]);
 
   async function log(agent_name: 'scout' | 'enrich' | 'signal' | 'engage' | 'cortex', action: string, detail?: string, candidate_id?: string) {
     if (!user?.org_id) return;

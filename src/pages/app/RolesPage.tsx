@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Briefcase, MapPin, Calendar, Users, Settings, ChevronRight } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
@@ -137,12 +137,7 @@ export default function RolesPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | Role['status']>('all');
 
-  useEffect(() => {
-    if (!user?.org_id) return;
-    loadRoles();
-  }, [user?.org_id]);
-
-  async function loadRoles() {
+  const loadRoles = useCallback(async () => {
     if (!user?.org_id) return;
     setLoading(true);
 
@@ -169,7 +164,12 @@ export default function RolesPage() {
 
     setRoles(rolesData.map(r => ({ ...r, candidate_count: countMap[r.id] || 0 })));
     setLoading(false);
-  }
+  }, [user?.org_id]);
+
+  useEffect(() => {
+    if (!user?.org_id) return;
+    loadRoles();
+  }, [loadRoles, user?.org_id]);
 
   const filterOptions: { label: string; value: 'all' | Role['status'] }[] = [
     { label: 'All', value: 'all' },

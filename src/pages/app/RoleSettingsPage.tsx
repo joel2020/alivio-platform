@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { X, Plus } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
@@ -44,12 +44,8 @@ export default function RoleSettingsPage() {
   const [weights, setWeights] = useState({ hard_qualification: 30, experience_trajectory: 25, skills_adjacency: 25, engagement_propensity: 20 });
   const [minScore, setMinScore] = useState(0.70);
 
-  useEffect(() => {
+  const loadData = useCallback(async () => {
     if (!id) return;
-    loadData();
-  }, [id]);
-
-  async function loadData() {
     const [roleRes, vsRes] = await Promise.all([
       supabase.from('roles').select('*').eq('id', id).single(),
       supabase.from('voice_settings').select('*').eq('role_id', id).maybeSingle(),
@@ -57,7 +53,12 @@ export default function RoleSettingsPage() {
     setRole(roleRes.data);
     setVs(vsRes.data);
     setLoading(false);
-  }
+  }, [id]);
+
+  useEffect(() => {
+    if (!id) return;
+    loadData();
+  }, [id, loadData]);
 
   async function saveGeneral() {
     if (!role) return;
