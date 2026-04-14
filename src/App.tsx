@@ -13,6 +13,7 @@ import PrivacyPage from './pages/marketing/PrivacyPage';
 import TermsPage from './pages/marketing/TermsPage';
 import BlogPage from './pages/marketing/BlogPage';
 import BlogPostPage from './pages/marketing/BlogPostPage';
+import ContactPage from './pages/marketing/ContactPage';
 
 import LoginPage from './pages/auth/LoginPage';
 import SignupPage from './pages/auth/SignupPage';
@@ -64,11 +65,11 @@ export default function App() {
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:slug" element={<BlogPostPage />} />
+            <Route path="/contact" element={<ContactPage />} />
           </Route>
 
           <Route path="/about/*" element={<Navigate to="/" replace />} />
           <Route path="/services/*" element={<Navigate to="/" replace />} />
-          <Route path="/contact/*" element={<Navigate to="/" replace />} />
           <Route path="/team/*" element={<Navigate to="/" replace />} />
           <Route path="/careers/*" element={<Navigate to="/" replace />} />
           <Route path="/case-studies/*" element={<Navigate to="/" replace />} />
