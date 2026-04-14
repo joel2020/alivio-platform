@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import AnimateInView from '../AnimateInView';
 
 const metrics = [
-  { label: 'Candidates sourced in beta', num: 10000, suffix: '+' },
-  { label: 'Average match accuracy on scored candidates', num: 94, suffix: '%' },
-  { label: 'Faster than traditional agency timelines', num: 5, suffix: 'x' },
+  { label: 'Candidates sourced', num: 2400, suffix: '+' },
+  { label: 'Average match accuracy', num: 94, suffix: '%' },
+  { label: 'Faster than traditional agency timelines', num: 3, suffix: 'x' },
 ];
 
 function CountUpNumber({ target, suffix, shouldAnimate }: { target: number; suffix: string; shouldAnimate: boolean }) {
@@ -44,7 +44,7 @@ function CountUpNumber({ target, suffix, shouldAnimate }: { target: number; suff
     return () => cancelAnimationFrame(frameId);
   }, [shouldAnimate, target]);
 
-  return <span>{count}{suffix}</span>;
+  return <span>{count.toLocaleString()}{suffix}</span>;
 }
 
 export default function MetricsSection() {
@@ -121,10 +121,10 @@ export default function MetricsSection() {
         <AnimateInView delay={200}>
           <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto' }}>
             <p style={{ fontSize: '18px', fontStyle: 'italic', color: 'var(--text-secondary)', lineHeight: 1.7, margin: '0 0 16px 0' }}>
-              "Previously operated as Alivio Search Partners — placing candidates at high-growth startups since 2019. We built this platform because we lived the problem."
+              "Our team spent years placing nurses, clinical directors, and healthcare executives. We saw firsthand how broken the process was. Alivio is what we wish we had built from day one."
             </p>
             <p style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
-              — The Alivio Team
+              — Joel, Founder & CEO
             </p>
           </div>
         </AnimateInView>

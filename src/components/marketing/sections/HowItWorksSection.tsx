@@ -4,13 +4,13 @@ const steps = [
   {
     num: 1,
     title: 'Define',
-    description: 'Create a role and tell Alivio what great looks like. Skills, seniority, culture signals, deal-breakers.',
+    description: 'Create a role and tell Alivio what great looks like. Credentials, certifications, care setting, and non-negotiables.',
     exampleLabel: 'Role created',
     example: (
       <div style={{ padding: '14px 16px', background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E4E4E7', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-        <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '6px' }}>Senior Backend Engineer</div>
+        <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '6px' }}>Director of Nursing — Long-Term Care</div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-          {['Series B', 'Remote', 'Rust / Go preferred', '$160K–$200K'].map(tag => (
+          {['Active RN License', 'BSN required', 'ACLS certified', '10+ years leadership'].map(tag => (
             <span key={tag} style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-secondary)', padding: '2px 8px', background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: '6px' }}>{tag}</span>
           ))}
         </div>
@@ -20,14 +20,14 @@ const steps = [
   {
     num: 2,
     title: 'Scout',
-    description: 'AI scans 10+ sources to build a candidate pool — LinkedIn, GitHub, publications, portfolios, and more.',
+    description: 'AI scans healthcare channels continuously to build a candidate pool from credential databases, nursing networks, Vivian Health, and Doximity.',
     exampleLabel: 'Sources scanned',
     example: (
       <div style={{ padding: '14px 16px', background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E4E4E7', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
         <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--accent)', marginBottom: '4px' }}>142 candidates identified</div>
         <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>across 4 sources in 18 minutes</div>
         <div style={{ display: 'flex', gap: '8px', marginTop: '10px' }}>
-          {['LinkedIn (89)', 'GitHub (31)', 'Portfolio (14)', 'Other (8)'].map(s => (
+          {['Credential DBs (74)', 'Nursing Networks (38)', 'Vivian Health (20)', 'Doximity (10)'].map(s => (
             <span key={s} style={{ fontSize: '10px', padding: '2px 7px', background: 'var(--accent-tint)', color: 'var(--accent)', borderRadius: '4px', fontWeight: 600 }}>{s}</span>
           ))}
         </div>
@@ -42,14 +42,14 @@ const steps = [
     example: (
       <div style={{ padding: '14px 16px', background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E4E4E7', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
-          <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--accent-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: 700, color: 'var(--accent)' }}>SC</div>
+          <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--accent-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: 700, color: 'var(--accent)' }}>MS</div>
           <div>
-            <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-primary)' }}>Sarah Chen</div>
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Sr. Eng @ Stripe · 6 years exp</div>
+            <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-primary)' }}>Maria Santos, RN, BSN</div>
+            <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>10 years ICU experience at Northwestern Memorial Hospital</div>
           </div>
         </div>
         <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-          {['Rust', 'Go', 'Distributed Systems', 'Open Source'].map(s => (
+          {['Active RN License', 'BSN required', 'ACLS certified', 'ICU leadership'].map(s => (
             <span key={s} style={{ fontSize: '10px', padding: '2px 6px', background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: '4px', color: 'var(--text-secondary)' }}>{s}</span>
           ))}
         </div>
@@ -64,7 +64,7 @@ const steps = [
     example: (
       <div style={{ padding: '14px 16px', background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E4E4E7', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-          <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-primary)' }}>Sarah Chen</span>
+          <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-primary)' }}>Maria Santos, RN, BSN</span>
           <span style={{ fontSize: '15px', fontWeight: 700, color: 'var(--accent)' }}>94%</span>
         </div>
         {[
@@ -93,11 +93,9 @@ const steps = [
     exampleLabel: 'Generated message',
     example: (
       <div style={{ padding: '14px 16px', background: '#FFFFFF', borderRadius: '12px', border: '1px solid #E4E4E7', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-        <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>To: Sarah Chen</div>
+        <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>To: Maria Santos, RN, BSN</div>
         <div style={{ fontSize: '12px', lineHeight: 1.6, color: 'var(--text-secondary)' }}>
-          Hi Sarah — saw your work on distributed caching at Stripe. We're building a similar system at [Company] and your background in Rust is exactly what we need.
-          <span style={{ background: 'var(--accent-tint)', color: 'var(--accent)', borderRadius: '3px', padding: '0 3px' }}> Would love 15 min </span>
-          to share more.
+          Hi Maria — I noticed your ICU leadership experience at Northwestern and your CCRN certification. We are working with a health system in Chicago looking for an ICU Nurse Manager. Based on your background, this could be a strong next step. Would you be open to a quick conversation?
         </div>
       </div>
     ),

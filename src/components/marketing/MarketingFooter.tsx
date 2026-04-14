@@ -8,7 +8,8 @@ const productLinks = [
 ];
 
 const companyLinks = [
-  { label: 'Contact', href: 'mailto:admin@aliviosearchpartners.com', external: false },
+  { label: 'Contact', href: 'mailto:hello@aliviosearchpartners.com', external: false },
+  { label: 'Changelog', href: '/developers', external: false },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/company/aliviosearchpartners/', external: true },
   { label: 'X / Twitter', href: 'https://x.com/AlivioSearch', external: true },
 ];
@@ -42,10 +43,12 @@ export default function MarketingFooter() {
               <a href="https://x.com/AlivioSearch" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter" style={{ color: 'var(--text-muted)', transition: 'color 0.15s ease' }} onMouseEnter={e => (e.currentTarget.style.color = '#FAFAFA')} onMouseLeave={e => (e.currentTarget.style.color = '#A1A1AA')}>
                 <Twitter size={18} />
               </a>
-              <a href="mailto:admin@aliviosearchpartners.com" aria-label="Contact email" style={{ color: 'var(--text-muted)', transition: 'color 0.15s ease' }} onMouseEnter={e => (e.currentTarget.style.color = '#FAFAFA')} onMouseLeave={e => (e.currentTarget.style.color = '#A1A1AA')}>
+              <a href="mailto:hello@aliviosearchpartners.com" aria-label="Contact email" style={{ color: 'var(--text-muted)', transition: 'color 0.15s ease' }} onMouseEnter={e => (e.currentTarget.style.color = '#FAFAFA')} onMouseLeave={e => (e.currentTarget.style.color = '#A1A1AA')}>
                 <Mail size={18} />
               </a>
             </div>
+            <p style={{ fontSize: '13px', color: '#71717A', marginTop: '14px' }}>Yonkers, NY</p>
+            <p style={{ fontSize: '13px', color: '#71717A', marginTop: '6px' }}>hello@aliviosearchpartners.com</p>
           </div>
 
           <div>
@@ -99,7 +102,7 @@ export default function MarketingFooter() {
 
         <div style={{ borderTop: '1px solid #27272A', paddingTop: '24px' }}>
           <p style={{ fontSize: '13px', color: '#71717A', margin: 0 }}>
-            &copy; 2026 alivio search partners all rights reserved.
+            © 2026 Alivio Search Partners. All rights reserved.
           </p>
         </div>
       </div>
