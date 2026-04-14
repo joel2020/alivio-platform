@@ -7,6 +7,7 @@ const config = require('./config');
 const { AppError, errorToResponse } = require('./errors');
 const { runVertexSearch } = require('./vertex');
 const { buildGroundedPayload, validateGroundedPayload } = require('./normalize');
+const { buildRankedGrounding } = require('./ranking');
 
 const app = express();
 app.use(express.json({ limit: config.maxRequestBytes }));
@@ -59,21 +60,56 @@ function parseSearchInput(body, pageBounds) {
   }
 
   const inputPageSize = Number.parseInt(String(body?.pageSize ?? pageBounds.defaultPageSize), 10);
-  const pageSize = Number.isFinite(inputPageSize) ? inputPageSize : pageBounds.defaultPageSize;
+  if (!Number.isFinite(inputPageSize)) {
+    throw new AppError('pageSize must be an integer when provided', {
+      status: 400,
+      code: 'VALIDATION_ERROR',
+      details: { field: 'pageSize' }
+    });
+  }
+
+  const pageSize = Math.min(Math.max(inputPageSize, pageBounds.minPageSize), pageBounds.maxPageSize);
 
   return {
     query,
-    pageSize: Math.min(Math.max(pageSize, pageBounds.minPageSize), pageBounds.maxPageSize)
+    pageSize
   };
 }
 
-function validateGeneratedOutput(generated) {
-  if (typeof generated !== 'string') {
+function parseGeneratedOutput(raw) {
+  if (!raw || typeof raw !== 'string') {
     throw new AppError('Generated response failed validation', {
       status: 502,
       code: 'OPENAI_INVALID_RESPONSE'
     });
   }
+
+  let parsed;
+  try {
+    parsed = JSON.parse(raw);
+  } catch (_error) {
+    throw new AppError('Generated response was not valid JSON', {
+      status: 502,
+      code: 'OPENAI_INVALID_RESPONSE'
+    });
+  }
+
+  const rankedMatches = Array.isArray(parsed?.ranked_matches) ? parsed.ranked_matches : null;
+  const explanation = typeof parsed?.explanation === 'string' ? parsed.explanation : null;
+  const outreachDraft = typeof parsed?.outreach_draft === 'string' ? parsed.outreach_draft : null;
+
+  if (!rankedMatches || !explanation || !outreachDraft) {
+    throw new AppError('Generated response missing required recruiter fields', {
+      status: 502,
+      code: 'OPENAI_INVALID_RESPONSE'
+    });
+  }
+
+  return {
+    ranked_matches: rankedMatches,
+    explanation,
+    outreach_draft: outreachDraft
+  };
 }
 
 app.get('/health', (_req, res) => {
@@ -131,28 +167,35 @@ app.post('/api/recruiter-search', async (req, res, next) => {
       });
     }
 
+    const deterministicRanking = buildRankedGrounding({ query, grounded });
+
     const completion = await openai.chat.completions.create({
       model: config.openai.model,
-      temperature: 0.2,
+      temperature: 0.1,
       messages: [
         {
           role: 'system',
           content:
-            'You are an Alivio recruiter copilot. Use only provided grounded JSON results. Never fabricate details. If grounded results are insufficient, say exactly what is missing.'
+            'You are an Alivio recruiter copilot. Use only provided grounded JSON results. Never fabricate details. Respond with strict JSON containing keys: ranked_matches (array), explanation (string), outreach_draft (string).'
         },
         {
           role: 'user',
           content: JSON.stringify({
             query,
-            grounded
+            grounded,
+            deterministic_ranking: deterministicRanking
           })
         }
       ],
       timeout: config.openai.timeoutMs
     });
 
-    const generated = completion?.choices?.[0]?.message?.content || '';
-    validateGeneratedOutput(generated);
+    const rawGenerated = completion?.choices?.[0]?.message?.content || '';
+    const generated = parseGeneratedOutput(rawGenerated);
+
+    if (!generated.ranked_matches.length && deterministicRanking.rankedMatches.length) {
+      generated.ranked_matches = deterministicRanking.rankedMatches;
+    }
 
     res.json({
       ok: true,
