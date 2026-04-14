@@ -55,3 +55,27 @@ The migration `20260414113000_add_email_agent_pipeline.sql` schedules `email-pip
 
 ## Alivio Multi-Agent Backend
 See `backend/README.md` for the new production-style agent backend and API routes.
+
+## Alivio recruiter dashboard (vanilla HTML)
+
+A lightweight static dashboard is available at `frontend/alivio-dashboard.html` and uses `frontend/alivio-api-client.js` for backend API calls.
+
+### Serve locally
+
+From the repo root, run any static server (examples):
+
+```bash
+python3 -m http.server 8080
+# or
+npx serve .
+```
+
+Then open:
+
+- `http://localhost:8080/frontend/alivio-dashboard.html`
+
+### Point to backend
+
+By default, the page calls `https://api.aliviosearchpartners.com`.
+
+To target a different backend, define `window.ALIVIO_API_BASE` before loading the page script (for example in an inline script tag above the API client include), then reload the page.
