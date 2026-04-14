@@ -12,6 +12,7 @@ const SAMPLE_RECRUITER_QUERY =
 module.exports = {
   serviceName: process.env.SERVICE_NAME || 'alivio-search-partners-backend',
   env: process.env.NODE_ENV || 'development',
+  appMode: process.env.APP_MODE || 'live',
   port: Number.isFinite(PORT) && PORT > 0 ? PORT : 8080,
   maxRequestBytes: process.env.MAX_REQUEST_BYTES || '1mb',
   requestIdHeader: process.env.REQUEST_ID_HEADER || 'x-request-id',
