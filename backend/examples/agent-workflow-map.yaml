@@ -1,0 +1,59 @@
+version: 1
+name: alivio-agent-workflow-map
+pipelines:
+  candidate_search:
+    stages:
+      - agent: ScoutReady
+        endpoint: POST /api/agents/scoutready/run
+        output: leads
+      - agent: EnrichReady
+        endpoint: POST /api/agents/enrichready/run
+        optional: true
+        output: normalizedCandidate
+  job_matching:
+    stages:
+      - agent: MatchReady
+        endpoint: POST /api/agents/matchready/run
+        output: ranked
+      - agent: SignalReady
+        endpoint: POST /api/agents/signalready/run
+        output: fitSignal
+  outreach:
+    stages:
+      - agent: EngageReady
+        endpoint: POST /api/agents/engageready/run
+        output: outreachDraft
+  monitoring:
+    stages:
+      - agent: MonitorReady
+        endpoint: POST /api/agents/monitorready/run
+        output: monitoringSummary
+      - endpoint: GET /api/agents/logs
+      - endpoint: GET /api/metrics
+  resume_intake:
+    stages:
+      - agent: Parse Resume
+        endpoint: POST /api/agents/parse-resume/run
+        output: parsed_enriched_fit
+agents:
+  ScoutReady:
+    domain: candidate_search
+    service_boundary: candidate-search-service
+  MatchReady:
+    domain: matching
+    service_boundary: matching-service
+  EnrichReady:
+    domain: profile_enrichment
+    service_boundary: enrichment-service
+  SignalReady:
+    domain: qualification
+    service_boundary: fit-scoring-service
+  EngageReady:
+    domain: outreach
+    service_boundary: outreach-service
+  MonitorReady:
+    domain: monitoring
+    service_boundary: monitoring-service
+  Parse Resume:
+    domain: intake
+    service_boundary: resume-parsing-service
