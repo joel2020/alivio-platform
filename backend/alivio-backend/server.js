@@ -206,6 +206,115 @@ function parseGeneratedOutput(raw) {
   };
 }
 
+function parseWorkflowType(value) {
+  const workflowType = typeof value === 'string' ? value.trim() : '';
+  const allowedWorkflowTypes = new Set(['candidate_search', 'job_search', 'match', 'copilot']);
+
+  if (!allowedWorkflowTypes.has(workflowType)) {
+    throw new AppError('workflow_type must be one of: candidate_search, job_search, match, copilot', {
+      status: 400,
+      code: 'VALIDATION_ERROR',
+      details: { field: 'workflow_type' }
+    });
+  }
+
+  return workflowType;
+}
+
+function parseMetadata(value) {
+  if (value === undefined) {
+    return {};
+  }
+
+  if (!value || Array.isArray(value) || typeof value !== 'object') {
+    throw new AppError('metadata must be an object when provided', {
+      status: 400,
+      code: 'VALIDATION_ERROR',
+      details: { field: 'metadata' }
+    });
+  }
+
+  return value;
+}
+
+function validateWebhookSecret(req) {
+  if (!config.webhookSecret) {
+    return;
+  }
+
+  const incomingSecret = req.headers['x-webhook-secret'];
+  if (typeof incomingSecret !== 'string' || incomingSecret !== config.webhookSecret) {
+    throw new AppError('Invalid x-webhook-secret header', {
+      status: 401,
+      code: 'UNAUTHORIZED'
+    });
+  }
+}
+
+async function runRecruiterSearch(body, requestId) {
+  if (isMockMode) {
+    const { query } = parseSearchInput(body, config.vertex);
+    return buildMockResponse(mockRecruiterFixture, query, requestId);
+  }
+
+  if (!config.openai.apiKey) {
+    throw new AppError('LLM_API_KEY (or OPENAI_API_KEY) is required for recruiter generation', {
+      status: 500,
+      code: 'OPENAI_MISSING_API_KEY',
+      expose: true
+    });
+  }
+
+  const { query, pageSize } = parseSearchInput(body, config.vertex);
+
+  const vertexResponse = await runVertexSearch({ query, pageSize, config: config.vertex });
+  const grounded = buildGroundedPayload(vertexResponse);
+
+  if (!validateGroundedPayload(grounded)) {
+    throw new AppError('Grounded payload failed validation', {
+      status: 502,
+      code: 'GROUNDING_VALIDATION_FAILED'
+    });
+  }
+
+  const deterministicRanking = buildRankedGrounding({ query, grounded });
+
+  const completion = await openai.chat.completions.create({
+    model: config.openai.model,
+    temperature: 0.1,
+    messages: [
+      {
+        role: 'system',
+        content:
+          'You are an Alivio recruiter copilot. Use only provided grounded JSON results. Never fabricate details. Respond with strict JSON containing keys: ranked_matches (array), explanation (string), outreach_draft (string).'
+      },
+      {
+        role: 'user',
+        content: JSON.stringify({
+          query,
+          grounded,
+          deterministic_ranking: deterministicRanking
+        })
+      }
+    ],
+    timeout: config.openai.timeoutMs
+  });
+
+  const rawGenerated = completion?.choices?.[0]?.message?.content || '';
+  const generated = parseGeneratedOutput(rawGenerated);
+
+  if (!generated.ranked_matches.length && deterministicRanking.rankedMatches.length) {
+    generated.ranked_matches = deterministicRanking.rankedMatches;
+  }
+
+  return {
+    ok: true,
+    query,
+    grounded,
+    generated
+  };
+}
+
 app.get('/health', (_req, res) => {
   res.status(200).json({
     ok: true,
@@ -261,31 +370,35 @@ app.post('/api/recruiter-search', async (req, res, next) => {
   const requestId = getRequestId(req);
 
   try {
-    if (isMockMode) {
-      const { query } = parseSearchInput(req.body, config.vertex);
-      return res.json(buildMockResponse(mockRecruiterFixture, query, requestId));
+    const payload = await runRecruiterSearch(req.body, requestId);
+    res.json(payload);
+  } catch (error) {
+    if (error?.status >= 400) {
+      return next(error);
     }
 
-    if (!config.openai.apiKey) {
-      throw new AppError('LLM_API_KEY (or OPENAI_API_KEY) is required for recruiter generation', {
-        status: 500,
-        code: 'OPENAI_MISSING_API_KEY',
-        expose: true
-      });
+    const status = error?.status || error?.statusCode;
+    const openaiCode = error?.code || null;
+    const openaiType = error?.type || null;
+
+    if (typeof status === 'number' || openaiCode || openaiType) {
+      return next(
+        new AppError('OpenAI request failed', {
+          status: typeof status === 'number' ? status : 502,
+          code: 'OPENAI_REQUEST_FAILED',
+          details: {
+            requestId,
+            openaiCode,
+            openaiType,
+            message: error?.message || null
+          }
+        })
+      );
     }
 
-    const { query, pageSize } = parseSearchInput(req.body, config.vertex);
-
-    const vertexResponse = await runVertexSearch({ query, pageSize, config: config.vertex });
-    const grounded = buildGroundedPayload(vertexResponse);
-
-    if (!validateGroundedPayload(grounded)) {
-      throw new AppError('Grounded payload failed validation', {
-        status: 502,
-        code: 'GROUNDING_VALIDATION_FAILED'
-      });
-    }
-
+    return next(error);
+  }
+});
     const deterministicRanking = buildRankedGrounding({ query, grounded });
 
     const completion = await openai.chat.completions.create({
@@ -301,16 +414,23 @@ app.post('/api/recruiter-search', async (req, res, next) => {
     const rawGenerated = completion?.choices?.[0]?.message?.content || '';
     const generated = parseGeneratedOutput(rawGenerated);
 
-    if (!generated.ranked_matches.length && deterministicRanking.rankedMatches.length) {
-      generated.ranked_matches = deterministicRanking.rankedMatches;
-    }
+app.post('/api/webhook/n8n', async (req, res, next) => {
+  const requestId = getRequestId(req);
 
-    res.json({
-      ok: true,
-      query,
-      grounded,
-      generated
-    });
+  try {
+    validateWebhookSecret(req);
+    parseWorkflowType(req.body?.workflow_type);
+    parseMetadata(req.body?.metadata);
+
+    const payload = await runRecruiterSearch(
+      {
+        query: req.body?.query,
+        pageSize: req.body?.pageSize
+      },
+      requestId
+    );
+
+    res.json(payload);
   } catch (error) {
     if (error?.status >= 400) {
       return next(error);
