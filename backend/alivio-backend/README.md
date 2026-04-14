@@ -7,10 +7,29 @@ Production-leaning Express backend for Alivio Search Partners retrieval and recr
 - `GET /health`
 - `POST /api/vertex-search`
 - `POST /api/recruiter-search`
+- `POST /api/webhook/n8n`
 
 Reusable sample recruiter query:
 
 `Find Directors of Nursing in New Jersey with SNF experience and multi-site leadership`
+
+## Backend structure
+
+- `app.js` builds the Express app, middleware, and route mounting.
+- `server.js` is startup-only (`listen`) plus fatal process handlers.
+- `routes/` contains lightweight route modules (`health`, `vertex-search`, `recruiter-search`, `webhook-n8n`).
+- `services/search.js` holds search/recruiter parsing + service logic used by route handlers.
+
+## Boot safety checks
+
+Run these before deployment when iterating locally:
+
+```bash
+npm run check
+npm run check:boot
+```
+
+`check:boot` verifies core modules load and `createApp()` can build without starting a listener.
 
 ## Local run
 
