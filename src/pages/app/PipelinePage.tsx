@@ -119,18 +119,36 @@ export default function PipelinePage() {
   const [matching, setMatching] = useState(false);
   const [scoring, setScoring] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [unauthorized, setUnauthorized] = useState(false);
 
   const loadData = useCallback(async () => {
     if (!id) return;
-    const [roleRes, candRes, callsRes] = await Promise.all([
-      supabase.from('roles').select('*').eq('id', id).single(),
-      supabase.from('candidates').select('*').eq('role_id', id).order('score', { ascending: false }),
-      supabase.from('voice_calls').select('*').eq('role_id', id),
-    ]);
-    setRole(roleRes.data);
-    setCandidates(candRes.data || []);
-    setCalls(callsRes.data || []);
-    setLoading(false);
+    setLoading(true);
+    setLoadError(null);
+    setUnauthorized(false);
+    try {
+      const [roleRes, candRes, callsRes] = await Promise.all([
+        supabase.from('roles').select('*').eq('id', id).single(),
+        supabase.from('candidates').select('*').eq('role_id', id).order('score', { ascending: false }),
+        supabase.from('voice_calls').select('*').eq('role_id', id),
+      ]);
+      const err = roleRes.error || candRes.error || callsRes.error;
+      if (err) {
+        const authError = /jwt|permission|not authenticated|forbidden|auth/i.test(err.message);
+        if (authError) {
+          setUnauthorized(true);
+        } else {
+          setLoadError(err.message);
+        }
+        return;
+      }
+      setRole(roleRes.data);
+      setCandidates(candRes.data || []);
+      setCalls(callsRes.data || []);
+    } finally {
+      setLoading(false);
+    }
   }, [id]);
 
   useEffect(() => {
@@ -298,6 +316,22 @@ export default function PipelinePage() {
       </div>
     );
   }
+
+  if (unauthorized) return (
+    <div className="p-8">
+      <div className="card p-4" style={{ color: 'var(--text-secondary)' }}>
+        Your session does not have access to this pipeline. Please sign in again.
+      </div>
+    </div>
+  );
+
+  if (loadError) return (
+    <div className="p-8">
+      <div className="card p-4" style={{ color: 'var(--text-secondary)' }}>
+        We could not load this pipeline right now. {loadError}
+      </div>
+    </div>
+  );
 
   if (!role) return (
     <div className="p-8" style={{ color: 'var(--text-primary)' }}>Role not found</div>
