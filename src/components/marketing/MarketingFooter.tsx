@@ -8,7 +8,7 @@ const productLinks = [
 ];
 
 const companyLinks = [
-  { label: 'Contact', href: 'mailto:hello@aliviosearchpartners.com', external: false },
+  { label: 'Book a Demo', href: 'https://cal.com/alivio/intro-call30', external: true },
   { label: 'Changelog', href: '/developers', external: false },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/company/aliviosearchpartners/', external: true },
   { label: 'X / Twitter', href: 'https://x.com/AlivioSearch', external: true },
