@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Linkedin, Mail, Twitter } from 'lucide-react';
+import { Linkedin, Mail } from 'lucide-react';
 
 const productLinks = [
   { label: 'How It Works', href: '/#how-it-works' },
@@ -11,7 +11,6 @@ const companyLinks = [
   { label: 'Book a Demo', href: 'https://cal.com/alivio/intro-call30', external: true },
   { label: 'Changelog', href: '/developers', external: false },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/company/aliviosearchpartners/', external: true },
-  { label: 'X / Twitter', href: 'https://x.com/AlivioSearch', external: true },
 ];
 
 const legalLinks = [
@@ -39,9 +38,6 @@ export default function MarketingFooter() {
             <div style={{ display: 'flex', gap: '12px' }}>
               <a href="https://www.linkedin.com/company/aliviosearchpartners/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" style={{ color: 'var(--text-muted)', transition: 'color 0.15s ease' }} onMouseEnter={e => (e.currentTarget.style.color = '#FAFAFA')} onMouseLeave={e => (e.currentTarget.style.color = '#A1A1AA')}>
                 <Linkedin size={18} />
-              </a>
-              <a href="https://x.com/AlivioSearch" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter" style={{ color: 'var(--text-muted)', transition: 'color 0.15s ease' }} onMouseEnter={e => (e.currentTarget.style.color = '#FAFAFA')} onMouseLeave={e => (e.currentTarget.style.color = '#A1A1AA')}>
-                <Twitter size={18} />
               </a>
               <a href="mailto:hello@aliviosearchpartners.com" aria-label="Contact email" style={{ color: 'var(--text-muted)', transition: 'color 0.15s ease' }} onMouseEnter={e => (e.currentTarget.style.color = '#FAFAFA')} onMouseLeave={e => (e.currentTarget.style.color = '#A1A1AA')}>
                 <Mail size={18} />

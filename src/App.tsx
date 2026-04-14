@@ -33,6 +33,9 @@ import AgentsPage from './pages/app/AgentsPage';
 import CandidatePage from './pages/app/CandidatePage';
 import RoleSettingsPage from './pages/app/RoleSettingsPage';
 import SettingsPage from './pages/app/SettingsPage';
+import CrmPage from './pages/app/crm/CrmPage';
+import CrmClientPage from './pages/app/crm/CrmClientPage';
+import CrmTemplatesPage from './pages/app/crm/CrmTemplatesPage';
 import { useSeo } from './lib/seo';
 
 import AdminRoute from './components/admin/AdminRoute';

@@ -40,6 +40,7 @@ export default function Sidebar() {
     { label: 'Pipeline', href: '/pipeline', icon: GitBranch },
     { label: 'Roles', href: '/roles', icon: Briefcase, badge: activeRoleCount },
     { label: 'Outreach', href: '/outreach', icon: Mail },
+    ...(canAccessCrm ? [{ label: 'CRM', href: '/dashboard/crm', icon: Building2 }] : []),
     { label: 'Agents', href: '/agents', icon: Zap },
     { label: 'Settings', href: '/settings', icon: Settings },
   ];
