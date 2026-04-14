@@ -2,12 +2,24 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 const MODEL = "meta-llama/llama-4-maverick";
+
+const isAuthorizedRequest = (req: Request): boolean => {
+  const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY");
+  if (!supabaseAnonKey) return true;
+
+  const authHeader = req.headers.get("authorization")?.trim() ?? "";
+  const authMatch = authHeader.match(/^Bearer\s+(.+)$/i);
+  const bearerToken = authMatch?.[1]?.trim();
+  const apiKeyHeader = req.headers.get("apikey")?.trim();
+
+  return bearerToken === supabaseAnonKey || apiKeyHeader === supabaseAnonKey;
+};
 
 type JobDescription = {
   summary: string;
@@ -18,8 +30,17 @@ type JobDescription = {
 };
 
 Deno.serve(async (req: Request) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { status: 200, headers: corsHeaders });
+  }
   if (req.method !== "POST") return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+  if (!isAuthorizedRequest(req)) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
 
   try {
     const OPENROUTER_API_KEY = Deno.env.get("OPENROUTER_API_KEY");

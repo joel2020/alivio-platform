@@ -1,5 +1,7 @@
 import { isSupabaseConfigured, supabase, supabaseConfigError } from './supabase';
 
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
+
 export type AIServiceErrorCode = 'NOT_CONFIGURED' | 'INVALID_RESPONSE' | 'REQUEST_FAILED';
 
 export interface AIServiceError {
@@ -142,6 +144,12 @@ class AIService {
     try {
       const { data, error } = await supabase.functions.invoke<EdgeResponse<T>>(functionName, {
         body: payload,
+        headers: supabaseAnonKey
+          ? {
+              Authorization: `Bearer ${supabaseAnonKey}`,
+              apikey: supabaseAnonKey,
+            }
+          : undefined,
       });
 
       if (error) {
