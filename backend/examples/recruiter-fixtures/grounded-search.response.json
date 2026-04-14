@@ -1,0 +1,168 @@
+{
+  "ok": true,
+  "query": "director of nursing lnha mds coordinator allied health physician",
+  "grounded": {
+    "totalSize": 5,
+    "attributionToken": "demo-token-synthetic-fixture",
+    "results": [
+      {
+        "rank": 1,
+        "id": "cand-don-001",
+        "title": "Alex Morgan",
+        "role": "Director of Nursing",
+        "location": "Phoenix, AZ",
+        "uri": "https://example.synthetic.alivio.dev/candidates/cand-don-001",
+        "snippet": "Director-level nursing leader with multi-site SNF oversight and survey-readiness focus.",
+        "snippets": [
+          "14 years of post-acute leadership and quality oversight.",
+          "Led director-level teams across skilled nursing facilities in Arizona."
+        ],
+        "extractiveSegments": [
+          {
+            "rank": 1,
+            "content": "Led survey readiness and nurse retention initiatives for multi-site SNF operations.",
+            "pageNumber": 1,
+            "confidenceScore": 0.89
+          }
+        ],
+        "sourceType": "candidate",
+        "metadata": {
+          "source": "demo-fixture",
+          "company": "Sunrise Post Acute",
+          "location": "Phoenix, AZ",
+          "structured": {
+            "compensation": {
+              "min": 125000,
+              "max": 150000,
+              "currency": "USD"
+            },
+            "skills": ["SNF operations", "survey readiness", "leadership"],
+            "seniority": "director",
+            "employmentType": "full-time"
+          }
+        },
+        "rawDocumentName": "documents/candidates/cand-don-001"
+      },
+      {
+        "rank": 2,
+        "id": "cand-lnha-001",
+        "title": "Jordan Patel",
+        "role": "Licensed Nursing Home Administrator (LNHA)",
+        "location": "Tampa, FL",
+        "uri": "https://example.synthetic.alivio.dev/candidates/cand-lnha-001",
+        "snippet": "LNHA with a track record of reducing agency spend while improving occupancy and quality metrics.",
+        "snippets": [
+          "Owned full-facility operations, compliance, and budget for long-term care campuses."
+        ],
+        "extractiveSegments": [],
+        "sourceType": "candidate",
+        "metadata": {
+          "source": "demo-fixture",
+          "company": "Harbor Ridge Care",
+          "location": "Tampa, FL",
+          "structured": {
+            "compensation": {
+              "min": 135000,
+              "max": 165000,
+              "currency": "USD"
+            },
+            "skills": ["regulatory compliance", "census growth", "budget ownership"],
+            "seniority": "director",
+            "employmentType": "full-time"
+          }
+        },
+        "rawDocumentName": "documents/candidates/cand-lnha-001"
+      },
+      {
+        "rank": 3,
+        "id": "cand-mds-001",
+        "title": "Taylor Brooks",
+        "role": "MDS Coordinator (RN)",
+        "location": "Cleveland, OH",
+        "uri": "https://example.synthetic.alivio.dev/candidates/cand-mds-001",
+        "snippet": "MDS RN focused on reimbursement accuracy, audit readiness, and interdisciplinary collaboration.",
+        "snippets": [
+          "Strong MDS 3.0 and PDPM documentation accuracy in SNF environments."
+        ],
+        "extractiveSegments": [],
+        "sourceType": "candidate",
+        "metadata": {
+          "source": "demo-fixture",
+          "company": "Lakefront Rehab Center",
+          "location": "Cleveland, OH",
+          "structured": {
+            "compensation": {
+              "min": 90000,
+              "max": 115000,
+              "currency": "USD"
+            },
+            "skills": ["MDS 3.0", "PDPM", "care planning"],
+            "seniority": "manager",
+            "employmentType": "full-time"
+          }
+        },
+        "rawDocumentName": "documents/candidates/cand-mds-001"
+      },
+      {
+        "rank": 4,
+        "id": "cand-pt-001",
+        "title": "Casey Nguyen",
+        "role": "Physical Therapist",
+        "location": "Seattle, WA",
+        "uri": "https://example.synthetic.alivio.dev/candidates/cand-pt-001",
+        "snippet": "Allied health therapist with mixed SNF and outpatient experience and strong patient-satisfaction outcomes.",
+        "snippets": [
+          "Led fall-prevention program for geriatric populations across outpatient and SNF settings."
+        ],
+        "extractiveSegments": [],
+        "sourceType": "candidate",
+        "metadata": {
+          "source": "demo-fixture",
+          "company": "Rainier Therapy Group",
+          "location": "Seattle, WA",
+          "structured": {
+            "compensation": {
+              "min": 98000,
+              "max": 122000,
+              "currency": "USD"
+            },
+            "skills": ["geriatric rehab", "fall prevention", "care transitions"],
+            "seniority": "staff",
+            "employmentType": "full-time"
+          }
+        },
+        "rawDocumentName": "documents/candidates/cand-pt-001"
+      },
+      {
+        "rank": 5,
+        "id": "cand-md-001",
+        "title": "Riley Thompson, MD",
+        "role": "Hospitalist Physician",
+        "location": "Dallas, TX",
+        "uri": "https://example.synthetic.alivio.dev/candidates/cand-md-001",
+        "snippet": "Physician leader supporting quality initiatives, LOS reduction, and multidisciplinary care pathways.",
+        "snippets": [
+          "Hospitalist with extensive quality and utilization-review leadership experience."
+        ],
+        "extractiveSegments": [],
+        "sourceType": "candidate",
+        "metadata": {
+          "source": "demo-fixture",
+          "company": "Metro Medical Center",
+          "location": "Dallas, TX",
+          "structured": {
+            "compensation": {
+              "min": 240000,
+              "max": 295000,
+              "currency": "USD"
+            },
+            "skills": ["inpatient medicine", "quality metrics", "team leadership"],
+            "seniority": "senior",
+            "employmentType": "full-time"
+          }
+        },
+        "rawDocumentName": "documents/candidates/cand-md-001"
+      }
+    ]
+  }
+}

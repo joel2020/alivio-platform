@@ -1,0 +1,92 @@
+[
+  {
+    "id": "job-don-az-001",
+    "title": "Director of Nursing",
+    "client": "Desert Valley Care Network",
+    "location": "Phoenix, AZ",
+    "salaryRange": {
+      "min": 130000,
+      "max": 155000,
+      "currency": "USD"
+    },
+    "setting": "Skilled Nursing Facility",
+    "requiredLicenses": ["RN"],
+    "requiredExperience": 8,
+    "mustHaveKeywords": ["survey readiness", "staff development", "SNF operations"],
+    "description": "Lead clinical operations for a 180-bed SNF with focus on quality measures and retention.",
+    "priority": "high",
+    "status": "open"
+  },
+  {
+    "id": "job-lnha-fl-001",
+    "title": "Licensed Nursing Home Administrator",
+    "client": "Gulf Coast Senior Services",
+    "location": "Tampa, FL",
+    "salaryRange": {
+      "min": 140000,
+      "max": 170000,
+      "currency": "USD"
+    },
+    "setting": "Long-Term Care",
+    "requiredLicenses": ["LNHA"],
+    "requiredExperience": 7,
+    "mustHaveKeywords": ["state survey", "budget ownership", "census management"],
+    "description": "Own full-facility administration, regulatory readiness, and strategic growth planning.",
+    "priority": "critical",
+    "status": "open"
+  },
+  {
+    "id": "job-mds-oh-001",
+    "title": "MDS Coordinator (RN)",
+    "client": "Buckeye Transitional Care",
+    "location": "Cleveland, OH",
+    "salaryRange": {
+      "min": 92000,
+      "max": 112000,
+      "currency": "USD"
+    },
+    "setting": "Skilled Nursing Facility",
+    "requiredLicenses": ["RN", "RAC-CT"],
+    "requiredExperience": 4,
+    "mustHaveKeywords": ["MDS 3.0", "PDPM", "care plans"],
+    "description": "Coordinate assessments, optimize reimbursement accuracy, and support interdisciplinary planning.",
+    "priority": "high",
+    "status": "open"
+  },
+  {
+    "id": "job-allied-wa-001",
+    "title": "Physical Therapist",
+    "client": "Cascade Allied Health Group",
+    "location": "Seattle, WA",
+    "salaryRange": {
+      "min": 100000,
+      "max": 125000,
+      "currency": "USD"
+    },
+    "setting": "Outpatient",
+    "requiredLicenses": ["PT"],
+    "requiredExperience": 3,
+    "mustHaveKeywords": ["geriatric rehab", "care coordination", "SNF transitions"],
+    "description": "Provide outpatient PT services with strong cross-setting collaboration for post-acute populations.",
+    "priority": "medium",
+    "status": "open"
+  },
+  {
+    "id": "job-md-tx-001",
+    "title": "Hospitalist Physician",
+    "client": "Trinity Acute Care Partners",
+    "location": "Dallas, TX",
+    "salaryRange": {
+      "min": 250000,
+      "max": 310000,
+      "currency": "USD"
+    },
+    "setting": "Acute Care Hospital",
+    "requiredLicenses": ["MD"],
+    "requiredExperience": 5,
+    "mustHaveKeywords": ["inpatient medicine", "quality metrics", "team leadership"],
+    "description": "Join hospitalist team focused on throughput, quality metrics, and clinician collaboration.",
+    "priority": "high",
+    "status": "open"
+  }
+]
