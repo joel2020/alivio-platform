@@ -44,13 +44,13 @@ export function estimateReadingTime(text: string) {
 }
 
 export function excerptFromContent(content: string, fallbackExcerpt?: string) {
-  const normalized = (fallbackExcerpt || content || '').replace(/\s+/g, ' ').trim();
-  if (normalized.length <= 170) return normalized;
+  const source = content || fallbackExcerpt || '';
+  const excerpt = source
+    .replace(/[#*`]/g, '')
+    .replace(/\s+/g, ' ')
+    .substring(0, 150)
+    .replace(/\s\S*$/, '')
+    .trimEnd();
 
-  const sentenceSplit = normalized.slice(0, 220);
-  const sentenceEnd = Math.max(sentenceSplit.lastIndexOf('. '), sentenceSplit.lastIndexOf('! '), sentenceSplit.lastIndexOf('? '));
-  if (sentenceEnd > 100) return `${sentenceSplit.slice(0, sentenceEnd + 1).trim()}`;
-
-  const wordBoundary = normalized.lastIndexOf(' ', 170);
-  return `${normalized.slice(0, wordBoundary > 0 ? wordBoundary : 170).trimEnd()}...`;
+  return `${excerpt}...`;
 }

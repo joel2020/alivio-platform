@@ -18,22 +18,26 @@ export default function AdminUsersPage() {
   const [signInFilter, setSignInFilter] = useState<SignInFilter>('all');
   const [selectedUser, setSelectedUser] = useState<AdminUserRow | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const loadUsers = async () => {
+    setLoading(true);
+    const { data: adminData, error: adminError } = await supabase.rpc('get_admin_auth_users');
+
+    if (adminError) {
+      setUsers([]);
+      setError(`Unable to load users — RPC error: ${adminError.message}`);
+      setLoading(false);
+      return;
+    }
+
+    setError(null);
+    setUsers((adminData as AdminUserRow[]) ?? []);
+    setLoading(false);
+  };
 
   useEffect(() => {
-    const load = async () => {
-      const { data: adminData, error: adminError } = await supabase.rpc('get_admin_auth_users');
-
-      if (adminError) {
-        setUsers([]);
-        setError(`Unable to load users. Please try again. ${adminError.message}`);
-        return;
-      }
-
-      setError(null);
-      setUsers((adminData as AdminUserRow[]) ?? []);
-    };
-
-    void load();
+    void loadUsers();
   }, []);
 
   const filtered = useMemo(() => {
@@ -59,7 +63,12 @@ export default function AdminUsersPage() {
       </div>
 
       <div className="page-content space-y-4">
-        {error && <div className="card p-4" style={{ color: 'var(--warning)' }}>{error}</div>}
+        {error ? (
+          <div className="card p-4 flex items-center justify-between gap-4" style={{ color: 'var(--error)' }}>
+            <span>{error}</span>
+            <button className="btn-secondary" onClick={() => void loadUsers()}>Retry</button>
+          </div>
+        ) : null}
 
         <div className="card p-4 grid grid-cols-1 md:grid-cols-2 gap-3">
           <input
@@ -86,7 +95,12 @@ export default function AdminUsersPage() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((user) => (
+              {loading ? (
+                <tr>
+                  <td className="p-3" colSpan={4} style={{ color: 'var(--text-secondary)' }}>Loading users...</td>
+                </tr>
+              ) : null}
+              {!loading && filtered.map((user) => (
                 <tr key={user.id} className="border-t" style={{ borderColor: 'var(--border)' }}>
                   <td className="p-3" style={{ color: 'var(--text-primary)' }}>{user.email}</td>
                   <td className="p-3" style={{ color: 'var(--text-secondary)' }}>{safeDate(user.created_at)}</td>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, type ChangeEvent } from 'react';
 import { Loader2, Play, Upload, Zap } from 'lucide-react';
 import { matchCandidates, parseResume, scoreCandidates, sourceCandidates } from '../../lib/ai';
 import { supabase } from '../../lib/supabase';
@@ -21,6 +21,7 @@ interface ParsedResumePreview {
 
 const baseAgents = [
   { key: 'scout', name: 'Scout', color: '#3B82F6', description: 'Continuously searches talent sources for matching candidates.' },
+  { key: 'match', name: 'Match', color: '#7C3AED', description: 'Match top candidates to open roles.' },
   { key: 'enrich', name: 'Enrich', color: '#10B981', description: 'Extracts structured data and verifies profile completeness.' },
   { key: 'signal', name: 'Signal', color: '#F59E0B', description: 'Scores candidate fit and explains strengths and risks.' },
   { key: 'engage', name: 'Engage', color: '#EC4899', description: 'Drafts personalized outreach and follow-up content.' },
@@ -40,6 +41,8 @@ export default function AgentsPage() {
   const [parsedPreview, setParsedPreview] = useState<ParsedResumePreview | null>(null);
   const [parsingResume, setParsingResume] = useState(false);
   const [savingCandidate, setSavingCandidate] = useState(false);
+  const [agentError, setAgentError] = useState<string | null>(null);
+  const [matchResults, setMatchResults] = useState<Array<{ candidateId: string; matchScore: number; reasons: string[] }>>([]);
 
   const loadContext = useCallback(async () => {
     if (!user?.org_id) return;
@@ -72,8 +75,10 @@ export default function AgentsPage() {
     }
 
     setRunning(agentKey);
+    setAgentError(null);
     try {
       if (agentKey === 'scout') {
+        console.log('Running scout agent', { roleId: role.id, title: role.title });
         const result = await sourceCandidates(`${role.title} in ${role.location}. ${role.description || ''}`, role.must_have_requirements || []);
         const inserts = result.data.candidatePersonas.slice(0, 5).map((persona, idx) => ({
           org_id: role.org_id,
@@ -94,6 +99,10 @@ export default function AgentsPage() {
           await supabase.from('candidates').insert(inserts);
         }
         await log('scout', `Run Scout completed`, `Generated ${inserts.length} candidate profiles from AI sourcing plan.`);
+      } else if (agentKey === 'match') {
+        const response = await matchCandidates(role.title, candidates.map((c) => ({ id: c.id, name: c.full_name, experienceYears: c.experience_years ?? 0, skills: c.skills })));
+        setMatchResults(response.data.matches);
+        await log('cortex', 'Match candidate run complete', `Ranked ${response.data.matches.length} candidates by fit.`);
       } else if (agentKey === 'enrich') {
         const top = candidates[0];
         if (!top) throw new Error('No candidates available to enrich');
@@ -125,9 +134,25 @@ export default function AgentsPage() {
     } catch (error) {
       console.error(error);
       setStatuses((prev) => ({ ...prev, [agentKey]: 'Error' }));
-      setToast('Agent execution failed. Please try again.');
+      const message = error instanceof Error ? error.message : 'Unknown error occurred';
+      setAgentError(message);
+      setToast(`Agent execution failed: ${message}`);
     } finally {
       setRunning(null);
+    }
+  }
+
+  async function handleResumeFileUpload(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    try {
+      setResumeFileName(file.name);
+      const base64 = await file.arrayBuffer().then((buffer) => btoa(String.fromCharCode(...new Uint8Array(buffer))));
+      setResumeText(base64);
+      setToast('File uploaded. Ready to parse.');
+    } catch (error) {
+      console.error('Resume upload failed', error);
+      setToast('Could not read resume file.');
     }
   }
 
@@ -205,10 +230,25 @@ export default function AgentsPage() {
                     </div>
                     <p style={{ fontSize: '13px', color: '#71717A', lineHeight: 1.6, margin: 0 }}>{agent.description}</p>
                     <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '6px' }}>Powered by AI</p>
+                    {agent.status === 'Error' && agent.key === 'scout' ? (
+                      <div className="text-red-500 text-sm mt-2">
+                        Error: {agentError || 'Unknown error occurred'}
+                      </div>
+                    ) : null}
+                    {agent.key === 'scout' ? (
+                      <a
+                        href="https://supabase.com/dashboard/project/_/functions"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ fontSize: '11px', marginTop: '6px', display: 'inline-block', color: 'var(--accent)' }}
+                      >
+                        View Logs
+                      </a>
+                    ) : null}
                   </div>
                   <button type="button" onClick={() => triggerAgent(agent.key)} disabled={isRunning} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold" style={{ border: '1px solid var(--border)', backgroundColor: isRunning ? 'var(--bg-subtle)' : 'var(--bg-surface)', color: 'var(--text-secondary)' }}>
                     {isRunning ? <Loader2 size={12} className="animate-spin" /> : <Play size={12} />}
-                    {isRunning ? 'Running...' : agent.key === 'scout' ? 'Run Scout' : 'Run now'}
+                    {isRunning ? 'Running...' : agent.key === 'scout' ? 'Run Scout' : agent.key === 'match' ? 'Run Match' : 'Run now'}
                   </button>
                 </div>
               </div>
@@ -231,13 +271,7 @@ export default function AgentsPage() {
               type="file"
               accept=".pdf,.doc,.docx,.txt"
               hidden
-              onChange={async (e) => {
-                const file = e.target.files?.[0];
-                if (!file) return;
-                setResumeFileName(file.name);
-                const text = await file.text();
-                setResumeText(text);
-              }}
+              onChange={handleResumeFileUpload}
             />
           </label>
           {resumeFileName && <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 6 }}>{resumeFileName}</p>}
@@ -256,6 +290,19 @@ export default function AgentsPage() {
             </div>
           )}
         </div>
+
+        {matchResults.length > 0 ? (
+          <div className="card p-5" style={{ marginBottom: '18px' }}>
+            <h2 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '8px' }}>Match Results</h2>
+            <ol style={{ margin: 0, paddingLeft: '18px', color: 'var(--text-secondary)', fontSize: '13px' }}>
+              {matchResults.map((match) => (
+                <li key={match.candidateId} style={{ marginBottom: '8px' }}>
+                  {match.candidateId} — {Math.round(match.matchScore * 100)}% match
+                </li>
+              ))}
+            </ol>
+          </div>
+        ) : null}
 
         <h2 style={{ fontSize: '14px', fontWeight: 600, marginBottom: '10px', color: 'var(--text-primary)' }}>Agent Activity</h2>
         <LiveActivityFeed initialEntries={activity} simulate={false} />

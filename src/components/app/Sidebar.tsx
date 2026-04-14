@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, GitBranch, Briefcase, Mail, Zap, Settings, LogOut, Menu, X, Sun, Moon, Building2, Shield } from 'lucide-react';
+import { LayoutDashboard, GitBranch, Briefcase, Mail, Zap, Settings, LogOut, Menu, X, Sun, Moon, Building2, Shield, Inbox } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../lib/auth';
 import { useTheme } from '../../lib/theme';
@@ -26,13 +26,13 @@ export default function Sidebar() {
   const canAccessCrm = user?.role === 'admin' || user?.role === 'owner';
   const isAdminUser = supabaseUser?.email === 'joel@aliviosearchpartners.com';
   const adminNavItems = [
-    { label: 'Admin Dashboard', href: '/admin' },
-    { label: 'Email Inbox', href: '/admin/email-inbox' },
-    { label: 'Tasks', href: '/admin/tasks' },
-    { label: 'CRM', href: '/dashboard/crm' },
-    { label: 'Users', href: '/admin/users' },
-    { label: 'AI Monitor', href: '/admin/ai-monitor' },
-    { label: 'Blog Manager', href: '/admin/blog' },
+    { label: 'Admin Dashboard', href: '/admin', icon: Shield },
+    { label: 'Email Inbox', href: '/admin/email-inbox', icon: Inbox },
+    { label: 'Tasks', href: '/admin/tasks', icon: LayoutDashboard },
+    { label: 'CRM', href: '/dashboard/crm', icon: Building2 },
+    { label: 'Users', href: '/admin/users', icon: Briefcase },
+    { label: 'AI Monitor', href: '/admin/ai-monitor', icon: Zap },
+    { label: 'Blog Manager', href: '/admin/blog', icon: Mail },
   ];
 
   const navItems = [
@@ -127,6 +127,7 @@ export default function Sidebar() {
             <div className="space-y-0.5">
               {adminNavItems.map((item) => {
                 const isAdminActive = location.pathname === item.href || location.pathname.startsWith(item.href + '/');
+                const AdminIcon = item.icon;
                 return (
                   <Link
                     key={item.href}
@@ -134,6 +135,7 @@ export default function Sidebar() {
                     onClick={() => setMobileOpen(false)}
                     className={`nav-item${isAdminActive ? ' active' : ''}`}
                   >
+                    <AdminIcon size={14} strokeWidth={isAdminActive ? 2.2 : 1.8} style={{ flexShrink: 0 }} />
                     <span className="flex-1 truncate">{item.label}</span>
                   </Link>
                 );
