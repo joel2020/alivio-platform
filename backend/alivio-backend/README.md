@@ -104,11 +104,15 @@ Expected behavior:
 ### Files
 
 - `frontend/alivio-api-client.js`
-  - Lightweight reusable API client for website use.
+  - Lightweight reusable API client for website usage.
+  - Methods: `vertexSearch(...)` and `recruiterSearch(...)`.
   - Exposes `window.AlivioApiClient.createClient(...)` in browsers.
-  - Also supports CommonJS import (`require(...)`) for server-rendered pages.
+  - Supports CommonJS import (`require(...)`) for server-rendered pages.
 - `examples/website-integration-example.html`
-  - Minimal website flow (query input -> backend call -> render ranked matches and outreach draft).
+  - Static-site-ready example with selectable call to `/api/vertex-search` or `/api/recruiter-search`.
+  - Includes recruiter UI flow: query input -> request -> render ranked matches + outreach draft.
+- `examples/frontend-integration-usage.js`
+  - Small helper examples for static + simple JS app + server-rendered page integration.
 
 ### Client usage
 
@@ -119,14 +123,19 @@ Expected behavior:
     baseUrl: 'https://api.aliviosearchpartners.com'
   });
 
+  const vertexResult = await client.vertexSearch({
+    query: 'Find ICU travel nurses in Texas with active compact RN license',
+    pageSize: 8
+  });
+
   const recruiterResult = await client.recruiterSearch({
-    query: 'Find Directors of Nursing in New Jersey with SNF experience',
+    query: 'Match this role to likely candidates: Director of Nursing in New Jersey, SNF and multi-site leadership required',
     pageSize: 10
   });
 </script>
 ```
 
-If your backend is reverse-proxied on the same domain under `/api`, set `baseUrl` to an empty string and keep API paths relative.
+If your backend is reverse-proxied on the same domain under `/api`, set `baseUrl` to empty (`''`) and keep API paths relative.
 
 ## Website integration contract
 
@@ -190,13 +199,13 @@ Request JSON:
 }
 ```
 
-Success response rendering fields:
+### Response rendering fields from `/api/recruiter-search`
 
 - `generated.ranked_matches` (array): render as ranked cards/list rows.
 - `generated.explanation` (string): render as why-these-matches summary.
 - `generated.outreach_draft` (string): render in recruiter outreach editor.
 - `grounded.results` (array): optional evidence/debug panel for confidence and provenance.
-- `requestId` (string, on errors and many proxies): surface in support logs and incident tickets when available.
+- `requestId` (string, on errors and some proxies): surface in support logs and incident tickets when available.
 
 Error response shape (`4xx/5xx`):
 
@@ -214,6 +223,28 @@ Error response shape (`4xx/5xx`):
 }
 ```
 
+## Website-oriented integration patterns
+
+### 1) Static site
+
+- Serve `frontend/alivio-api-client.js` as an asset.
+- Instantiate with `baseUrl` pointing at API origin or blank for same-origin `/api` proxy.
+- Use `examples/website-integration-example.html` as a drop-in starter.
+
+### 2) Simple JavaScript app
+
+- Use `examples/frontend-integration-usage.js` and call `runSimpleAppFlow(client, query)`.
+- Bind query input and render blocks to:
+  - ranked matches (`generated.ranked_matches`)
+  - explanation (`generated.explanation`)
+  - outreach draft (`generated.outreach_draft`)
+
+### 3) Server-rendered page (Node)
+
+- Require the shared client (`frontend/alivio-api-client.js`) in your route/controller.
+- Fetch from backend on server side, then render HTML with hydrated response sections.
+- Use `createServerRenderedModel(...)` in `examples/frontend-integration-usage.js` as a template.
+
 ## Website deployment topology and routing
 
 Use either topology; keep auth backend-only in both.
@@ -224,7 +255,7 @@ Use either topology; keep auth backend-only in both.
 - Backend origin: `https://api.aliviosearchpartners.com`
 - Frontend client config: `baseUrl: 'https://api.aliviosearchpartners.com'`
 
-When using this topology, browser CORS is typically required.
+This topology is usually cleanest when backend and website are deployed independently.
 
 ### Topology B: backend mounted under `/api` on same origin
 
@@ -232,7 +263,7 @@ When using this topology, browser CORS is typically required.
 - Backend routed behind same domain path prefix, e.g. `/api/*`
 - Frontend client config: `baseUrl: ''` and call relative backend paths
 
-This avoids cross-origin calls and usually avoids CORS configuration.
+This avoids cross-origin browser requests and usually avoids CORS configuration.
 
 ### Routing assumptions to keep consistent
 

@@ -53,7 +53,8 @@
       var response = await fetchImpl(baseUrl + path, {
         method: 'POST',
         headers: headers,
-        body: JSON.stringify(body || {})
+        body: JSON.stringify(body || {}),
+        signal: opts.signal
       });
 
       var rawText = await response.text();

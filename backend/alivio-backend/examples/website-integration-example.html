@@ -7,7 +7,7 @@
     <style>
       body { font-family: Arial, sans-serif; margin: 24px auto; max-width: 860px; line-height: 1.4; }
       .row { margin: 12px 0; }
-      select, textarea, button { width: 100%; padding: 10px; font-size: 14px; }
+      select, textarea, input, button { width: 100%; padding: 10px; font-size: 14px; }
       textarea { min-height: 86px; }
       button { cursor: pointer; }
       pre { background: #f6f8fa; border-radius: 8px; padding: 12px; overflow: auto; }
@@ -28,6 +28,14 @@
     </div>
 
     <div class="row">
+      <label for="apiRoute">API route</label>
+      <select id="apiRoute">
+        <option value="recruiter">POST /api/recruiter-search</option>
+        <option value="vertex">POST /api/vertex-search</option>
+      </select>
+    </div>
+
+    <div class="row">
       <label for="useCase">Use case</label>
       <select id="useCase"></select>
     </div>
@@ -38,7 +46,7 @@
     </div>
 
     <div class="row">
-      <button id="runBtn">Run recruiter search</button>
+      <button id="runBtn">Run search</button>
     </div>
 
     <h2>Ranked matches</h2>
@@ -47,7 +55,7 @@
     <h2>Outreach draft</h2>
     <pre id="outreachDraft">Waiting for request…</pre>
 
-    <h2>Grounded top result (debug)</h2>
+    <h2>Grounded result preview</h2>
     <pre id="groundedTop">Waiting for request…</pre>
 
     <script src="../frontend/alivio-api-client.js"></script>
@@ -87,6 +95,7 @@
 
       document.getElementById('runBtn').addEventListener('click', async function () {
         var apiBase = document.getElementById('apiBase').value.trim();
+        var apiRoute = document.getElementById('apiRoute').value;
         var query = queryInput.value.trim();
 
         if (!query) {
@@ -100,14 +109,25 @@
 
         try {
           var client = window.AlivioApiClient.createClient({ baseUrl: apiBase });
-          var data = await client.recruiterSearch({ query: query, pageSize: 10 });
+          var data =
+            apiRoute === 'recruiter'
+              ? await client.recruiterSearch({ query: query, pageSize: 10 })
+              : await client.vertexSearch({ query: query, pageSize: 10 });
 
-          rankedMatches.textContent = JSON.stringify(data.generated.ranked_matches || [], null, 2);
-          outreachDraft.textContent = data.generated.outreach_draft || '(No outreach draft returned)';
+          var results = data.grounded && data.grounded.results ? data.grounded.results : [];
+
+          if (apiRoute === 'recruiter') {
+            rankedMatches.textContent = JSON.stringify(data.generated.ranked_matches || [], null, 2);
+            outreachDraft.textContent = data.generated.outreach_draft || '(No outreach draft returned)';
+          } else {
+            rankedMatches.textContent = JSON.stringify(results, null, 2);
+            outreachDraft.textContent = 'Vertex route returns grounded retrieval only.';
+          }
+
           groundedTop.textContent = JSON.stringify(
             {
-              explanation: data.generated.explanation || null,
-              topGroundedResult: data.grounded && data.grounded.results ? data.grounded.results[0] : null,
+              explanation: data.generated ? data.generated.explanation || null : null,
+              topGroundedResult: results[0] || null,
               requestId: data.requestId || null
             },
             null,
@@ -115,7 +135,8 @@
           );
         } catch (error) {
           rankedMatches.textContent = 'Error: ' + error.message;
-          outreachDraft.textContent = 'status=' + (error.status || 'unknown') + ' requestId=' + (error.requestId || 'n/a');
+          outreachDraft.textContent =
+            'status=' + (error.status || 'unknown') + ' requestId=' + (error.requestId || 'n/a');
           groundedTop.textContent = JSON.stringify(error.payload || {}, null, 2);
         }
       });
