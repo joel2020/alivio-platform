@@ -162,7 +162,7 @@ app.post('/api/recruiter-search', async (req, res, next) => {
 
   try {
     if (!config.openai.apiKey) {
-      throw new AppError('OPENAI_API_KEY is required for recruiter generation', {
+      throw new AppError('LLM_API_KEY (or OPENAI_API_KEY) is required for recruiter generation', {
         status: 500,
         code: 'OPENAI_MISSING_API_KEY',
         expose: true
