@@ -6,7 +6,8 @@ import { useAuth } from '../../lib/auth';
 import type { Candidate, VoiceCall, VoiceTranscript, AgentActivityLog, CandidateFeedback, PipelineStage, Role } from '../../lib/types';
 import { AGENT_COLORS, PIPELINE_STAGES, STAGE_LABELS } from '../../lib/types';
 import ScoreExplainer from '../../components/app/ScoreExplainer';
-import { generateOutreachEmail } from '../../lib/ai';
+import { generateOutreachEmail, parseResume } from '../../lib/ai';
+import Toast from '../../components/app/Toast';
 
 function ScoreRing({ score }: { score: number }) {
   const pct = score * 100;
@@ -353,6 +354,9 @@ export default function CandidatePage() {
   const [feedbackNote, setFeedbackNote] = useState('');
   const [transcriptSearch, setTranscriptSearch] = useState('');
   const [loading, setLoading] = useState(true);
+  const [resumeText, setResumeText] = useState('');
+  const [parsingResume, setParsingResume] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -400,6 +404,47 @@ export default function CandidatePage() {
     if (data) setFeedback([data, ...feedback]);
     setFeedbackNote('');
     setFeedbackRating(null);
+  }
+
+  async function handleParseResume() {
+    if (!candidate || !role || !resumeText.trim()) {
+      setToast('Paste resume text before parsing.');
+      return;
+    }
+    setParsingResume(true);
+    try {
+      const parsed = await parseResume(resumeText.trim());
+      const latestRole = parsed.data.recentRoles[0];
+      const updates = {
+        full_name: parsed.data.fullName || candidate.full_name,
+        current_title: latestRole?.title || candidate.current_title,
+        current_company: latestRole?.company || candidate.current_company,
+        experience_years: parsed.data.yearsExperience ?? candidate.experience_years,
+        skills: parsed.data.skills.length > 0 ? parsed.data.skills : candidate.skills,
+        certifications: parsed.data.certifications,
+        licenses: parsed.data.certifications.filter((item) => item.toLowerCase().includes('license')),
+        education: parsed.data.education.join(' · ') || candidate.education,
+        location: parsed.data.location || candidate.location,
+        profile_data: { ...(candidate.profile_data || {}), parsedResume: parsed.data },
+      };
+      await supabase.from('candidates').update(updates).eq('id', candidate.id);
+      await supabase.from('agent_activity_log').insert({
+        org_id: candidate.org_id,
+        role_id: role.id,
+        candidate_id: candidate.id,
+        agent_name: 'enrich',
+        action: 'Resume parsed with AI',
+        detail: `Extracted profile fields for ${updates.full_name}.`,
+        metadata: {},
+      });
+      setCandidate({ ...candidate, ...updates });
+      setToast('Resume parsed and candidate profile updated.');
+    } catch (error) {
+      console.error(error);
+      setToast('Resume parsing failed. Please try again.');
+    } finally {
+      setParsingResume(false);
+    }
   }
 
   const selectedCall = calls.find(c => c.id === selectedCallId) || null;
@@ -550,6 +595,33 @@ export default function CandidatePage() {
               className="p-6 rounded-xl border"
               style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)', boxShadow: 'var(--shadow)' }}
             >
+              <div style={{ marginBottom: '16px' }}>
+                <h3 className="text-xs font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Parse Resume</h3>
+                <textarea
+                  value={resumeText}
+                  onChange={(e) => setResumeText(e.target.value)}
+                  placeholder="Paste resume text to extract profile fields..."
+                  rows={4}
+                  style={{ width: '100%', border: '1px solid var(--border)', borderRadius: '10px', padding: '10px 12px', fontSize: '13px', backgroundColor: 'var(--bg-surface)' }}
+                />
+                <input
+                  type="file"
+                  accept=".txt,.md,.rtf"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const text = await file.text();
+                    setResumeText(text);
+                  }}
+                  style={{ marginTop: '8px', fontSize: '12px', color: 'var(--text-muted)' }}
+                />
+                <div className="flex items-center gap-2 mt-2">
+                  <button onClick={handleParseResume} disabled={parsingResume} className="btn-secondary" style={{ fontSize: '0.75rem', padding: '6px 12px' }}>
+                    {parsingResume ? 'Parsing...' : 'Parse Resume'}
+                  </button>
+                  <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Powered by AI</span>
+                </div>
+              </div>
               <h2 className="text-sm font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>Profile</h2>
               <div className="space-y-4">
                 {candidate.experience_years !== null && (
@@ -883,6 +955,7 @@ export default function CandidatePage() {
           </div>
         )}
       </div>
+      {toast && <Toast message={toast} onDismiss={() => setToast(null)} />}
     </div>
   );
 }

@@ -1,22 +1,32 @@
 import { useState, useCallback } from 'react';
-import { Copy, RefreshCw, Wand2, Check } from 'lucide-react';
-import type { FakeCandidate, Channel, Tone, GeneratedMessage } from './messageTemplates';
+import { Copy, RefreshCw, Wand2, Check, Loader2, Send } from 'lucide-react';
+import type { Channel, Tone, GeneratedMessage } from './messageTemplates';
 import { getNextTone } from './messageTemplates';
 import type { Role } from '../../../lib/types';
 import { generateOutreachEmail, type OutreachTone } from '../../../lib/ai';
 import Toast from '../Toast';
 
+interface OutreachCandidate {
+  id: string;
+  name: string;
+  title?: string | null;
+  company?: string | null;
+  experience: number;
+  skills: string[];
+}
+
 interface OutreachGeneratorProps {
-  candidate: FakeCandidate;
+  candidate: OutreachCandidate;
   role: Role;
   senderName: string;
-  onMessageGenerated: (msg: {
+  onSend: (payload: {
     candidateName: string;
     roleTitle: string;
     channel: Channel;
     tone: Tone;
     message: GeneratedMessage;
-  }) => void;
+  }) => Promise<void>;
+  onGenerated?: (payload: { tone: Tone; channel: Channel; subject: string }) => Promise<void> | void;
 }
 
 const CHANNELS: Channel[] = ['Email', 'LinkedIn', 'InMail'];
@@ -38,15 +48,7 @@ function PillToggle<T extends string>({
   onChange: (val: T) => void;
 }) {
   return (
-    <div
-      style={{
-        display: 'inline-flex',
-        gap: '4px',
-        padding: '3px',
-        backgroundColor: 'var(--bg-subtle)',
-        borderRadius: '10px',
-      }}
-    >
+    <div style={{ display: 'inline-flex', gap: '4px', padding: '3px', backgroundColor: 'var(--bg-subtle)', borderRadius: '10px' }}>
       {options.map((opt) => {
         const active = selected === opt;
         return (
@@ -62,8 +64,6 @@ function PillToggle<T extends string>({
               color: active ? '#ffffff' : 'var(--text-secondary)',
               border: 'none',
               cursor: 'pointer',
-              transition: 'all 0.15s ease',
-              whiteSpace: 'nowrap',
             }}
           >
             {opt}
@@ -78,18 +78,19 @@ export default function OutreachGenerator({
   candidate,
   role,
   senderName,
-  onMessageGenerated,
+  onSend,
+  onGenerated,
 }: OutreachGeneratorProps) {
   const [channel, setChannel] = useState<Channel>('Email');
   const [tone, setTone] = useState<Tone>('Professional');
   const [loading, setLoading] = useState(false);
+  const [sending, setSending] = useState(false);
   const [message, setMessage] = useState<GeneratedMessage | null>(null);
-  const [variationIndex, setVariationIndex] = useState(0);
   const [copied, setCopied] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
   const generate = useCallback(
-    async (ch: Channel, tn: Tone, varIdx: number) => {
+    async (tn: Tone) => {
       setLoading(true);
       setMessage(null);
       try {
@@ -99,25 +100,17 @@ export default function OutreachGenerator({
             name: candidate.name,
             experienceYears: candidate.experience,
             skills: candidate.skills,
-            notes: `${candidate.title} at ${candidate.company}`,
+            notes: `${candidate.title || 'Candidate'} at ${candidate.company || 'Unknown org'}`,
           },
           `${role.title}${role.description ? ` - ${role.description}` : ''}`,
           toOutreachTone(tn),
         );
 
-        const msg: GeneratedMessage = {
+        setMessage({
           subject: aiResult.data.subject,
           body: aiResult.data.body,
-        };
-
-        setMessage(msg);
-        onMessageGenerated({
-          candidateName: candidate.name,
-          roleTitle: role.title,
-          channel: ch,
-          tone: tn,
-          message: msg,
         });
+        await onGenerated?.({ tone: tn, channel, subject: aiResult.data.subject });
       } catch (error) {
         console.error('Failed to generate outreach', error);
         setToast('Unable to generate outreach right now. Please try again.');
@@ -125,38 +118,52 @@ export default function OutreachGenerator({
         setLoading(false);
       }
     },
-    [candidate, role, onMessageGenerated]
+    [candidate, role, onGenerated, channel],
   );
 
   async function handleGenerate() {
-    setVariationIndex(0);
-    await generate(channel, tone, 0);
+    await generate(tone);
   }
 
   async function handleRegenerate() {
-    const nextIdx = variationIndex + 1;
-    setVariationIndex(nextIdx);
-    await generate(channel, tone, nextIdx);
+    await generate(tone);
   }
 
   async function handleDifferentTone() {
     const nextTone = getNextTone(tone);
     setTone(nextTone);
-    setVariationIndex(0);
-    await generate(channel, nextTone, 0);
+    await generate(nextTone);
   }
 
   async function handleCopy() {
     if (!message) return;
-    const text = message.subject
-      ? `Subject: ${message.subject}\n\n${message.body}`
-      : message.body;
+    const text = message.subject ? `Subject: ${message.subject}\n\n${message.body}` : message.body;
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
       setToast('Clipboard not available in this browser.');
+    }
+  }
+
+  async function handleSend() {
+    if (!message) return;
+    setSending(true);
+    try {
+      await onSend({
+        candidateName: candidate.name,
+        roleTitle: role.title,
+        channel,
+        tone,
+        message,
+      });
+      setToast('Outreach sent and logged.');
+    } catch (error) {
+      console.error(error);
+      setToast('Unable to send outreach email.');
+    } finally {
+      setSending(false);
     }
   }
 
@@ -168,15 +175,11 @@ export default function OutreachGenerator({
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', marginBottom: '20px' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-            Channel
-          </span>
+          <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Channel</span>
           <PillToggle options={CHANNELS} selected={channel} onChange={setChannel} />
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-            Tone
-          </span>
+          <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Tone</span>
           <PillToggle options={TONES} selected={tone} onChange={setTone} />
         </div>
       </div>
@@ -184,43 +187,22 @@ export default function OutreachGenerator({
       <button
         onClick={handleGenerate}
         disabled={loading}
-        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', height: '44px', backgroundColor: 'var(--accent)', color: '#ffffff', fontSize: '14px', fontWeight: 600, border: 'none', borderRadius: '10px', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.75 : 1, transition: 'all 0.15s ease', boxShadow: '0 1px 2px rgba(0,0,0,0.04)', marginBottom: '24px' }}
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', height: '44px', backgroundColor: 'var(--accent)', color: '#ffffff', fontSize: '14px', fontWeight: 600, border: 'none', borderRadius: '10px', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.75 : 1, marginBottom: '10px' }}
       >
-        <Wand2 size={15} strokeWidth={2} />
-        {loading ? 'Generating...' : 'Generate Message'}
+        {loading ? <Loader2 size={15} className="animate-spin" /> : <Wand2 size={15} strokeWidth={2} />}
+        {loading ? 'Generating...' : 'Generate Outreach'}
       </button>
-
-      {loading && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '20px 24px', backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: '12px', marginBottom: '16px' }}>
-          <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-            {[0, 1, 2].map((i) => (
-              <div key={i} style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--accent)', animation: 'bounce 1.2s infinite', animationDelay: `${i * 0.2}s` }} />
-            ))}
-          </div>
-          <span style={{ fontSize: '14px', color: 'var(--text-secondary)', fontWeight: 500 }}>Generating personalized outreach...</span>
-        </div>
-      )}
+      <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '24px' }}>Powered by AI</p>
 
       {message && !loading && (
-        <div
-          style={{
-            border: '1px solid var(--border)',
-            borderRadius: '12px',
-            padding: '20px',
-            backgroundColor: 'var(--bg-surface)',
-          }}
-        >
+        <div style={{ border: '1px solid var(--border)', borderRadius: '12px', padding: '20px', backgroundColor: 'var(--bg-surface)' }}>
           {message.subject && (
             <div style={{ marginBottom: '12px' }}>
-              <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 600 }}>
-                Subject
-              </p>
+              <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 600 }}>Subject</p>
               <p style={{ fontSize: '14px', color: 'var(--text-primary)', margin: 0, fontWeight: 600 }}>{message.subject}</p>
             </div>
           )}
-          <pre
-            style={{ whiteSpace: 'pre-wrap', margin: 0, fontFamily: 'Inter, sans-serif', color: 'var(--text-secondary)', lineHeight: 1.65, fontSize: '14px' }}
-          >
+          <pre style={{ whiteSpace: 'pre-wrap', margin: 0, fontFamily: 'Inter, sans-serif', color: 'var(--text-secondary)', lineHeight: 1.65, fontSize: '14px' }}>
             {message.body}\n\n— {senderName}
           </pre>
 
@@ -231,11 +213,16 @@ export default function OutreachGenerator({
             <button onClick={handleDifferentTone} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', border: '1px solid var(--border)', background: 'var(--bg-surface)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '8px 12px', fontSize: '12px', fontWeight: 600 }}>
               <Wand2 size={14} /> Try Different Tone
             </button>
-            <button onClick={handleCopy} style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: '6px', border: '1px solid var(--border)', background: copied ? 'var(--success-subtle)' : 'var(--bg-surface)', color: copied ? 'var(--success)' : 'var(--text-secondary)', borderRadius: '8px', padding: '8px 12px', fontSize: '12px', fontWeight: 600 }}>
+            <button onClick={handleCopy} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', border: '1px solid var(--border)', background: copied ? 'var(--success-subtle)' : 'var(--bg-surface)', color: copied ? 'var(--success)' : 'var(--text-secondary)', borderRadius: '8px', padding: '8px 12px', fontSize: '12px', fontWeight: 600 }}>
               {copied ? <Check size={14} /> : <Copy size={14} />}
               {copied ? 'Copied' : 'Copy'}
             </button>
+            <button onClick={handleSend} disabled={sending} style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: '6px', border: 'none', background: 'var(--accent)', color: '#fff', borderRadius: '8px', padding: '8px 12px', fontSize: '12px', fontWeight: 700, opacity: sending ? 0.7 : 1 }}>
+              {sending ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
+              {sending ? 'Sending...' : 'Send'}
+            </button>
           </div>
+          <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '12px' }}>Preview generated by AI before sending.</p>
         </div>
       )}
 
