@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Candidate to Job Match Output (Mock Rendering)</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 20px auto; max-width: 900px; }
+      .muted { color: #667085; }
+      .card { border: 1px solid #ddd; border-radius: 8px; padding: 12px; margin-bottom: 8px; }
+      .row { display: flex; justify-content: space-between; gap: 8px; }
+      pre { background: #f6f8fa; padding: 12px; border-radius: 8px; white-space: pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <h1>Candidate-to-Job Match Output</h1>
+    <p class="muted">Mocked ranking + explanation + outreach pattern.</p>
+    <p id="status" class="muted"></p>
+
+    <header class="card">
+      <strong id="candidate-name">Loading…</strong>
+      <div id="candidate-headline"></div>
+      <small id="candidate-location"></small>
+    </header>
+
+    <section>
+      <h2>Ranked Job Matches</h2>
+      <div id="job-matches"></div>
+    </section>
+
+    <h2>Explanation</h2>
+    <pre id="explanation">Loading…</pre>
+
+    <h2>Outreach Draft</h2>
+    <pre id="outreach">Loading…</pre>
+
+    <script src="./rendering/candidate-to-job-match-output.js"></script>
+  </body>
+</html>

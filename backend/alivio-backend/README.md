@@ -109,6 +109,8 @@ Expected behavior:
   - Also supports CommonJS import (`require(...)`) for server-rendered pages.
 - `examples/website-integration-example.html`
   - Minimal website flow (query input -> backend call -> render ranked matches and outreach draft).
+- `examples/README.md`
+  - Mock response rendering references for frontend UI patterns (grounded results, ranked matches, explanation, outreach draft).
 
 ### Client usage
 

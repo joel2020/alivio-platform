@@ -1,0 +1,43 @@
+{
+  "ok": true,
+  "requestId": "mock-req-002",
+  "candidate_profile": {
+    "name": "Alex Morgan, RN",
+    "headline": "Director of Nursing | SNF | Multi-site Ops",
+    "location": "Newark, NJ",
+    "credentials": ["RN", "BLS", "State Survey Certified"]
+  },
+  "generated": {
+    "ranked_matches": [
+      {
+        "rank": 1,
+        "job_id": "JOB-312",
+        "job_title": "Director of Nursing",
+        "employer": "Garden State Care Network",
+        "location": "Newark, NJ",
+        "fit_score": 0.94,
+        "comp_band": "$140k-$160k",
+        "match_reasons": [
+          "Exact title alignment",
+          "SNF and multi-site requirement matches",
+          "Location is local"
+        ]
+      },
+      {
+        "rank": 2,
+        "job_id": "JOB-884",
+        "job_title": "Regional Clinical Operations Lead",
+        "employer": "TriCounty Post Acute",
+        "location": "North Jersey, NJ",
+        "fit_score": 0.88,
+        "comp_band": "$150k-$170k",
+        "match_reasons": [
+          "Multi-facility oversight",
+          "Quality and compliance emphasis"
+        ]
+      }
+    ],
+    "explanation": "Role ranking weighs title overlap, geography, and demonstrated multi-site SNF impact.",
+    "outreach_draft": "Alex, we mapped your profile to two high-fit leadership roles in New Jersey. Would you like a brief on compensation and team structure?"
+  }
+}
