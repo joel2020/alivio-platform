@@ -162,7 +162,7 @@ class AIService {
 
       return {
         data: data.data,
-        model: data.model ?? 'meta-llama/llama-4-maverick',
+        model: data.model ?? 'openrouter/free',
       };
     } catch (error) {
       const aiError = (error as AIServiceError).code

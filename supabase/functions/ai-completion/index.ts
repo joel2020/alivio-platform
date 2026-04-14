@@ -11,8 +11,7 @@ const isAuthorizedRequest = (): boolean => {
 };
 
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
-const DEFAULT_MODEL = "meta-llama/llama-3-70b-instruct";
-const FALLBACK_MODEL = "google/gemini-pro";
+const DEFAULT_MODEL = "openrouter/free";
 
 interface CompletionRequest {
   prompt: string;
@@ -36,6 +35,8 @@ interface OpenRouterResponse {
   };
 }
 
+const isAllowedFreeModel = (model: string): boolean => model === "openrouter/free" || model.endsWith(":free");
+
 async function callOpenRouter(
   apiKey: string,
   messages: OpenRouterMessage[],
@@ -47,7 +48,7 @@ async function callOpenRouter(
       "Content-Type": "application/json",
       Authorization: `Bearer ${apiKey}`,
       "HTTP-Referer": "https://aliviosearchpartners.com",
-      "X-Title": "Alivio Search Partners",
+      "X-OpenRouter-Title": "Alivio Search Partners",
     },
     body: JSON.stringify({
       model,
@@ -119,29 +120,14 @@ Deno.serve(async (req: Request) => {
       },
     ];
 
-    const preferredModel = model?.trim() || DEFAULT_MODEL;
+    const requestedModel = model?.trim();
+    const selectedModel = requestedModel && isAllowedFreeModel(requestedModel) ? requestedModel : DEFAULT_MODEL;
 
-    try {
-      const result = await callOpenRouter(apiKey, messages, preferredModel);
-      return new Response(JSON.stringify({ content: result.content, model: result.modelUsed }), {
-        status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    } catch (primaryError) {
-      if (preferredModel === FALLBACK_MODEL) {
-        throw primaryError;
-      }
-
-      const fallbackResult = await callOpenRouter(apiKey, messages, FALLBACK_MODEL);
-      return new Response(JSON.stringify({
-        content: fallbackResult.content,
-        model: fallbackResult.modelUsed,
-        fallbackFrom: preferredModel,
-      }), {
-        status: 200,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+    const result = await callOpenRouter(apiKey, messages, selectedModel);
+    return new Response(JSON.stringify({ content: result.content, model: result.modelUsed }), {
+      status: 200,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   } catch (error) {
     return new Response(JSON.stringify({ error: (error as Error).message }), {
       status: 500,
