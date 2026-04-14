@@ -237,3 +237,39 @@ export interface OutreachTemplate {
   sequence_step: number;
   created_at: string;
 }
+
+export type EmailProcessingStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'ignored';
+export type EmailClassification = 'resume_submission' | 'client_inquiry' | 'candidate_reply' | 'spam_irrelevant' | 'unknown';
+
+export interface EmailInboxRow {
+  id: string;
+  org_id: string;
+  message_id: string;
+  from_email: string | null;
+  from_name: string | null;
+  to_email: string | null;
+  subject: string | null;
+  body_text: string | null;
+  body_html: string | null;
+  received_at: string | null;
+  has_attachment: boolean;
+  attachment_names: string[];
+  processed: boolean;
+  processing_status: EmailProcessingStatus;
+  processing_notes: string | null;
+  classification: EmailClassification;
+  classification_data: Record<string, unknown>;
+  candidate_id: string | null;
+  created_at: string;
+}
+
+export interface ResumeAttachment {
+  id: string;
+  email_id: string;
+  file_name: string;
+  file_type: 'pdf' | 'docx' | 'doc' | 'txt';
+  file_content: string | null;
+  parsed_data: Record<string, unknown>;
+  candidate_id: string | null;
+  created_at: string;
+}
