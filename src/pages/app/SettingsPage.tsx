@@ -1,14 +1,115 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Check, Key, Building2, User, CreditCard } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
+import { supabase } from '../../lib/supabase';
+import Toast from '../../components/app/Toast';
+
+interface ApiKeyResponse {
+  key: string;
+  error?: string;
+}
 
 export default function SettingsPage() {
-  const { user, org } = useAuth();
+  const { user, org, session } = useAuth();
   const [saved, setSaved] = useState(false);
+  const [renewalDate, setRenewalDate] = useState('');
+  const [showApiKey, setShowApiKey] = useState(false);
+  const [apiBusy, setApiBusy] = useState(false);
+  const [confirmRegenerateOpen, setConfirmRegenerateOpen] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
+  const keyRef = useRef('');
+  const hideTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const nextRenewal = new Date();
+    nextRenewal.setFullYear(nextRenewal.getFullYear() + 1);
+    setRenewalDate(nextRenewal.toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    }));
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (hideTimerRef.current) {
+        window.clearTimeout(hideTimerRef.current);
+      }
+    };
+  }, []);
 
   function showSaved() {
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+  }
+
+  function clearVisibleKey() {
+    keyRef.current = '';
+    setShowApiKey(false);
+    if (hideTimerRef.current) {
+      window.clearTimeout(hideTimerRef.current);
+      hideTimerRef.current = null;
+    }
+  }
+
+  async function handleRevealKey() {
+    if (!session) {
+      setToast('Please log in to reveal your API key.');
+      return;
+    }
+
+    setApiBusy(true);
+    const { data, error } = await supabase.functions.invoke<ApiKeyResponse>('settings-api-key', {
+      body: { action: 'reveal' },
+    });
+    setApiBusy(false);
+
+    if (error || !data?.key) {
+      setToast(error?.message ?? data?.error ?? 'Unable to reveal key right now.');
+      return;
+    }
+
+    keyRef.current = data.key;
+    setShowApiKey(true);
+
+    if (hideTimerRef.current) {
+      window.clearTimeout(hideTimerRef.current);
+    }
+
+    hideTimerRef.current = window.setTimeout(() => {
+      clearVisibleKey();
+    }, 30000);
+  }
+
+  async function handleRegenerateKey() {
+    if (!session) {
+      setToast('Please log in to regenerate your API key.');
+      return;
+    }
+
+    setApiBusy(true);
+    const { data, error } = await supabase.functions.invoke<ApiKeyResponse>('settings-api-key', {
+      body: { action: 'regenerate' },
+    });
+    setApiBusy(false);
+    setConfirmRegenerateOpen(false);
+
+    if (error || !data?.key) {
+      setToast(error?.message ?? data?.error ?? 'Unable to regenerate key right now.');
+      return;
+    }
+
+    keyRef.current = data.key;
+    setShowApiKey(true);
+    setToast('API key regenerated successfully. This key will hide in 30 seconds.');
+
+    if (hideTimerRef.current) {
+      window.clearTimeout(hideTimerRef.current);
+    }
+
+    hideTimerRef.current = window.setTimeout(() => {
+      clearVisibleKey();
+    }, 30000);
   }
 
   return (
@@ -203,13 +304,18 @@ export default function SettingsPage() {
               fontSize: '0.75rem',
               color: 'var(--text-muted)',
               letterSpacing: '0.02em',
+              wordBreak: 'break-all',
             }}
           >
-            ak_live_••••••••••••••••••••••••••••••••
+            {showApiKey ? keyRef.current : 'ak_live_••••••••••••••••••••••••••••••••'}
           </div>
           <div className="flex items-center gap-2">
-            <button className="btn-secondary" style={{ fontSize: '0.75rem' }}>Reveal key</button>
-            <button className="btn-secondary" style={{ fontSize: '0.75rem' }}>Regenerate</button>
+            <button className="btn-secondary" style={{ fontSize: '0.75rem' }} onClick={handleRevealKey} disabled={apiBusy}>
+              Reveal key
+            </button>
+            <button className="btn-secondary" style={{ fontSize: '0.75rem' }} onClick={() => setConfirmRegenerateOpen(true)} disabled={apiBusy}>
+              Regenerate
+            </button>
           </div>
         </div>
 
@@ -248,7 +354,7 @@ export default function SettingsPage() {
                 <span className="badge badge-success">Current plan</span>
               </div>
               <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                $1,249 / mo · Renews April 10, 2025
+                $1,249 / mo · Renews {renewalDate}
               </p>
             </div>
             <button className="btn-secondary" style={{ fontSize: '0.75rem' }}>
@@ -257,6 +363,23 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+
+      {confirmRegenerateOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}>
+          <div className="card p-5" style={{ maxWidth: 420, width: '100%' }}>
+            <h3 style={{ color: 'var(--text-primary)', fontWeight: 700, marginBottom: 8 }}>Regenerate API key?</h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: 16 }}>
+              Are you sure? This will invalidate your current API key.
+            </p>
+            <div className="flex items-center justify-end gap-2">
+              <button className="btn-secondary" onClick={() => setConfirmRegenerateOpen(false)} disabled={apiBusy}>Cancel</button>
+              <button className="btn-primary" onClick={handleRegenerateKey} disabled={apiBusy}>Confirm</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {toast && <Toast message={toast} onDismiss={() => setToast(null)} duration={4000} />}
     </div>
   );
 }

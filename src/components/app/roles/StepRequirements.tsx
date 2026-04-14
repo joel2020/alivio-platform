@@ -1,5 +1,4 @@
 import type { RoleFormData } from './roleFormTypes';
-import { generateJobDescription } from '../../../lib/ai';
 import TagInput from './TagInput';
 import { Loader2, Sparkles } from 'lucide-react';
 import { useState } from 'react';
@@ -37,7 +36,16 @@ interface StepRequirementsProps {
   onGenerationError: (message: string) => void;
 }
 
-function buildDescriptionFromAIResponse(output: Awaited<ReturnType<typeof generateJobDescription>>['data']): string {
+type JobDescriptionResponse = {
+  data: {
+    summary: string;
+    responsibilities: string[];
+    qualifications: string[];
+  };
+  error?: string;
+};
+
+function buildDescriptionFromAIResponse(output: JobDescriptionResponse['data']): string {
   const lines: string[] = [];
   lines.push(output.summary.trim());
 
@@ -49,16 +57,6 @@ function buildDescriptionFromAIResponse(output: Awaited<ReturnType<typeof genera
   if (output.qualifications.length > 0) {
     lines.push('', 'Required Qualifications');
     lines.push(...output.qualifications.map(item => `• ${item}`));
-  }
-
-  if (output.preferredQualifications.length > 0) {
-    lines.push('', 'Preferred Qualifications');
-    lines.push(...output.preferredQualifications.map(item => `• ${item}`));
-  }
-
-  if (output.compensationNotes.length > 0) {
-    lines.push('', 'Compensation & Benefits');
-    lines.push(...output.compensationNotes.map(item => `• ${item}`));
   }
 
   return lines.join('\n');
@@ -83,12 +81,20 @@ export default function StepRequirements({
 
     try {
       setIsGenerating(true);
-      const result = await generateJobDescription(
-        data.title.trim(),
-        data.department.trim(),
-        requirementInputs,
-      );
-      onChange({ description: buildDescriptionFromAIResponse(result.data) });
+      const response = await supabase.functions.invoke<JobDescriptionResponse>('ai-generate-job', {
+        body: {
+          title: data.title.trim(),
+          department: data.department.trim(),
+          requirements: requirementInputs,
+        },
+      });
+
+      if (response.error || !response.data?.data) {
+        onGenerationError(response.error?.message ?? response.data?.error ?? 'AI generation failed. Please try again.');
+        return;
+      }
+
+      onChange({ description: buildDescriptionFromAIResponse(response.data.data) });
       onAIGeneratedChange(true);
       if (user?.org_id) {
         await supabase.from('agent_activity_log').insert({
@@ -102,8 +108,7 @@ export default function StepRequirements({
         });
       }
     } catch (error) {
-      console.error('Failed to generate role description', error);
-      onGenerationError('AI generation failed. Please try again.');
+      onGenerationError(error instanceof Error ? error.message : 'AI generation failed. Please try again.');
     } finally {
       setIsGenerating(false);
     }

@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, GitBranch, Briefcase, Mail, Zap, Settings, LogOut, Menu, X, Sun, Moon, Building2, Inbox, Shield } from 'lucide-react';
+import { LayoutDashboard, GitBranch, Briefcase, Mail, Zap, Settings, LogOut, Menu, X, Sun, Moon, Building2, Shield } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../lib/auth';
 import { useTheme } from '../../lib/theme';
@@ -24,18 +24,15 @@ export default function Sidebar() {
   }, [user?.org_id]);
 
   const canAccessCrm = user?.role === 'admin' || user?.role === 'owner';
-  const canAccessEmailInbox = (supabaseUser?.email || '').toLowerCase() === 'joel@aliviosearchpartners.com';
-
-  const isAdminUser = (user?.email || '').toLowerCase() === 'joel@aliviosearchpartners.com';
+  const isAdminUser = supabaseUser?.email === 'joel@aliviosearchpartners.com';
   const adminNavItems = [
-    { label: 'Overview', href: '/admin' },
-    { label: 'Users', href: '/admin/users' },
-    { label: 'Organizations', href: '/admin/organizations' },
-    { label: 'CRM', href: '/admin/crm' },
-    { label: 'Blog', href: '/admin/blog' },
-    { label: 'AI Monitor', href: '/admin/ai-monitor' },
-    { label: 'Emails', href: '/admin/emails' },
+    { label: 'Admin Dashboard', href: '/admin' },
+    { label: 'Email Inbox', href: '/admin/email-inbox' },
     { label: 'Tasks', href: '/admin/tasks' },
+    { label: 'CRM', href: '/dashboard/crm' },
+    { label: 'Users', href: '/admin/users' },
+    { label: 'AI Monitor', href: '/admin/ai-monitor' },
+    { label: 'Blog Manager', href: '/admin/blog' },
   ];
 
   const navItems = [
@@ -44,7 +41,6 @@ export default function Sidebar() {
     { label: 'Roles', href: '/roles', icon: Briefcase, badge: activeRoleCount },
     { label: 'Outreach', href: '/outreach', icon: Mail },
     ...(canAccessCrm ? [{ label: 'CRM', href: '/dashboard/crm', icon: Building2 }] : []),
-    ...(canAccessEmailInbox ? [{ label: 'Email Inbox', href: '/admin/email-inbox', icon: Inbox }] : []),
     { label: 'Agents', href: '/agents', icon: Zap },
     { label: 'Settings', href: '/settings', icon: Settings },
   ];
