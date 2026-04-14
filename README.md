@@ -4,6 +4,15 @@
 
 [![CI](https://github.com/aliviosearchpartners/alivio-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/aliviosearchpartners/alivio-platform/actions/workflows/ci.yml)
 
+## Table of contents
+
+- [Local setup](#local-setup)
+- [Checks](#checks)
+- [Email Agent (IMAP + AI) setup](#email-agent-imap--ai-setup)
+- [Alivio Multi-Agent Backend](#alivio-multi-agent-backend)
+- [Alivio recruiter dashboard (vanilla HTML)](#alivio-recruiter-dashboard-vanilla-html)
+- [Custom Domain Setup (Production)](CUSTOM-DOMAIN-SETUP.md)
+
 ## Local setup
 
 1. Install dependencies:
