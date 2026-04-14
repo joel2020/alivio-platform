@@ -1,70 +1,153 @@
-# Alivio Backend Scaffold (CommonJS)
+# Alivio Search Partners Backend (CommonJS)
 
-This folder is the **scaffold target path** for the Alivio recruiter backend:
+Production-leaning Express backend for Alivio Search Partners retrieval and recruiter-assist generation.
 
-- `backend/alivio-backend`
-
-> Status: **Scaffold only**. This merge is intentionally pending runtime validation of Vertex IAM permissions, service-account wiring, and environment variables.
-
-## Implemented routes
+## Routes
 
 - `GET /health`
 - `POST /api/vertex-search`
 - `POST /api/recruiter-search`
 
-## Runtime assumptions
+Reusable sample recruiter query:
 
-- Backend-only Google auth via `GOOGLE_APPLICATION_CREDENTIALS`
-- Local development key path: `C:\alivio-backend\service-account.json`
-- Primary intended service account: `vertex-express@alivio-475419.iam.gserviceaccount.com`
-- Vertex endpoint:
-  `https://discoveryengine.googleapis.com/v1alpha/projects/807488403515/locations/global/collections/default_collection/engines/alivio-search_1776189054215/servingConfigs/default_search:search`
-- Serving config:
-  `projects/807488403515/locations/global/collections/default_collection/engines/alivio-search_1776189054215/servingConfigs/default_search`
+`Find Directors of Nursing in New Jersey with SNF experience and multi-site leadership`
 
-## PowerShell (Windows) local run
+## Local run
 
-```powershell
-# 1) Enter scaffold backend folder in this repo
+```bash
 cd backend/alivio-backend
-
-# 2) Install dependencies
 npm install
-
-# 3) Create local env file
-Copy-Item .env.example .env
-
-# 4) Start API server
+cp .env.example .env
 npm run dev
 ```
 
-## PowerShell quick tests
+Server defaults to `http://localhost:8080`.
 
-```powershell
-# Health
-Invoke-RestMethod -Method GET -Uri http://localhost:8080/health
+## Environment variables
 
-# Shared body
-$body = @{ query = 'Find Directors of Nursing in New Jersey with SNF experience and multi-site leadership'; pageSize = 10 } | ConvertTo-Json
+See `.env.example` for the full list. Key variables:
 
-# Vertex retrieval (normalized)
-Invoke-RestMethod -Method POST -Uri http://localhost:8080/api/vertex-search -ContentType 'application/json' -Body $body
+- `PORT` (default `8080`)
+- `GOOGLE_APPLICATION_CREDENTIALS` (service-account key file path for local/dev)
+- `VERTEX_SEARCH_ENDPOINT` (defaults to exact Alivio endpoint)
+- `VERTEX_SEARCH_SERVING_CONFIG` (defaults to exact Alivio serving config)
+- `VERTEX_TIMEOUT_MS` (default `15000`)
+- `OPENAI_API_KEY` (required for `/api/recruiter-search`)
+- `OPENAI_MODEL` (default `gpt-4o-mini`)
+- `OPENAI_TIMEOUT_MS` (default `30000`)
+- `ENABLE_CORS` and `CORS_ORIGIN` (optional; disabled by default)
 
-# Retrieval + OpenAI generation (OpenAI called only after retrieval)
-Invoke-RestMethod -Method POST -Uri http://localhost:8080/api/recruiter-search -ContentType 'application/json' -Body $body
+## API contract
+
+### `GET /health`
+
+`200 OK`
+
+```json
+{
+  "ok": true,
+  "service": "alivio-search-partners-backend",
+  "env": "development",
+  "timestamp": "2026-04-14T00:00:00.000Z"
+}
 ```
 
-## Notes
+### `POST /api/vertex-search`
 
-- Do not place service account keys or private secrets in frontend code.
-- Keep this backend as the only location where Google credentials are used.
-- `/api/recruiter-search` returns:
+Request:
+
+```json
+{
+  "query": "Find Directors of Nursing in New Jersey with SNF experience and multi-site leadership",
+  "pageSize": 10
+}
+```
+
+Response (`200`):
 
 ```json
 {
   "ok": true,
   "query": "...",
-  "grounded": [],
+  "grounded": {
+    "totalSize": 10,
+    "attributionToken": "...",
+    "results": [
+      {
+        "rank": 1,
+        "id": "...",
+        "title": "...",
+        "uri": "...",
+        "snippet": "...",
+        "snippets": ["..."],
+        "extractiveSegments": [
+          {
+            "rank": 1,
+            "content": "...",
+            "pageNumber": 1,
+            "confidenceScore": null
+          }
+        ],
+        "metadata": {
+          "source": null,
+          "company": null,
+          "location": null
+        },
+        "rawDocumentName": null
+      }
+    ]
+  }
+}
+```
+
+### `POST /api/recruiter-search`
+
+Behavior:
+1. Validates input.
+2. Runs Vertex search first.
+3. Normalizes/validates grounded results.
+4. Sends only grounded normalized JSON to OpenAI.
+
+Response (`200`):
+
+```json
+{
+  "ok": true,
+  "query": "...",
+  "grounded": {
+    "totalSize": 10,
+    "attributionToken": "...",
+    "results": []
+  },
   "generated": "..."
 }
 ```
+
+Error response shape (`4xx/5xx`):
+
+```json
+{
+  "ok": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Missing required string field: query",
+    "details": {
+      "field": "query"
+    }
+  },
+  "requestId": "req_..."
+}
+```
+
+## Deployment notes
+
+- Intended service account: `vertex-express@alivio-475419.iam.gserviceaccount.com`.
+- For cloud deployment, prefer workload identity / attached service account over JSON key files.
+- Keep this backend as the only place with Google credentials and OpenAI secrets.
+- CORS is disabled by default. If deploying with a separate frontend origin, explicitly set:
+  - `ENABLE_CORS=true`
+  - `CORS_ORIGIN=https://your-frontend-origin`
+
+## Runtime validation status
+
+Code is hardened and structured for production use, but this repository alone does **not** claim live runtime validation of IAM, network path, or external API quotas.

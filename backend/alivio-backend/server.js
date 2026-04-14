@@ -1,174 +1,135 @@
 require('dotenv').config();
 
 const express = require('express');
-const { GoogleAuth } = require('google-auth-library');
 const OpenAI = require('openai');
 
+const config = require('./config');
+const { AppError, errorToResponse } = require('./errors');
+const { runVertexSearch } = require('./vertex');
+const { buildGroundedPayload, validateGroundedPayload } = require('./normalize');
+
 const app = express();
-app.use(express.json({ limit: '1mb' }));
+app.use(express.json({ limit: config.maxRequestBytes }));
 
-const PORT = Number(process.env.PORT || 8080);
-const VERTEX_SEARCH_ENDPOINT =
-  process.env.VERTEX_SEARCH_ENDPOINT ||
-  'https://discoveryengine.googleapis.com/v1alpha/projects/807488403515/locations/global/collections/default_collection/engines/alivio-search_1776189054215/servingConfigs/default_search:search';
-const VERTEX_SEARCH_SERVING_CONFIG =
-  process.env.VERTEX_SEARCH_SERVING_CONFIG ||
-  'projects/807488403515/locations/global/collections/default_collection/engines/alivio-search_1776189054215/servingConfigs/default_search';
+const openai = new OpenAI({ apiKey: config.openai.apiKey });
 
-const auth = new GoogleAuth({
-  scopes: ['https://www.googleapis.com/auth/cloud-platform']
-});
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-function normalizeVertexResults(searchResponse) {
-  const results = Array.isArray(searchResponse?.results) ? searchResponse.results : [];
-
-  return results.map((item, index) => {
-    const doc = item?.document || {};
-    const derived = doc?.derivedStructData || {};
-    const struct = doc?.structData || {};
-
-    return {
-      rank: index + 1,
-      id: doc?.id || null,
-      name: doc?.name || null,
-      uri: derived?.link || derived?.uri || null,
-      title: struct?.title || derived?.title || null,
-      snippet: derived?.snippets?.[0]?.snippet || null,
-      extractiveAnswers: (derived?.extractive_answers || []).map((ans) => ({
-        content: ans?.content || null,
-        pageNumber: ans?.pageNumber || null
-      })),
-      metadata: {
-        source: struct?.source || derived?.source || null,
-        location: struct?.location || null,
-        company: struct?.company || null
-      },
-      raw: {
-        structData: struct,
-        derivedStructData: derived
-      }
-    };
-  });
+function getRequestId(req) {
+  return req.headers[config.requestIdHeader] || `req_${Date.now()}`;
 }
 
-async function runVertexSearch(query, pageSize = 10) {
-  const client = await auth.getClient();
-  const token = await client.getAccessToken();
-
-  const response = await fetch(VERTEX_SEARCH_ENDPOINT, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token?.token || token}`
-    },
-    body: JSON.stringify({
-      servingConfig: VERTEX_SEARCH_SERVING_CONFIG,
-      query,
-      pageSize,
-      queryExpansionSpec: {
-        condition: 'AUTO'
-      },
-      spellCorrectionSpec: {
-        mode: 'AUTO'
-      }
-    })
-  });
-
-  const data = await response.json().catch(() => ({}));
-
-  if (!response.ok) {
-    const err = new Error('Vertex AI Search request failed');
-    err.status = response.status;
-    err.details = data;
-    throw err;
-  }
-
-  return data;
-}
-
-function requireQuery(req, res) {
-  const query = req.body?.query;
-  if (!query || typeof query !== 'string' || !query.trim()) {
-    res.status(400).json({
-      ok: false,
-      error: 'Missing required string field: query'
+function parseSearchInput(body, pageBounds) {
+  const query = typeof body?.query === 'string' ? body.query.trim() : '';
+  if (!query) {
+    throw new AppError('Missing required string field: query', {
+      status: 400,
+      code: 'VALIDATION_ERROR',
+      details: { field: 'query' }
     });
-    return null;
   }
-  return query.trim();
+
+  if (query.length > 500) {
+    throw new AppError('query exceeds max length of 500 characters', {
+      status: 400,
+      code: 'VALIDATION_ERROR',
+      details: { field: 'query', maxLength: 500 }
+    });
+  }
+
+  const inputPageSize = Number.parseInt(String(body?.pageSize ?? pageBounds.defaultPageSize), 10);
+  const pageSize = Number.isFinite(inputPageSize) ? inputPageSize : pageBounds.defaultPageSize;
+
+  return {
+    query,
+    pageSize: Math.min(Math.max(pageSize, pageBounds.minPageSize), pageBounds.maxPageSize)
+  };
+}
+
+function validateGeneratedOutput(generated) {
+  if (typeof generated !== 'string') {
+    throw new AppError('Generated response failed validation', {
+      status: 502,
+      code: 'OPENAI_INVALID_RESPONSE'
+    });
+  }
 }
 
 app.get('/health', (_req, res) => {
   res.json({
     ok: true,
-    service: 'alivio-backend-scaffold',
+    service: config.serviceName,
+    env: config.env,
     timestamp: new Date().toISOString()
   });
 });
 
-app.post('/api/vertex-search', async (req, res) => {
+app.post('/api/vertex-search', async (req, res, next) => {
   try {
-    const query = requireQuery(req, res);
-    if (!query) return;
+    const { query, pageSize } = parseSearchInput(req.body, config.vertex);
+    const vertexResponse = await runVertexSearch({ query, pageSize, config: config.vertex });
+    const grounded = buildGroundedPayload(vertexResponse);
 
-    const pageSize = Number(req.body?.pageSize || 10);
-    const clampedPageSize = Math.min(Math.max(pageSize, 1), 20);
-    const vertexRaw = await runVertexSearch(query, clampedPageSize);
-    const grounded = normalizeVertexResults(vertexRaw);
+    if (!validateGroundedPayload(grounded)) {
+      throw new AppError('Grounded payload failed validation', {
+        status: 502,
+        code: 'GROUNDING_VALIDATION_FAILED'
+      });
+    }
 
     res.json({
       ok: true,
       query,
-      grounded,
-      totalSize: vertexRaw?.totalSize || grounded.length,
-      attributionToken: vertexRaw?.attributionToken || null
+      grounded
     });
   } catch (error) {
-    console.error('vertex-search error:', error);
-    res.status(error.status || 500).json({
-      ok: false,
-      error: error.message || 'Unexpected error',
-      details: error.details || null
-    });
+    next(error);
   }
 });
 
-app.post('/api/recruiter-search', async (req, res) => {
-  try {
-    const query = requireQuery(req, res);
-    if (!query) return;
+app.post('/api/recruiter-search', async (req, res, next) => {
+  const requestId = getRequestId(req);
 
-    if (!process.env.OPENAI_API_KEY) {
-      return res.status(500).json({
-        ok: false,
-        error: 'OPENAI_API_KEY is required for recruiter generation'
+  try {
+    if (!config.openai.apiKey) {
+      throw new AppError('OPENAI_API_KEY is required for recruiter generation', {
+        status: 500,
+        code: 'OPENAI_MISSING_API_KEY',
+        expose: true
       });
     }
 
-    const pageSize = Number(req.body?.pageSize || 10);
-    const clampedPageSize = Math.min(Math.max(pageSize, 1), 20);
-    const vertexRaw = await runVertexSearch(query, clampedPageSize);
-    const grounded = normalizeVertexResults(vertexRaw);
+    const { query, pageSize } = parseSearchInput(req.body, config.vertex);
+    const vertexResponse = await runVertexSearch({ query, pageSize, config: config.vertex });
+    const grounded = buildGroundedPayload(vertexResponse);
+
+    if (!validateGroundedPayload(grounded)) {
+      throw new AppError('Grounded payload failed validation', {
+        status: 502,
+        code: 'GROUNDING_VALIDATION_FAILED'
+      });
+    }
 
     const completion = await openai.chat.completions.create({
-      model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
+      model: config.openai.model,
       temperature: 0.2,
       messages: [
         {
           role: 'system',
           content:
-            'You are a recruiter copilot. Use only grounded search results supplied in JSON. If details are missing, say so explicitly.'
+            'You are an Alivio recruiter copilot. Use only provided grounded JSON results. Never fabricate details. If grounded results are insufficient, say exactly what is missing.'
         },
         {
           role: 'user',
-          content: `Recruiter query: ${query}\n\nGrounded results JSON:\n${JSON.stringify(grounded, null, 2)}`
+          content: JSON.stringify({
+            query,
+            grounded
+          })
         }
-      ]
+      ],
+      timeout: config.openai.timeoutMs
     });
 
     const generated = completion?.choices?.[0]?.message?.content || '';
+    validateGeneratedOutput(generated);
 
     res.json({
       ok: true,
@@ -177,23 +138,53 @@ app.post('/api/recruiter-search', async (req, res) => {
       generated
     });
   } catch (error) {
-    console.error('recruiter-search error:', error);
-    res.status(error.status || 500).json({
-      ok: false,
-      error: error.message || 'Unexpected error',
-      details: error.details || null
-    });
+    if (error?.status >= 400) {
+      return next(error);
+    }
+
+    const status = error?.status || error?.statusCode;
+    const openaiCode = error?.code || null;
+    const openaiType = error?.type || null;
+
+    if (typeof status === 'number' || openaiCode || openaiType) {
+      return next(
+        new AppError('OpenAI request failed', {
+          status: typeof status === 'number' ? status : 502,
+          code: 'OPENAI_REQUEST_FAILED',
+          details: {
+            requestId,
+            openaiCode,
+            openaiType,
+            message: error?.message || null
+          }
+        })
+      );
+    }
+
+    return next(error);
   }
 });
 
-app.use((err, _req, res, _next) => {
-  console.error('unhandled error:', err);
-  res.status(500).json({
-    ok: false,
-    error: 'Internal server error'
+app.use((error, req, res, _next) => {
+  const { status, payload } = errorToResponse(error);
+  const requestId = getRequestId(req);
+
+  console.error('request_error', {
+    requestId,
+    method: req.method,
+    path: req.path,
+    status,
+    code: payload.error.code,
+    message: payload.error.message
+  });
+
+  res.status(status).json({
+    ...payload,
+    requestId
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Backend listening on http://localhost:${PORT}`);
+app.listen(config.port, () => {
+  console.log(`Backend listening on http://localhost:${config.port}`);
+  console.log(`Sample recruiter query: ${config.defaults.sampleRecruiterQuery}`);
 });
