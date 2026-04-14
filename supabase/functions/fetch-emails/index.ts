@@ -2,6 +2,7 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { ImapFlow } from "npm:imapflow@1.0.189";
 import { simpleParser } from "npm:mailparser@3.7.5";
+import { requireFunctionAuth } from "../_shared/security.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -10,6 +11,7 @@ const corsHeaders = {
 };
 
 const supportedExtensions = new Set(["pdf", "doc", "docx", "txt"]);
+const MAX_ATTACHMENT_BYTES = 3 * 1024 * 1024;
 
 function getFileType(fileName: string): string | null {
   const ext = fileName.split(".").pop()?.toLowerCase() ?? "";
@@ -19,6 +21,9 @@ function getFileType(fileName: string): string | null {
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response(null, { status: 200, headers: corsHeaders });
   if (req.method !== "POST") return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+  const auth = await requireFunctionAuth(req, "fetch-emails");
+  if (!auth.ok) return new Response(JSON.stringify({ error: auth.error }), { status: auth.status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -64,7 +69,7 @@ Deno.serve(async (req: Request) => {
         const parsed = await simpleParser(Buffer.from(message.source));
         const attachments = (parsed.attachments || []).filter((a) => {
           const name = a.filename ?? "";
-          return !!getFileType(name);
+          return !!getFileType(name) && Buffer.from(a.content).byteLength <= MAX_ATTACHMENT_BYTES;
         });
 
         const attachmentNames = attachments.map((a) => a.filename ?? "resume");

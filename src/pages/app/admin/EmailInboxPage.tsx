@@ -17,6 +17,7 @@ const badgeStyle: Record<EmailProcessingStatus, { background: string; color: str
 
 export default function EmailInboxPage() {
   const { user, supabaseUser } = useAuth();
+  const [canAccess, setCanAccess] = useState(false);
   const [emails, setEmails] = useState<EmailInboxRow[]>([]);
   const [attachments, setAttachments] = useState<ResumeAttachment[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -24,8 +25,19 @@ export default function EmailInboxPage() {
   const [statusFilter, setStatusFilter] = useState<'all' | EmailProcessingStatus>('all');
   const [loading, setLoading] = useState(true);
 
-  const canAccess = supabaseUser?.email?.toLowerCase() === 'joel@aliviosearchpartners.com';
 
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!supabaseUser) {
+      setCanAccess(false);
+      return;
+    }
+    supabase.rpc('is_platform_admin').then(({ data, error }) => {
+      if (!cancelled) setCanAccess(!error && !!data);
+    });
+    return () => { cancelled = true; };
+  }, [supabaseUser]);
   async function loadInbox() {
     if (!user?.org_id || !canAccess) return;
     setLoading(true);
@@ -90,7 +102,7 @@ export default function EmailInboxPage() {
   }
 
   if (!canAccess) {
-    return <div className="min-h-screen p-8"><p style={{ color: 'var(--text-secondary)' }}>Email Inbox is restricted to joel@aliviosearchpartners.com.</p></div>;
+    return <div className="min-h-screen p-8"><p style={{ color: 'var(--text-secondary)' }}>Email Inbox is restricted to platform admin accounts.</p></div>;
   }
 
   return (
