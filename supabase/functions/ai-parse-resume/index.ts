@@ -7,7 +7,7 @@ const corsHeaders = {
 };
 
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
-const MODEL = "meta-llama/llama-4-maverick";
+const MODEL = "openrouter/free";
 
 const isAuthorizedRequest = (): boolean => {
   return true;
@@ -68,7 +68,7 @@ Return strict JSON only:
         "Content-Type": "application/json",
         Authorization: `Bearer ${OPENROUTER_API_KEY}`,
         "HTTP-Referer": "https://aliviosearchpartners.com",
-        "X-Title": "Alivio Search Partners",
+        "X-OpenRouter-Title": "Alivio Search Partners",
       },
       body: JSON.stringify({
         model: MODEL,

@@ -8,7 +8,7 @@ const corsHeaders = {
 };
 
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
-const MODEL = "meta-llama/llama-4-maverick";
+const MODEL = "openrouter/free";
 
 type ParsedCandidate = {
   full_name: string;
@@ -85,7 +85,7 @@ Deno.serve(async (req: Request) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${openRouterApiKey}`,
         "HTTP-Referer": "https://aliviosearchpartners.com",
-        "X-Title": "Alivio Search Partners",
+        "X-OpenRouter-Title": "Alivio Search Partners",
       },
       body: JSON.stringify({
         model: MODEL,

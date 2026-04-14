@@ -7,7 +7,7 @@ const corsHeaders = {
 };
 
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
-const MODEL = "meta-llama/llama-4-maverick";
+const MODEL = "openrouter/free";
 
 interface OutreachRequest {
   contact_name: string;
@@ -50,7 +50,7 @@ Keep it concise, specific, and professional. Avoid fake claims or fake metrics.`
         "Content-Type": "application/json",
         Authorization: `Bearer ${OPENROUTER_API_KEY}`,
         "HTTP-Referer": "https://aliviosearchpartners.com",
-        "X-Title": "Alivio Search Partners CRM",
+        "X-OpenRouter-Title": "Alivio Search Partners CRM",
       },
       body: JSON.stringify({
         model: MODEL,
