@@ -12,7 +12,7 @@ export interface User {
   org_id: string;
   full_name: string;
   email: string;
-  role: 'admin' | 'editor' | 'viewer';
+  role: 'owner' | 'admin' | 'editor' | 'viewer';
   created_at: string;
 }
 
@@ -193,3 +193,47 @@ export const STAGE_LABELS: Record<PipelineStage, string> = {
   scheduled: 'Scheduled',
   archived: 'Archived',
 };
+
+export type ClientStatus = 'prospect' | 'contacted' | 'meeting_scheduled' | 'proposal_sent' | 'active_client' | 'closed_lost';
+export type OutreachType = 'email' | 'linkedin' | 'call' | 'meeting';
+export type OutreachDeliveryStatus = 'draft' | 'sent' | 'opened' | 'replied' | 'bounced';
+
+export interface Client {
+  id: string;
+  org_id: string;
+  name: string;
+  contact_name: string;
+  contact_email: string | null;
+  contact_phone: string | null;
+  title: string | null;
+  location: string | null;
+  status: ClientStatus;
+  source: string | null;
+  notes: string | null;
+  last_contacted_at: string | null;
+  next_followup_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface OutreachHistoryItem {
+  id: string;
+  org_id: string;
+  client_id: string;
+  type: OutreachType;
+  subject: string | null;
+  message: string | null;
+  status: OutreachDeliveryStatus;
+  sent_at: string | null;
+  created_at: string;
+}
+
+export interface OutreachTemplate {
+  id: string;
+  org_id: string;
+  name: string;
+  subject: string;
+  body: string;
+  sequence_step: number;
+  created_at: string;
+}
