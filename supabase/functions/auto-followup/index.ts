@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { requireFunctionAuth } from "../_shared/security.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -22,6 +23,9 @@ Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response(null, { status: 200, headers: corsHeaders });
   if (req.method !== "POST") return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
+  const auth = await requireFunctionAuth(req, "auto-followup");
+  if (!auth.ok) return new Response(JSON.stringify({ error: auth.error }), { status: auth.status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -36,7 +40,8 @@ Deno.serve(async (req: Request) => {
       .from("clients")
       .select("id, org_id, name, contact_name, contact_email, title, location, status")
       .lte("next_followup_at", new Date().toISOString())
-      .not("status", "in", "(active_client,closed_lost)");
+      .not("status", "in", "(active_client,closed_lost)")
+      .limit(100);
 
     if (dueError) throw dueError;
 
@@ -69,6 +74,7 @@ Deno.serve(async (req: Request) => {
           location: client.location,
           sequence_step: sequenceStep,
         }),
+        signal: AbortSignal.timeout(30000),
       });
 
       const aiPayload = await aiRes.json();
@@ -92,6 +98,7 @@ Deno.serve(async (req: Request) => {
           subject,
           text: body,
         }),
+        signal: AbortSignal.timeout(30000),
       });
 
       const resendPayload = await resendRes.json();

@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { requireFunctionAuth } from "../_shared/security.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -11,6 +12,9 @@ Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response(null, { status: 200, headers: corsHeaders });
   if (req.method !== "POST") return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
+  const auth = await requireFunctionAuth(req, "email-pipeline");
+  if (!auth.ok) return new Response(JSON.stringify({ error: auth.error }), { status: auth.status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -19,11 +23,15 @@ Deno.serve(async (req: Request) => {
 
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-    await fetch(`${supabaseUrl}/functions/v1/fetch-emails`, {
+    const fetchRes = await fetch(`${supabaseUrl}/functions/v1/fetch-emails`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${serviceRoleKey}` },
       body: "{}",
     });
+    if (!fetchRes.ok) {
+      const msg = await fetchRes.text();
+      throw new Error(`fetch-emails failed: ${msg || fetchRes.status}`);
+    }
 
     const { data: emails, error: emailError } = await supabase
       .from("email_inbox")
@@ -55,18 +63,20 @@ Deno.serve(async (req: Request) => {
           const { data: attachments } = await supabase.from("resume_attachments").select("id").eq("email_id", email.id);
           if (attachments && attachments.length > 0) {
             for (const attachment of attachments) {
-              await fetch(`${supabaseUrl}/functions/v1/ai-parse-email-resume`, {
+              const parseRes = await fetch(`${supabaseUrl}/functions/v1/ai-parse-email-resume`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${serviceRoleKey}` },
                 body: JSON.stringify({ resume_attachment_id: attachment.id }),
               });
+              if (!parseRes.ok) throw new Error(`Resume parse failed: ${await parseRes.text()}`);
             }
           } else {
-            await fetch(`${supabaseUrl}/functions/v1/ai-parse-email-resume`, {
+            const parseRes = await fetch(`${supabaseUrl}/functions/v1/ai-parse-email-resume`, {
               method: "POST",
               headers: { "Content-Type": "application/json", Authorization: `Bearer ${serviceRoleKey}` },
               body: JSON.stringify({ email_id: email.id, resume_text: email.body_text || "" }),
             });
+            if (!parseRes.ok) throw new Error(`Resume parse failed: ${await parseRes.text()}`);
           }
 
           await supabase.from("email_inbox").update({ processed: true, processing_status: "completed" }).eq("id", email.id);
