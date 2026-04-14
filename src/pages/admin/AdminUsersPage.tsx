@@ -8,30 +8,29 @@ interface AdminUserRow {
   last_sign_in_at: string | null;
 }
 
+type SignInFilter = 'all' | 'signed_in' | 'never_signed_in';
+
 const safeDate = (value: string | null) => (value ? new Date(value).toLocaleString() : '—');
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<AdminUserRow[]>([]);
   const [search, setSearch] = useState('');
+  const [signInFilter, setSignInFilter] = useState<SignInFilter>('all');
   const [selectedUser, setSelectedUser] = useState<AdminUserRow | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const load = async () => {
-      const { data, error: authError } = await supabase
-        .schema('auth')
-        .from('users')
-        .select('id, email, created_at, last_sign_in_at')
-        .order('created_at', { ascending: false });
+      const { data: adminData, error: adminError } = await supabase.rpc('get_admin_auth_users');
 
-      if (!authError) {
-        setUsers((data as AdminUserRow[]) ?? []);
+      if (!adminError) {
+        setUsers((adminData as AdminUserRow[]) ?? []);
         return;
       }
 
       const fallback = await supabase.from('users').select('id, email, created_at').order('created_at', { ascending: false });
       if (fallback.error) {
-        setError(authError.message);
+        setError(adminError.message);
         return;
       }
 
@@ -39,16 +38,27 @@ export default function AdminUsersPage() {
         ...user,
         last_sign_in_at: null,
       })));
+      setError('Showing fallback user data because auth metadata was not available.');
     };
 
     void load();
   }, []);
 
   const filtered = useMemo(() => {
-    if (!search.trim()) return users;
-    const term = search.toLowerCase();
-    return users.filter((user) => user.email.toLowerCase().includes(term));
-  }, [search, users]);
+    const term = search.trim().toLowerCase();
+
+    return users.filter((user) => {
+      const matchesSearch = term.length === 0 || user.email.toLowerCase().includes(term);
+      const matchesSignIn =
+        signInFilter === 'all'
+          ? true
+          : signInFilter === 'signed_in'
+            ? Boolean(user.last_sign_in_at)
+            : !user.last_sign_in_at;
+
+      return matchesSearch && matchesSignIn;
+    });
+  }, [search, signInFilter, users]);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-base)' }}>
@@ -57,15 +67,20 @@ export default function AdminUsersPage() {
       </div>
 
       <div className="page-content space-y-4">
-        {error && <div className="card p-4" style={{ color: 'var(--danger)' }}>Could not load users: {error}</div>}
+        {error && <div className="card p-4" style={{ color: 'var(--warning)' }}>{error}</div>}
 
-        <div className="card p-4">
+        <div className="card p-4 grid grid-cols-1 md:grid-cols-2 gap-3">
           <input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search by email"
             className="input w-full"
           />
+          <select className="input w-full" value={signInFilter} onChange={(event) => setSignInFilter(event.target.value as SignInFilter)}>
+            <option value="all">All users</option>
+            <option value="signed_in">Signed in at least once</option>
+            <option value="never_signed_in">Never signed in</option>
+          </select>
         </div>
 
         <div className="card overflow-x-auto">

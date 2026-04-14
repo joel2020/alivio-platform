@@ -33,29 +33,29 @@ export default function AdminDashboardPage() {
       const todayStart = new Date();
       todayStart.setHours(0, 0, 0, 0);
 
-      const [usersCountRes, orgCountRes, candidateCountRes, roleCountRes, aiCallsRes, signupsRes, activityRes] = await Promise.all([
-        supabase.schema('auth').from('users').select('id', { count: 'exact', head: true }),
+      const [adminUsersRes, orgCountRes, candidateCountRes, roleCountRes, aiCallsRes, activityRes] = await Promise.all([
+        supabase.rpc('get_admin_auth_users'),
         supabase.from('organizations').select('id', { count: 'exact', head: true }),
         supabase.from('candidates').select('id', { count: 'exact', head: true }),
         supabase.from('roles').select('id', { count: 'exact', head: true }),
         supabase.from('agent_activity_log').select('id', { count: 'exact', head: true }).gte('created_at', todayStart.toISOString()),
-        supabase.schema('auth').from('users').select('id, email, created_at').order('created_at', { ascending: false }).limit(5),
         supabase.from('agent_activity_log').select('id, agent_name, action, created_at').order('created_at', { ascending: false }).limit(10),
       ]);
 
-      const anyError = usersCountRes.error || orgCountRes.error || candidateCountRes.error || roleCountRes.error || aiCallsRes.error || signupsRes.error || activityRes.error;
+      const allUsers = (adminUsersRes.data as RecentSignup[] | null) ?? [];
+      const anyError = adminUsersRes.error || orgCountRes.error || candidateCountRes.error || roleCountRes.error || aiCallsRes.error || activityRes.error;
       if (anyError) {
         setError(anyError.message);
       }
 
       setStats({
-        users: usersCountRes.count ?? 0,
+        users: allUsers.length,
         organizations: orgCountRes.count ?? 0,
         candidates: candidateCountRes.count ?? 0,
         roles: roleCountRes.count ?? 0,
         aiCallsToday: aiCallsRes.count ?? 0,
       });
-      setRecentSignups((signupsRes.data as RecentSignup[]) ?? []);
+      setRecentSignups(allUsers.slice(0, 5));
       setRecentActivity((activityRes.data as ActivityItem[]) ?? []);
       setLoading(false);
     };
