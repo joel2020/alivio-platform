@@ -72,6 +72,7 @@ function SeoManager() {
   } else if (pathname === '/developers') {
     title = 'Healthcare Recruiting API & Integrations | Alivio Search Partners';
     description = 'Connect Alivio Search Partners to your ATS and healthcare recruiting stack with API-first workflows and automation.';
+    robots = 'noindex, nofollow';
   } else if (pathname === '/contact') {
     title = 'Contact Alivio Search Partners | Healthcare Recruiting Experts';
     description = 'Talk with Alivio Search Partners about healthcare recruiting strategy, candidate pipelines, and AI-enabled staffing support.';
@@ -99,7 +100,6 @@ function SeoManager() {
     title = 'Sign Up | Alivio Search Partners';
     description = 'Create your Alivio Search Partners account to accelerate healthcare recruiting and staffing workflows.';
     robots = 'noindex, nofollow';
-  } else if (pathname === '/dashboard/crm' || pathname.startsWith('/onboarding') || pathname.startsWith('/dashboard') || pathname.startsWith('/pipeline') || pathname.startsWith('/roles') || pathname.startsWith('/outreach') || pathname.startsWith('/agents') || pathname.startsWith('/candidates') || pathname.startsWith('/settings') || pathname.startsWith('/admin')) {
   } else if (pathname.startsWith('/onboarding') || pathname.startsWith('/dashboard') || pathname.startsWith('/pipeline') || pathname.startsWith('/roles') || pathname.startsWith('/outreach') || pathname.startsWith('/agents') || pathname.startsWith('/candidates') || pathname.startsWith('/settings') || pathname.startsWith('/admin')) {
     title = 'Alivio Platform | Healthcare Recruiting Workspace';
     description = 'Manage healthcare recruiting campaigns, role requirements, and clinician pipelines inside the Alivio platform.';
@@ -113,34 +113,44 @@ function SeoManager() {
   const structuredData = [
     {
       '@context': 'https://schema.org',
-      '@type': 'Organization',
-      name: 'Alivio Search Partners',
-      url: SITE_URL,
-      logo: `${SITE_URL}/favicon.svg`,
-      description: 'Healthcare recruiting and staffing platform for sourcing and hiring nurses, clinicians, and healthcare leaders.',
-      sameAs: [SITE_URL],
-    },
-    {
-      '@context': 'https://schema.org',
-      '@type': 'WebSite',
-      name: 'Alivio Search Partners',
-      url: SITE_URL,
-      potentialAction: {
-        '@type': 'SearchAction',
-        target: `${SITE_URL}/blog?query={search_term_string}`,
-        'query-input': 'required name=search_term_string',
-      },
-    },
-    {
-      '@context': 'https://schema.org',
       '@type': 'WebPage',
       name: title,
       description,
       url: canonicalUrl,
       inLanguage: 'en-US',
-      about: ['healthcare recruiting', 'healthcare staffing', 'nurse recruitment'],
     },
   ];
+
+  if (pathname === '/' || pathname === '/product') {
+    structuredData.push({
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: 'Alivio Search Partners',
+      url: SITE_URL,
+      description: 'AI-powered healthcare recruiting platform helping hospitals hire nurses and clinical staff faster',
+      contactPoint: {
+        '@type': 'ContactPoint',
+        email: 'joel@aliviosearchpartners.com',
+        contactType: 'sales',
+      },
+    });
+  }
+
+  if (pathname === '/product') {
+    structuredData.push({
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareApplication',
+      name: 'Alivio Search Partners',
+      applicationCategory: 'BusinessApplication',
+      description: 'AI-powered healthcare recruiting software for hospitals and health systems',
+      offers: {
+        '@type': 'Offer',
+        price: '499',
+        priceCurrency: 'USD',
+      },
+    });
+  }
+
 
   useSeo({
     title,

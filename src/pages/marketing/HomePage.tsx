@@ -5,7 +5,6 @@ import HowItWorksSection from '../../components/marketing/sections/HowItWorksSec
 import FeatureShowcaseSection from '../../components/marketing/sections/FeatureShowcaseSection';
 import ComparisonSection from '../../components/marketing/sections/ComparisonSection';
 import MetricsSection from '../../components/marketing/sections/MetricsSection';
-import PricingSection from '../../components/marketing/sections/PricingSection';
 import FinalCTASection from '../../components/marketing/sections/FinalCTASection';
 
 export default function HomePage() {
@@ -19,7 +18,13 @@ export default function HomePage() {
       <FeatureShowcaseSection />
       <ComparisonSection />
       <MetricsSection />
-      <PricingSection />
+      <section style={{ padding: '24px 0', background: '#FFFFFF' }}>
+        <div className="mkt-container" style={{ textAlign: 'center' }}>
+          <a href="/pricing" style={{ color: 'var(--text-secondary)', fontWeight: 600, textDecoration: 'none' }}>
+            Flat monthly pricing. No per-hire fees. No agency commissions. See pricing →
+          </a>
+        </div>
+      </section>
       <FinalCTASection />
     </>
   );

@@ -93,6 +93,8 @@ export function useSeo(options: {
 
     if (ogImage) {
       upsertMeta('property', 'og:image', ogImage);
+      upsertMeta('property', 'og:image:width', '1200');
+      upsertMeta('property', 'og:image:height', '630');
       upsertMeta('name', 'twitter:image', ogImage);
     }
 

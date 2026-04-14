@@ -1,7 +1,6 @@
 import { ArrowRight } from 'lucide-react';
 import AnimateInView from '../AnimateInView';
-
-const CAL_COM_BOOKING_URL = 'https://cal.com/alivio/intro-call30';
+import { CAL_COM_BOOKING_URL, DEMO_EVENT_DESCRIPTION, DEMO_EVENT_TITLE } from '../../../lib/demoBooking';
 
 export default function FinalCTASection() {
   return (
@@ -13,7 +12,7 @@ export default function FinalCTASection() {
               Fill More Clinical Roles Without Paying Agency Placement Fees
             </h2>
             <p style={{ fontSize: '18px', color: 'var(--text-secondary)', lineHeight: 1.7, margin: '0 auto 40px', maxWidth: '560px' }}>
-              Alivio Search Partners helps hospitals source, screen, and engage qualified nurses and clinical staff faster with AI agents.
+              Fill your next Director of Nursing in under 14 days — for one flat monthly fee, with no agency commissions.
             </p>
             <a
               href={CAL_COM_BOOKING_URL}
@@ -21,12 +20,13 @@ export default function FinalCTASection() {
               rel="noopener noreferrer"
               className="mkt-btn-primary-lg"
               style={{ display: 'inline-flex' }}
+              title={`${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}`}
             >
               Book a Demo
               <ArrowRight size={18} />
             </a>
             <p style={{ fontSize: '13px', color: 'var(--text-muted)', margin: '16px 0 0 0' }}>
-              30-minute walkthrough tailored for hospital HR and talent acquisition leaders
+              A 30-minute demo for healthcare HR leaders.
             </p>
           </div>
         </AnimateInView>
