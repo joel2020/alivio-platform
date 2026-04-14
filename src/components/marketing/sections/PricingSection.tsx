@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { Check } from 'lucide-react';
 import AnimateInView from '../AnimateInView';
 
+const CAL_COM_BOOKING_URL = 'https://cal.com/alivio/intro-call30';
+
 const plans = [
   {
     name: 'Starter',
@@ -44,7 +46,8 @@ const plans = [
       'Volume pricing',
     ],
     cta: 'Contact Us',
-    ctaLink: '/contact',
+    ctaLink: CAL_COM_BOOKING_URL,
+    external: true,
     highlight: false,
   },
 ];
@@ -128,13 +131,25 @@ export default function PricingSection() {
                   </ul>
                 </div>
 
-                <Link
-                  to={plan.ctaLink}
-                  className={plan.highlight ? 'mkt-btn-primary' : 'mkt-btn-secondary'}
-                  style={{ width: '100%', justifyContent: 'center' }}
-                >
-                  {plan.cta}
-                </Link>
+                {plan.external ? (
+                  <a
+                    href={plan.ctaLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={plan.highlight ? 'mkt-btn-primary' : 'mkt-btn-secondary'}
+                    style={{ width: '100%', justifyContent: 'center' }}
+                  >
+                    {plan.cta}
+                  </a>
+                ) : (
+                  <Link
+                    to={plan.ctaLink}
+                    className={plan.highlight ? 'mkt-btn-primary' : 'mkt-btn-secondary'}
+                    style={{ width: '100%', justifyContent: 'center' }}
+                  >
+                    {plan.cta}
+                  </Link>
+                )}
               </div>
             </AnimateInView>
           ))}

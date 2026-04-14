@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 
+const CAL_COM_BOOKING_URL = 'https://cal.com/alivio/intro-call30';
+
 const navLinks = [
   { label: 'Product', href: '/product' },
   { label: 'How It Works', href: '/#how-it-works' },
@@ -95,7 +97,15 @@ export default function MarketingNav() {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Link to="/login" className="mkt-btn-ghost hidden-mobile" style={{ height: '40px' }}>Sign In</Link>
-            <Link to="/contact" className="mkt-btn-secondary hidden-mobile" style={{ height: '40px' }}>Book a Demo</Link>
+            <a
+              href={CAL_COM_BOOKING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mkt-btn-secondary hidden-mobile"
+              style={{ height: '40px' }}
+            >
+              Book a Demo
+            </a>
             <Link to="/signup" className="mkt-btn-sm-primary">Start Free</Link>
             <button
               onClick={() => setMobileOpen((o) => !o)}
@@ -166,7 +176,15 @@ export default function MarketingNav() {
           ))}
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
-          <Link to="/contact" className="mkt-btn-secondary" style={{ flex: 1, justifyContent: 'center' }}>Book a Demo</Link>
+          <a
+            href={CAL_COM_BOOKING_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mkt-btn-secondary"
+            style={{ flex: 1, justifyContent: 'center' }}
+          >
+            Book a Demo
+          </a>
           <Link to="/signup" className="mkt-btn-primary" style={{ flex: 1, justifyContent: 'center' }}>Start Free</Link>
         </div>
       </div>

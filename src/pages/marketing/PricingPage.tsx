@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
+const CAL_COM_BOOKING_URL = 'https://cal.com/alivio/intro-call30';
+
 const plans = [
   {
     name: 'Starter',
@@ -65,7 +67,8 @@ const plans = [
     price: 'Custom',
     popular: false,
     cta: 'Contact Sales →',
-    ctaLink: '#',
+    ctaLink: CAL_COM_BOOKING_URL,
+    external: true,
     features: [
       'Unlimited roles',
       'All 7 agents + custom',
@@ -138,17 +141,33 @@ export default function PricingPage() {
                   </li>
                 ))}
               </ul>
-              <Link
-                to={plan.ctaLink}
-                className="block text-center px-4 py-2.5 rounded font-medium text-sm transition-all"
-                style={{
-                  backgroundColor: plan.popular ? '#4F46E5' : 'transparent',
-                  color: '#FFFFFF',
-                  border: plan.popular ? 'none' : '1px solid #1E1E1E',
-                }}
-              >
-                {plan.cta}
-              </Link>
+              {plan.external ? (
+                <a
+                  href={plan.ctaLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-center px-4 py-2.5 rounded font-medium text-sm transition-all"
+                  style={{
+                    backgroundColor: plan.popular ? '#4F46E5' : 'transparent',
+                    color: '#FFFFFF',
+                    border: plan.popular ? 'none' : '1px solid #1E1E1E',
+                  }}
+                >
+                  {plan.cta}
+                </a>
+              ) : (
+                <Link
+                  to={plan.ctaLink}
+                  className="block text-center px-4 py-2.5 rounded font-medium text-sm transition-all"
+                  style={{
+                    backgroundColor: plan.popular ? '#4F46E5' : 'transparent',
+                    color: '#FFFFFF',
+                    border: plan.popular ? 'none' : '1px solid #1E1E1E',
+                  }}
+                >
+                  {plan.cta}
+                </Link>
+              )}
             </div>
           ))}
         </div>
