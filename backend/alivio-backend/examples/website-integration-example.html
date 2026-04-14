@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alivio Website Integration Example</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 24px auto; max-width: 860px; line-height: 1.4; }
+      .row { margin: 12px 0; }
+      select, textarea, button { width: 100%; padding: 10px; font-size: 14px; }
+      textarea { min-height: 86px; }
+      button { cursor: pointer; }
+      pre { background: #f6f8fa; border-radius: 8px; padding: 12px; overflow: auto; }
+      .muted { color: #667085; font-size: 13px; }
+    </style>
+  </head>
+  <body>
+    <h1>Alivio recruiter copilot website flow</h1>
+    <p class="muted">
+      Recruiter enters a query → frontend calls backend → backend returns grounded + ranked output
+      → frontend renders ranked matches and outreach draft.
+    </p>
+
+    <div class="row">
+      <label for="apiBase">Backend base URL</label>
+      <input id="apiBase" value="https://api.aliviosearchpartners.com" />
+      <p class="muted">If backend is reverse-proxied under main site, use empty value and keep calls relative.</p>
+    </div>
+
+    <div class="row">
+      <label for="useCase">Use case</label>
+      <select id="useCase"></select>
+    </div>
+
+    <div class="row">
+      <label for="queryInput">Recruiter query</label>
+      <textarea id="queryInput"></textarea>
+    </div>
+
+    <div class="row">
+      <button id="runBtn">Run recruiter search</button>
+    </div>
+
+    <h2>Ranked matches</h2>
+    <pre id="rankedMatches">Waiting for request…</pre>
+
+    <h2>Outreach draft</h2>
+    <pre id="outreachDraft">Waiting for request…</pre>
+
+    <h2>Grounded top result (debug)</h2>
+    <pre id="groundedTop">Waiting for request…</pre>
+
+    <script src="../frontend/alivio-api-client.js"></script>
+    <script>
+      var USE_CASE_QUERIES = {
+        candidate_search:
+          'Find senior healthcare operations candidates in New Jersey with SNF and multi-site leadership experience.',
+        job_search:
+          'Find open Director of Nursing roles in New Jersey requiring SNF and multi-site leadership background.',
+        job_to_candidate_match:
+          'Match this role to likely candidates: Director of Nursing in New Jersey, SNF and multi-site leadership required.',
+        candidate_to_job_match:
+          'Given this candidate profile: RN leader with SNF and multi-site oversight in NJ, find best-fit open roles.',
+        recruiter_copilot:
+          'Draft a recruiter-ready shortlist and outreach for Directors of Nursing in New Jersey with SNF experience and multi-site leadership.'
+      };
+
+      var useCaseSelect = document.getElementById('useCase');
+      var queryInput = document.getElementById('queryInput');
+      var rankedMatches = document.getElementById('rankedMatches');
+      var outreachDraft = document.getElementById('outreachDraft');
+      var groundedTop = document.getElementById('groundedTop');
+
+      Object.keys(USE_CASE_QUERIES).forEach(function (key) {
+        var option = document.createElement('option');
+        option.value = key;
+        option.textContent = key;
+        useCaseSelect.appendChild(option);
+      });
+
+      function syncQueryFromUseCase() {
+        queryInput.value = USE_CASE_QUERIES[useCaseSelect.value] || '';
+      }
+
+      useCaseSelect.addEventListener('change', syncQueryFromUseCase);
+      syncQueryFromUseCase();
+
+      document.getElementById('runBtn').addEventListener('click', async function () {
+        var apiBase = document.getElementById('apiBase').value.trim();
+        var query = queryInput.value.trim();
+
+        if (!query) {
+          rankedMatches.textContent = 'Please enter a query.';
+          return;
+        }
+
+        rankedMatches.textContent = 'Loading...';
+        outreachDraft.textContent = 'Loading...';
+        groundedTop.textContent = 'Loading...';
+
+        try {
+          var client = window.AlivioApiClient.createClient({ baseUrl: apiBase });
+          var data = await client.recruiterSearch({ query: query, pageSize: 10 });
+
+          rankedMatches.textContent = JSON.stringify(data.generated.ranked_matches || [], null, 2);
+          outreachDraft.textContent = data.generated.outreach_draft || '(No outreach draft returned)';
+          groundedTop.textContent = JSON.stringify(
+            {
+              explanation: data.generated.explanation || null,
+              topGroundedResult: data.grounded && data.grounded.results ? data.grounded.results[0] : null,
+              requestId: data.requestId || null
+            },
+            null,
+            2
+          );
+        } catch (error) {
+          rankedMatches.textContent = 'Error: ' + error.message;
+          outreachDraft.textContent = 'status=' + (error.status || 'unknown') + ' requestId=' + (error.requestId || 'n/a');
+          groundedTop.textContent = JSON.stringify(error.payload || {}, null, 2);
+        }
+      });
+    </script>
+  </body>
+</html>
