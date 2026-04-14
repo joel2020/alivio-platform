@@ -6,7 +6,6 @@ const navLinks = [
   { label: 'Product', href: '/product' },
   { label: 'How It Works', href: '/#how-it-works' },
   { label: 'Pricing', href: '/pricing' },
-  { label: 'Changelog', href: '/developers' },
   { label: 'Blog', href: '/blog' },
 ];
 
@@ -96,6 +95,7 @@ export default function MarketingNav() {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Link to="/login" className="mkt-btn-ghost hidden-mobile" style={{ height: '40px' }}>Sign In</Link>
+            <Link to="/contact" className="mkt-btn-secondary hidden-mobile" style={{ height: '40px' }}>Book a Demo</Link>
             <Link to="/signup" className="mkt-btn-sm-primary">Start Free</Link>
             <button
               onClick={() => setMobileOpen((o) => !o)}
@@ -166,7 +166,7 @@ export default function MarketingNav() {
           ))}
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
-          <Link to="/login" className="mkt-btn-secondary" style={{ flex: 1, justifyContent: 'center' }}>Sign In</Link>
+          <Link to="/contact" className="mkt-btn-secondary" style={{ flex: 1, justifyContent: 'center' }}>Book a Demo</Link>
           <Link to="/signup" className="mkt-btn-primary" style={{ flex: 1, justifyContent: 'center' }}>Start Free</Link>
         </div>
       </div>

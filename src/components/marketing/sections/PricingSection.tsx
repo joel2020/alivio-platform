@@ -44,7 +44,7 @@ const plans = [
       'Volume pricing',
     ],
     cta: 'Contact Us',
-    ctaLink: '/about',
+    ctaLink: '/contact',
     highlight: false,
   },
 ];
@@ -108,6 +108,11 @@ export default function PricingSection() {
                     {plan.period && <span style={{ fontSize: '16px', color: 'var(--text-muted)', fontWeight: 500 }}>{plan.period}</span>}
                   </div>
                   <p style={{ fontSize: '14px', color: 'var(--text-secondary)', margin: 0 }}>{plan.tagline}</p>
+                  {plan.name === 'Pro' && (
+                    <p style={{ fontSize: '13px', color: 'var(--text-primary)', margin: '10px 0 0 0', fontWeight: 500 }}>
+                      Pays for itself with one hire. Traditional agencies charge $15,000-$30,000 per placement.
+                    </p>
+                  )}
                 </div>
 
                 <div style={{ borderTop: '1px solid var(--border)', paddingTop: '24px', marginBottom: '24px', flex: 1 }}>

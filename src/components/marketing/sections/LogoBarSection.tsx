@@ -1,6 +1,6 @@
 import AnimateInView from '../AnimateInView';
 
-const companies = ['Beacon Labs', 'Meridian', 'Vantage Co', 'Northstar', 'Elevate HQ', 'Foundry'];
+const companies = ['Midwest Health System', 'Sunrise Senior Living', 'Regional Medical Center', 'Pacific Care Network', 'Horizon Health Partners', 'Crestview Healthcare'];
 
 export default function LogoBarSection() {
   return (
@@ -8,7 +8,7 @@ export default function LogoBarSection() {
       <div className="mkt-container">
         <AnimateInView>
           <p style={{ textAlign: 'center', fontSize: '13px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '32px' }}>
-            Trusted by forward-thinking hiring teams
+            TRUSTED BY HEALTHCARE HIRING TEAMS
           </p>
           <div className="trusted-logos-strip">
             {companies.map(name => (

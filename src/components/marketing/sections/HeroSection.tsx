@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 
 const CANDIDATES = [
   {
-    name: 'Sarah Chen',
-    role: 'Sr. Backend Eng.',
+    name: 'Maria Santos, RN, BSN',
+    role: 'Director of Nursing',
     score: 94,
     scoreBg: '#F0FDF4',
     scoreColor: '#10B981',
@@ -14,8 +14,8 @@ const CANDIDATES = [
     statusColor: '#059669',
   },
   {
-    name: 'Marcus Rivera',
-    role: 'Sr. Backend Eng.',
+    name: 'James Holloway, RN',
+    role: 'Director of Nursing',
     score: 88,
     scoreBg: '#FFFBEB',
     scoreColor: '#D97706',
@@ -24,8 +24,8 @@ const CANDIDATES = [
     statusColor: '#71717A',
   },
   {
-    name: 'Priya Patel',
-    role: 'Sr. Backend Eng.',
+    name: 'Danielle Brooks, MSN',
+    role: 'Director of Nursing',
     score: 91,
     scoreBg: '#F0FDF4',
     scoreColor: '#10B981',
@@ -34,8 +34,8 @@ const CANDIDATES = [
     statusColor: '#2563EB',
   },
   {
-    name: 'James Okafor',
-    role: 'Sr. Backend Eng.',
+    name: 'Alyssa Turner, RN',
+    role: 'Director of Nursing',
     score: 77,
     scoreBg: '#FFFBEB',
     scoreColor: '#D97706',
@@ -216,10 +216,10 @@ function DashboardMockup() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
               <div style={{ fontSize: '13px', fontWeight: 700, color: '#09090B', letterSpacing: '-0.01em' }}>
-                Senior Backend Engineer
+                Director of Nursing · Long-Term Care
               </div>
               <div style={{ fontSize: '10px', color: '#A1A1AA', marginTop: '1px', fontWeight: 500 }}>
-                Series B · Remote · Rust / Go preferred
+                142 credentialed candidates identified
               </div>
             </div>
             <div
@@ -427,7 +427,7 @@ export default function HeroSection() {
                     display: 'inline-block',
                   }}
                 />
-                Now in Beta — Start Free Today
+                Trusted by healthcare hiring teams
               </span>
             </div>
 
@@ -445,7 +445,7 @@ export default function HeroSection() {
                 transitionDelay: '0.15s',
               }}
             >
-              Your AI Recruiting Team That Never Stops Working
+              Fill Hard-to-Staff Healthcare Roles in Days, Not Months
             </h1>
 
             <p
@@ -462,7 +462,7 @@ export default function HeroSection() {
                 transitionDelay: '0.25s',
               }}
             >
-              Alivio replaces expensive recruiting agencies with an AI-powered system that sources, scores, and engages top candidates — continuously and autonomously.
+              Alivio gives your team an AI-powered system that sources, scores, and engages qualified nurses, clinicians, and healthcare leaders around the clock — so roles get filled before they become crises.
             </p>
 
             <div

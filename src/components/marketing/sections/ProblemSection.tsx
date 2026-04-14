@@ -2,20 +2,20 @@ import AnimateInView from '../AnimateInView';
 
 const problems = [
   {
-    title: 'Agencies charge $20K+ per hire',
-    description: "You're paying 20–25% of salary for a process that takes 45–60 days and delivers mixed results.",
+    title: 'Agency fees eat 20-25% of first-year salary — for roles that still take 60+ days to fill',
+    description: 'High placement fees continue to drain budgets while critical healthcare seats stay open for months.',
     color: '#EF4444',
     bg: '#FEF2F2',
   },
   {
-    title: 'Your ATS is a filing cabinet, not a recruiting tool',
-    description: 'Greenhouse and Lever track applications. They don\'t find candidates. You still have to do all the work.',
+    title: 'Your ATS tracks applicants. It does not find the RNs, DONs, and clinical directors you actually need',
+    description: 'Your team still has to source and qualify licensed, credentialed talent manually.',
     color: '#F59E0B',
     bg: '#FFFBEB',
   },
   {
-    title: 'Manual sourcing doesn\'t scale',
-    description: 'Your team spends 15+ hours per week on LinkedIn doing work an AI system can do in minutes.',
+    title: 'You are posting on Indeed and waiting. Meanwhile the role is uncovered and patient care suffers',
+    description: 'When key clinical roles stay open, burnout rises and quality-of-care risk increases.',
     color: '#F97316',
     bg: '#FFF7ED',
   },

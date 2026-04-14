@@ -3,17 +3,17 @@ import AnimateInView from '../AnimateInView';
 
 function PipelineMockup() {
   const candidates = [
-    { name: 'Sarah Chen', role: 'Sr. Backend Eng', score: 94, color: '#10B981', bg: '#D1FAE5', status: 'Engaged', statusBg: '#D1FAE5', statusColor: '#065F46' },
-    { name: 'Marcus Reid', role: 'Product Manager', score: 87, color: '#10B981', bg: '#D1FAE5', status: 'Scored', statusBg: '#FEF3C7', statusColor: '#92400E' },
-    { name: 'Priya Nair', role: 'Sr. Backend Eng', score: 81, color: '#F59E0B', bg: '#FEF3C7', status: 'Sourced', statusBg: '#F4F4F5', statusColor: '#71717A' },
-    { name: 'James Park', role: 'Product Manager', score: 79, color: '#F59E0B', bg: '#FEF3C7', status: 'Responded', statusBg: '#DCFCE7', statusColor: '#166534' },
-    { name: 'Lin Wei', role: 'Sr. Backend Eng', score: 73, color: '#EF4444', bg: '#FEE2E2', status: 'Sourced', statusBg: '#F4F4F5', statusColor: '#71717A' },
+    { name: 'Maria Santos, RN, BSN', role: 'Director of Nursing', score: 94, color: '#10B981', bg: '#D1FAE5', status: 'Engaged', statusBg: '#D1FAE5', statusColor: '#065F46' },
+    { name: 'Tanya Brooks, MSN', role: 'Clinical Director', score: 87, color: '#10B981', bg: '#D1FAE5', status: 'Scored', statusBg: '#FEF3C7', statusColor: '#92400E' },
+    { name: 'Kevin Moore, RN', role: 'Director of Nursing', score: 81, color: '#F59E0B', bg: '#FEF3C7', status: 'Sourced', statusBg: '#F4F4F5', statusColor: '#71717A' },
+    { name: 'Aria Patel, BSN', role: 'ICU Nurse Manager', score: 79, color: '#F59E0B', bg: '#FEF3C7', status: 'Responded', statusBg: '#DCFCE7', statusColor: '#166534' },
+    { name: 'Derek Long, RN', role: 'Director of Nursing', score: 73, color: '#EF4444', bg: '#FEE2E2', status: 'Sourced', statusBg: '#F4F4F5', statusColor: '#71717A' },
   ];
   return (
     <div className="feature-mockup" style={{ background: '#FFFFFF', border: '1px solid #E4E4E7', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)' }}>
       <div style={{ padding: '14px 16px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)' }}>All Candidates</span>
-        <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>847 total · sorted by score</span>
+        <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>2,400+ total · sorted by score</span>
       </div>
       <div style={{ padding: '0 16px 16px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 64px 90px 80px', gap: '8px', padding: '10px 0 6px', borderBottom: '1px solid var(--border)' }}>
@@ -39,25 +39,25 @@ function OutreachMockup() {
   return (
     <div className="feature-mockup" style={{ background: '#FFFFFF', border: '1px solid #E4E4E7', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)' }}>
       <div style={{ padding: '14px 16px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--accent-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 700, color: 'var(--accent)' }}>SC</div>
+        <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--accent-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 700, color: 'var(--accent)' }}>MS</div>
         <div>
-          <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-primary)' }}>To: Sarah Chen · sarah.chen@stripe.com</div>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Re: Senior Backend Engineer · Alivio generated</div>
+          <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-primary)' }}>To: Maria Santos, RN, BSN · maria.santos@email.com</div>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Re: ICU Nurse Manager · Alivio generated</div>
         </div>
       </div>
       <div style={{ padding: '16px', fontSize: '13px', lineHeight: 1.7, color: 'var(--text-secondary)' }}>
-        <p style={{ margin: '0 0 12px' }}>Hi Sarah,</p>
+        <p style={{ margin: '0 0 12px' }}>Hi Maria,</p>
         <p style={{ margin: '0 0 12px' }}>
-          I came across your work on{' '}
-          <span style={{ background: 'var(--accent-tint)', color: 'var(--accent)', borderRadius: '3px', padding: '1px 4px', fontWeight: 600 }}>distributed caching at Stripe</span>
-          {' '}— particularly your blog post on consistent hashing. It's exactly the kind of depth we're looking for.
+          I noticed your ICU leadership experience at{' '}
+          <span style={{ background: 'var(--accent-tint)', color: 'var(--accent)', borderRadius: '3px', padding: '1px 4px', fontWeight: 600 }}>Northwestern Memorial Hospital</span>
+          {' '}and your CCRN certification.
         </p>
         <p style={{ margin: '0 0 12px' }}>
-          We're building a{' '}
-          <span style={{ background: 'var(--accent-tint)', color: 'var(--accent)', borderRadius: '3px', padding: '1px 4px', fontWeight: 600 }}>similar high-throughput pipeline in Rust</span>
-          {' '}and I think you'd find the technical challenge genuinely interesting.
+          We're working with a health system in Chicago looking for an{' '}
+          <span style={{ background: 'var(--accent-tint)', color: 'var(--accent)', borderRadius: '3px', padding: '1px 4px', fontWeight: 600 }}>ICU Nurse Manager</span>
+          {' '}and your background looks like a strong fit.
         </p>
-        <p style={{ margin: 0 }}>Would you be open to a 15-minute call this week?</p>
+        <p style={{ margin: 0 }}>Would you be open to a quick conversation this week?</p>
       </div>
       <div style={{ padding: '12px 16px', borderTop: '1px solid var(--border)', display: 'flex', gap: '8px' }}>
         <button style={{ fontSize: '12px', fontWeight: 600, padding: '6px 14px', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: '7px', cursor: 'pointer' }}>Send now</button>
@@ -70,12 +70,12 @@ function OutreachMockup() {
 
 function AgentFeedMockup() {
   const events = [
-    { time: '2 min ago', agent: 'Scout', text: 'Found 12 new candidates for Senior PM role', color: '#2563EB' },
-    { time: '14 min ago', agent: 'Signal', text: 'Updated score for Jane Chen: 87% → 94%', color: '#0891B2' },
-    { time: '31 min ago', agent: 'Engage', text: 'Sent follow-up #2 to 8 candidates for Backend role', color: '#059669' },
-    { time: '1 hr ago', agent: 'Enrich', text: 'Enriched 23 profiles with GitHub activity data', color: '#D97706' },
-    { time: '2 hrs ago', agent: 'Scout', text: 'Identified 34 candidates from 3 sources for DevOps role', color: '#2563EB' },
-    { time: '3 hrs ago', agent: 'Signal', text: 'Re-scored pipeline for Senior Backend Eng (role criteria updated)', color: '#0891B2' },
+    { time: '2 min ago', agent: 'Scout', text: 'Found 12 new candidates for Director of Nursing role', color: '#2563EB' },
+    { time: '14 min ago', agent: 'Signal', text: 'Updated score for Maria Santos: 87% → 94%', color: '#0891B2' },
+    { time: '31 min ago', agent: 'Engage', text: 'Sent follow-up #2 to 8 ICU Nurse Manager candidates', color: '#059669' },
+    { time: '1 hr ago', agent: 'Enrich', text: 'Enriched 23 profiles with credential database data', color: '#D97706' },
+    { time: '2 hrs ago', agent: 'Scout', text: 'Identified 34 candidates from Vivian Health and Doximity', color: '#2563EB' },
+    { time: '3 hrs ago', agent: 'Signal', text: 'Re-scored pipeline for Director of Nursing (criteria updated)', color: '#0891B2' },
   ];
   return (
     <div className="feature-mockup" style={{ background: '#FFFFFF', border: '1px solid #E4E4E7', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02)' }}>
@@ -117,9 +117,9 @@ const features = [
   {
     label: 'OUTREACH',
     headline: 'Personalized Messages That Actually Get Replies',
-    description: "Alivio generates outreach tailored to each candidate's background, interests, and the role. Not templates — real personalization.",
+    description: "Alivio generates outreach tailored to each clinician's background, credentials, and care setting. Not templates — real personalization.",
     bullets: [
-      "Personalized to each candidate's profile and work",
+      "Personalized to each clinician's profile and care experience",
       'Multi-channel: email and LinkedIn',
       'Automated follow-up sequences',
     ],
