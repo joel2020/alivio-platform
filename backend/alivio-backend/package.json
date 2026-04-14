@@ -12,7 +12,8 @@
     "smoke:health": "node scripts/smoke-health.js",
     "smoke:vertex": "node scripts/smoke-vertex.js",
     "smoke:recruiter": "node scripts/smoke-recruiter.js",
-    "validate:recruiter-shape": "node scripts/validate-recruiter-shape.js"
+    "validate:recruiter-shape": "node scripts/validate-recruiter-shape.js",
+    "smoke:live": "node scripts/smoke-test-live.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
