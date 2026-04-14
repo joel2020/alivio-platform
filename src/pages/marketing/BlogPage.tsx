@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { POSTS_PER_PAGE, excerptFromContent, fetchBlogPostsPage, formatPublicationDate, type BlogPost } from '../../lib/blog';
-import { useSeo } from '../../lib/seo';
 
 export default function BlogPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -16,14 +15,6 @@ export default function BlogPage() {
   }, [searchParams]);
 
   const totalPages = Math.max(1, Math.ceil(totalCount / POSTS_PER_PAGE));
-
-  useSeo({
-    title: 'Blog | Alivio',
-    description: 'Read the latest insights, hiring strategies, and product updates from Alivio.',
-    keywords: 'alivio blog, recruiting insights, hiring automation, talent pipeline',
-    ogTitle: 'Alivio Blog',
-    ogDescription: 'Read the latest insights, hiring strategies, and product updates from Alivio.',
-  });
 
   useEffect(() => {
     const activePage = page;

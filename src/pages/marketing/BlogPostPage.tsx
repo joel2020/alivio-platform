@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { fetchBlogPostBySlug, formatPublicationDate, type BlogPost } from '../../lib/blog';
 import { renderMarkdownToHtml } from '../../lib/markdown';
-import { useSeo } from '../../lib/seo';
 
 export default function BlogPostPage() {
   const { slug } = useParams();
@@ -36,14 +35,6 @@ export default function BlogPostPage() {
 
     loadPost();
   }, [slug]);
-
-  useSeo({
-    title: post ? `${post.title} | Alivio Blog` : 'Blog Post | Alivio',
-    description: post?.meta_description || 'Read this article from the Alivio blog.',
-    keywords: post?.meta_keywords || 'alivio blog',
-    ogTitle: post ? `${post.title} | Alivio Blog` : 'Alivio Blog Post',
-    ogDescription: post?.meta_description || 'Read this article from the Alivio blog.',
-  });
 
   return (
     <article className="mkt-container" style={{ paddingTop: '48px', paddingBottom: '72px', maxWidth: '880px' }}>
