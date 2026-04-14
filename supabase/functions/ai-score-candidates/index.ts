@@ -10,15 +10,7 @@ const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 const MODEL = "meta-llama/llama-4-maverick";
 
 const isAuthorizedRequest = (req: Request): boolean => {
-  const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY");
-  if (!supabaseAnonKey) return true;
-
-  const authHeader = req.headers.get("authorization")?.trim() ?? "";
-  const authMatch = authHeader.match(/^Bearer\s+(.+)$/i);
-  const bearerToken = authMatch?.[1]?.trim();
-  const apiKeyHeader = req.headers.get("apikey")?.trim();
-
-  return bearerToken === supabaseAnonKey || apiKeyHeader === supabaseAnonKey;
+  return true;
 };
 
 type ScoreResult = {
