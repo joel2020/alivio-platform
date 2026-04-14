@@ -21,7 +21,7 @@ CREATE TABLE clients (
   contact_phone TEXT,
   title TEXT,
   location TEXT,
-  status client_status NOT NULL DEFAULT 'prospect',
+  status client_status NOT NULL DEFAULT 'prospect'::client_status,
   source TEXT,
   notes TEXT,
   last_contacted_at TIMESTAMPTZ,
@@ -37,7 +37,7 @@ CREATE TABLE outreach_history (
   type outreach_type NOT NULL,
   subject TEXT,
   message TEXT,
-  status outreach_status NOT NULL DEFAULT 'draft',
+  status outreach_status NOT NULL DEFAULT 'draft'::outreach_status,
   sent_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -125,15 +125,15 @@ WITH first_org AS (
   SELECT id FROM organizations ORDER BY created_at ASC LIMIT 1
 ), seeded_clients AS (
   INSERT INTO clients (org_id, name, contact_name, contact_email, contact_phone, title, location, status, source, notes, next_followup_at)
-  SELECT id, 'Cleveland Clinic', 'Melissa Carter', 'melissa.carter@clevelandclinic.example', '216-555-0101', 'Director of Talent Acquisition', 'Cleveland, OH', 'prospect', 'LinkedIn', 'Interested in reducing RN time-to-fill across ICU and med-surg.', now() + interval '2 days' FROM first_org
+  SELECT id, 'Cleveland Clinic', 'Melissa Carter', 'melissa.carter@clevelandclinic.example', '216-555-0101', 'Director of Talent Acquisition', 'Cleveland, OH', 'prospect'::client_status, 'LinkedIn', 'Interested in reducing RN time-to-fill across ICU and med-surg.', now() + interval '2 days' FROM first_org
   UNION ALL
-  SELECT id, 'Mount Sinai Health System', 'Daniela Brooks', 'daniela.brooks@mountsinai.example', '212-555-0142', 'VP, Human Resources', 'New York, NY', 'contacted', 'Conference - SHRM Healthcare', 'Sent initial intro email and one-pager.', now() + interval '1 day' FROM first_org
+  SELECT id, 'Mount Sinai Health System', 'Daniela Brooks', 'daniela.brooks@mountsinai.example', '212-555-0142', 'VP, Human Resources', 'New York, NY', 'contacted'::client_status, 'Conference - SHRM Healthcare', 'Sent initial intro email and one-pager.', now() + interval '1 day' FROM first_org
   UNION ALL
-  SELECT id, 'Houston Methodist', 'Robert Nguyen', 'robert.nguyen@houstonmethodist.example', '713-555-0193', 'HR Director', 'Houston, TX', 'meeting_scheduled', 'Referral', 'Discovery call scheduled for Thursday at 2 PM CST.', now() + interval '3 days' FROM first_org
+  SELECT id, 'Houston Methodist', 'Robert Nguyen', 'robert.nguyen@houstonmethodist.example', '713-555-0193', 'HR Director', 'Houston, TX', 'meeting_scheduled'::client_status, 'Referral', 'Discovery call scheduled for Thursday at 2 PM CST.', now() + interval '3 days' FROM first_org
   UNION ALL
-  SELECT id, 'UCLA Health', 'Alyssa Perez', 'alyssa.perez@uclahealth.example', '310-555-0120', 'Senior Talent Partner', 'Los Angeles, CA', 'prospect', 'Outbound list build', 'Strong growth in behavioral health recruiting.', now() + interval '4 days' FROM first_org
+  SELECT id, 'UCLA Health', 'Alyssa Perez', 'alyssa.perez@uclahealth.example', '310-555-0120', 'Senior Talent Partner', 'Los Angeles, CA', 'prospect'::client_status, 'Outbound list build', 'Strong growth in behavioral health recruiting.', now() + interval '4 days' FROM first_org
   UNION ALL
-  SELECT id, 'Mass General Brigham', 'Thomas Reid', 'thomas.reid@mgb.example', '617-555-0188', 'Workforce Planning Lead', 'Boston, MA', 'contacted', 'Website form inquiry', 'Requested benchmark data on nurse vacancy rates.', now() + interval '5 days' FROM first_org
+  SELECT id, 'Mass General Brigham', 'Thomas Reid', 'thomas.reid@mgb.example', '617-555-0188', 'Workforce Planning Lead', 'Boston, MA', 'contacted'::client_status, 'Website form inquiry', 'Requested benchmark data on nurse vacancy rates.', now() + interval '5 days' FROM first_org
   RETURNING id, org_id, name, contact_name
 )
 INSERT INTO outreach_templates (org_id, name, subject, body, sequence_step)
