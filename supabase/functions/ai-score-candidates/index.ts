@@ -9,21 +9,16 @@ const corsHeaders = {
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 const MODEL = "meta-llama/llama-4-maverick";
 
-interface CandidateInput {
-  id: string;
-  name?: string;
-  full_name?: string;
-  skills?: string[];
-  experienceYears?: number;
-  experience_years?: number | null;
-  notes?: string;
-}
-
-interface OutreachResult {
-  subject: string;
-  body: string;
-  personalizationSignals: string[];
-}
+type ScoreResult = {
+  roleSummary: string;
+  scores: Array<{
+    candidateId: string;
+    score: number;
+    rationale: string;
+    strengths: string[];
+    risks: string[];
+  }>;
+};
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -33,20 +28,22 @@ Deno.serve(async (req: Request) => {
     const OPENROUTER_API_KEY = Deno.env.get("OPENROUTER_API_KEY");
     if (!OPENROUTER_API_KEY) throw new Error("OPENROUTER_API_KEY is not configured");
 
-    const { candidate, role, tone } = await req.json() as { candidate: CandidateInput; role: string; tone?: string };
-    if (!candidate || !role?.trim()) return new Response(JSON.stringify({ error: "candidate and role are required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    const { role, candidates } = await req.json() as { role: string; candidates: unknown[] };
+    if (!role?.trim() || !Array.isArray(candidates)) return new Response(JSON.stringify({ error: "role and candidates are required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-    const system = `You are an executive recruiter crafting first-touch outreach.
+    const system = `You are a recruiting scoring engine. Evaluate candidates fairly against role needs.
 Return strict JSON only:
 {
-  "subject": string,
-  "body": string,
-  "personalizationSignals": string[]
+  "roleSummary": string,
+  "scores": [{
+    "candidateId": string,
+    "score": number,
+    "rationale": string,
+    "strengths": string[],
+    "risks": string[]
+  }]
 }
-Keep email concise, warm, and specific. Avoid invented facts.`;
-
-    const candidateName = candidate.full_name || candidate.name || "Candidate";
-    const experience = candidate.experience_years ?? candidate.experienceYears;
+Rules: score must be 0 to 1 inclusive.`;
 
     const response = await fetch(OPENROUTER_URL, {
       method: "POST",
@@ -58,14 +55,11 @@ Keep email concise, warm, and specific. Avoid invented facts.`;
       },
       body: JSON.stringify({
         model: MODEL,
-        temperature: 0.4,
+        temperature: 0.1,
         response_format: { type: "json_object" },
         messages: [
           { role: "system", content: system },
-          {
-            role: "user",
-            content: `Role: ${role}\nTone: ${tone || "professional"}\nCandidate: ${candidateName}\nSkills: ${(candidate.skills || []).join(", ")}\nExperience years: ${experience ?? "unknown"}\nNotes: ${candidate.notes || "none"}`,
-          },
+          { role: "user", content: `Role: ${role}\nCandidates: ${JSON.stringify(candidates)}` },
         ],
       }),
     });
@@ -76,7 +70,7 @@ Keep email concise, warm, and specific. Avoid invented facts.`;
     const content = payload?.choices?.[0]?.message?.content;
     if (!content) throw new Error("No model content returned");
 
-    const data = JSON.parse(content) as OutreachResult;
+    const data = JSON.parse(content) as ScoreResult;
     return new Response(JSON.stringify({ data, model: MODEL }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
     return new Response(JSON.stringify({ error: (error as Error).message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });

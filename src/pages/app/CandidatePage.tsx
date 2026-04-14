@@ -6,6 +6,7 @@ import { useAuth } from '../../lib/auth';
 import type { Candidate, VoiceCall, VoiceTranscript, AgentActivityLog, CandidateFeedback, PipelineStage, Role } from '../../lib/types';
 import { AGENT_COLORS, PIPELINE_STAGES, STAGE_LABELS } from '../../lib/types';
 import ScoreExplainer from '../../components/app/ScoreExplainer';
+import { generateOutreachEmail } from '../../lib/ai';
 
 function ScoreRing({ score }: { score: number }) {
   const pct = score * 100;
@@ -77,18 +78,24 @@ function OutreachTab({ candidate, role }: { candidate: Candidate; role: Role | n
 
     try {
       if (!isSupabaseConfigured) throw new Error('Supabase env missing');
-      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-outreach`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-          'Apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
+      const result = await generateOutreachEmail(
+        {
+          id: candidate.id,
+          name: candidate.full_name,
+          skills: candidate.skills,
+          experienceYears: candidate.experience_years ?? undefined,
+          location: candidate.location ?? undefined,
+          notes: candidate.current_title ?? undefined,
         },
-        body: JSON.stringify({ candidate, role, variant: nextVariant }),
-      });
-
-      if (!res.ok) throw new Error('Generation failed');
-      const data: GeneratedOutreach = await res.json();
+        role?.title ?? 'Open role',
+        (role?.outreach_tone ?? 'conversational') as 'professional' | 'conversational' | 'direct',
+      );
+      const data: GeneratedOutreach = {
+        subject: result.data.subject,
+        body: result.data.body,
+        signals: result.data.personalizationSignals,
+        variant: nextVariant,
+      };
       setGenerated(data);
       setVariant(nextVariant);
 

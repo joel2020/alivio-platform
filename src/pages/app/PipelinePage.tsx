@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Settings, Download, Pause, Play, Search, ChevronUp, ChevronDown } from 'lucide-react';
+import { Settings, Download, Pause, Play, Search, ChevronUp, ChevronDown, Loader2, Sparkles } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import type { Role, Candidate, PipelineStage, VoiceCall } from '../../lib/types';
 import { PIPELINE_STAGES, STAGE_LABELS } from '../../lib/types';
+import { matchCandidates } from '../../lib/ai';
+import Toast from '../../components/app/Toast';
 
 function ScoreBadge({ score }: { score: number | null }) {
   if (score === null) return <span style={{ color: 'var(--text-muted)' }}>—</span>;
@@ -115,6 +117,8 @@ export default function PipelinePage() {
   const [sortField, setSortField] = useState<'score' | 'full_name' | 'experience_years'>('score');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [loading, setLoading] = useState(true);
+  const [matching, setMatching] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -162,6 +166,33 @@ export default function PipelinePage() {
   function handleSort(field: typeof sortField) {
     if (sortField === field) setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
     else { setSortField(field); setSortDir('desc'); }
+  }
+
+  async function handleRunAIMatch() {
+    if (!role || candidates.length === 0) {
+      setToast('No candidates available for AI matching.');
+      return;
+    }
+    setMatching(true);
+    try {
+      const response = await matchCandidates(
+        `${role.title} in ${role.location}`,
+        candidates.map((candidate) => ({
+          id: candidate.id,
+          name: candidate.full_name,
+          experienceYears: candidate.experience_years ?? undefined,
+          skills: candidate.skills,
+          location: candidate.location ?? undefined,
+          notes: candidate.current_title ?? undefined,
+        })),
+      );
+      setToast(`AI matching completed for ${response.data.matches.length} candidates.`);
+    } catch (error) {
+      console.error(error);
+      setToast('AI matching failed. Please try again.');
+    } finally {
+      setMatching(false);
+    }
   }
 
   if (loading) {
@@ -241,6 +272,9 @@ export default function PipelinePage() {
           </Link>
           <button className="btn-secondary" style={{ fontSize: '0.75rem', padding: '5px 11px' }}>
             <Download size={12} strokeWidth={2} /> Export
+          </button>
+          <button onClick={handleRunAIMatch} className="btn-secondary" style={{ fontSize: '0.75rem', padding: '5px 11px' }} disabled={matching}>
+            {matching ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} strokeWidth={2} />} AI Match
           </button>
         </div>
       </div>
@@ -479,6 +513,7 @@ export default function PipelinePage() {
           </div>
         )}
       </div>
+      {toast && <Toast message={toast} onDismiss={() => setToast(null)} />}
     </div>
   );
 }
