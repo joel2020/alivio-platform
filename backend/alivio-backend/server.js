@@ -399,21 +399,6 @@ app.post('/api/recruiter-search', async (req, res, next) => {
     return next(error);
   }
 });
-    const deterministicRanking = buildRankedGrounding({ query, grounded });
-
-    const completion = await openai.chat.completions.create({
-      model: config.openai.model,
-      temperature: 0.1,
-      messages: buildRecruiterPrompt(query, {
-        ...grounded,
-        deterministic_ranking: deterministicRanking
-      }),
-      timeout: config.openai.timeoutMs
-    });
-
-    const rawGenerated = completion?.choices?.[0]?.message?.content || '';
-    const generated = parseGeneratedOutput(rawGenerated);
-
 app.post('/api/webhook/n8n', async (req, res, next) => {
   const requestId = getRequestId(req);
 
