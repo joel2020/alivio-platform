@@ -389,7 +389,6 @@ app.post('/api/recruiter-search', async (req, res, next) => {
   }
 });
 app.post('/api/webhook/n8n', async (req, res, next) => {
-app.post('/api/webhook/n8n', async (req, res, next) => {
   const requestId = getRequestId(req);
 
   try {

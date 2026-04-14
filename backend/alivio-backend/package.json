@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "node server.js",
     "start": "node server.js",
-    "check": "node --check server.js && node --check config.js && node --check vertex.js && node --check normalize.js && node --check ranking.js && node --check errors.js && node --check logger.js && node --check scripts/smoke.js && node --check scripts/smoke-health.js && node --check scripts/smoke-vertex.js && node --check scripts/smoke-recruiter.js && node --check scripts/validate-recruiter-shape.js && node --check scripts/lib/http.js && node --check scripts/validate-deployment.js",
+    "check": "npm run check:syntax && npm run check:load",
     "smoke": "node scripts/smoke.js",
     "smoke:health": "node scripts/smoke-health.js",
     "smoke:vertex": "node scripts/smoke-vertex.js",
@@ -16,7 +16,10 @@
     "lint": "node --check server.js",
     "smoke:live": "node scripts/smoke-test-live.js",
     "seed:vertex": "node scripts/seed-vertex-data.js",
-    "validate:deployment": "node scripts/validate-deployment.js"
+    "validate:deployment": "node scripts/validate-deployment.js",
+    "check:syntax": "node --check server.js && node --check config.js && node --check vertex.js && node --check normalize.js && node --check ranking.js && node --check errors.js && node --check logger.js && node --check scripts/smoke.js && node --check scripts/smoke-health.js && node --check scripts/smoke-vertex.js && node --check scripts/smoke-recruiter.js && node --check scripts/validate-recruiter-shape.js && node --check scripts/lib/http.js && node --check scripts/validate-deployment.js && node --check scripts/validate-backend-load.js",
+    "check:load": "node scripts/validate-backend-load.js",
+    "check:boot": "npm run check:syntax && npm run check:load"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
