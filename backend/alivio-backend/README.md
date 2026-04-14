@@ -189,6 +189,8 @@ Expected behavior:
 - `examples/website-integration-example.html`
   - Static-site-ready example with selectable call to `/api/vertex-search` or `/api/recruiter-search`.
   - Includes recruiter UI flow: query input -> request -> render ranked matches + outreach draft.
+- `examples/README.md`
+  - Mock response rendering references for frontend UI patterns (grounded results, ranked matches, explanation, outreach draft).
 - `examples/frontend-integration-usage.js`
   - Small helper examples for static + simple JS app + server-rendered page integration.
 

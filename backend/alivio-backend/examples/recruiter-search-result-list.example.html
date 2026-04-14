@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recruiter Search Result List (Mock Rendering)</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 20px auto; max-width: 920px; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      .card { border: 1px solid #ddd; border-radius: 8px; padding: 12px; margin-bottom: 8px; }
+      .row { display: flex; justify-content: space-between; gap: 8px; }
+      pre { background: #f6f8fa; padding: 12px; border-radius: 8px; white-space: pre-wrap; }
+      .muted { color: #667085; }
+    </style>
+  </head>
+  <body>
+    <h1>Recruiter Search Result List</h1>
+    <p class="muted">Static rendering pattern using mocked JSON fixture (no API call).</p>
+    <p id="status" class="muted"></p>
+
+    <div class="grid">
+      <section>
+        <h2>Grounded Results</h2>
+        <ol id="grounded-results"></ol>
+      </section>
+
+      <section>
+        <h2>Ranked Matches</h2>
+        <ol id="ranked-matches"></ol>
+      </section>
+    </div>
+
+    <h2>Explanation</h2>
+    <pre id="explanation">Loading…</pre>
+
+    <h2>Outreach Draft</h2>
+    <pre id="outreach">Loading…</pre>
+
+    <script src="./rendering/recruiter-search-result-list.js"></script>
+  </body>
+</html>

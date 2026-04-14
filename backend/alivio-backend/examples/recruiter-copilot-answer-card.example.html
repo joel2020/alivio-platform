@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recruiter Copilot Answer Card (Mock Rendering)</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 20px auto; max-width: 820px; }
+      .card { border: 1px solid #ddd; border-radius: 8px; padding: 14px; }
+      .muted { color: #667085; }
+      pre { background: #f6f8fa; padding: 12px; border-radius: 8px; white-space: pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <h1>Recruiter Copilot Answer Card</h1>
+    <p class="muted">Single-card summary pattern with grounded evidence and draft outreach.</p>
+    <p id="status" class="muted"></p>
+
+    <article class="card">
+      <h3>Query</h3>
+      <pre id="query">Loading…</pre>
+
+      <h3>Explanation</h3>
+      <pre id="explanation">Loading…</pre>
+
+      <h3>Ranked Matches</h3>
+      <pre id="ranked">Loading…</pre>
+
+      <h3>Grounded Evidence</h3>
+      <pre id="evidence">Loading…</pre>
+
+      <h3>Outreach Draft</h3>
+      <pre id="outreach">Loading…</pre>
+    </article>
+
+    <script src="./rendering/recruiter-copilot-answer-card.js"></script>
+  </body>
+</html>

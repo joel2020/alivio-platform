@@ -1,0 +1,35 @@
+{
+  "ok": true,
+  "requestId": "mock-req-003",
+  "query": "Who should we interview first for the NJ DON search and why?",
+  "generated": {
+    "ranked_matches": [
+      {
+        "rank": 1,
+        "candidate_name": "Alex Morgan, RN",
+        "fit_score": 0.92
+      },
+      {
+        "rank": 2,
+        "candidate_name": "Jordan Lee, MSN",
+        "fit_score": 0.87
+      }
+    ],
+    "explanation": "Interview Alex first for direct DON ownership and measurable staffing outcomes; Jordan is a close second with strong compliance transformation depth.",
+    "outreach_draft": "Subject: Quick intro re: NJ Director of Nursing role\n\nHi Alex — based on your multi-site SNF leadership track record, we'd value a 20-minute conversation about a Director of Nursing opening in Newark."
+  },
+  "grounded": {
+    "results": [
+      {
+        "rank": 1,
+        "name": "Alex Morgan, RN",
+        "evidence": "Reduced agency spend by 18%; led 3-site staffing model"
+      },
+      {
+        "rank": 2,
+        "name": "Jordan Lee, MSN",
+        "evidence": "Improved survey readiness and reduced deficiencies in two facilities"
+      }
+    ]
+  }
+}
