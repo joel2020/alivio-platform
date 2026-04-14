@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ChevronDown, ChevronUp, Loader2, Sparkles } from 'lucide-react';
 import type { Candidate, Role } from '../../lib/types';
 import { scoreCandidates } from '../../lib/ai';
+import { supabase } from '../../lib/supabase';
 import Toast from './Toast';
 
 interface DimensionExplanation {
@@ -180,7 +181,19 @@ export default function ScoreExplainer({ candidate, role }: Props) {
           notes: candidate.score_rationale ?? undefined,
         }],
       );
-      setAiRationale(response.data.scores[0]?.rationale ?? null);
+      const rationale = response.data.scores[0]?.rationale ?? null;
+      setAiRationale(rationale);
+      if (rationale) {
+        await supabase.from('agent_activity_log').insert({
+          org_id: candidate.org_id,
+          role_id: role.id,
+          candidate_id: candidate.id,
+          agent_name: 'signal',
+          action: 'Generated score explanation',
+          detail: rationale.slice(0, 180),
+          metadata: {},
+        });
+      }
     } catch (error) {
       console.error(error);
       setToast('Could not fetch AI scoring explanation. Please try again.');
@@ -209,8 +222,9 @@ export default function ScoreExplainer({ candidate, role }: Props) {
         style={{ border: '1px solid var(--border)', color: 'var(--text-secondary)', backgroundColor: aiLoading ? 'var(--bg-subtle)' : 'var(--bg-surface)' }}
       >
         {aiLoading ? <Loader2 size={13} className="animate-spin" /> : <Sparkles size={13} />}
-        {aiLoading ? 'Analyzing...' : 'Generate AI explanation'}
+        {aiLoading ? 'Analyzing...' : 'Score Candidate'}
       </button>
+      <p className="text-xs mb-4" style={{ color: 'var(--text-muted)' }}>Powered by AI</p>
 
       {aiRationale && (
         <div className="mb-5 p-3 rounded-lg" style={{ backgroundColor: 'var(--accent-subtle)', color: 'var(--text-secondary)' }}>

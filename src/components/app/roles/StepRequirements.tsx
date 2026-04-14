@@ -3,6 +3,8 @@ import { generateJobDescription } from '../../../lib/ai';
 import TagInput from './TagInput';
 import { Loader2, Sparkles } from 'lucide-react';
 import { useState } from 'react';
+import { useAuth } from '../../../lib/auth';
+import { supabase } from '../../../lib/supabase';
 
 const labelStyle: React.CSSProperties = {
   display: 'block',
@@ -69,6 +71,7 @@ export default function StepRequirements({
   onAIGeneratedChange,
   onGenerationError,
 }: StepRequirementsProps) {
+  const { user } = useAuth();
   const [isGenerating, setIsGenerating] = useState(false);
 
   async function handleGenerateDescription() {
@@ -87,6 +90,17 @@ export default function StepRequirements({
       );
       onChange({ description: buildDescriptionFromAIResponse(result.data) });
       onAIGeneratedChange(true);
+      if (user?.org_id) {
+        await supabase.from('agent_activity_log').insert({
+          org_id: user.org_id,
+          role_id: null,
+          candidate_id: null,
+          agent_name: 'cortex',
+          action: 'Generated role description with AI',
+          detail: `Generated draft description for ${data.title.trim()}.`,
+          metadata: {},
+        });
+      }
     } catch (error) {
       console.error('Failed to generate role description', error);
       onGenerationError('AI generation failed. Please try again.');
@@ -216,6 +230,7 @@ export default function StepRequirements({
             )}
           </button>
         </div>
+        <p style={{ fontSize: '11px', color: '#A1A1AA', marginBottom: '8px' }}>Powered by AI</p>
         <textarea
           value={data.description}
           onChange={e => {

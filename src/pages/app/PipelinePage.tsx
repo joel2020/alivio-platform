@@ -4,7 +4,7 @@ import { Settings, Download, Pause, Play, Search, ChevronUp, ChevronDown, Loader
 import { supabase } from '../../lib/supabase';
 import type { Role, Candidate, PipelineStage, VoiceCall } from '../../lib/types';
 import { PIPELINE_STAGES, STAGE_LABELS } from '../../lib/types';
-import { matchCandidates } from '../../lib/ai';
+import { matchCandidates, scoreCandidates } from '../../lib/ai';
 import Toast from '../../components/app/Toast';
 
 function ScoreBadge({ score }: { score: number | null }) {
@@ -118,6 +118,7 @@ export default function PipelinePage() {
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [loading, setLoading] = useState(true);
   const [matching, setMatching] = useState(false);
+  const [scoring, setScoring] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
@@ -186,12 +187,80 @@ export default function PipelinePage() {
           notes: candidate.current_title ?? undefined,
         })),
       );
+      for (const match of response.data.matches) {
+        const nextStage: PipelineStage = match.nextStep === 'screen' ? 'voice_qualified' : match.nextStep === 'hold' ? 'scored' : 'archived';
+        await supabase.from('candidates').update({
+          pipeline_stage: nextStage,
+          score: match.matchScore,
+          score_rationale: match.reasons.join(' · '),
+        }).eq('id', match.candidateId);
+      }
+      await supabase.from('agent_activity_log').insert({
+        org_id: role.org_id,
+        role_id: role.id,
+        candidate_id: null,
+        agent_name: 'cortex',
+        action: 'AI candidate matching completed',
+        detail: `Ranked ${response.data.matches.length} candidates by fit.`,
+        metadata: {},
+      });
+      await loadData();
       setToast(`AI matching completed for ${response.data.matches.length} candidates.`);
     } catch (error) {
       console.error(error);
       setToast('AI matching failed. Please try again.');
     } finally {
       setMatching(false);
+    }
+  }
+
+  async function handleScoreCandidates() {
+    if (!role || candidates.length === 0) {
+      setToast('No candidates available for AI scoring.');
+      return;
+    }
+    setScoring(true);
+    try {
+      const response = await scoreCandidates(
+        `${role.title} in ${role.location}. Must-have: ${(role.must_have_requirements || []).join(', ')}`,
+        candidates.map((candidate) => ({
+          id: candidate.id,
+          name: candidate.full_name,
+          experienceYears: candidate.experience_years ?? undefined,
+          skills: candidate.skills,
+          location: candidate.location ?? undefined,
+          notes: candidate.current_title ?? undefined,
+        })),
+      );
+      for (const scored of response.data.scores) {
+        await supabase.from('candidates').update({
+          score: scored.score,
+          score_rationale: scored.rationale,
+          score_breakdown: {
+            hard_qualification: Math.min(1, scored.score + 0.05),
+            experience_trajectory: scored.score,
+            skills_adjacency: Math.max(0, scored.score - 0.04),
+            engagement_propensity: Math.max(0, scored.score - 0.08),
+          },
+          pipeline_stage: 'scored',
+        }).eq('id', scored.candidateId);
+      }
+      await supabase.from('agent_activity_log').insert({
+        org_id: role.org_id,
+        role_id: role.id,
+        candidate_id: null,
+        agent_name: 'signal',
+        action: 'AI candidate scoring completed',
+        detail: `Scored ${response.data.scores.length} candidates.`,
+        metadata: {},
+      });
+      await loadData();
+      setToast(`AI scored ${response.data.scores.length} candidates.`);
+    } catch (error) {
+      console.error(error);
+      setToast('AI scoring failed. Please try again.');
+    } finally {
+      setScoring(false);
     }
   }
 
@@ -274,9 +343,15 @@ export default function PipelinePage() {
             <Download size={12} strokeWidth={2} /> Export
           </button>
           <button onClick={handleRunAIMatch} className="btn-secondary" style={{ fontSize: '0.75rem', padding: '5px 11px' }} disabled={matching}>
-            {matching ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} strokeWidth={2} />} AI Match
+            {matching ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} strokeWidth={2} />} Match Candidates
+          </button>
+          <button onClick={handleScoreCandidates} className="btn-secondary" style={{ fontSize: '0.75rem', padding: '5px 11px' }} disabled={scoring}>
+            {scoring ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} strokeWidth={2} />} Score Candidates
           </button>
         </div>
+      </div>
+      <div style={{ padding: '0 24px', marginTop: '6px', marginBottom: '-4px' }}>
+        <p style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Powered by AI</p>
       </div>
 
       <div
