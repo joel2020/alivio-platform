@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Settings, Download, Pause, Play, Search, ChevronUp, ChevronDown, Loader2, Sparkles } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
@@ -121,12 +121,8 @@ export default function PipelinePage() {
   const [scoring, setScoring] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
-  useEffect(() => {
+  const loadData = useCallback(async () => {
     if (!id) return;
-    loadData();
-  }, [id]);
-
-  async function loadData() {
     const [roleRes, candRes, callsRes] = await Promise.all([
       supabase.from('roles').select('*').eq('id', id).single(),
       supabase.from('candidates').select('*').eq('role_id', id).order('score', { ascending: false }),
@@ -136,7 +132,12 @@ export default function PipelinePage() {
     setCandidates(candRes.data || []);
     setCalls(callsRes.data || []);
     setLoading(false);
-  }
+  }, [id]);
+
+  useEffect(() => {
+    if (!id) return;
+    loadData();
+  }, [id, loadData]);
 
   async function toggleStatus() {
     if (!role) return;

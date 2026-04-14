@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { POSTS_PER_PAGE, excerptFromContent, fetchBlogPostsPage, formatPublicationDate, type BlogPost } from '../../lib/blog';
-import { useSeo } from '../../lib/seo';
 
 export default function BlogPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -16,14 +15,6 @@ export default function BlogPage() {
   }, [searchParams]);
 
   const totalPages = Math.max(1, Math.ceil(totalCount / POSTS_PER_PAGE));
-
-  useSeo({
-    title: 'Blog | Alivio',
-    description: 'Read the latest insights, hiring strategies, and product updates from Alivio.',
-    keywords: 'alivio blog, recruiting insights, hiring automation, talent pipeline',
-    ogTitle: 'Alivio Blog',
-    ogDescription: 'Read the latest insights, hiring strategies, and product updates from Alivio.',
-  });
 
   useEffect(() => {
     const activePage = page;
@@ -56,9 +47,9 @@ export default function BlogPage() {
     <div className="mkt-container" style={{ paddingTop: '48px', paddingBottom: '72px' }}>
       <header style={{ marginBottom: '28px' }}>
         <p className="mkt-label" style={{ marginBottom: '10px' }}>ALIVIO BLOG</p>
-        <h1 style={{ fontSize: '42px', marginBottom: '10px', letterSpacing: '-0.03em' }}>Insights for modern hiring teams</h1>
+        <h1 style={{ fontSize: '42px', marginBottom: '10px', letterSpacing: '-0.03em' }}>Healthcare Recruiting Insights for Hospitals and Health Systems</h1>
         <p style={{ color: 'var(--text-secondary)', maxWidth: '740px' }}>
-          Actionable guidance, product updates, and best practices for high-velocity recruiting operations.
+          Practical guidance on nurse recruiting, clinical staffing operations, and AI workflows that help reduce vacancy days.
         </p>
       </header>
 

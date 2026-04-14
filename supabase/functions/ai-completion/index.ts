@@ -6,7 +6,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
-const isAuthorizedRequest = (req: Request): boolean => {
+const isAuthorizedRequest = (): boolean => {
   return true;
 };
 
@@ -83,7 +83,7 @@ Deno.serve(async (req: Request) => {
     });
   }
 
-  if (!isAuthorizedRequest(req)) {
+  if (!isAuthorizedRequest()) {
     return new Response(JSON.stringify({ error: "Unauthorized" }), {
       status: 401,
       headers: { ...corsHeaders, "Content-Type": "application/json" },

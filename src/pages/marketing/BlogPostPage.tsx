@@ -38,11 +38,11 @@ export default function BlogPostPage() {
   }, [slug]);
 
   useSeo({
-    title: post ? `${post.title} | Alivio Blog` : 'Blog Post | Alivio',
-    description: post?.meta_description || 'Read this article from the Alivio blog.',
-    keywords: post?.meta_keywords || 'alivio blog',
-    ogTitle: post ? `${post.title} | Alivio Blog` : 'Alivio Blog Post',
-    ogDescription: post?.meta_description || 'Read this article from the Alivio blog.',
+    title: post ? `${post.title} | Alivio Search Partners Blog` : 'Healthcare Recruiting Insights | Alivio Search Partners Blog',
+    description: post?.meta_description || post?.excerpt || 'Healthcare recruiting insights and clinical staffing strategies from Alivio Search Partners.',
+    ogTitle: post ? `${post.title} | Alivio Search Partners Blog` : 'Healthcare Recruiting Insights | Alivio Search Partners Blog',
+    ogDescription: post?.meta_description || post?.excerpt || 'Healthcare recruiting insights and clinical staffing strategies from Alivio Search Partners.',
+    ogType: 'article',
   });
 
   return (

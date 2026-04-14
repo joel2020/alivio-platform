@@ -1,6 +1,7 @@
-import { Link } from 'react-router-dom';
 import { ArrowRight, Play } from 'lucide-react';
 import { useEffect, useState } from 'react';
+
+const CAL_COM_BOOKING_URL = 'https://cal.com/alivio/intro-call30';
 
 const CANDIDATES = [
   {
@@ -478,10 +479,15 @@ export default function HeroSection() {
                 transitionDelay: '0.35s',
               }}
             >
-              <Link to="/signup" className="mkt-btn-primary">
-                Start Free
+              <a
+                href={CAL_COM_BOOKING_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mkt-btn-primary"
+              >
+                Book a Demo
                 <ArrowRight size={16} />
-              </Link>
+              </a>
               <a
                 href="/#how-it-works"
                 className="mkt-btn-secondary"
@@ -505,7 +511,7 @@ export default function HeroSection() {
                 transitionDelay: '0.5s',
               }}
             >
-              No credit card required · Setup in 5 minutes · Cancel anytime
+              See how hospitals cut nurse vacancy time-to-fill by up to 60%
             </p>
           </div>
 
