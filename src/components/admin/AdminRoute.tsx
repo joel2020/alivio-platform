@@ -20,7 +20,7 @@ export default function AdminRoute() {
     return <Navigate to={withNextParam('/login', location.pathname)} replace />;
   }
 
-  const isAdmin = (supabaseUser?.email || '').toLowerCase() === ADMIN_EMAIL;
+  const isAdmin = supabaseUser?.email === ADMIN_EMAIL;
 
   if (!isAdmin) {
     return <Navigate to="/dashboard" replace />;

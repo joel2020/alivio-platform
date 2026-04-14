@@ -43,10 +43,8 @@ import AdminRoute from './components/admin/AdminRoute';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import AdminUsersPage from './pages/admin/AdminUsersPage';
 import AdminOrganizationsPage from './pages/admin/AdminOrganizationsPage';
-import AdminCrmPage from './pages/admin/AdminCrmPage';
 import AdminBlogPage from './pages/admin/AdminBlogPage';
 import AdminAiMonitorPage from './pages/admin/AdminAiMonitorPage';
-import AdminEmailsPage from './pages/admin/AdminEmailsPage';
 import AdminTasksPage from './pages/admin/AdminTasksPage';
 
 
@@ -231,15 +229,15 @@ export default function App() {
             <Route path="/dashboard/crm" element={<CrmPage />} />
             <Route path="/dashboard/crm/templates" element={<CrmTemplatesPage />} />
             <Route path="/dashboard/crm/:id" element={<CrmClientPage />} />
-            <Route path="/admin/email-inbox" element={<EmailInboxPage />} />
             <Route element={<AdminRoute />}>
               <Route path="/admin" element={<AdminDashboardPage />} />
               <Route path="/admin/users" element={<AdminUsersPage />} />
               <Route path="/admin/organizations" element={<AdminOrganizationsPage />} />
-              <Route path="/admin/crm" element={<AdminCrmPage />} />
+              <Route path="/admin/crm" element={<Navigate to="/dashboard/crm" replace />} />
               <Route path="/admin/blog" element={<AdminBlogPage />} />
               <Route path="/admin/ai-monitor" element={<AdminAiMonitorPage />} />
-              <Route path="/admin/emails" element={<AdminEmailsPage />} />
+              <Route path="/admin/email-inbox" element={<EmailInboxPage />} />
+              <Route path="/admin/emails" element={<Navigate to="/admin/email-inbox" replace />} />
               <Route path="/admin/tasks" element={<AdminTasksPage />} />
             </Route>
           </Route>

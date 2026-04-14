@@ -23,22 +23,14 @@ export default function AdminUsersPage() {
     const load = async () => {
       const { data: adminData, error: adminError } = await supabase.rpc('get_admin_auth_users');
 
-      if (!adminError) {
-        setUsers((adminData as AdminUserRow[]) ?? []);
+      if (adminError) {
+        setUsers([]);
+        setError(`Unable to load users. Please try again. ${adminError.message}`);
         return;
       }
 
-      const fallback = await supabase.from('users').select('id, email, created_at').order('created_at', { ascending: false });
-      if (fallback.error) {
-        setError(adminError.message);
-        return;
-      }
-
-      setUsers(((fallback.data ?? []) as Array<{ id: string; email: string; created_at: string }>).map((user) => ({
-        ...user,
-        last_sign_in_at: null,
-      })));
-      setError('Showing fallback user data because auth metadata was not available.');
+      setError(null);
+      setUsers((adminData as AdminUserRow[]) ?? []);
     };
 
     void load();
