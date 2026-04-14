@@ -23,6 +23,84 @@ npm run dev
 
 Server binds to `process.env.PORT` and defaults to `8080` when unset.
 
+
+## Smoke tests, payload fixtures, and response validation
+
+These scripts are intentionally lightweight and framework-agnostic, so you can validate backend behavior while the main implementation thread continues independently.
+
+### Base URL assumptions
+
+All scripts use `ALIVIO_API_BASE_URL` and default to `http://localhost:8080` when unset.
+
+```bash
+export ALIVIO_API_BASE_URL=http://localhost:8080
+```
+
+### Run smoke tests
+
+From `backend/alivio-backend`:
+
+```bash
+npm run smoke:health
+npm run smoke:vertex
+npm run smoke:recruiter
+npm run smoke
+```
+
+Optional payload override examples:
+
+```bash
+node scripts/smoke-vertex.js examples/payloads/job-search.json
+node scripts/smoke-recruiter.js examples/payloads/recruiter-copilot.json
+```
+
+### Success vs failure interpretation
+
+- **Success**: script exits with code `0` and prints a pass message with high-level counts/fields.
+- **Failure**: script exits non-zero and prints HTTP status and response body (or validation errors).
+
+A failing smoke test usually indicates one of:
+
+- backend not running at `ALIVIO_API_BASE_URL`
+- request validation error (`query`, `pageSize`)
+- upstream dependency issue (Vertex/OpenAI auth, timeout, or API error)
+- response-shape regression
+
+### Required response fields for grounded and generated flows
+
+For `POST /api/vertex-search`, smoke checks expect:
+
+- `ok`
+- `query`
+- `grounded.results` (array)
+
+For `POST /api/recruiter-search`, smoke + shape validation expect:
+
+- `ok`
+- `query`
+- `grounded.results` (array)
+- `generated.ranked_matches` (array)
+- `generated.explanation` (string)
+- `generated.outreach_draft` (string)
+
+Use the standalone validator against a saved response:
+
+```bash
+npm run validate:recruiter-shape -- /tmp/recruiter-response.json
+# or
+cat /tmp/recruiter-response.json | npm run validate:recruiter-shape
+```
+
+### Reusable healthcare recruiting payload fixtures
+
+`examples/payloads/` includes practical samples aligned to Alivio Search Partners workflows:
+
+- `candidate-search.json`
+- `job-search.json`
+- `job-to-candidate-matching.json`
+- `candidate-to-job-matching.json`
+- `recruiter-copilot.json`
+
 ## Docker build and run
 
 ```bash
@@ -104,13 +182,17 @@ Expected behavior:
 ### Files
 
 - `frontend/alivio-api-client.js`
-  - Lightweight reusable API client for website use.
+  - Lightweight reusable API client for website usage.
+  - Methods: `vertexSearch(...)` and `recruiterSearch(...)`.
   - Exposes `window.AlivioApiClient.createClient(...)` in browsers.
-  - Also supports CommonJS import (`require(...)`) for server-rendered pages.
+  - Supports CommonJS import (`require(...)`) for server-rendered pages.
 - `examples/website-integration-example.html`
-  - Minimal website flow (query input -> backend call -> render ranked matches and outreach draft).
+  - Static-site-ready example with selectable call to `/api/vertex-search` or `/api/recruiter-search`.
+  - Includes recruiter UI flow: query input -> request -> render ranked matches + outreach draft.
 - `examples/README.md`
   - Mock response rendering references for frontend UI patterns (grounded results, ranked matches, explanation, outreach draft).
+- `examples/frontend-integration-usage.js`
+  - Small helper examples for static + simple JS app + server-rendered page integration.
 
 ### Client usage
 
@@ -121,14 +203,19 @@ Expected behavior:
     baseUrl: 'https://api.aliviosearchpartners.com'
   });
 
+  const vertexResult = await client.vertexSearch({
+    query: 'Find ICU travel nurses in Texas with active compact RN license',
+    pageSize: 8
+  });
+
   const recruiterResult = await client.recruiterSearch({
-    query: 'Find Directors of Nursing in New Jersey with SNF experience',
+    query: 'Match this role to likely candidates: Director of Nursing in New Jersey, SNF and multi-site leadership required',
     pageSize: 10
   });
 </script>
 ```
 
-If your backend is reverse-proxied on the same domain under `/api`, set `baseUrl` to an empty string and keep API paths relative.
+If your backend is reverse-proxied on the same domain under `/api`, set `baseUrl` to empty (`''`) and keep API paths relative.
 
 ## Website integration contract
 
@@ -192,13 +279,13 @@ Request JSON:
 }
 ```
 
-Success response rendering fields:
+### Response rendering fields from `/api/recruiter-search`
 
 - `generated.ranked_matches` (array): render as ranked cards/list rows.
 - `generated.explanation` (string): render as why-these-matches summary.
 - `generated.outreach_draft` (string): render in recruiter outreach editor.
 - `grounded.results` (array): optional evidence/debug panel for confidence and provenance.
-- `requestId` (string, on errors and many proxies): surface in support logs and incident tickets when available.
+- `requestId` (string, on errors and some proxies): surface in support logs and incident tickets when available.
 
 Error response shape (`4xx/5xx`):
 
@@ -216,6 +303,28 @@ Error response shape (`4xx/5xx`):
 }
 ```
 
+## Website-oriented integration patterns
+
+### 1) Static site
+
+- Serve `frontend/alivio-api-client.js` as an asset.
+- Instantiate with `baseUrl` pointing at API origin or blank for same-origin `/api` proxy.
+- Use `examples/website-integration-example.html` as a drop-in starter.
+
+### 2) Simple JavaScript app
+
+- Use `examples/frontend-integration-usage.js` and call `runSimpleAppFlow(client, query)`.
+- Bind query input and render blocks to:
+  - ranked matches (`generated.ranked_matches`)
+  - explanation (`generated.explanation`)
+  - outreach draft (`generated.outreach_draft`)
+
+### 3) Server-rendered page (Node)
+
+- Require the shared client (`frontend/alivio-api-client.js`) in your route/controller.
+- Fetch from backend on server side, then render HTML with hydrated response sections.
+- Use `createServerRenderedModel(...)` in `examples/frontend-integration-usage.js` as a template.
+
 ## Website deployment topology and routing
 
 Use either topology; keep auth backend-only in both.
@@ -226,7 +335,7 @@ Use either topology; keep auth backend-only in both.
 - Backend origin: `https://api.aliviosearchpartners.com`
 - Frontend client config: `baseUrl: 'https://api.aliviosearchpartners.com'`
 
-When using this topology, browser CORS is typically required.
+This topology is usually cleanest when backend and website are deployed independently.
 
 ### Topology B: backend mounted under `/api` on same origin
 
@@ -234,7 +343,7 @@ When using this topology, browser CORS is typically required.
 - Backend routed behind same domain path prefix, e.g. `/api/*`
 - Frontend client config: `baseUrl: ''` and call relative backend paths
 
-This avoids cross-origin calls and usually avoids CORS configuration.
+This avoids cross-origin browser requests and usually avoids CORS configuration.
 
 ### Routing assumptions to keep consistent
 
