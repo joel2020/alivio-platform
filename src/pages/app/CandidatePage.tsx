@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, ThumbsUp, ThumbsDown, ChevronDown, Sparkles, RefreshCw, CheckCircle, Mic, Clock } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
@@ -359,16 +359,12 @@ export default function CandidatePage() {
   const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!id) return;
-    loadData();
-  }, [id]);
-
-  useEffect(() => {
     if (!selectedCallId) return;
     supabase.from('voice_transcripts').select('*').eq('call_id', selectedCallId).maybeSingle().then(({ data }) => setTranscript(data));
   }, [selectedCallId]);
 
-  async function loadData() {
+  const loadData = useCallback(async () => {
+    if (!id) return;
     const [candRes, callsRes, logsRes, feedRes] = await Promise.all([
       supabase.from('candidates').select('*').eq('id', id).single(),
       supabase.from('voice_calls').select('*').eq('candidate_id', id).order('created_at', { ascending: false }),
@@ -388,7 +384,12 @@ export default function CandidatePage() {
       setRole(roleData);
     }
     setLoading(false);
-  }
+  }, [id]);
+
+  useEffect(() => {
+    if (!id) return;
+    loadData();
+  }, [id, loadData]);
 
   async function advanceStage(newStage: PipelineStage) {
     if (!candidate) return;

@@ -76,12 +76,12 @@ export default function ProductPage() {
     <div style={{ backgroundColor: '#0A0A0A' }}>
       <section className="max-w-7xl mx-auto px-6 pt-20 pb-16 border-b" style={{ borderColor: '#1E1E1E' }}>
         <p className="text-xs font-semibold uppercase tracking-widest mb-6" style={{ color: '#4F46E5' }}>The Platform</p>
-        <h1 className="font-bold text-white mb-6" style={{ fontSize: '56px', lineHeight: '1.05' }}>The Platform</h1>
+        <h1 className="font-bold text-white mb-6" style={{ fontSize: '56px', lineHeight: '1.05' }}>AI Agents for Healthcare Recruiting Teams</h1>
         <p className="text-xl mb-6" style={{ color: '#A0A0A0', maxWidth: '600px', lineHeight: '1.6' }}>
-          Alivio is an AI-native talent operating system built on autonomous agent architecture.
+          Alivio helps hospital HR teams source, screen, and engage licensed nurses and clinical candidates faster.
         </p>
         <p style={{ color: '#A0A0A0', maxWidth: '700px', lineHeight: '1.7' }}>
-          It replaces the fragmented stack of sourcing tools, applicant tracking systems, outreach platforms, and scheduling software with a single intelligent system that executes the full hiring pipeline.
+          Instead of juggling spreadsheets, agency outreach, and disconnected tools, your team gets one healthcare-focused system that runs sourcing through interview coordination for RN, ICU, and clinical leadership roles.
         </p>
       </section>
 
