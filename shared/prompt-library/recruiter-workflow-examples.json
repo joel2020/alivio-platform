@@ -1,0 +1,98 @@
+{
+  "version": "2026-04-14",
+  "workflows": [
+    {
+      "workflowId": "healthcare-director-of-nursing-intake-to-slate",
+      "industry": "healthcare",
+      "role": "Director of Nursing",
+      "steps": [
+        {
+          "order": 1,
+          "promptType": "candidate_search",
+          "fixtureId": "candidate-search-healthcare-don",
+          "exampleInput": {
+            "result_count": 8,
+            "location": "Dallas-Fort Worth, TX"
+          },
+          "expectedOutcome": "Initial shortlist with outreach hooks and risk flags"
+        },
+        {
+          "order": 2,
+          "promptType": "job_to_candidate_match",
+          "fixtureId": "job-to-candidate-match-healthcare-mds",
+          "exampleInput": {
+            "result_count": 5,
+            "job_summary": "120-bed skilled nursing facility needs DON to improve staffing stability and survey readiness."
+          },
+          "expectedOutcome": "Ranked slate for same-week interviews"
+        },
+        {
+          "order": 3,
+          "promptType": "recruiter_copilot",
+          "fixtureId": "recruiter-copilot-healthcare-allied",
+          "exampleInput": {
+            "markets": [
+              "Dallas-Fort Worth",
+              "Austin",
+              "San Antonio"
+            ]
+          },
+          "expectedOutcome": "Daily execution plan with manager updates"
+        }
+      ]
+    },
+    {
+      "workflowId": "healthcare-lnha-candidate-marketing",
+      "industry": "healthcare",
+      "role": "Licensed Nursing Home Administrator",
+      "steps": [
+        {
+          "order": 1,
+          "promptType": "candidate_to_job_match",
+          "fixtureId": "candidate-to-job-match-healthcare-lnha",
+          "exampleInput": {
+            "result_count": 6,
+            "region_scope": "Southeast US",
+            "candidate_profile": "Licensed Nursing Home Administrator with 9 years multi-site operations and quality turnaround track record."
+          },
+          "expectedOutcome": "Prioritized target account list with fit tradeoffs"
+        },
+        {
+          "order": 2,
+          "promptType": "job_search",
+          "fixtureId": "job-search-healthcare-lnha",
+          "exampleInput": {
+            "region": "Southeast US",
+            "census_band": "80-160",
+            "rating_threshold": 3
+          },
+          "expectedOutcome": "Open reqs with compensation and placement notes"
+        }
+      ]
+    },
+    {
+      "workflowId": "tech-recruiter-daily-desk-ops",
+      "industry": "tech",
+      "role": "Senior Software Engineering",
+      "steps": [
+        {
+          "order": 1,
+          "promptType": "candidate_search",
+          "fixtureId": "candidate-search-tech-staff-frontend",
+          "exampleInput": {
+            "result_count": 10,
+            "location_or_remote_scope": "US Remote"
+          },
+          "expectedOutcome": "High-signal candidate pipeline"
+        },
+        {
+          "order": 2,
+          "promptType": "recruiter_copilot",
+          "fixtureId": "recruiter-copilot-tech-fullcycle",
+          "exampleInput": {},
+          "expectedOutcome": "Daily actions, interview prep, and follow-up templates"
+        }
+      ]
+    }
+  ]
+}

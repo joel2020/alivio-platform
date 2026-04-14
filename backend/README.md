@@ -19,6 +19,7 @@ This folder is a local backend service that runs in **mock mode by default** and
 - **Providers** (swappable): retrieval, LLM, monitoring, resume parsing.
 - **Services**: search, matching, enrichment, fit scoring, outreach, monitoring, resume parsing.
 - **Agents**: ScoutReady, MatchReady, EnrichReady, SignalReady, EngageReady, MonitorReady, Parse Resume.
+- Detailed architecture doc (flows + module glossary + Mermaid): `backend/docs/architecture.md`.
 
 ## Quick start
 
@@ -62,3 +63,12 @@ For practical agent-to-endpoint orchestration guidance, see:
 - `docs/agent-workflow-map.md`
 - `examples/agent-workflow-map.yaml`
 
+## Recruiter prompt fixtures
+
+Reusable prompt fixtures and workflow examples live in `shared/prompt-library/`:
+
+- `shared/prompt-library/recruiter-prompts.fixtures.json`
+- `shared/prompt-library/recruiter-workflow-examples.json`
+- `shared/prompt-library/prompt-taxonomy.md`
+
+These fixtures are designed to be consumed by frontend prompt pickers, backend test/examples, and future recruiter-agent workflows.

@@ -1,0 +1,65 @@
+{
+  "ok": true,
+  "requestId": "mock-req-001",
+  "query": "Find Directors of Nursing in New Jersey with SNF and multi-site leadership",
+  "grounded": {
+    "totalSize": 3,
+    "results": [
+      {
+        "rank": 1,
+        "sourceType": "candidate",
+        "title": "Director of Nursing",
+        "name": "Alex Morgan, RN",
+        "location": "Newark, NJ",
+        "yearsExperience": 12,
+        "snippet": "Led 2 SNFs across 3 campuses; reduced agency spend by 18%.",
+        "source": "CRM profile"
+      },
+      {
+        "rank": 2,
+        "sourceType": "candidate",
+        "title": "Regional Clinical Director",
+        "name": "Jordan Lee, MSN",
+        "location": "Jersey City, NJ",
+        "yearsExperience": 10,
+        "snippet": "Managed multi-site quality initiatives and state survey readiness.",
+        "source": "Parsed resume"
+      },
+      {
+        "rank": 3,
+        "sourceType": "candidate",
+        "title": "DON / Administrator",
+        "name": "Taylor Brooks, RN",
+        "location": "Paterson, NJ",
+        "yearsExperience": 9,
+        "snippet": "Built float pool staffing model for 4 facilities.",
+        "source": "Inbound referral"
+      }
+    ]
+  },
+  "generated": {
+    "ranked_matches": [
+      {
+        "rank": 1,
+        "candidate_name": "Alex Morgan, RN",
+        "fit_score": 0.92,
+        "match_reasons": [
+          "Direct SNF DON experience",
+          "Multi-site leadership across 3 campuses",
+          "Recent NJ licensure validation"
+        ]
+      },
+      {
+        "rank": 2,
+        "candidate_name": "Jordan Lee, MSN",
+        "fit_score": 0.87,
+        "match_reasons": [
+          "Regional quality leadership",
+          "Strong survey and compliance outcomes"
+        ]
+      }
+    ],
+    "explanation": "Top candidates are prioritized for SNF depth, multi-site operations, and recent NJ leadership scope.",
+    "outreach_draft": "Hi Alex — your multi-site SNF leadership background in New Jersey aligns well with a Director of Nursing search we are running. Open to a quick intro this week?"
+  }
+}
