@@ -20,6 +20,10 @@ type SourceResult = {
 };
 
 Deno.serve(async (req: Request) => {
+  console.log('Scout agent called');
+  console.log('OPENROUTER_API_KEY exists:', !!Deno.env.get('OPENROUTER_API_KEY'));
+  console.log('MODEL:', Deno.env.get('OPENROUTER_MODEL'));
+
   if (req.method === "OPTIONS") {
     return new Response("ok", { status: 200, headers: corsHeaders });
   }
@@ -53,6 +57,7 @@ Return strict JSON only:
 }
 Create actionable sourcing guidance.`;
 
+    console.log('Calling OpenRouter for scout agent');
     const response = await fetch(OPENROUTER_URL, {
       method: "POST",
       headers: {
@@ -73,7 +78,11 @@ Create actionable sourcing guidance.`;
     });
 
     const payload = await response.json();
-    if (!response.ok) throw new Error(payload?.error?.message ?? `OpenRouter error ${response.status}`);
+    if (!response.ok) {
+      const openRouterMessage = payload?.error?.message ?? `OpenRouter error ${response.status}`;
+      console.log('OpenRouter scout error:', openRouterMessage);
+      throw new Error(openRouterMessage);
+    }
 
     const content = payload?.choices?.[0]?.message?.content;
     if (!content) throw new Error("No model content returned");
@@ -81,6 +90,8 @@ Create actionable sourcing guidance.`;
     const data = JSON.parse(content) as SourceResult;
     return new Response(JSON.stringify({ data, model: MODEL }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (error) {
-    return new Response(JSON.stringify({ error: (error as Error).message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    const message = (error as Error).message || 'Unknown scout agent error';
+    console.log('Scout agent failed:', message);
+    return new Response(JSON.stringify({ error: `Scout agent failed: ${message}` }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

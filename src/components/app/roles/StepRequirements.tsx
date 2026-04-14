@@ -36,27 +36,24 @@ interface StepRequirementsProps {
   onGenerationError: (message: string) => void;
 }
 
-type JobDescriptionResponse = {
-  data: {
-    summary: string;
-    responsibilities: string[];
-    qualifications: string[];
-  };
-  error?: string;
+type JobDescriptionData = {
+  summary?: string;
+  responsibilities?: string[];
+  qualifications?: string[];
 };
 
-function buildDescriptionFromAIResponse(output: JobDescriptionResponse['data']): string {
+function buildDescriptionFromAIResponse(output: JobDescriptionData): string {
   const lines: string[] = [];
-  lines.push(output.summary.trim());
+  lines.push((output.summary || '').trim());
 
-  if (output.responsibilities.length > 0) {
+  if ((output.responsibilities || []).length > 0) {
     lines.push('', 'Responsibilities');
-    lines.push(...output.responsibilities.map(item => `• ${item}`));
+    lines.push(...(output.responsibilities || []).map(item => `• ${item}`));
   }
 
-  if (output.qualifications.length > 0) {
+  if ((output.qualifications || []).length > 0) {
     lines.push('', 'Required Qualifications');
-    lines.push(...output.qualifications.map(item => `• ${item}`));
+    lines.push(...(output.qualifications || []).map(item => `• ${item}`));
   }
 
   return lines.join('\n');
@@ -79,22 +76,31 @@ export default function StepRequirements({
       return;
     }
 
+    setIsGenerating(true);
     try {
-      setIsGenerating(true);
-      const response = await supabase.functions.invoke<JobDescriptionResponse>('ai-generate-job', {
+      const { data: responseData, error } = await supabase.functions.invoke<{ data?: JobDescriptionData }>('ai-generate-job', {
         body: {
-          title: data.title.trim(),
-          department: data.department.trim(),
-          requirements: requirementInputs,
+          title: data.title || '',
+          department: data.department || '',
+          requirements: requirementInputs || [],
         },
       });
 
-      if (response.error || !response.data?.data) {
-        onGenerationError(response.error?.message ?? response.data?.error ?? 'AI generation failed. Please try again.');
+      if (error) {
+        console.error('AI generation failed:', error);
+        onGenerationError(`AI generation failed: ${error.message}`);
         return;
       }
 
-      onChange({ description: buildDescriptionFromAIResponse(response.data.data) });
+      if (responseData?.data) {
+        onChange({
+          description: buildDescriptionFromAIResponse({
+            summary: responseData.data.summary || '',
+            responsibilities: responseData.data.responsibilities || [],
+            qualifications: responseData.data.qualifications || [],
+          }),
+        });
+      }
       onAIGeneratedChange(true);
       if (user?.org_id) {
         await supabase.from('agent_activity_log').insert({
@@ -108,7 +114,8 @@ export default function StepRequirements({
         });
       }
     } catch (error) {
-      onGenerationError(error instanceof Error ? error.message : 'AI generation failed. Please try again.');
+      console.error('AI generation failed:', error);
+      onGenerationError(`AI generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsGenerating(false);
     }

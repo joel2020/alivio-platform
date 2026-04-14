@@ -27,7 +27,7 @@ export default function MarketingNav() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const showStartFree = !session && location.pathname === '/';
+  const showStartFree = !session;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -92,14 +92,14 @@ export default function MarketingNav() {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Link to="/login" className="mkt-btn-ghost hidden-mobile" style={{ height: '40px' }}>Sign In</Link>
-            {showStartFree ? <Link to="/signup" className="mkt-btn-ghost hidden-mobile" style={{ height: '40px' }}>Start Free</Link> : null}
+            {showStartFree ? <Link to="/signup" className="mkt-btn-secondary hidden-mobile" style={{ height: '40px' }}>Start Free</Link> : null}
             <a
               href={CAL_COM_BOOKING_URL}
               target="_blank"
               rel="noopener noreferrer"
               title={`${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}`}
               aria-label={`${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}`}
-              className="mkt-btn-secondary hidden-mobile"
+              className="mkt-btn-primary hidden-mobile"
               style={{ height: '40px' }}
             >
               Book a Demo
@@ -127,10 +127,10 @@ export default function MarketingNav() {
           ))}
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
-          <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-secondary" style={{ flex: 1, justifyContent: 'center' }} title={`${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}`}>
+          <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary" style={{ flex: 1, justifyContent: 'center' }} title={`${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}`}>
             Book a Demo
           </a>
-          {showStartFree ? <Link to="/signup" className="mkt-btn-ghost" style={{ flex: 1, justifyContent: 'center' }}>Start Free</Link> : null}
+          {showStartFree ? <Link to="/signup" className="mkt-btn-secondary" style={{ flex: 1, justifyContent: 'center' }}>Start Free</Link> : null}
           <Link to="/login" className="mkt-btn-primary" style={{ flex: 1, justifyContent: 'center' }}>Sign In</Link>
         </div>
       </div>

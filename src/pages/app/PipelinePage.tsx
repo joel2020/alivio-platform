@@ -4,7 +4,6 @@ import { Settings, Download, Pause, Play, Search, ChevronUp, ChevronDown, Loader
 import { supabase } from '../../lib/supabase';
 import type { Role, Candidate, PipelineStage, VoiceCall } from '../../lib/types';
 import { PIPELINE_STAGES, STAGE_LABELS } from '../../lib/types';
-import { matchCandidates, scoreCandidates } from '../../lib/ai';
 import Toast from '../../components/app/Toast';
 
 function ScoreBadge({ score }: { score: number | null }) {
@@ -177,18 +176,26 @@ export default function PipelinePage() {
     }
     setMatching(true);
     try {
-      const response = await matchCandidates(
-        `${role.title} in ${role.location}`,
-        candidates.map((candidate) => ({
-          id: candidate.id,
-          name: candidate.full_name,
-          experienceYears: candidate.experience_years ?? undefined,
-          skills: candidate.skills,
-          location: candidate.location ?? undefined,
-          notes: candidate.current_title ?? undefined,
-        })),
-      );
-      for (const match of response.data.matches) {
+      console.log('Invoking ai-match-candidates', { roleId: role.id, candidateCount: candidates.length });
+      const { data, error } = await supabase.functions.invoke<{ data?: { matches: Array<{ candidateId: string; matchScore: number; reasons: string[]; nextStep: 'screen' | 'hold' | 'reject' }> } }>('ai-match-candidates', {
+        body: {
+          role: `${role.title} in ${role.location}`,
+          candidateList: candidates.map((candidate) => ({
+            id: candidate.id,
+            name: candidate.full_name,
+            experienceYears: candidate.experience_years ?? undefined,
+            skills: candidate.skills,
+            location: candidate.location ?? undefined,
+            notes: candidate.current_title ?? undefined,
+          })),
+        },
+      });
+      if (error) {
+        setToast(`AI matching failed: ${error.message}`);
+        return;
+      }
+      const matches = data?.data?.matches ?? [];
+      for (const match of matches) {
         const nextStage: PipelineStage = match.nextStep === 'screen' ? 'voice_qualified' : match.nextStep === 'hold' ? 'scored' : 'archived';
         await supabase.from('candidates').update({
           pipeline_stage: nextStage,
@@ -202,14 +209,14 @@ export default function PipelinePage() {
         candidate_id: null,
         agent_name: 'cortex',
         action: 'AI candidate matching completed',
-        detail: `Ranked ${response.data.matches.length} candidates by fit.`,
+        detail: `Ranked ${matches.length} candidates by fit.`,
         metadata: {},
       });
       await loadData();
-      setToast(`AI matching completed for ${response.data.matches.length} candidates.`);
+      setToast(`AI matching completed for ${matches.length} candidates.`);
     } catch (error) {
       console.error(error);
-      setToast('AI matching failed. Please try again.');
+      setToast(`AI matching failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setMatching(false);
     }
@@ -222,18 +229,26 @@ export default function PipelinePage() {
     }
     setScoring(true);
     try {
-      const response = await scoreCandidates(
-        `${role.title} in ${role.location}. Must-have: ${(role.must_have_requirements || []).join(', ')}`,
-        candidates.map((candidate) => ({
-          id: candidate.id,
-          name: candidate.full_name,
-          experienceYears: candidate.experience_years ?? undefined,
-          skills: candidate.skills,
-          location: candidate.location ?? undefined,
-          notes: candidate.current_title ?? undefined,
-        })),
-      );
-      for (const scored of response.data.scores) {
+      console.log('Invoking ai-score-candidates', { roleId: role.id, candidateCount: candidates.length });
+      const { data, error } = await supabase.functions.invoke<{ data?: { scores: Array<{ candidateId: string; score: number; rationale: string }> } }>('ai-score-candidates', {
+        body: {
+          role: `${role.title} in ${role.location}. Must-have: ${(role.must_have_requirements || []).join(', ')}`,
+          candidates: candidates.map((candidate) => ({
+            id: candidate.id,
+            name: candidate.full_name,
+            experienceYears: candidate.experience_years ?? undefined,
+            skills: candidate.skills,
+            location: candidate.location ?? undefined,
+            notes: candidate.current_title ?? undefined,
+          })),
+        },
+      });
+      if (error) {
+        setToast(`AI scoring failed: ${error.message}`);
+        return;
+      }
+      const scores = data?.data?.scores ?? [];
+      for (const scored of scores) {
         await supabase.from('candidates').update({
           score: scored.score,
           score_rationale: scored.rationale,
@@ -252,14 +267,14 @@ export default function PipelinePage() {
         candidate_id: null,
         agent_name: 'signal',
         action: 'AI candidate scoring completed',
-        detail: `Scored ${response.data.scores.length} candidates.`,
+        detail: `Scored ${scores.length} candidates.`,
         metadata: {},
       });
       await loadData();
-      setToast(`AI scored ${response.data.scores.length} candidates.`);
+      setToast(`AI scored ${scores.length} candidates.`);
     } catch (error) {
       console.error(error);
-      setToast('AI scoring failed. Please try again.');
+      setToast(`AI scoring failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setScoring(false);
     }
