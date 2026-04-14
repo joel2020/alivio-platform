@@ -146,7 +146,6 @@ class AIService {
         body: payload,
         headers: supabaseAnonKey
           ? {
-              Authorization: `Bearer ${supabaseAnonKey}`,
               apikey: supabaseAnonKey,
             }
           : undefined,

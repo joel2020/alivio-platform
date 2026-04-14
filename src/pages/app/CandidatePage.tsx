@@ -357,6 +357,8 @@ export default function CandidatePage() {
   const [resumeText, setResumeText] = useState('');
   const [parsingResume, setParsingResume] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [unauthorized, setUnauthorized] = useState(false);
 
   useEffect(() => {
     if (!selectedCallId) return;
@@ -365,25 +367,43 @@ export default function CandidatePage() {
 
   const loadData = useCallback(async () => {
     if (!id) return;
-    const [candRes, callsRes, logsRes, feedRes] = await Promise.all([
-      supabase.from('candidates').select('*').eq('id', id).single(),
-      supabase.from('voice_calls').select('*').eq('candidate_id', id).order('created_at', { ascending: false }),
-      supabase.from('agent_activity_log').select('*').eq('candidate_id', id).order('created_at', { ascending: false }),
-      supabase.from('candidate_feedback').select('*').eq('candidate_id', id).order('created_at', { ascending: false }),
-    ]);
+    setLoading(true);
+    setLoadError(null);
+    setUnauthorized(false);
+    try {
+      const [candRes, callsRes, logsRes, feedRes] = await Promise.all([
+        supabase.from('candidates').select('*').eq('id', id).single(),
+        supabase.from('voice_calls').select('*').eq('candidate_id', id).order('created_at', { ascending: false }),
+        supabase.from('agent_activity_log').select('*').eq('candidate_id', id).order('created_at', { ascending: false }),
+        supabase.from('candidate_feedback').select('*').eq('candidate_id', id).order('created_at', { ascending: false }),
+      ]);
 
-    const cand = candRes.data;
-    setCandidate(cand);
-    setCalls(callsRes.data || []);
-    setActivityLog(logsRes.data || []);
-    setFeedback(feedRes.data || []);
-    if (callsRes.data && callsRes.data.length > 0) setSelectedCallId(callsRes.data[0].id);
+      const err = candRes.error || callsRes.error || logsRes.error || feedRes.error;
+      if (err) {
+        const authError = /jwt|permission|not authenticated|forbidden|auth/i.test(err.message);
+        if (authError) setUnauthorized(true);
+        else setLoadError(err.message);
+        return;
+      }
 
-    if (cand?.role_id) {
-      const { data: roleData } = await supabase.from('roles').select('*').eq('id', cand.role_id).single();
-      setRole(roleData);
+      const cand = candRes.data;
+      setCandidate(cand);
+      setCalls(callsRes.data || []);
+      setActivityLog(logsRes.data || []);
+      setFeedback(feedRes.data || []);
+      if (callsRes.data && callsRes.data.length > 0) setSelectedCallId(callsRes.data[0].id);
+
+      if (cand?.role_id) {
+        const { data: roleData, error: roleError } = await supabase.from('roles').select('*').eq('id', cand.role_id).single();
+        if (roleError) {
+          setLoadError(roleError.message);
+          return;
+        }
+        setRole(roleData);
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, [id]);
 
   useEffect(() => {
@@ -460,6 +480,22 @@ export default function CandidatePage() {
         {[0, 1, 2].map(i => (
           <div key={i} className="w-1.5 h-1.5 rounded-full animate-bounce" style={{ backgroundColor: 'var(--accent)', animationDelay: `${i * 150}ms` }} />
         ))}
+      </div>
+    </div>
+  );
+
+  if (unauthorized) return (
+    <div className="p-8">
+      <div className="card p-4" style={{ color: 'var(--text-secondary)' }}>
+        Your session does not have access to this candidate. Please sign in again.
+      </div>
+    </div>
+  );
+
+  if (loadError) return (
+    <div className="p-8">
+      <div className="card p-4" style={{ color: 'var(--text-secondary)' }}>
+        We could not load this candidate right now. {loadError}
       </div>
     </div>
   );
