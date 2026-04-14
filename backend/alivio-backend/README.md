@@ -73,6 +73,9 @@ Success response (`200`):
         "rank": 1,
         "id": "candidate_001",
         "title": "ICU RN - Austin, TX",
+        "role": "ICU Travel Nurse",
+        "location": "Austin, TX",
+        "sourceType": "candidate",
         "uri": "https://aliviosearchpartners.com/candidates/candidate_001",
         "snippet": "8 years ICU experience, compact RN license, rapid response team.",
         "snippets": [
@@ -89,7 +92,13 @@ Success response (`200`):
         "metadata": {
           "source": "ATS",
           "company": "Alivio Search Partners",
-          "location": "Austin, TX"
+          "location": "Austin, TX",
+          "structured": {
+            "compensation": null,
+            "skills": ["ICU", "Rapid Response"],
+            "seniority": "Senior",
+            "employmentType": "Contract"
+          }
         },
         "rawDocumentName": "projects/.../documents/candidate_001"
       }
@@ -127,7 +136,24 @@ Success response (`200`):
     "attributionToken": "token_xyz789",
     "results": []
   },
-  "generated": "Top matches are Candidate A, Candidate B, and Candidate C. Candidate A has 6 years multi-site SNF leadership in New Jersey..."
+  "generated": {
+    "ranked_matches": [
+      {
+        "rank": 1,
+        "id": "candidate_204",
+        "title": "Director of Nursing - Newark",
+        "role": "Director of Nursing",
+        "location": "Newark, NJ",
+        "sourceType": "candidate",
+        "fitScore": 17,
+        "evidence": [
+          "Multi-site SNF oversight with survey turnaround outcomes."
+        ]
+      }
+    ],
+    "explanation": "Top matches prioritize SNF multi-site history in New Jersey and direct DON scope.",
+    "outreach_draft": "Hi <Candidate Name>, your multi-site SNF leadership in New Jersey aligns with a Director of Nursing search we are running..."
+  }
 }
 ```
 
@@ -234,3 +260,75 @@ Use these prompts in website widgets, recruiter console, or internal tooling.
 ## Runtime validation status
 
 Code is hardened and structured for production use, but this repository alone does **not** claim live runtime validation of IAM, network path, or external API quotas.
+
+
+## Recruiter-facing response contract
+
+The backend now returns a stable recruiter contract for grounded retrieval and generated recruiter-assist outputs.
+
+### Grounded result fields (`grounded.results[]`)
+
+- `id`: stable document id from Vertex when available
+- `title`: best display title fallback chain
+- `role`: normalized role/job title field when present
+- `location`: normalized location string when present
+- `snippets`: evidence snippets from Vertex
+- `sourceType`: inferred type (`candidate`, `job`, `document`)
+- `metadata`: includes source/company/location and `structured` fields
+
+### Generated recruiter fields (`generated`)
+
+- `ranked_matches`: shortlist for candidate search/job search/matching workflows
+- `explanation`: concise grounded rationale
+- `outreach_draft`: recruiter-ready initial message draft
+
+### Sample recruiter payload
+
+```json
+{
+  "ok": true,
+  "query": "Find Directors of Nursing in New Jersey with SNF experience and multi-site leadership",
+  "grounded": {
+    "totalSize": 3,
+    "attributionToken": "token_abc",
+    "results": [
+      {
+        "rank": 1,
+        "id": "candidate_204",
+        "title": "Director of Nursing - Newark",
+        "role": "Director of Nursing",
+        "location": "Newark, NJ",
+        "snippets": ["Led 3-site SNF operations across Essex County."],
+        "sourceType": "candidate",
+        "metadata": {
+          "source": "ATS",
+          "company": "Alivio Search Partners",
+          "location": "Newark, NJ",
+          "structured": {
+            "compensation": null,
+            "skills": ["SNF", "Survey Readiness"],
+            "seniority": "Director",
+            "employmentType": "Full-time"
+          }
+        }
+      }
+    ]
+  },
+  "generated": {
+    "ranked_matches": [
+      {
+        "rank": 1,
+        "id": "candidate_204",
+        "title": "Director of Nursing - Newark",
+        "role": "Director of Nursing",
+        "location": "Newark, NJ",
+        "sourceType": "candidate",
+        "fitScore": 17,
+        "evidence": ["Led 3-site SNF operations across Essex County."]
+      }
+    ],
+    "explanation": "Ranked for direct DON alignment, New Jersey location fit, and multi-site SNF evidence.",
+    "outreach_draft": "Hi <Candidate Name>, I am reaching out about a Director of Nursing opportunity in New Jersey where your multi-site SNF background looks highly relevant."
+  }
+}
+```
