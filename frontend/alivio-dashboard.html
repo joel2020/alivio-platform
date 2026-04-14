@@ -235,6 +235,39 @@
         color: var(--success);
       }
 
+      .footer {
+        margin-top: 1rem;
+        color: var(--muted);
+        font-size: 0.82rem;
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .env-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: #fff;
+        padding: 0.3rem 0.65rem;
+      }
+
+      .status-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #98a2b3;
+      }
+
+      .status-dot.ok {
+        background: var(--success);
+      }
+
+      .status-dot.error {
+        background: var(--error);
+      }
+
       @keyframes spin {
         to {
           transform: rotate(360deg);
@@ -318,14 +351,25 @@
           <textarea id="outreachText" rows="10" readonly placeholder="Outreach draft appears here..."></textarea>
         </article>
       </section>
+
+      <footer class="footer">
+        <div class="env-indicator">
+          <span id="connectionDot" class="status-dot" aria-hidden="true"></span>
+          <span id="envIndicator">API: detecting...</span>
+        </div>
+      </footer>
     </main>
 
     <script src="./alivio-api-client.js"></script>
+    <script src="./alivio-dashboard-config.js"></script>
     <script>
       (function () {
         'use strict';
 
-        var API_BASE = window.ALIVIO_API_BASE || 'https://api.aliviosearchpartners.com';
+        var CONFIG = {
+          apiBase: window.ALIVIO_API_BASE || 'https://api.aliviosearchpartners.com',
+          defaultPageSize: 10
+        };
         var workflowExamples = {
           candidate_search: 'Find Directors of Nursing in New Jersey with SNF turnaround and census growth experience.',
           job_search: 'Find open Director of Nursing and Administrator roles in Florida skilled nursing networks.',
@@ -342,7 +386,7 @@
           recruiter_copilot: 'recruiter'
         };
 
-        var client = window.AlivioApiClient.createClient({ baseUrl: API_BASE });
+        var client = window.AlivioApiClient.createClient({ baseUrl: CONFIG.apiBase });
 
         var els = {
           form: document.getElementById('searchForm'),
@@ -356,8 +400,25 @@
           explanation: document.getElementById('explanationText'),
           outreach: document.getElementById('outreachText'),
           copyButton: document.getElementById('copyButton'),
-          copyMsg: document.getElementById('copyMessage')
+          copyMsg: document.getElementById('copyMessage'),
+          envIndicator: document.getElementById('envIndicator'),
+          connectionDot: document.getElementById('connectionDot')
         };
+
+        function updateConnectionState(isOk) {
+          els.connectionDot.classList.remove('ok', 'error');
+          els.connectionDot.classList.add(isOk ? 'ok' : 'error');
+          els.envIndicator.textContent = 'API: ' + CONFIG.apiBase;
+        }
+
+        async function testConnection() {
+          try {
+            var response = await fetch(CONFIG.apiBase + '/health', { method: 'GET' });
+            updateConnectionState(response.ok);
+          } catch (_error) {
+            updateConnectionState(false);
+          }
+        }
 
         function escapeHtml(value) {
           return String(value || '')
@@ -508,6 +569,7 @@
         els.copyButton.addEventListener('click', copyOutreach);
 
         updateExample();
+        testConnection();
       })();
     </script>
   </body>
