@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Loader2, Sparkles } from 'lucide-react';
 import type { Candidate, Role } from '../../lib/types';
+import { scoreCandidates } from '../../lib/ai';
+import Toast from './Toast';
 
 interface DimensionExplanation {
   label: string;
@@ -115,23 +117,11 @@ function DimensionCard({ dim, expanded, onToggle }: { dim: DimensionExplanation;
   const offset = circumference - (pct / 100) * circumference;
 
   return (
-    <div
-      className="rounded-xl border overflow-hidden transition-all cursor-pointer"
-      style={{
-        borderColor: expanded ? `${dim.color}50` : 'var(--border)',
-        backgroundColor: expanded ? `${dim.color}05` : 'var(--bg-surface)',
-        boxShadow: expanded ? `0 0 0 1px ${dim.color}20` : 'none',
-      }}
-      onClick={onToggle}
-    >
+    <div className="rounded-xl border overflow-hidden transition-all cursor-pointer" style={{ borderColor: expanded ? `${dim.color}50` : 'var(--border)', backgroundColor: expanded ? `${dim.color}05` : 'var(--bg-surface)', boxShadow: expanded ? `0 0 0 1px ${dim.color}20` : 'none' }} onClick={onToggle}>
       <div className="flex items-center gap-4 px-4 py-3.5">
         <svg className="w-8 h-8 -rotate-90 flex-shrink-0" viewBox="0 0 28 28">
           <circle cx="14" cy="14" r="12" fill="none" strokeWidth="2.5" stroke="var(--border)" />
-          <circle
-            cx="14" cy="14" r="12" fill="none" strokeWidth="2.5"
-            stroke={dim.color} strokeLinecap="round"
-            strokeDasharray={circumference} strokeDashoffset={offset}
-          />
+          <circle cx="14" cy="14" r="12" fill="none" strokeWidth="2.5" stroke={dim.color} strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={offset} />
         </svg>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
@@ -140,21 +130,12 @@ function DimensionCard({ dim, expanded, onToggle }: { dim: DimensionExplanation;
           </div>
           <p className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>{dim.summary}</p>
         </div>
-        <div className="flex-shrink-0" style={{ color: 'var(--text-muted)' }}>
-          {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-        </div>
+        <div className="flex-shrink-0" style={{ color: 'var(--text-muted)' }}>{expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}</div>
       </div>
       {expanded && (
         <div className="px-4 pb-4 pt-0">
           <div className="h-px mb-3" style={{ backgroundColor: 'var(--border)' }} />
-          <div className="mb-3">
-            <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--bg-subtle)' }}>
-              <div
-                className="h-1.5 rounded-full transition-all duration-700"
-                style={{ width: `${pct}%`, backgroundColor: dim.color }}
-              />
-            </div>
-          </div>
+          <div className="mb-3"><div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--bg-subtle)' }}><div className="h-1.5 rounded-full transition-all duration-700" style={{ width: `${pct}%`, backgroundColor: dim.color }} /></div></div>
           <p className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{dim.detail}</p>
         </div>
       )}
@@ -169,47 +150,82 @@ interface Props {
 
 export default function ScoreExplainer({ candidate, role }: Props) {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(0);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiRationale, setAiRationale] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
   const sb = candidate.score_breakdown;
 
   const dimensions: DimensionExplanation[] = [];
   if (sb.hard_qualification !== undefined && role) dimensions.push(explainHardQualification(sb.hard_qualification, candidate, role));
-  if (sb.experience_trajectory !== undefined) dimensions.push(explainExperienceTrajectory(sb.experience_trajectory, candidate, role!));
+  if (sb.experience_trajectory !== undefined && role) dimensions.push(explainExperienceTrajectory(sb.experience_trajectory, candidate, role));
   if (sb.skills_adjacency !== undefined) dimensions.push(explainSkillsAdjacency(sb.skills_adjacency, candidate));
   if (sb.engagement_propensity !== undefined) dimensions.push(explainEngagementPropensity(sb.engagement_propensity, candidate));
+
+  async function handleAiExplanation() {
+    if (!role) {
+      setToast('Role context is required to generate AI explanation.');
+      return;
+    }
+
+    setAiLoading(true);
+    try {
+      const response = await scoreCandidates(
+        `${role.title} in ${role.location}. Must-have: ${role.must_have_requirements.join(', ')}`,
+        [{
+          id: candidate.id,
+          name: candidate.full_name,
+          experienceYears: candidate.experience_years ?? undefined,
+          skills: candidate.skills,
+          location: candidate.location ?? undefined,
+          notes: candidate.score_rationale ?? undefined,
+        }],
+      );
+      setAiRationale(response.data.scores[0]?.rationale ?? null);
+    } catch (error) {
+      console.error(error);
+      setToast('Could not fetch AI scoring explanation. Please try again.');
+    } finally {
+      setAiLoading(false);
+    }
+  }
 
   if (dimensions.length === 0) return null;
 
   const overallScore = candidate.score !== null ? Math.round(candidate.score * 100) : null;
 
   return (
-    <div
-      className="p-6 rounded-xl border"
-      style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)', boxShadow: 'var(--shadow)' }}
-    >
+    <div className="p-6 rounded-xl border" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)', boxShadow: 'var(--shadow)' }}>
       <div className="flex items-center justify-between mb-1">
         <h2 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>Why this score?</h2>
-        {overallScore !== null && (
-          <span
-            className="text-xs px-2.5 py-1 rounded-lg font-mono font-medium"
-            style={{ backgroundColor: 'var(--bg-subtle)', color: 'var(--text-secondary)' }}
-          >
-            Signal Score {overallScore}
-          </span>
-        )}
+        {overallScore !== null && <span className="text-xs px-2.5 py-1 rounded-lg font-mono font-medium" style={{ backgroundColor: 'var(--bg-subtle)', color: 'var(--text-secondary)' }}>Signal Score {overallScore}</span>}
       </div>
-      <p className="text-xs mb-5" style={{ color: 'var(--text-muted)' }}>
-        Four dimensions evaluated by the Signal agent. Click any to see reasoning.
-      </p>
+      <p className="text-xs mb-4" style={{ color: 'var(--text-muted)' }}>Four dimensions evaluated by the Signal agent. Click any to see reasoning.</p>
+
+      <button
+        type="button"
+        onClick={handleAiExplanation}
+        disabled={aiLoading}
+        className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold mb-5"
+        style={{ border: '1px solid var(--border)', color: 'var(--text-secondary)', backgroundColor: aiLoading ? 'var(--bg-subtle)' : 'var(--bg-surface)' }}
+      >
+        {aiLoading ? <Loader2 size={13} className="animate-spin" /> : <Sparkles size={13} />}
+        {aiLoading ? 'Analyzing...' : 'Generate AI explanation'}
+      </button>
+
+      {aiRationale && (
+        <div className="mb-5 p-3 rounded-lg" style={{ backgroundColor: 'var(--accent-subtle)', color: 'var(--text-secondary)' }}>
+          <p className="text-xs font-semibold mb-1" style={{ color: 'var(--accent)' }}>AI Summary</p>
+          <p className="text-xs leading-relaxed">{aiRationale}</p>
+        </div>
+      )}
+
       <div className="space-y-2">
         {dimensions.map((dim, i) => (
-          <DimensionCard
-            key={dim.label}
-            dim={dim}
-            expanded={expandedIndex === i}
-            onToggle={() => setExpandedIndex(expandedIndex === i ? null : i)}
-          />
+          <DimensionCard key={dim.label} dim={dim} expanded={expandedIndex === i} onToggle={() => setExpandedIndex(expandedIndex === i ? null : i)} />
         ))}
       </div>
+
+      {toast && <Toast message={toast} onDismiss={() => setToast(null)} />}
     </div>
   );
 }

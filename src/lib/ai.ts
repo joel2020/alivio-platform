@@ -1,33 +1,26 @@
-import { supabase, isSupabaseConfigured, supabaseConfigError } from './supabase';
+import { isSupabaseConfigured, supabase, supabaseConfigError } from './supabase';
 
-export const DEFAULT_AI_MODEL = 'meta-llama/llama-3-70b-instruct';
-
-export type AIModel =
-  | 'meta-llama/llama-3-70b-instruct'
-  | 'google/gemini-pro'
-  | (string & {});
-
-export interface AIRequestOptions {
-  model?: AIModel;
-  onLoadingChange?: (isLoading: boolean) => void;
-}
+export type AIServiceErrorCode = 'NOT_CONFIGURED' | 'INVALID_RESPONSE' | 'REQUEST_FAILED';
 
 export interface AIServiceError {
-  code: 'NOT_CONFIGURED' | 'INVALID_RESPONSE' | 'REQUEST_FAILED';
+  code: AIServiceErrorCode;
   message: string;
   cause?: unknown;
+}
+
+export interface AIRequestOptions {
+  onLoadingChange?: (isLoading: boolean) => void;
 }
 
 export interface AIResult<T> {
   data: T;
   model: string;
-  isFallback: boolean;
 }
 
-export interface JobDescriptionInput {
-  title: string;
-  department: string;
-  requirements: string[];
+export interface AIRequestState {
+  isLoading: boolean;
+  inFlightRequests: number;
+  lastError: AIServiceError | null;
 }
 
 export interface JobDescriptionOutput {
@@ -109,241 +102,122 @@ export interface SourceCandidatesOutput {
   outreachAngles: string[];
 }
 
-interface EdgeCompletionResponse {
-  content?: string;
+interface EdgeResponse<T> {
+  data?: T;
   model?: string;
-  fallbackFrom?: string;
   error?: string;
 }
 
-interface AIServiceState {
-  isLoading: boolean;
-  inFlightRequests: number;
-  lastError: AIServiceError | null;
-}
-
-function createAIServiceError(
-  code: AIServiceError['code'],
-  message: string,
-  cause?: unknown,
-): AIServiceError {
+function buildError(code: AIServiceErrorCode, message: string, cause?: unknown): AIServiceError {
   return { code, message, cause };
 }
 
-function parseJSONObject<T>(raw: string): T {
-  const cleaned = raw.trim();
-
-  try {
-    return JSON.parse(cleaned) as T;
-  } catch {
-    const match = cleaned.match(/\{[\s\S]*\}/);
-    if (!match) {
-      throw createAIServiceError('INVALID_RESPONSE', 'AI response was not valid JSON.');
-    }
-
-    try {
-      return JSON.parse(match[0]) as T;
-    } catch (error) {
-      throw createAIServiceError('INVALID_RESPONSE', 'AI response JSON could not be parsed.', error);
-    }
-  }
-}
-
 class AIService {
-  private state: AIServiceState = {
+  private state: AIRequestState = {
     isLoading: false,
     inFlightRequests: 0,
     lastError: null,
   };
 
-  getState(): AIServiceState {
+  getState(): AIRequestState {
     return { ...this.state };
   }
 
-  private setLoading(isLoading: boolean): void {
-    this.state.isLoading = isLoading;
-  }
-
-  private setLastError(error: AIServiceError | null): void {
-    this.state.lastError = error;
-  }
-
-  private async callEdgeFunction<T>(
-    prompt: string,
-    systemMessage: string,
+  private async invoke<T>(
+    functionName: string,
+    payload: Record<string, unknown>,
     options?: AIRequestOptions,
   ): Promise<AIResult<T>> {
     if (!isSupabaseConfigured) {
-      const error = createAIServiceError(
-        'NOT_CONFIGURED',
-        supabaseConfigError ?? 'Supabase is not configured.',
-      );
-      this.setLastError(error);
-      throw error;
+      const err = buildError('NOT_CONFIGURED', supabaseConfigError ?? 'Supabase is not configured.');
+      this.state.lastError = err;
+      throw err;
     }
 
     this.state.inFlightRequests += 1;
-    this.setLoading(true);
+    this.state.isLoading = true;
+    this.state.lastError = null;
     options?.onLoadingChange?.(true);
-    this.setLastError(null);
 
     try {
-      const { data, error } = await supabase.functions.invoke<EdgeCompletionResponse>('ai-completion', {
-        body: {
-          prompt,
-          systemMessage,
-          model: options?.model ?? DEFAULT_AI_MODEL,
-        },
+      const { data, error } = await supabase.functions.invoke<EdgeResponse<T>>(functionName, {
+        body: payload,
       });
 
       if (error) {
-        throw createAIServiceError('REQUEST_FAILED', error.message, error);
+        throw buildError('REQUEST_FAILED', error.message, error);
       }
 
-      if (!data?.content) {
-        throw createAIServiceError('INVALID_RESPONSE', data?.error ?? 'AI response content is missing.');
+      if (!data?.data) {
+        throw buildError('INVALID_RESPONSE', data?.error ?? 'AI function returned invalid payload.');
       }
-
-      const parsed = parseJSONObject<T>(data.content);
 
       return {
-        data: parsed,
-        model: data.model ?? options?.model ?? DEFAULT_AI_MODEL,
-        isFallback: Boolean(data.fallbackFrom),
+        data: data.data,
+        model: data.model ?? 'meta-llama/llama-4-maverick',
       };
     } catch (error) {
       const aiError = (error as AIServiceError).code
         ? (error as AIServiceError)
-        : createAIServiceError('REQUEST_FAILED', (error as Error).message, error);
-      this.setLastError(aiError);
+        : buildError('REQUEST_FAILED', (error as Error).message, error);
+      this.state.lastError = aiError;
       throw aiError;
     } finally {
-      this.state.inFlightRequests = Math.max(0, this.state.inFlightRequests - 1);
-      const hasRequestsInFlight = this.state.inFlightRequests > 0;
-      this.setLoading(hasRequestsInFlight);
-      options?.onLoadingChange?.(hasRequestsInFlight);
+      this.state.inFlightRequests -= 1;
+      this.state.isLoading = this.state.inFlightRequests > 0;
+      options?.onLoadingChange?.(false);
     }
   }
 
-  generateJobDescription(
-    input: JobDescriptionInput,
-    options?: AIRequestOptions,
-  ): Promise<AIResult<JobDescriptionOutput>> {
-    return this.callEdgeFunction<JobDescriptionOutput>(
-      `Create a job description for title: ${input.title}, department: ${input.department}, requirements: ${input.requirements.join(', ')}.`,
-      'You are a senior recruiting writer. Return strict JSON with keys: summary (string), responsibilities (string[]), qualifications (string[]), preferredQualifications (string[]), compensationNotes (string[]).',
-      options,
-    );
+  generateJobDescription(title: string, department: string, requirements: string[], options?: AIRequestOptions) {
+    return this.invoke<JobDescriptionOutput>('ai-generate-job', { title, department, requirements }, options);
   }
 
-  scoreCandidates(
-    role: string,
-    candidates: CandidateForScoring[],
-    options?: AIRequestOptions,
-  ): Promise<AIResult<ScoreCandidatesOutput>> {
-    return this.callEdgeFunction<ScoreCandidatesOutput>(
-      `Role: ${role}. Candidates: ${JSON.stringify(candidates)}. Score each candidate from 0 to 100.`,
-      'You are a recruiting evaluation engine. Return strict JSON with keys: roleSummary (string), scores (array of {candidateId, score, rationale, strengths, risks}).',
-      options,
-    );
+  scoreCandidates(role: string, candidates: CandidateForScoring[], options?: AIRequestOptions) {
+    return this.invoke<ScoreCandidatesOutput>('ai-score-candidates', { role, candidates }, options);
   }
 
-  matchCandidates(
-    role: string,
-    candidateList: CandidateForScoring[],
-    options?: AIRequestOptions,
-  ): Promise<AIResult<MatchCandidatesOutput>> {
-    return this.callEdgeFunction<MatchCandidatesOutput>(
-      `Role: ${role}. Candidate list: ${JSON.stringify(candidateList)}. Determine shortlist fit and actions.`,
-      "You are a talent matching assistant. Return strict JSON with keys: roleSummary (string), matches (array of {candidateId, matchScore, reasons, nextStep}). nextStep must be one of 'screen', 'hold', 'reject'.",
-      options,
-    );
+  matchCandidates(role: string, candidateList: CandidateForScoring[], options?: AIRequestOptions) {
+    return this.invoke<MatchCandidatesOutput>('ai-match-candidates', { role, candidateList }, options);
   }
 
-  generateOutreachEmail(
-    candidate: CandidateForScoring,
-    role: string,
-    tone: OutreachTone,
-    options?: AIRequestOptions,
-  ): Promise<AIResult<OutreachEmailOutput>> {
-    return this.callEdgeFunction<OutreachEmailOutput>(
-      `Candidate: ${JSON.stringify(candidate)}. Role: ${role}. Tone: ${tone}.`,
-      'You are an executive recruiter writing concise first-contact email outreach. Return strict JSON with keys: subject (string), body (string), personalizationSignals (string[]).',
-      options,
-    );
+  generateOutreachEmail(candidate: CandidateForScoring, role: string, tone: OutreachTone, options?: AIRequestOptions) {
+    return this.invoke<OutreachEmailOutput>('generate-outreach', { candidate, role, tone }, options);
   }
 
-  parseResume(
-    resumeText: string,
-    options?: AIRequestOptions,
-  ): Promise<AIResult<ParsedResumeOutput>> {
-    return this.callEdgeFunction<ParsedResumeOutput>(
-      `Extract structured candidate details from this resume text: ${resumeText}`,
-      'You are a resume parser. Return strict JSON with keys: fullName, email, phone, location, summary, yearsExperience, skills, certifications, education, recentRoles[{title, company, startDate, endDate}]. Use null for unknown values.',
-      options,
-    );
+  parseResume(resumeText: string, options?: AIRequestOptions) {
+    return this.invoke<ParsedResumeOutput>('ai-parse-resume', { resumeText }, options);
   }
 
-  sourceCandidates(
-    roleDescription: string,
-    criteria: string[],
-    options?: AIRequestOptions,
-  ): Promise<AIResult<SourceCandidatesOutput>> {
-    return this.callEdgeFunction<SourceCandidatesOutput>(
-      `Role description: ${roleDescription}. Search criteria: ${criteria.join(', ')}.`,
-      'You are a candidate sourcing strategist. Return strict JSON with keys: queryPlan (string[]), candidatePersonas (array of {title, industries, keywords, locations}), outreachAngles (string[]).',
-      options,
-    );
+  sourceCandidates(roleDescription: string, criteria: string[], options?: AIRequestOptions) {
+    return this.invoke<SourceCandidatesOutput>('ai-source-candidates', { roleDescription, criteria }, options);
   }
 }
 
 export const aiService = new AIService();
 
-export async function generateJobDescription(
-  title: string,
-  department: string,
-  requirements: string[],
-  options?: AIRequestOptions,
-): Promise<AIResult<JobDescriptionOutput>> {
-  return aiService.generateJobDescription({ title, department, requirements }, options);
+export function getAIRequestState() {
+  return aiService.getState();
 }
 
-export async function scoreCandidates(
-  role: string,
-  candidates: CandidateForScoring[],
-  options?: AIRequestOptions,
-): Promise<AIResult<ScoreCandidatesOutput>> {
-  return aiService.scoreCandidates(role, candidates, options);
-}
+export const generateJobDescription = (title: string, department: string, requirements: string[], options?: AIRequestOptions) =>
+  aiService.generateJobDescription(title, department, requirements, options);
 
-export async function matchCandidates(
-  role: string,
-  candidateList: CandidateForScoring[],
-  options?: AIRequestOptions,
-): Promise<AIResult<MatchCandidatesOutput>> {
-  return aiService.matchCandidates(role, candidateList, options);
-}
+export const scoreCandidates = (role: string, candidates: CandidateForScoring[], options?: AIRequestOptions) =>
+  aiService.scoreCandidates(role, candidates, options);
 
-export async function generateOutreachEmail(
+export const matchCandidates = (role: string, candidateList: CandidateForScoring[], options?: AIRequestOptions) =>
+  aiService.matchCandidates(role, candidateList, options);
+
+export const generateOutreachEmail = (
   candidate: CandidateForScoring,
   role: string,
   tone: OutreachTone,
   options?: AIRequestOptions,
-): Promise<AIResult<OutreachEmailOutput>> {
-  return aiService.generateOutreachEmail(candidate, role, tone, options);
-}
+) => aiService.generateOutreachEmail(candidate, role, tone, options);
 
-export async function parseResume(
-  resumeText: string,
-  options?: AIRequestOptions,
-): Promise<AIResult<ParsedResumeOutput>> {
-  return aiService.parseResume(resumeText, options);
-}
+export const parseResume = (resumeText: string, options?: AIRequestOptions) =>
+  aiService.parseResume(resumeText, options);
 
-export async function sourceCandidates(
-  roleDescription: string,
-  criteria: string[],
-  options?: AIRequestOptions,
-): Promise<AIResult<SourceCandidatesOutput>> {
-  return aiService.sourceCandidates(roleDescription, criteria, options);
-}
+export const sourceCandidates = (roleDescription: string, criteria: string[], options?: AIRequestOptions) =>
+  aiService.sourceCandidates(roleDescription, criteria, options);

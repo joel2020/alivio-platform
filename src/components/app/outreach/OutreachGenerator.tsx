@@ -1,8 +1,10 @@
 import { useState, useCallback } from 'react';
 import { Copy, RefreshCw, Wand2, Check } from 'lucide-react';
 import type { FakeCandidate, Channel, Tone, GeneratedMessage } from './messageTemplates';
-import { generateMessage, getNextTone } from './messageTemplates';
+import { getNextTone } from './messageTemplates';
 import type { Role } from '../../../lib/types';
+import { generateOutreachEmail, type OutreachTone } from '../../../lib/ai';
+import Toast from '../Toast';
 
 interface OutreachGeneratorProps {
   candidate: FakeCandidate;
@@ -19,6 +21,12 @@ interface OutreachGeneratorProps {
 
 const CHANNELS: Channel[] = ['Email', 'LinkedIn', 'InMail'];
 const TONES: Tone[] = ['Professional', 'Conversational', 'Casual'];
+
+function toOutreachTone(tone: Tone): OutreachTone {
+  if (tone === 'Professional') return 'professional';
+  if (tone === 'Conversational') return 'conversational';
+  return 'direct';
+}
 
 function PillToggle<T extends string>({
   options,
@@ -78,32 +86,46 @@ export default function OutreachGenerator({
   const [message, setMessage] = useState<GeneratedMessage | null>(null);
   const [variationIndex, setVariationIndex] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
 
   const generate = useCallback(
     async (ch: Channel, tn: Tone, varIdx: number) => {
       setLoading(true);
       setMessage(null);
-      await new Promise((r) => setTimeout(r, 1800));
-      const msg = generateMessage(
-        candidate,
-        role.title,
-        role.description,
-        ch,
-        tn,
-        senderName,
-        varIdx
-      );
-      setMessage(msg);
-      setLoading(false);
-      onMessageGenerated({
-        candidateName: candidate.name,
-        roleTitle: role.title,
-        channel: ch,
-        tone: tn,
-        message: msg,
-      });
+      try {
+        const aiResult = await generateOutreachEmail(
+          {
+            id: candidate.id,
+            name: candidate.name,
+            experienceYears: candidate.experience,
+            skills: candidate.skills,
+            notes: `${candidate.title} at ${candidate.company}`,
+          },
+          `${role.title}${role.description ? ` - ${role.description}` : ''}`,
+          toOutreachTone(tn),
+        );
+
+        const msg: GeneratedMessage = {
+          subject: aiResult.data.subject,
+          body: aiResult.data.body,
+        };
+
+        setMessage(msg);
+        onMessageGenerated({
+          candidateName: candidate.name,
+          roleTitle: role.title,
+          channel: ch,
+          tone: tn,
+          message: msg,
+        });
+      } catch (error) {
+        console.error('Failed to generate outreach', error);
+        setToast('Unable to generate outreach right now. Please try again.');
+      } finally {
+        setLoading(false);
+      }
     },
-    [candidate, role, senderName, onMessageGenerated]
+    [candidate, role, onMessageGenerated]
   );
 
   async function handleGenerate() {
@@ -134,58 +156,25 @@ export default function OutreachGenerator({
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // fallback silent fail
+      setToast('Clipboard not available in this browser.');
     }
   }
 
   return (
     <div style={{ maxWidth: '680px' }}>
-      <h2
-        style={{
-          fontSize: '20px',
-          fontWeight: 600,
-          color: 'var(--text-primary)',
-          marginBottom: '20px',
-          letterSpacing: '-0.01em',
-        }}
-      >
+      <h2 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '20px', letterSpacing: '-0.01em' }}>
         Generate Outreach
       </h2>
 
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '12px',
-          alignItems: 'center',
-          marginBottom: '20px',
-        }}
-      >
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', marginBottom: '20px' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          <span
-            style={{
-              fontSize: '11px',
-              fontWeight: 600,
-              color: 'var(--text-muted)',
-              textTransform: 'uppercase',
-              letterSpacing: '0.06em',
-            }}
-          >
+          <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
             Channel
           </span>
           <PillToggle options={CHANNELS} selected={channel} onChange={setChannel} />
         </div>
-
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          <span
-            style={{
-              fontSize: '11px',
-              fontWeight: 600,
-              color: 'var(--text-muted)',
-              textTransform: 'uppercase',
-              letterSpacing: '0.06em',
-            }}
-          >
+          <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
             Tone
           </span>
           <PillToggle options={TONES} selected={tone} onChange={setTone} />
@@ -195,220 +184,62 @@ export default function OutreachGenerator({
       <button
         onClick={handleGenerate}
         disabled={loading}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '8px',
-          width: '100%',
-          height: '44px',
-          backgroundColor: loading ? 'var(--accent)' : 'var(--accent)',
-          color: '#ffffff',
-          fontSize: '14px',
-          fontWeight: 600,
-          border: 'none',
-          borderRadius: '10px',
-          cursor: loading ? 'not-allowed' : 'pointer',
-          opacity: loading ? 0.75 : 1,
-          transition: 'all 0.15s ease',
-          boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
-          marginBottom: '24px',
-        }}
-        onMouseEnter={(e) => {
-          if (!loading) (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--accent-hover)';
-        }}
-        onMouseLeave={(e) => {
-          (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--accent)';
-        }}
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', height: '44px', backgroundColor: 'var(--accent)', color: '#ffffff', fontSize: '14px', fontWeight: 600, border: 'none', borderRadius: '10px', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.75 : 1, transition: 'all 0.15s ease', boxShadow: '0 1px 2px rgba(0,0,0,0.04)', marginBottom: '24px' }}
       >
         <Wand2 size={15} strokeWidth={2} />
-        Generate Message
+        {loading ? 'Generating...' : 'Generate Message'}
       </button>
 
       {loading && (
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            padding: '20px 24px',
-            backgroundColor: 'var(--bg-surface)',
-            border: '1px solid var(--border)',
-            borderRadius: '12px',
-            marginBottom: '16px',
-          }}
-        >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '20px 24px', backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: '12px', marginBottom: '16px' }}>
           <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
             {[0, 1, 2].map((i) => (
-              <div
-                key={i}
-                style={{
-                  width: '6px',
-                  height: '6px',
-                  borderRadius: '50%',
-                  backgroundColor: 'var(--accent)',
-                  animation: 'bounce 1.2s infinite',
-                  animationDelay: `${i * 0.2}s`,
-                }}
-              />
+              <div key={i} style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--accent)', animation: 'bounce 1.2s infinite', animationDelay: `${i * 0.2}s` }} />
             ))}
           </div>
-          <span style={{ fontSize: '14px', color: 'var(--text-secondary)', fontWeight: 500 }}>
-            Generating personalized outreach...
-          </span>
+          <span style={{ fontSize: '14px', color: 'var(--text-secondary)', fontWeight: 500 }}>Generating personalized outreach...</span>
         </div>
       )}
 
       {message && !loading && (
-        <div>
-          <div
-            style={{
-              backgroundColor: 'var(--bg-surface)',
-              border: '1px solid var(--border)',
-              borderRadius: '12px',
-              padding: '24px',
-              marginBottom: '12px',
-            }}
+        <div
+          style={{
+            border: '1px solid var(--border)',
+            borderRadius: '12px',
+            padding: '20px',
+            backgroundColor: 'var(--bg-surface)',
+          }}
+        >
+          {message.subject && (
+            <div style={{ marginBottom: '12px' }}>
+              <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px', textTransform: 'uppercase', fontWeight: 600 }}>
+                Subject
+              </p>
+              <p style={{ fontSize: '14px', color: 'var(--text-primary)', margin: 0, fontWeight: 600 }}>{message.subject}</p>
+            </div>
+          )}
+          <pre
+            style={{ whiteSpace: 'pre-wrap', margin: 0, fontFamily: 'Inter, sans-serif', color: 'var(--text-secondary)', lineHeight: 1.65, fontSize: '14px' }}
           >
-            {message.subject && (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'baseline',
-                  gap: '8px',
-                  marginBottom: '16px',
-                  paddingBottom: '16px',
-                  borderBottom: '1px solid var(--border)',
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: '12px',
-                    fontWeight: 600,
-                    color: 'var(--text-muted)',
-                    flexShrink: 0,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.04em',
-                  }}
-                >
-                  Subject:
-                </span>
-                <span
-                  style={{
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    color: 'var(--text-primary)',
-                    lineHeight: 1.4,
-                  }}
-                >
-                  {message.subject}
-                </span>
-              </div>
-            )}
-            <pre
-              style={{
-                fontSize: '15px',
-                fontWeight: 400,
-                color: 'var(--text-primary)',
-                lineHeight: 1.7,
-                whiteSpace: 'pre-wrap',
-                fontFamily: 'Inter, sans-serif',
-                margin: 0,
-              }}
-            >
-              {message.body}
-            </pre>
-          </div>
+            {message.body}\n\n— {senderName}
+          </pre>
 
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-            <button
-              onClick={handleCopy}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                height: '36px',
-                padding: '0 14px',
-                backgroundColor: 'transparent',
-                color: copied ? 'var(--success)' : 'var(--accent)',
-                fontSize: '13px',
-                fontWeight: 600,
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                transition: 'all 0.15s ease',
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--accent-subtle)';
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent';
-              }}
-            >
-              {copied ? <Check size={13} strokeWidth={2.5} /> : <Copy size={13} strokeWidth={2} />}
-              {copied ? 'Copied!' : 'Copy to Clipboard'}
+          <div style={{ display: 'flex', gap: '8px', marginTop: '16px', flexWrap: 'wrap' }}>
+            <button onClick={handleRegenerate} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', border: '1px solid var(--border)', background: 'var(--bg-surface)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '8px 12px', fontSize: '12px', fontWeight: 600 }}>
+              <RefreshCw size={14} /> Regenerate
             </button>
-
-            <button
-              onClick={handleRegenerate}
-              disabled={loading}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                height: '36px',
-                padding: '0 14px',
-                backgroundColor: 'transparent',
-                color: 'var(--text-secondary)',
-                fontSize: '13px',
-                fontWeight: 600,
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                transition: 'all 0.15s ease',
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--bg-subtle)';
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent';
-              }}
-            >
-              <RefreshCw size={13} strokeWidth={2} />
-              Regenerate
+            <button onClick={handleDifferentTone} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', border: '1px solid var(--border)', background: 'var(--bg-surface)', color: 'var(--text-secondary)', borderRadius: '8px', padding: '8px 12px', fontSize: '12px', fontWeight: 600 }}>
+              <Wand2 size={14} /> Try Different Tone
             </button>
-
-            <button
-              onClick={handleDifferentTone}
-              disabled={loading}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                height: '36px',
-                padding: '0 14px',
-                backgroundColor: 'transparent',
-                color: 'var(--text-secondary)',
-                fontSize: '13px',
-                fontWeight: 600,
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                transition: 'all 0.15s ease',
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--bg-subtle)';
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent';
-              }}
-            >
-              <Wand2 size={13} strokeWidth={2} />
-              Try Different Tone
+            <button onClick={handleCopy} style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: '6px', border: '1px solid var(--border)', background: copied ? 'var(--success-subtle)' : 'var(--bg-surface)', color: copied ? 'var(--success)' : 'var(--text-secondary)', borderRadius: '8px', padding: '8px 12px', fontSize: '12px', fontWeight: 600 }}>
+              {copied ? <Check size={14} /> : <Copy size={14} />}
+              {copied ? 'Copied' : 'Copy'}
             </button>
           </div>
         </div>
       )}
+
+      {toast && <Toast message={toast} onDismiss={() => setToast(null)} />}
     </div>
   );
 }
