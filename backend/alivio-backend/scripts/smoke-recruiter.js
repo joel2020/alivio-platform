@@ -24,9 +24,33 @@ async function main() {
     process.exit(1);
   }
 
+  const rankedMatches = json?.generated?.ranked_matches || [];
+  const confidenceErrors = [];
+
+  rankedMatches.forEach((match, index) => {
+    const confidence = match?.confidence;
+    const level = confidence?.level;
+    const rationale = confidence?.rationale;
+    const validLevel = level === 'high' || level === 'medium' || level === 'low';
+    const validRationale = typeof rationale === 'string' && rationale.trim().length > 0;
+
+    if (!validLevel || !validRationale) {
+      confidenceErrors.push(
+        `ranked_matches[${index}] must include confidence.level (high|medium|low) and confidence.rationale (non-empty string)`
+      );
+    }
+  });
+
+  if (confidenceErrors.length > 0) {
+    console.error('Recruiter smoke missing confidence rationale shape:');
+    confidenceErrors.forEach((error) => console.error(`- ${error}`));
+    console.error(text);
+    process.exit(1);
+  }
+
   console.log(`Recruiter smoke passed at ${getBaseUrl()}/api/recruiter-search`);
   console.log(`Payload: ${payloadPath}`);
-  console.log(`Ranked matches: ${json.generated.ranked_matches.length}`);
+  console.log(`Ranked matches: ${rankedMatches.length}`);
 }
 
 main().catch((error) => {
