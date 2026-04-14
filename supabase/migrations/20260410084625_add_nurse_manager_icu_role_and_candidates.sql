@@ -41,6 +41,10 @@ DECLARE
 
 BEGIN
 
+INSERT INTO organizations (id, name)
+VALUES (v_org_id, 'Midwest Health System')
+ON CONFLICT (id) DO NOTHING;
+
 INSERT INTO roles (id, org_id, title, location, remote, employment_type, experience_min, experience_max, must_have_requirements, nice_to_have_requirements, compensation_min, compensation_max, compensation_currency, description, target_candidate_volume, outreach_tone, status)
 VALUES (
   v_role_id, v_org_id, 'Nurse Manager — ICU', 'Chicago, IL', false, 'full-time', 5, 15,
