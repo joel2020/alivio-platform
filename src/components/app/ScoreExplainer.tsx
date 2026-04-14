@@ -144,6 +144,28 @@ function DimensionCard({ dim, expanded, onToggle }: { dim: DimensionExplanation;
   );
 }
 
+
+function ScoreBreakdownBars({ dimensions }: { dimensions: DimensionExplanation[] }) {
+  return (
+    <div className="mb-4 space-y-2">
+      {dimensions.map((dim) => {
+        const pct = Math.round(dim.score * 100);
+        return (
+          <div key={`bar-${dim.label}`}>
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>{dim.label}</span>
+              <span className="text-xs font-semibold" style={{ color: dim.color }}>{pct}%</span>
+            </div>
+            <div className="h-2 rounded-full" style={{ backgroundColor: 'var(--bg-subtle)' }}>
+              <div className="h-2 rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: dim.color }} />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 interface Props {
   candidate: Candidate;
   role: Role | null;
@@ -213,6 +235,8 @@ export default function ScoreExplainer({ candidate, role }: Props) {
         {overallScore !== null && <span className="text-xs px-2.5 py-1 rounded-lg font-mono font-medium" style={{ backgroundColor: 'var(--bg-subtle)', color: 'var(--text-secondary)' }}>Signal Score {overallScore}</span>}
       </div>
       <p className="text-xs mb-4" style={{ color: 'var(--text-muted)' }}>Four dimensions evaluated by the Signal agent. Click any to see reasoning.</p>
+
+      <ScoreBreakdownBars dimensions={dimensions} />
 
       <button
         type="button"

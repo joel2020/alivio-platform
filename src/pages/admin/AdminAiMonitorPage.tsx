@@ -10,7 +10,7 @@ interface AgentRow {
 
 interface AgentBreakdown {
   agent_name: string;
-  count: number;
+  activity_count: number;
 }
 
 export default function AdminAiMonitorPage() {
@@ -32,7 +32,7 @@ export default function AdminAiMonitorPage() {
         supabase.from('agent_activity_log').select('id', { head: true, count: 'exact' }).gte('created_at', dayStart.toISOString()),
         supabase.from('agent_activity_log').select('id', { head: true, count: 'exact' }).gte('created_at', weekStart.toISOString()),
         supabase.from('agent_activity_log').select('id', { head: true, count: 'exact' }).gte('created_at', monthStart.toISOString()),
-        supabase.from('agent_activity_log').select('agent_name'),
+        supabase.rpc('get_agent_activity_counts_by_agent'),
         supabase.from('agent_activity_log').select('id, agent_name, action, created_at').order('created_at', { ascending: false }).limit(20),
       ]);
 
@@ -42,12 +42,7 @@ export default function AdminAiMonitorPage() {
         month: monthRes.count ?? 0,
       });
 
-      const grouped = new Map<string, number>();
-      for (const row of allRes.data ?? []) {
-        const key = row.agent_name;
-        grouped.set(key, (grouped.get(key) ?? 0) + 1);
-      }
-      setBreakdown(Array.from(grouped.entries()).map(([agent_name, count]) => ({ agent_name, count })));
+      setBreakdown((allRes.data as AgentBreakdown[]) ?? []);
       setRecent((recentRes.data as AgentRow[]) ?? []);
     };
 
@@ -73,7 +68,7 @@ export default function AdminAiMonitorPage() {
             {breakdown.map((row) => (
               <div key={row.agent_name} className="flex items-center justify-between">
                 <span>{row.agent_name}</span>
-                <strong>{row.count}</strong>
+                <strong>{row.activity_count}</strong>
               </div>
             ))}
           </div>

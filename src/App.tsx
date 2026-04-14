@@ -47,6 +47,7 @@ import AdminCrmPage from './pages/admin/AdminCrmPage';
 import AdminBlogPage from './pages/admin/AdminBlogPage';
 import AdminAiMonitorPage from './pages/admin/AdminAiMonitorPage';
 import AdminEmailsPage from './pages/admin/AdminEmailsPage';
+import AdminTasksPage from './pages/admin/AdminTasksPage';
 
 
 const SITE_URL = 'https://aliviosearchpartners.com';
@@ -231,7 +232,6 @@ export default function App() {
             <Route path="/dashboard/crm/templates" element={<CrmTemplatesPage />} />
             <Route path="/dashboard/crm/:id" element={<CrmClientPage />} />
             <Route path="/admin/email-inbox" element={<EmailInboxPage />} />
-            <Route path="/dashboard/crm" element={<Navigate to="/admin/crm" replace />} />
             <Route element={<AdminRoute />}>
               <Route path="/admin" element={<AdminDashboardPage />} />
               <Route path="/admin/users" element={<AdminUsersPage />} />
@@ -240,6 +240,7 @@ export default function App() {
               <Route path="/admin/blog" element={<AdminBlogPage />} />
               <Route path="/admin/ai-monitor" element={<AdminAiMonitorPage />} />
               <Route path="/admin/emails" element={<AdminEmailsPage />} />
+              <Route path="/admin/tasks" element={<AdminTasksPage />} />
             </Route>
           </Route>
 

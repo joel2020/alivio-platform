@@ -1,11 +1,23 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Loader2, Play, Zap } from 'lucide-react';
+import { Loader2, Play, Upload, Zap } from 'lucide-react';
 import { matchCandidates, parseResume, scoreCandidates, sourceCandidates } from '../../lib/ai';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import type { Role, Candidate, AgentActivityLog } from '../../lib/types';
 import LiveActivityFeed from '../../components/app/LiveActivityFeed';
 import Toast from '../../components/app/Toast';
+
+interface ParsedResumePreview {
+  fullName?: string;
+  currentTitle?: string;
+  currentCompany?: string;
+  location?: string;
+  yearsExperience?: number;
+  skills?: string[];
+  licenses?: string[];
+  certifications?: string[];
+  education?: string[];
+}
 
 const baseAgents = [
   { key: 'scout', name: 'Scout', color: '#3B82F6', description: 'Continuously searches talent sources for matching candidates.' },
@@ -23,6 +35,11 @@ export default function AgentsPage() {
   const [role, setRole] = useState<Role | null>(null);
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [activity, setActivity] = useState<AgentActivityLog[]>([]);
+  const [resumeText, setResumeText] = useState('');
+  const [resumeFileName, setResumeFileName] = useState<string | null>(null);
+  const [parsedPreview, setParsedPreview] = useState<ParsedResumePreview | null>(null);
+  const [parsingResume, setParsingResume] = useState(false);
+  const [savingCandidate, setSavingCandidate] = useState(false);
 
   const loadContext = useCallback(async () => {
     if (!user?.org_id) return;
@@ -114,6 +131,55 @@ export default function AgentsPage() {
     }
   }
 
+  async function handleParseResume() {
+    if (!resumeText.trim() && !resumeFileName) {
+      setToast('Paste resume text or upload a file first.');
+      return;
+    }
+    setParsingResume(true);
+    try {
+      const parsed = await parseResume(resumeText.trim());
+      setParsedPreview(parsed.data);
+      setToast('Resume parsed successfully.');
+    } catch (error) {
+      console.error(error);
+      setToast('Could not parse resume.');
+    } finally {
+      setParsingResume(false);
+    }
+  }
+
+  async function saveParsedCandidate() {
+    if (!role || !parsedPreview) return;
+    setSavingCandidate(true);
+    try {
+      const payload = {
+        org_id: role.org_id,
+        role_id: role.id,
+        full_name: parsedPreview.fullName || 'Parsed Candidate',
+        current_title: parsedPreview.currentTitle || null,
+        current_company: parsedPreview.currentCompany || null,
+        location: parsedPreview.location || role.location,
+        experience_years: parsedPreview.yearsExperience ?? null,
+        skills: Array.isArray(parsedPreview.skills) ? parsedPreview.skills : [],
+        licenses: Array.isArray(parsedPreview.licenses) ? parsedPreview.licenses : [],
+        certifications: Array.isArray(parsedPreview.certifications) ? parsedPreview.certifications : [],
+        education: Array.isArray(parsedPreview.education) ? parsedPreview.education.join(' · ') : null,
+        source: 'Resume Parser',
+        profile_data: { parsed: parsedPreview },
+        pipeline_stage: 'discovered',
+      };
+      await supabase.from('candidates').insert(payload);
+      setToast('Candidate saved.');
+      await loadContext();
+    } catch (error) {
+      console.error(error);
+      setToast('Could not save candidate.');
+    } finally {
+      setSavingCandidate(false);
+    }
+  }
+
   const agents = useMemo(() => baseAgents.map((agent) => ({ ...agent, status: statuses[agent.key] ?? 'Ready' })), [statuses]);
 
   return (
@@ -148,6 +214,47 @@ export default function AgentsPage() {
               </div>
             );
           })}
+        </div>
+
+        <div className="card p-5" style={{ marginBottom: '18px' }}>
+          <h2 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '8px' }}>Parse Resume</h2>
+          <textarea
+            value={resumeText}
+            onChange={(e) => setResumeText(e.target.value)}
+            placeholder="Paste resume text here..."
+            rows={5}
+            className="input-base w-full"
+          />
+          <label className="btn-secondary mt-2 inline-flex items-center gap-1.5" style={{ fontSize: 12, cursor: 'pointer' }}>
+            <Upload size={12} /> Upload PDF/DOC/DOCX
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx,.txt"
+              hidden
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                setResumeFileName(file.name);
+                const text = await file.text();
+                setResumeText(text);
+              }}
+            />
+          </label>
+          {resumeFileName && <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 6 }}>{resumeFileName}</p>}
+          <div className="mt-3 flex gap-2">
+            <button className="btn-primary" onClick={handleParseResume} disabled={parsingResume}>
+              {parsingResume ? 'Parsing...' : 'Parse Resume'}
+            </button>
+            {parsedPreview && <button className="btn-secondary" onClick={saveParsedCandidate} disabled={savingCandidate}>{savingCandidate ? 'Saving...' : 'Save Candidate'}</button>}
+          </div>
+
+          {parsedPreview && (
+            <div className="mt-3 p-3 rounded-lg" style={{ background: 'var(--bg-subtle)', border: '1px solid var(--border)' }}>
+              <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{parsedPreview.fullName || 'Candidate Preview'}</p>
+              <p style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{parsedPreview.currentTitle || 'No title parsed'}</p>
+              <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>Skills: {Array.isArray(parsedPreview.skills) ? parsedPreview.skills.slice(0, 8).join(', ') : 'None'}</p>
+            </div>
+          )}
         </div>
 
         <h2 style={{ fontSize: '14px', fontWeight: 600, marginBottom: '10px', color: 'var(--text-primary)' }}>Agent Activity</h2>
