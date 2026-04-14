@@ -37,63 +37,61 @@ See `.env.example` for the full list. Key variables:
 - `OPENAI_TIMEOUT_MS` (default `30000`)
 - `ENABLE_CORS` and `CORS_ORIGIN` (optional; disabled by default)
 
-## API contract
+## Website integration contract
 
-### `GET /health`
-
-`200 OK`
-
-```json
-{
-  "ok": true,
-  "service": "alivio-search-partners-backend",
-  "env": "development",
-  "timestamp": "2026-04-14T00:00:00.000Z"
-}
-```
+This backend is the only layer that talks to Google Cloud and OpenAI. The website should call these API routes and should **not** contain Google or OpenAI credentials.
 
 ### `POST /api/vertex-search`
 
-Request:
+Use this when the website only needs grounded retrieval results from Vertex AI Search.
+
+Request JSON:
 
 ```json
 {
-  "query": "Find Directors of Nursing in New Jersey with SNF experience and multi-site leadership",
-  "pageSize": 10
+  "query": "Find ICU travel nurses in Texas with active compact RN license",
+  "pageSize": 8
 }
 ```
 
-Response (`200`):
+Request fields:
+
+- `query` (string, required, max 500 chars)
+- `pageSize` (integer, optional, clamped to 1-20, default 10)
+
+Success response (`200`):
 
 ```json
 {
   "ok": true,
-  "query": "...",
+  "query": "Find ICU travel nurses in Texas with active compact RN license",
   "grounded": {
-    "totalSize": 10,
-    "attributionToken": "...",
+    "totalSize": 8,
+    "attributionToken": "token_abc123",
     "results": [
       {
         "rank": 1,
-        "id": "...",
-        "title": "...",
-        "uri": "...",
-        "snippet": "...",
-        "snippets": ["..."],
+        "id": "candidate_001",
+        "title": "ICU RN - Austin, TX",
+        "uri": "https://aliviosearchpartners.com/candidates/candidate_001",
+        "snippet": "8 years ICU experience, compact RN license, rapid response team.",
+        "snippets": [
+          "8 years ICU experience, compact RN license, rapid response team."
+        ],
         "extractiveSegments": [
           {
             "rank": 1,
-            "content": "...",
+            "content": "Compact RN license and 4 travel ICU assignments.",
             "pageNumber": 1,
             "confidenceScore": null
           }
         ],
         "metadata": {
-          "source": null,
-          "company": null,
-          "location": null
+          "source": "ATS",
+          "company": "Alivio Search Partners",
+          "location": "Austin, TX"
         },
-        "rawDocumentName": null
+        "rawDocumentName": "projects/.../documents/candidate_001"
       }
     ]
   }
@@ -102,24 +100,34 @@ Response (`200`):
 
 ### `POST /api/recruiter-search`
 
-Behavior:
-1. Validates input.
-2. Runs Vertex search first.
-3. Normalizes/validates grounded results.
-4. Sends only grounded normalized JSON to OpenAI.
+Use this for recruiter copilot responses grounded on Vertex results. Flow:
 
-Response (`200`):
+1. Validates request.
+2. Runs Vertex search.
+3. Normalizes and validates grounded payload.
+4. Sends only grounded JSON to OpenAI for response generation.
+
+Request JSON:
+
+```json
+{
+  "query": "Match this role to likely candidates: Director of Nursing in New Jersey, SNF and multi-site leadership required",
+  "pageSize": 10
+}
+```
+
+Success response (`200`):
 
 ```json
 {
   "ok": true,
-  "query": "...",
+  "query": "Match this role to likely candidates: Director of Nursing in New Jersey, SNF and multi-site leadership required",
   "grounded": {
     "totalSize": 10,
-    "attributionToken": "...",
+    "attributionToken": "token_xyz789",
     "results": []
   },
-  "generated": "..."
+  "generated": "Top matches are Candidate A, Candidate B, and Candidate C. Candidate A has 6 years multi-site SNF leadership in New Jersey..."
 }
 ```
 
@@ -135,18 +143,93 @@ Error response shape (`4xx/5xx`):
       "field": "query"
     }
   },
-  "requestId": "req_..."
+  "requestId": "req_1713000000000"
 }
 ```
+
+## Frontend example (website/chat widget)
+
+A minimal browser integration example is available at `examples/recruiter-search-widget.html`.
+
+Quick inline snippet:
+
+```html
+<script>
+  async function runRecruiterSearch(query) {
+    const response = await fetch('https://api.aliviosearchpartners.com/api/recruiter-search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query, pageSize: 8 })
+    });
+
+    const data = await response.json();
+    if (!response.ok || !data.ok) {
+      throw new Error(data?.error?.message || 'Recruiter search failed');
+    }
+
+    return data.generated;
+  }
+</script>
+```
+
+## Deployment pathing recommendation
+
+Keep frontend and backend separated:
+
+1. Deploy backend as either:
+   - subdomain (`https://api.aliviosearchpartners.com`), or
+   - API path behind same domain (`https://aliviosearchpartners.com/api/...`).
+2. Website frontend calls backend endpoints only.
+3. Backend handles Google auth and OpenAI auth privately.
+4. Never expose `GOOGLE_APPLICATION_CREDENTIALS` or `OPENAI_API_KEY` to frontend code.
+
+## Optional CORS guidance (cross-origin frontend/backend)
+
+If frontend and backend are on different origins, enable strict CORS:
+
+- `ENABLE_CORS=true`
+- `CORS_ORIGIN=https://aliviosearchpartners.com`
+
+Current server behavior when enabled:
+
+- Allows `POST,GET,OPTIONS`
+- Allows `Content-Type` and request-id header
+- Returns `204` for preflight `OPTIONS`
+
+## Practical recruiter prompts by workflow
+
+Use these prompts in website widgets, recruiter console, or internal tooling.
+
+### 1) Candidate search
+
+- `Find ICU travel nurses in Texas with active compact RN license and charge nurse experience.`
+- `Find Directors of Nursing in New Jersey with SNF turnaround and survey readiness history.`
+
+### 2) Job search
+
+- `Find open Director of Nursing roles in New Jersey requiring multi-site SNF leadership.`
+- `Find healthcare operations roles needing interim leadership in Northeast markets.`
+
+### 3) Job-to-candidate matching
+
+- `Given this job req, identify top 5 candidate matches and note strongest evidence for each.`
+- `Match this ICU nurse manager role to candidates with Magnet facility and staffing-ratio improvement outcomes.`
+
+### 4) Candidate-to-job matching
+
+- `Given candidate profile C-204, suggest top matching open roles ranked by fit and location alignment.`
+- `For this candidate's SNF leadership background, suggest roles where they can start within 30 days.`
+
+### 5) Recruiter copilot
+
+- `Draft a concise recruiter brief summarizing top matches and key risks for stakeholder review.`
+- `Prepare a candidate outreach angle for the top 3 matches using only grounded search evidence.`
 
 ## Deployment notes
 
 - Intended service account: `vertex-express@alivio-475419.iam.gserviceaccount.com`.
 - For cloud deployment, prefer workload identity / attached service account over JSON key files.
 - Keep this backend as the only place with Google credentials and OpenAI secrets.
-- CORS is disabled by default. If deploying with a separate frontend origin, explicitly set:
-  - `ENABLE_CORS=true`
-  - `CORS_ORIGIN=https://your-frontend-origin`
 
 ## Runtime validation status
 

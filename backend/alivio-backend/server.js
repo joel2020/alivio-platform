@@ -11,6 +11,29 @@ const { buildGroundedPayload, validateGroundedPayload } = require('./normalize')
 const app = express();
 app.use(express.json({ limit: config.maxRequestBytes }));
 
+if (config.enableCors) {
+  app.use((req, res, next) => {
+    const allowedOrigin = config.corsOrigin;
+
+    if (allowedOrigin) {
+      res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
+      res.setHeader('Vary', 'Origin');
+    }
+
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+    res.setHeader(
+      'Access-Control-Allow-Headers',
+      `Content-Type,${config.requestIdHeader}`
+    );
+
+    if (req.method === 'OPTIONS') {
+      return res.status(204).end();
+    }
+
+    return next();
+  });
+}
+
 const openai = new OpenAI({ apiKey: config.openai.apiKey });
 
 function getRequestId(req) {
