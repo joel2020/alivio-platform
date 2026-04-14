@@ -36,8 +36,14 @@ import SettingsPage from './pages/app/SettingsPage';
 import CrmPage from './pages/app/crm/CrmPage';
 import CrmClientPage from './pages/app/crm/CrmClientPage';
 import CrmTemplatesPage from './pages/app/crm/CrmTemplatesPage';
+import { useSeo } from './lib/seo';
 
 export default function App() {
+  useSeo({
+    title: 'Alivio Search Partners',
+    description: 'AI-powered healthcare recruiting software for search partners.',
+  });
+
   if (!isSupabaseConfigured) {
     return (
       <ThemeProvider>
