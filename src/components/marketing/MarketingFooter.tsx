@@ -1,14 +1,15 @@
 import { Link } from 'react-router-dom';
 import { Linkedin, Mail } from 'lucide-react';
+import { CAL_COM_BOOKING_URL, DEMO_EVENT_DESCRIPTION, DEMO_EVENT_TITLE } from '../../lib/demoBooking';
 
 const productLinks = [
   { label: 'How It Works', href: '/#how-it-works' },
-  { label: 'Pricing', href: '/#pricing' },
-  { label: 'Features', href: '/#features' },
+  { label: 'Pricing', href: '/pricing' },
+  { label: 'Features', href: '/#how-it-works' },
 ];
 
 const companyLinks = [
-  { label: 'Book a Demo', href: 'https://cal.com/alivio/intro-call30', external: true },
+  { label: 'Book a Demo', href: CAL_COM_BOOKING_URL, external: true },
   { label: 'Changelog', href: '/developers', external: false },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/company/aliviosearchpartners/', external: true },
 ];
@@ -17,13 +18,6 @@ const legalLinks = [
   { label: 'Privacy Policy', to: '/privacy' },
   { label: 'Terms of Service', to: '/terms' },
 ];
-
-const linkStyle = {
-  fontSize: '14px',
-  color: 'var(--text-muted)',
-  textDecoration: 'none',
-  transition: 'color 0.15s ease',
-};
 
 export default function MarketingFooter() {
   return (
@@ -36,45 +30,28 @@ export default function MarketingFooter() {
               <span style={{ fontSize: '18px', fontWeight: 700, color: '#FAFAFA', letterSpacing: '-0.02em' }}>Alivio Search Partners</span>
             </div>
             <div style={{ display: 'flex', gap: '12px' }}>
-              <a href="https://www.linkedin.com/company/aliviosearchpartners/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" style={{ color: 'var(--text-muted)', transition: 'color 0.15s ease' }} onMouseEnter={e => (e.currentTarget.style.color = '#FAFAFA')} onMouseLeave={e => (e.currentTarget.style.color = '#A1A1AA')}>
-                <Linkedin size={18} />
-              </a>
-              <a href="mailto:hello@aliviosearchpartners.com" aria-label="Contact email" style={{ color: 'var(--text-muted)', transition: 'color 0.15s ease' }} onMouseEnter={e => (e.currentTarget.style.color = '#FAFAFA')} onMouseLeave={e => (e.currentTarget.style.color = '#A1A1AA')}>
-                <Mail size={18} />
-              </a>
+              <a href="https://www.linkedin.com/company/aliviosearchpartners/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" style={{ color: '#A1A1AA' }}><Linkedin size={18} /></a>
+              <a href="https://x.com/aliviosearch" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter" style={{ color: '#A1A1AA', fontSize: '14px', textDecoration: 'none' }}>X</a>
+              <a href="mailto:hello@aliviosearchpartners.com" aria-label="Contact email" style={{ color: '#A1A1AA' }}><Mail size={18} /></a>
             </div>
             <p style={{ fontSize: '13px', color: '#71717A', marginTop: '14px' }}>Yonkers, NY</p>
             <p style={{ fontSize: '13px', color: '#71717A', marginTop: '6px' }}>hello@aliviosearchpartners.com</p>
-            <p style={{ fontSize: '13px', color: '#71717A', marginTop: '6px' }}>aliviosearchpartners.com</p>
+            <p style={{ fontSize: '13px', color: '#71717A', marginTop: '6px' }}><a href="/" style={{ color: '#71717A' }}>aliviosearchpartners.com</a></p>
           </div>
 
           <div>
-            <p style={{ fontSize: '13px', fontWeight: 600, color: '#fff', marginBottom: '16px', letterSpacing: '0.02em' }}>Product</p>
+            <p style={{ fontSize: '13px', fontWeight: 600, color: '#fff', marginBottom: '16px' }}>Product</p>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {productLinks.map(item => (
-                <li key={item.label}>
-                  <a href={item.href} style={linkStyle}
-                    onMouseEnter={e => (e.currentTarget.style.color = '#FAFAFA')}
-                    onMouseLeave={e => (e.currentTarget.style.color = '#A1A1AA')}
-                  >{item.label}</a>
-                </li>
-              ))}
+              {productLinks.map((item) => (<li key={item.label}><a href={item.href} style={{ fontSize: '14px', color: '#A1A1AA', textDecoration: 'none' }}>{item.label}</a></li>))}
             </ul>
           </div>
 
           <div>
-            <p style={{ fontSize: '13px', fontWeight: 600, color: '#fff', marginBottom: '16px', letterSpacing: '0.02em' }}>Company</p>
+            <p style={{ fontSize: '13px', fontWeight: 600, color: '#fff', marginBottom: '16px' }}>Company</p>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {companyLinks.map(item => (
+              {companyLinks.map((item) => (
                 <li key={item.label}>
-                  <a
-                    href={item.href}
-                    target={item.external ? '_blank' : undefined}
-                    rel={item.external ? 'noopener noreferrer' : undefined}
-                    style={linkStyle}
-                    onMouseEnter={e => (e.currentTarget.style.color = '#FAFAFA')}
-                    onMouseLeave={e => (e.currentTarget.style.color = '#A1A1AA')}
-                  >
+                  <a href={item.href} target={item.external ? '_blank' : undefined} rel={item.external ? 'noopener noreferrer' : undefined} style={{ fontSize: '14px', color: '#A1A1AA', textDecoration: 'none' }} title={item.label === 'Book a Demo' ? `${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}` : undefined}>
                     {item.label}
                   </a>
                 </li>
@@ -83,39 +60,16 @@ export default function MarketingFooter() {
           </div>
 
           <div>
-            <p style={{ fontSize: '13px', fontWeight: 600, color: '#fff', marginBottom: '16px', letterSpacing: '0.02em' }}>Legal</p>
+            <p style={{ fontSize: '13px', fontWeight: 600, color: '#fff', marginBottom: '16px' }}>Legal</p>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {legalLinks.map(item => (
-                <li key={item.label}>
-                  <Link to={item.to} style={linkStyle}
-                    onMouseEnter={e => (e.currentTarget.style.color = '#FAFAFA')}
-                    onMouseLeave={e => (e.currentTarget.style.color = '#A1A1AA')}
-                  >{item.label}</Link>
-                </li>
-              ))}
+              {legalLinks.map((item) => (<li key={item.label}><Link to={item.to} style={{ fontSize: '14px', color: '#A1A1AA', textDecoration: 'none' }}>{item.label}</Link></li>))}
             </ul>
           </div>
         </div>
-
         <div style={{ borderTop: '1px solid #27272A', paddingTop: '24px' }}>
-          <p style={{ fontSize: '13px', color: '#71717A', margin: 0 }}>
-            © 2026 Alivio Search Partners. All rights reserved.
-          </p>
+          <p style={{ fontSize: '13px', color: '#71717A', margin: 0 }}>© 2026 Alivio Search Partners. All rights reserved.</p>
         </div>
       </div>
-
-      <style>{`
-        @media (max-width: 768px) {
-          footer > div > div:first-of-type {
-            grid-template-columns: 1fr 1fr !important;
-          }
-        }
-        @media (max-width: 480px) {
-          footer > div > div:first-of-type {
-            grid-template-columns: 1fr !important;
-          }
-        }
-      `}</style>
     </footer>
   );
 }

@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Check } from 'lucide-react';
 import AnimateInView from '../AnimateInView';
-
-const CAL_COM_BOOKING_URL = 'https://cal.com/alivio/intro-call30';
+import { CAL_COM_BOOKING_URL } from '../../../lib/demoBooking';
 
 const plans = [
   {
@@ -19,7 +18,7 @@ const plans = [
     name: 'Pro',
     price: '$799',
     period: '/month',
-    tagline: 'For teams ready to hire',
+    tagline: 'For hospital HR teams filling 5–10 roles/month',
     features: [
       'Unlimited roles',
       'Unlimited sourced candidates',

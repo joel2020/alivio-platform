@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useSeo } from '../../lib/seo';
 
 const endpoints = `POST   /roles                           Create a new role
 GET    /roles/{id}                      Get role details
@@ -90,6 +91,12 @@ const security = [
 ];
 
 export default function DevelopersPage() {
+  useSeo({
+    title: 'Developers | Alivio Search Partners',
+    description: 'Developer APIs for Alivio Search Partners.',
+    robots: 'noindex, nofollow',
+  });
+
   return (
     <div style={{ backgroundColor: '#0A0A0A' }}>
       <section className="max-w-7xl mx-auto px-6 pt-20 pb-16 border-b" style={{ borderColor: '#1E1E1E' }}>

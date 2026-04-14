@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import AnimateInView from '../AnimateInView';
 
 const metrics = [
-  { label: 'Candidates sourced', num: 2400, suffix: '+' },
+  { label: 'Credentialed healthcare candidates sourced', num: 2400, suffix: '+' },
   { label: 'Average match accuracy', num: 94, suffix: '%' },
   { label: 'Faster than traditional agency timelines', num: 3, suffix: 'x' },
 ];

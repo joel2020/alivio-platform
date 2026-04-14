@@ -85,13 +85,8 @@ export default function SignupPage() {
         authError.message.toLowerCase().includes('already exists') ||
         authError.message.toLowerCase().includes('user already registered')
       ) {
-        const { error: signInError } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
-        if (signInError) {
-          setError('An account with this email already exists. Please sign in instead.');
-          setSubmitting(false);
-          return;
-        }
-        navigate(withNextParam('/onboarding', safeNext));
+        setError('An account with this email already exists. Please sign in instead.');
+        setSubmitting(false);
         return;
       }
       setError(authError.message);

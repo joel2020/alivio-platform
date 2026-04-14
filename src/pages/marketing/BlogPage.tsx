@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { POSTS_PER_PAGE, excerptFromContent, fetchBlogPostsPage, formatPublicationDate, type BlogPost } from '../../lib/blog';
+import { POSTS_PER_PAGE, estimateReadingTime, excerptFromContent, fetchBlogPostsPage, formatPublicationDate, type BlogPost } from '../../lib/blog';
 
 export default function BlogPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -65,7 +65,7 @@ export default function BlogPage() {
                 className="card card-hover"
                 style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '10px', minHeight: '230px' }}
               >
-                <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-muted)' }}>{formatPublicationDate(post.published_date)}</p>
+                <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-muted)' }}>{formatPublicationDate(post.published_date)} · {estimateReadingTime(post.content)}</p>
                 <h2 style={{ margin: 0, fontSize: '22px', lineHeight: 1.35 }}>{post.title}</h2>
                 <p style={{ margin: 0, color: 'var(--text-secondary)', flexGrow: 1 }}>
                   {excerptFromContent(post.content, post.excerpt)}

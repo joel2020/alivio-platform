@@ -1,7 +1,7 @@
 import { ArrowRight, Play } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { CAL_COM_BOOKING_URL, DEMO_EVENT_DESCRIPTION, DEMO_EVENT_TITLE } from '../../../lib/demoBooking';
 
-const CAL_COM_BOOKING_URL = 'https://cal.com/alivio/intro-call30';
 
 const CANDIDATES = [
   {
@@ -383,7 +383,7 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="hero-section" style={{ paddingTop: '140px', paddingBottom: '100px', background: 'var(--bg-base)' }}>
+    <section className="hero-section" style={{ paddingTop: '48px', paddingBottom: '84px', background: 'var(--bg-base)' }}>
       <div className="mkt-container">
         <div
           className="hero-grid"
@@ -428,7 +428,7 @@ export default function HeroSection() {
                     display: 'inline-block',
                   }}
                 />
-                Trusted by healthcare hiring teams
+                Built for Hospital HR & Clinical Recruiting Teams
               </span>
             </div>
 
@@ -483,7 +483,7 @@ export default function HeroSection() {
                 href={CAL_COM_BOOKING_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mkt-btn-primary"
+                className="mkt-btn-primary" title={`${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}`}
               >
                 Book a Demo
                 <ArrowRight size={16} />
@@ -536,7 +536,7 @@ export default function HeroSection() {
           .hero-mockup-wrap { max-width: 600px; margin: 0 auto; }
         }
         @media (max-width: 768px) {
-          .hero-section { padding-top: 100px !important; padding-bottom: 64px !important; }
+          .hero-section { padding-top: 40px !important; padding-bottom: 64px !important; }
           .hero-mockup-wrap { max-width: 480px; }
         }
         @media (max-width: 768px) {

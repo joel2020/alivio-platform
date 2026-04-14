@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
-
-const CAL_COM_BOOKING_URL = 'https://cal.com/alivio/intro-call30';
+import { useAuth } from '../../lib/auth';
+import { CAL_COM_BOOKING_URL, DEMO_EVENT_DESCRIPTION, DEMO_EVENT_TITLE } from '../../lib/demoBooking';
 
 const navLinks = [
   { label: 'Product', href: '/product' },
@@ -23,8 +23,11 @@ function handleHashLink(href: string, e: React.MouseEvent, closeMenu?: () => voi
 
 export default function MarketingNav() {
   const location = useLocation();
+  const { session } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const showStartFree = !session && location.pathname === '/';
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -81,14 +84,6 @@ export default function MarketingNav() {
                   borderRadius: '8px',
                   transition: 'color 0.15s ease, background 0.15s ease',
                 }}
-                onMouseEnter={(e) => {
-                  (e.target as HTMLElement).style.color = 'var(--text-primary)';
-                  (e.target as HTMLElement).style.background = 'var(--bg-subtle)';
-                }}
-                onMouseLeave={(e) => {
-                  (e.target as HTMLElement).style.color = location.pathname === link.href ? 'var(--text-primary)' : 'var(--text-secondary)';
-                  (e.target as HTMLElement).style.background = 'transparent';
-                }}
               >
                 {link.label}
               </Link>
@@ -97,10 +92,13 @@ export default function MarketingNav() {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Link to="/login" className="mkt-btn-ghost hidden-mobile" style={{ height: '40px' }}>Sign In</Link>
+            {showStartFree ? <Link to="/signup" className="mkt-btn-ghost hidden-mobile" style={{ height: '40px' }}>Start Free</Link> : null}
             <a
               href={CAL_COM_BOOKING_URL}
               target="_blank"
               rel="noopener noreferrer"
+              title={`${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}`}
+              aria-label={`${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}`}
               className="mkt-btn-secondary hidden-mobile"
               style={{ height: '40px' }}
             >
@@ -118,72 +116,21 @@ export default function MarketingNav() {
         </div>
       </nav>
 
-      {/* Backdrop */}
-      <div
-        onClick={() => setMobileOpen(false)}
-        style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: 98,
-          background: 'rgba(9,9,11,0.4)',
-          opacity: mobileOpen ? 1 : 0,
-          pointerEvents: mobileOpen ? 'auto' : 'none',
-          transition: 'opacity 0.3s ease',
-        }}
-      />
+      <div onClick={() => setMobileOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 98, background: 'rgba(9,9,11,0.4)', opacity: mobileOpen ? 1 : 0, pointerEvents: mobileOpen ? 'auto' : 'none', transition: 'opacity 0.3s ease' }} />
 
-      {/* Slide-out drawer */}
-      <div
-        style={{
-          position: 'fixed',
-          top: '64px',
-          left: 0,
-          right: 0,
-          zIndex: 99,
-          background: '#FFFFFF',
-          borderBottom: '1px solid #E4E4E7',
-          padding: '8px 24px 24px',
-          boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
-          transform: mobileOpen ? 'translateY(0)' : 'translateY(-8px)',
-          opacity: mobileOpen ? 1 : 0,
-          pointerEvents: mobileOpen ? 'auto' : 'none',
-          transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease',
-        }}
-      >
+      <div style={{ position: 'fixed', top: '64px', left: 0, right: 0, zIndex: 99, background: '#FFFFFF', borderBottom: '1px solid #E4E4E7', padding: '8px 24px 24px', boxShadow: '0 8px 24px rgba(0,0,0,0.08)', transform: mobileOpen ? 'translateY(0)' : 'translateY(-8px)', opacity: mobileOpen ? 1 : 0, pointerEvents: mobileOpen ? 'auto' : 'none', transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease' }}>
         <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '16px' }}>
           {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              to={link.href}
-              onClick={(e) => handleHashLink(link.href, e, () => setMobileOpen(false))}
-              style={{
-                display: 'block',
-                fontSize: '16px',
-                fontWeight: 500,
-                color: 'var(--text-primary)',
-                textDecoration: 'none',
-                padding: '13px 12px',
-                borderRadius: '10px',
-                borderBottom: '1px solid #F4F4F5',
-                transition: 'background 0.15s ease',
-              }}
-              onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.background = '#F9FAFB')}
-              onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.background = 'transparent')}
-            >
+            <Link key={link.href} to={link.href} onClick={(e) => handleHashLink(link.href, e, () => setMobileOpen(false))} style={{ display: 'block', fontSize: '16px', fontWeight: 500, color: 'var(--text-primary)', textDecoration: 'none', padding: '13px 12px', borderRadius: '10px', borderBottom: '1px solid #F4F4F5' }}>
               {link.label}
             </Link>
           ))}
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
-          <a
-            href={CAL_COM_BOOKING_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mkt-btn-secondary"
-            style={{ flex: 1, justifyContent: 'center' }}
-          >
+          <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-secondary" style={{ flex: 1, justifyContent: 'center' }} title={`${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}`}>
             Book a Demo
           </a>
+          {showStartFree ? <Link to="/signup" className="mkt-btn-ghost" style={{ flex: 1, justifyContent: 'center' }}>Start Free</Link> : null}
           <Link to="/login" className="mkt-btn-primary" style={{ flex: 1, justifyContent: 'center' }}>Sign In</Link>
         </div>
       </div>
