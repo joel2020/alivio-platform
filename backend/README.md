@@ -54,3 +54,11 @@ curl -X POST http://localhost:8787/api/agents/scoutready/run \
 ```
 
 Sample payloads and outputs are available in `backend/examples/*.json`.
+
+## Workflow map
+
+For practical agent-to-endpoint orchestration guidance, see:
+
+- `docs/agent-workflow-map.md`
+- `examples/agent-workflow-map.yaml`
+
