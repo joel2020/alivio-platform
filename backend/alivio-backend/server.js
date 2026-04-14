@@ -82,6 +82,50 @@ function getRequestId(req) {
   return req.requestId || crypto.randomUUID();
 }
 
+function buildRecruiterPrompt(query, grounded) {
+  // Prompt version: 1.1
+  // Last updated: 2026-04-14
+  // Changes: improved fit reasoning, empty-results handling, confidence rationale
+  const hasGroundedResults = Array.isArray(grounded?.results) && grounded.results.length > 0;
+
+  return [
+    {
+      role: 'system',
+      content: [
+        'You are a senior healthcare recruiter for Alivio Search Partners.',
+        'Use grounded JSON results as the ONLY source of candidate and job data.',
+        'Never invent, infer, or import details from outside the provided grounded payload.',
+        'Respond with strict JSON only and include keys: ranked_matches (array), explanation (string), outreach_draft (string).'
+      ].join(' ')
+    },
+    {
+      role: 'user',
+      content: JSON.stringify({
+        query,
+        grounded,
+        instructions: hasGroundedResults
+          ? [
+              'Rank the strongest matches for this recruiter query.',
+              'For each ranked match include:',
+              '- name_or_title: candidate or role name/title from grounded data',
+              '- fit_reasoning: specific fit reasoning tied directly to the recruiter query',
+              '- strengths: 2-3 concrete strengths explicitly supported by grounded data',
+              '- gaps_or_unknowns: 1-2 honest gaps or unknowns from missing/unclear grounded data',
+              '- confidence: { level: "high" | "medium" | "low", rationale: "brief reason grounded in evidence quality and completeness" }',
+              'Write explanation in 2-3 sentences on why these are the top matches overall.',
+              'Write outreach_draft as a personalized 3-sentence recruiter message based only on grounded data.'
+            ].join('\n')
+          : [
+              'Grounded results are empty.',
+              'Return JSON with ranked_matches as an empty array.',
+              'Set explanation to a helpful 2-3 sentence note that the data store is still indexing and that broader match evidence will appear as indexing completes.',
+              'Set outreach_draft to a short, professional 3-sentence message the recruiter can send internally while waiting for indexing to finish.'
+            ].join('\n')
+      })
+    }
+  ];
+}
+
 
 function buildMockResponse(template, query, requestId) {
   return {
@@ -247,21 +291,10 @@ app.post('/api/recruiter-search', async (req, res, next) => {
     const completion = await openai.chat.completions.create({
       model: config.openai.model,
       temperature: 0.1,
-      messages: [
-        {
-          role: 'system',
-          content:
-            'You are an Alivio recruiter copilot. Use only provided grounded JSON results. Never fabricate details. Respond with strict JSON containing keys: ranked_matches (array), explanation (string), outreach_draft (string).'
-        },
-        {
-          role: 'user',
-          content: JSON.stringify({
-            query,
-            grounded,
-            deterministic_ranking: deterministicRanking
-          })
-        }
-      ],
+      messages: buildRecruiterPrompt(query, {
+        ...grounded,
+        deterministic_ranking: deterministicRanking
+      }),
       timeout: config.openai.timeoutMs
     });
 

@@ -236,28 +236,31 @@
     {
       "id": "recruiter-copilot-healthcare-allied",
       "useCase": "recruiter_copilot",
-      "title": "Allied health recruiting daily copilot",
+      "title": "Healthcare recruiter grounded ranking copilot",
       "audience": "recruiter",
       "roleFamily": "healthcare",
       "targetRoles": [
-        "Physical Therapist",
-        "Occupational Therapist",
-        "Speech Language Pathologist"
+        "Director of Nursing",
+        "Licensed Nursing Home Administrator",
+        "MDS Coordinator"
       ],
-      "goal": "Generate a recruiter daily plan for allied health pipelines.",
-      "systemPrompt": "You are a healthcare staffing copilot. Be concise, operational, and action-oriented.",
-      "userPromptTemplate": "Create today's recruiter plan for allied health openings in {markets}. Include: top 5 outreach priorities, 3 at-risk reqs, 3 candidates likely to close this week, and 2 manager updates.",
+      "goal": "Rank top grounded candidate or role matches for healthcare recruiter queries with transparent confidence rationale.",
+      "systemPrompt": "You are a senior healthcare recruiter. Use grounded results as the only source of candidate and job data; never fabricate details.",
+      "userPromptTemplate": "Given recruiter query {query} and grounded JSON {grounded_payload}, return ranked_matches with name_or_title, fit_reasoning tied to query, 2-3 strengths, 1-2 gaps_or_unknowns, and confidence {level,rationale}. explanation must be 2-3 sentences, outreach_draft must be a personalized 3-sentence recruiter message. If grounded results are empty, explain that the data store is still indexing.",
       "outputShape": {
         "fields": [
-          "priority_actions",
-          "at_risk_roles",
-          "likely_closures",
-          "manager_updates",
-          "recommended_messages"
+          "ranked_matches[].name_or_title",
+          "ranked_matches[].fit_reasoning",
+          "ranked_matches[].strengths",
+          "ranked_matches[].gaps_or_unknowns",
+          "ranked_matches[].confidence.level",
+          "ranked_matches[].confidence.rationale",
+          "explanation",
+          "outreach_draft"
         ],
-        "maxResults": 1
+        "maxResults": 10
       },
-      "notes": "Use as daily standup prep and execution checklist."
+      "notes": "Use for recruiter-search grounded ranking responses and empty-index fallback messaging."
     },
     {
       "id": "recruiter-copilot-tech-fullcycle",
