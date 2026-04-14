@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alivio Recruiter Search Widget Example</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 24px; max-width: 760px; }
+      textarea { width: 100%; min-height: 100px; margin-bottom: 12px; }
+      button { padding: 8px 14px; }
+      pre { background: #f6f8fa; padding: 12px; border-radius: 8px; overflow: auto; }
+    </style>
+  </head>
+  <body>
+    <h1>Recruiter Copilot (Example)</h1>
+    <p>
+      This example calls <code>/api/recruiter-search</code> from a website form without exposing
+      Google or OpenAI credentials in the browser.
+    </p>
+
+    <textarea id="queryInput">Find Directors of Nursing in New Jersey with SNF experience and multi-site leadership</textarea>
+    <br />
+    <button id="runSearchBtn">Run recruiter search</button>
+
+    <h3>Result</h3>
+    <pre id="resultBox">Waiting for request...</pre>
+
+    <script>
+      const API_BASE = 'https://api.aliviosearchpartners.com';
+
+      async function runRecruiterSearch(query) {
+        const response = await fetch(`${API_BASE}/api/recruiter-search`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query, pageSize: 8 })
+        });
+
+        const payload = await response.json();
+
+        if (!response.ok || !payload.ok) {
+          throw new Error(payload?.error?.message || 'Recruiter search failed');
+        }
+
+        return payload;
+      }
+
+      document.getElementById('runSearchBtn').addEventListener('click', async () => {
+        const resultBox = document.getElementById('resultBox');
+        const query = document.getElementById('queryInput').value.trim();
+
+        if (!query) {
+          resultBox.textContent = 'Please enter a recruiter query.';
+          return;
+        }
+
+        resultBox.textContent = 'Loading...';
+
+        try {
+          const data = await runRecruiterSearch(query);
+          resultBox.textContent = JSON.stringify(
+            {
+              generated: data.generated,
+              topGroundedResult: data.grounded?.results?.[0] || null
+            },
+            null,
+            2
+          );
+        } catch (error) {
+          resultBox.textContent = `Error: ${error.message}`;
+        }
+      });
+    </script>
+  </body>
+</html>
