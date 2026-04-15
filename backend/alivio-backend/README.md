@@ -24,6 +24,28 @@ npm run dev
 
 Server binds to `process.env.PORT` and defaults to `8080` when unset.
 
+## Pre-merge / pre-deploy validation (lightweight)
+
+When deploys are rate-limited, run these local safety checks before merging:
+
+```bash
+cd backend/alivio-backend
+npm run check:syntax
+npm run check:load
+npm run check:boot
+```
+
+What each check does:
+
+- `check:syntax`: runs `node --check` on core backend entry points and smoke/validation scripts to catch syntax issues early.
+- `check:load`: requires key backend modules (without starting the server) to catch module resolution or import-time failures.
+- `check:boot`: convenience command that runs both checks in sequence.
+
+Recommended quick gate before merge:
+
+```bash
+npm run check:boot
+```
 Server structure keeps `app.js` focused on middleware/routes and `server.js` focused on startup + fatal process handlers.
 
 
