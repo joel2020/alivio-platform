@@ -24,3 +24,4 @@ Synthetic JSON fixtures for local development of Alivio recruiter search workflo
 - Data is intentionally lightweight and synthetic.
 - No real candidate PII is included.
 - Sample emails/phone numbers are reserved demo formats only.
+For end-to-end workflow payload examples (request/response pairs + usage notes), also see `../recruiter-workflow-pack/`.

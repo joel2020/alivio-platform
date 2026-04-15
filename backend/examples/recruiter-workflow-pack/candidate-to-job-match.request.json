@@ -1,0 +1,24 @@
+{
+  "candidate": {
+    "id": "cand-14",
+    "fullName": "Morgan Patel",
+    "title": "Director of Nursing",
+    "location": "Miami, FL",
+    "licenses": ["RN", "BSN"],
+    "specialties": ["Skilled Nursing", "Memory Care"],
+    "yearsExperience": 11,
+    "careSettings": ["SNF", "LTC"],
+    "leadershipExperience": true,
+    "summary": "Director of Nursing with deep skilled nursing operations background across multi-site teams.",
+    "recentEmployers": ["Care Network 2", "Health System 6"],
+    "preferredStates": ["FL", "TX"],
+    "compensationRange": { "min": 114000, "max": 152000, "currency": "USD" },
+    "status": "active",
+    "source": "Internal CRM",
+    "sourceUrl": "https://talent.example.com/candidates/14",
+    "lastSeenAt": "2026-04-10T13:42:00.000Z",
+    "completenessScore": 0.91
+  },
+  "openJobIds": ["job-11", "job-16", "job-4"],
+  "limit": 3
+}

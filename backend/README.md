@@ -56,6 +56,10 @@ curl -X POST http://localhost:8787/api/agents/scoutready/run \
 
 Sample payloads and outputs are available in `backend/examples/*.json`.
 
+A lightweight recruiter workflow pack (candidate search, job search, matching, copilot) is available in:
+
+- `backend/examples/recruiter-workflow-pack/`
+
 ## Workflow map
 
 For practical agent-to-endpoint orchestration guidance, see:

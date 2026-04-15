@@ -1,0 +1,36 @@
+{
+  "jobs": [
+    {
+      "id": "job-11",
+      "title": "Nurse Manager",
+      "client": "Alivio Partner Health Group 1",
+      "location": "Orlando, FL",
+      "salaryRange": { "min": 122500, "max": 173000, "currency": "USD" },
+      "setting": "SNF",
+      "requiredLicenses": ["RN", "BSN"],
+      "requiredExperience": 7,
+      "mustHaveKeywords": ["Skilled Nursing", "leadership", "SNF"],
+      "description": "Nurse Manager needed to lead staffing, quality, and survey readiness in a high-volume SNF campus.",
+      "priority": "critical",
+      "status": "open"
+    },
+    {
+      "id": "job-16",
+      "title": "Nurse Manager",
+      "client": "Alivio Partner Health Group 6",
+      "location": "Houston, TX",
+      "salaryRange": { "min": 130000, "max": 182000, "currency": "USD" },
+      "setting": "Post-Acute",
+      "requiredLicenses": ["RN", "MSN"],
+      "requiredExperience": 9,
+      "mustHaveKeywords": ["Rehab", "leadership", "Post-Acute"],
+      "description": "Post-acute regional team needs a nurse manager with strong quality metrics and retention outcomes.",
+      "priority": "high",
+      "status": "open"
+    }
+  ],
+  "meta": {
+    "totalMatched": 2,
+    "nextCursor": null
+  }
+}

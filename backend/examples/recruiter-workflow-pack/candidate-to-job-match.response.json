@@ -1,0 +1,24 @@
+{
+  "candidateId": "cand-14",
+  "rankedJobs": [
+    {
+      "jobId": "job-11",
+      "score": 92,
+      "fitRationale": "Direct SNF leadership overlap, RN+BSN alignment, and Florida geography match.",
+      "gaps": ["none-critical"]
+    },
+    {
+      "jobId": "job-16",
+      "score": 84,
+      "fitRationale": "Strong leadership and post-acute adjacency; Texas relocation preference is acceptable.",
+      "gaps": ["MSN preferred but not required"]
+    },
+    {
+      "jobId": "job-4",
+      "score": 78,
+      "fitRationale": "Good operational fit but lower setting overlap than top options.",
+      "gaps": ["lower specialty overlap"]
+    }
+  ],
+  "recommendedNextStep": "Run EngageReady on top 1-2 jobs and present outreach options to recruiter."
+}

@@ -1,0 +1,34 @@
+{
+  "ranked": [
+    {
+      "candidateId": "cand-14",
+      "jobId": "job-11",
+      "score": 91,
+      "strengths": ["licenseMatch", "careSettingMatch", "leadershipMatch", "keywordOverlap"],
+      "risks": ["commuteDistance"],
+      "explanation": "Strong SNF leadership profile with direct quality and survey-readiness experience.",
+      "factors": {
+        "licenseMatch": 1,
+        "yearsExperience": 0.9,
+        "settingOverlap": 1,
+        "keywordOverlap": 0.9,
+        "geography": 0.75
+      }
+    },
+    {
+      "candidateId": "cand-29",
+      "jobId": "job-11",
+      "score": 86,
+      "strengths": ["licenseMatch", "keywordOverlap", "recentAcuteToSNFTransition"],
+      "risks": ["salaryRangeStretch"],
+      "explanation": "Excellent leadership and quality metrics background; compensation may require negotiation.",
+      "factors": {
+        "licenseMatch": 1,
+        "yearsExperience": 0.8,
+        "settingOverlap": 0.9,
+        "keywordOverlap": 0.85,
+        "geography": 0.8
+      }
+    }
+  ]
+}
