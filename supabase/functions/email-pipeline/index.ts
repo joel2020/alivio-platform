@@ -19,6 +19,11 @@ Deno.serve(async (req: Request) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     const resendApiKey = Deno.env.get("RESEND_API_KEY");
+    // Email addresses loaded from env — no hardcoded values.
+    const notificationFromEmail = Deno.env.get("NOTIFICATION_FROM_EMAIL") ?? "noreply@aliviosearchpartners.com";
+    const adminNotificationEmail = Deno.env.get("ADMIN_NOTIFICATION_EMAIL");
+    const appBaseUrl = Deno.env.get("APP_BASE_URL") ?? "https://aliviosearchpartners.com";
+
     if (!supabaseUrl || !serviceRoleKey || !resendApiKey) throw new Error("Missing required env vars");
 
     const supabase = createClient(supabaseUrl, serviceRoleKey);
@@ -40,7 +45,6 @@ Deno.serve(async (req: Request) => {
       .in("processing_status", ["pending", "failed"])
       .order("received_at", { ascending: true })
       .limit(50);
-
     if (emailError) throw emailError;
 
     const results: Array<{ email_id: string; action: string; status: string }> = [];
@@ -78,7 +82,6 @@ Deno.serve(async (req: Request) => {
             });
             if (!parseRes.ok) throw new Error(`Resume parse failed: ${await parseRes.text()}`);
           }
-
           await supabase.from("email_inbox").update({ processed: true, processing_status: "completed" }).eq("id", email.id);
           results.push({ email_id: email.id, action: "resume_submission", status: "completed" });
           continue;
@@ -95,18 +98,19 @@ Deno.serve(async (req: Request) => {
             source: "email_agent",
             notes: `Auto-created from inbox. Subject: ${email.subject || ""}`,
           });
-
-          await fetch("https://api.resend.com/emails", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", Authorization: `Bearer ${resendApiKey}` },
-            body: JSON.stringify({
-              from: "Alivio Search Partners <noreply@aliviosearchpartners.com>",
-              to: ["joel@aliviosearchpartners.com"],
-              subject: `🏥 New Client Inquiry: ${hospitalName}`,
-              text: `A potential client inquiry was detected in your inbox.\n\nFrom: ${email.from_name || "Unknown"} at ${email.from_email || "Unknown"}\nSubject: ${email.subject || "(No subject)"}\nReceived: ${email.received_at || new Date().toISOString()}\n\nEmail preview:\n${(email.body_text || "").slice(0, 200)}\n\nView in CRM: https://aliviosearchpartners.com/admin/crm`,
-            }),
-          });
-
+          // Only send admin notification if ADMIN_NOTIFICATION_EMAIL is configured.
+          if (adminNotificationEmail) {
+            await fetch("https://api.resend.com/emails", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Authorization: `Bearer ${resendApiKey}` },
+              body: JSON.stringify({
+                from: `Alivio Search Partners <${notificationFromEmail}>`,
+                to: [adminNotificationEmail],
+                subject: `New Client Inquiry: ${hospitalName}`,
+                text: `A potential client inquiry was detected in your inbox.\n\nFrom: ${email.from_name || "Unknown"} at ${email.from_email || "Unknown"}\nSubject: ${email.subject || "(No subject)"}\nReceived: ${email.received_at || new Date().toISOString()}\n\nEmail preview:\n${(email.body_text || "").slice(0, 200)}\n\nView in CRM: ${appBaseUrl}/admin/crm`,
+              }),
+            });
+          }
           await supabase.from("email_inbox").update({ processed: true, processing_status: "completed" }).eq("id", email.id);
           results.push({ email_id: email.id, action: "client_inquiry", status: "completed" });
           continue;
@@ -119,7 +123,6 @@ Deno.serve(async (req: Request) => {
             .eq("org_id", email.org_id)
             .eq("email", email.from_email)
             .maybeSingle();
-
           if (candidate?.id) {
             await supabase.from("candidates").update({ pipeline_stage: "responded" }).eq("id", candidate.id);
             await supabase.from("agent_activity_log").insert({
@@ -132,7 +135,6 @@ Deno.serve(async (req: Request) => {
             });
             await supabase.from("email_inbox").update({ candidate_id: candidate.id }).eq("id", email.id);
           }
-
           await supabase.from("email_inbox").update({ processed: true, processing_status: "completed" }).eq("id", email.id);
           results.push({ email_id: email.id, action: "candidate_reply", status: "completed" });
           continue;
