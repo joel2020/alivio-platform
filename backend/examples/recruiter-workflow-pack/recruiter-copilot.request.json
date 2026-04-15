@@ -1,0 +1,9 @@
+{
+  "conversationId": "demo-copilot-0426",
+  "recruiterMessage": "Find me 3 Florida SNF nurse leaders for our Orlando campus, then show the best open role fit for each.",
+  "context": {
+    "orgId": "org-demo-1",
+    "activeRequisitionIds": ["job-11", "job-7", "job-4"],
+    "complianceFlags": ["exclude_inactive_candidates", "respect_compensation_band"]
+  }
+}

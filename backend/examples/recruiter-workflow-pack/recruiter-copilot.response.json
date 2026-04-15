@@ -1,0 +1,42 @@
+{
+  "conversationId": "demo-copilot-0426",
+  "summary": "Found 3 active Florida nurse leaders in SNF/LTC settings and mapped each to their top open requisition fit.",
+  "suggestedActions": [
+    {
+      "type": "candidate_search",
+      "endpoint": "POST /api/agents/scoutready/run",
+      "status": "completed"
+    },
+    {
+      "type": "job_to_candidate_match",
+      "endpoint": "POST /api/agents/matchready/run",
+      "status": "completed"
+    },
+    {
+      "type": "outreach_draft",
+      "endpoint": "POST /api/agents/engageready/run",
+      "status": "ready"
+    }
+  ],
+  "topPairs": [
+    {
+      "candidateId": "cand-14",
+      "jobId": "job-11",
+      "fitScore": 91,
+      "reason": "Best overlap on SNF leadership and geography."
+    },
+    {
+      "candidateId": "cand-29",
+      "jobId": "job-7",
+      "fitScore": 87,
+      "reason": "Strong quality metrics and care-setting similarity."
+    },
+    {
+      "candidateId": "cand-8",
+      "jobId": "job-4",
+      "fitScore": 83,
+      "reason": "Qualified RN leader with relevant rehab-to-SNF transition experience."
+    }
+  ],
+  "assistantReply": "I found three strong Florida SNF nurse leaders and mapped each to the best current requisition. I can draft first-touch outreach for all three now."
+}

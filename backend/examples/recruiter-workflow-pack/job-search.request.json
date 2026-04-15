@@ -1,0 +1,9 @@
+{
+  "title": "Nurse Manager",
+  "states": ["FL", "TX"],
+  "settings": ["SNF", "Post-Acute"],
+  "requiredLicenses": ["RN"],
+  "keywords": ["leadership", "quality outcomes", "survey readiness"],
+  "priority": ["high", "critical"],
+  "limit": 5
+}
