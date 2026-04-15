@@ -6,8 +6,9 @@ import { useAuth } from '../../lib/auth';
 import type { Candidate, VoiceCall, VoiceTranscript, AgentActivityLog, CandidateFeedback, PipelineStage, Role } from '../../lib/types';
 import { AGENT_COLORS, PIPELINE_STAGES, STAGE_LABELS } from '../../lib/types';
 import ScoreExplainer from '../../components/app/ScoreExplainer';
-import { generateOutreachEmail, parseResume } from '../../lib/ai';
+import { generateOutreachEmail, type ParsedResumeOutput } from '../../lib/ai';
 import Toast from '../../components/app/Toast';
+import ResumeUpload from '../../components/app/ResumeUpload';
 
 function ScoreRing({ score }: { score: number }) {
   const pct = score * 100;
@@ -56,6 +57,23 @@ interface ExtractedData {
   credentials?: Record<string, { status?: string; detail?: string }>;
   availability?: Record<string, string | number | boolean>;
   compensation?: Record<string, string | number | boolean>;
+}
+
+interface ResumeFileRow {
+  id: string;
+  candidate_id: string;
+  file_path: string;
+  file_name: string;
+  file_size: number;
+  uploaded_at: string;
+}
+
+interface ResumeParseJobRow {
+  id: string;
+  candidate_id: string;
+  status: string;
+  parsed_data: ParsedResumeOutput;
+  created_at: string;
 }
 
 function OutreachTab({ candidate, role }: { candidate: Candidate; role: Role | null }) {
@@ -354,8 +372,10 @@ export default function CandidatePage() {
   const [feedbackNote, setFeedbackNote] = useState('');
   const [transcriptSearch, setTranscriptSearch] = useState('');
   const [loading, setLoading] = useState(true);
-  const [resumeText, setResumeText] = useState('');
-  const [parsingResume, setParsingResume] = useState(false);
+  const [resumeFile, setResumeFile] = useState<ResumeFileRow | null>(null);
+  const [resumeParseJob, setResumeParseJob] = useState<ResumeParseJobRow | null>(null);
+  const [showParsedData, setShowParsedData] = useState(false);
+  const [showReplaceResume, setShowReplaceResume] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [unauthorized, setUnauthorized] = useState(false);
@@ -371,14 +391,16 @@ export default function CandidatePage() {
     setLoadError(null);
     setUnauthorized(false);
     try {
-      const [candRes, callsRes, logsRes, feedRes] = await Promise.all([
+      const [candRes, callsRes, logsRes, feedRes, resumeFileRes, resumeJobRes] = await Promise.all([
         supabase.from('candidates').select('*').eq('id', id).single(),
         supabase.from('voice_calls').select('*').eq('candidate_id', id).order('created_at', { ascending: false }),
         supabase.from('agent_activity_log').select('*').eq('candidate_id', id).order('created_at', { ascending: false }),
         supabase.from('candidate_feedback').select('*').eq('candidate_id', id).order('created_at', { ascending: false }),
+        supabase.from('resume_files').select('*').eq('candidate_id', id).order('uploaded_at', { ascending: false }).limit(1).maybeSingle(),
+        supabase.from('resume_parse_jobs').select('*').eq('candidate_id', id).order('created_at', { ascending: false }).limit(1).maybeSingle(),
       ]);
 
-      const err = candRes.error || callsRes.error || logsRes.error || feedRes.error;
+      const err = candRes.error || callsRes.error || logsRes.error || feedRes.error || resumeFileRes.error || resumeJobRes.error;
       if (err) {
         const authError = /jwt|permission|not authenticated|forbidden|auth/i.test(err.message);
         if (authError) setUnauthorized(true);
@@ -391,6 +413,8 @@ export default function CandidatePage() {
       setCalls(callsRes.data || []);
       setActivityLog(logsRes.data || []);
       setFeedback(feedRes.data || []);
+      setResumeFile((resumeFileRes.data as ResumeFileRow | null) ?? null);
+      setResumeParseJob((resumeJobRes.data as ResumeParseJobRow | null) ?? null);
       if (callsRes.data && callsRes.data.length > 0) setSelectedCallId(callsRes.data[0].id);
 
       if (cand?.role_id) {
@@ -427,45 +451,22 @@ export default function CandidatePage() {
     setFeedbackRating(null);
   }
 
-  async function handleParseResume() {
-    if (!candidate || !role || !resumeText.trim()) {
-      setToast('Paste resume text before parsing.');
-      return;
-    }
-    setParsingResume(true);
-    try {
-      const parsed = await parseResume(resumeText.trim());
-      const latestRole = parsed.data.recentRoles[0];
-      const updates = {
-        full_name: parsed.data.fullName || candidate.full_name,
-        current_title: latestRole?.title || candidate.current_title,
-        current_company: latestRole?.company || candidate.current_company,
-        experience_years: parsed.data.yearsExperience ?? candidate.experience_years,
-        skills: parsed.data.skills.length > 0 ? parsed.data.skills : candidate.skills,
-        certifications: parsed.data.certifications,
-        licenses: parsed.data.certifications.filter((item) => item.toLowerCase().includes('license')),
-        education: parsed.data.education.join(' · ') || candidate.education,
-        location: parsed.data.location || candidate.location,
-        profile_data: { ...(candidate.profile_data || {}), parsedResume: parsed.data },
-      };
-      await supabase.from('candidates').update(updates).eq('id', candidate.id);
-      await supabase.from('agent_activity_log').insert({
-        org_id: candidate.org_id,
-        role_id: role.id,
-        candidate_id: candidate.id,
-        agent_name: 'enrich',
-        action: 'Resume parsed with AI',
-        detail: `Extracted profile fields for ${updates.full_name}.`,
-        metadata: {},
-      });
-      setCandidate({ ...candidate, ...updates });
-      setToast('Resume parsed and candidate profile updated.');
-    } catch (error) {
-      console.error(error);
-      setToast('Resume parsing failed. Please try again.');
-    } finally {
-      setParsingResume(false);
-    }
+  function handleResumeParsed(parsed: ParsedResumeOutput) {
+    if (!candidate) return;
+    setCandidate({
+      ...candidate,
+      skills: parsed.skills.length > 0 ? parsed.skills : candidate.skills,
+      experience_years: parsed.yearsExperience ?? candidate.experience_years,
+      current_title: candidate.current_title || parsed.recentRoles[0]?.title || candidate.current_title,
+      full_name: candidate.full_name || parsed.fullName || candidate.full_name,
+      email: candidate.email || parsed.email,
+      phone: candidate.phone || parsed.phone,
+      location: candidate.location || parsed.location,
+    });
+    setShowReplaceResume(false);
+    setShowParsedData(false);
+    setToast('Resume parsed and candidate profile updated');
+    void loadData();
   }
 
   const selectedCall = calls.find(c => c.id === selectedCallId) || null;
@@ -632,32 +633,62 @@ export default function CandidatePage() {
               className="p-6 rounded-xl border"
               style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)', boxShadow: 'var(--shadow)' }}
             >
-              <div style={{ marginBottom: '16px' }}>
-                <h3 className="text-xs font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Parse Resume</h3>
-                <textarea
-                  value={resumeText}
-                  onChange={(e) => setResumeText(e.target.value)}
-                  placeholder="Paste resume text to extract profile fields..."
-                  rows={4}
-                  style={{ width: '100%', border: '1px solid var(--border)', borderRadius: '10px', padding: '10px 12px', fontSize: '13px', backgroundColor: 'var(--bg-surface)' }}
-                />
-                <input
-                  type="file"
-                  accept=".txt,.md,.rtf"
-                  onChange={async (e) => {
-                    const file = e.target.files?.[0];
-                    if (!file) return;
-                    const text = await file.text();
-                    setResumeText(text);
-                  }}
-                  style={{ marginTop: '8px', fontSize: '12px', color: 'var(--text-muted)' }}
-                />
-                <div className="flex items-center gap-2 mt-2">
-                  <button onClick={handleParseResume} disabled={parsingResume} className="btn-secondary" style={{ fontSize: '0.75rem', padding: '6px 12px' }}>
-                    {parsingResume ? 'Parsing...' : 'Parse Resume'}
-                  </button>
-                  <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Powered by AI</span>
-                </div>
+              <div style={{ marginBottom: '20px' }}>
+                <h3 className="text-sm font-semibold mb-3" style={{ color: 'var(--text-primary)' }}>Resume</h3>
+                {!resumeFile || showReplaceResume ? (
+                  <ResumeUpload
+                    candidateId={candidate.id}
+                    accountId={candidate.org_id}
+                    onParsed={handleResumeParsed}
+                  />
+                ) : (
+                  <div
+                    className="rounded-xl border p-4"
+                    style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-surface)' }}
+                  >
+                    <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+                      {resumeFile.file_name}
+                    </p>
+                    <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
+                      Uploaded {new Date(resumeFile.uploaded_at).toLocaleDateString()}
+                    </p>
+                    <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                      Size: {(resumeFile.file_size / (1024 * 1024)).toFixed(2)} MB
+                    </p>
+
+                    <div className="flex items-center gap-2 mt-3">
+                      <button
+                        type="button"
+                        className="px-3 py-2 rounded-lg text-xs border font-medium"
+                        style={{ borderColor: 'var(--border)', color: 'var(--text-secondary)' }}
+                        onClick={() => setShowParsedData((current) => !current)}
+                      >
+                        {showParsedData ? 'Hide parsed data' : 'View parsed data'}
+                      </button>
+                      <button
+                        type="button"
+                        className="px-3 py-2 rounded-lg text-xs font-semibold"
+                        style={{ backgroundColor: 'var(--accent)', color: 'var(--bg-surface)' }}
+                        onClick={() => setShowReplaceResume(true)}
+                      >
+                        Replace resume
+                      </button>
+                    </div>
+
+                    {showParsedData && (
+                      <pre
+                        className="mt-3 p-3 rounded-lg text-xs overflow-x-auto"
+                        style={{
+                          backgroundColor: 'var(--bg-surface)',
+                          border: '1px solid var(--border)',
+                          color: 'var(--text-secondary)',
+                        }}
+                      >
+                        {JSON.stringify(resumeParseJob?.parsed_data ?? { message: 'No parsed data available yet.' }, null, 2)}
+                      </pre>
+                    )}
+                  </div>
+                )}
               </div>
               <h2 className="text-sm font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>Profile</h2>
               <div className="space-y-4">
