@@ -10,6 +10,12 @@ const { AppError, errorToResponse } = require('./errors');
 const { runVertexSearch } = require('./vertex');
 const { buildGroundedPayload, validateGroundedPayload } = require('./normalize');
 const { buildRankedGrounding } = require('./ranking');
+const {
+  buildOutreachPrompt,
+  buildOutreachQuery,
+  parseOutreachDraftInput,
+  parseOutreachGeneratedOutput
+} = require('./outreach');
 
 const mockVertexFixture = require('./examples/mock-fixtures/recruiter-search-result-list.json');
 const mockRecruiterFixture = require('./examples/mock-fixtures/recruiter-copilot-answer-card.json');
@@ -167,6 +173,53 @@ function parseSearchInput(body, pageBounds) {
   return {
     query,
     pageSize
+  };
+}
+
+
+async function runOutreachDraft(body) {
+  if (!config.openai.apiKey) {
+    throw new AppError('LLM_API_KEY (or OPENAI_API_KEY) is required for outreach generation', {
+      status: 500,
+      code: 'OPENAI_MISSING_API_KEY',
+      expose: true
+    });
+  }
+
+  const input = parseOutreachDraftInput(body, config.vertex);
+  const query = buildOutreachQuery(input);
+
+  const vertexResponse = await runVertexSearch({ query, pageSize: input.pageSize, config: config.vertex });
+  const grounded = buildGroundedPayload(vertexResponse);
+
+  if (!validateGroundedPayload(grounded)) {
+    throw new AppError('Grounded payload failed validation', {
+      status: 502,
+      code: 'GROUNDING_VALIDATION_FAILED'
+    });
+  }
+
+  const deterministicRanking = buildRankedGrounding({ query, grounded, limit: 3 });
+
+  const completion = await openai.chat.completions.create({
+    model: config.openai.model,
+    temperature: 0.2,
+    messages: buildOutreachPrompt({ input, grounded, deterministicRanking }),
+    timeout: config.openai.timeoutMs
+  });
+
+  const rawGenerated = completion?.choices?.[0]?.message?.content || '';
+  const draft = parseOutreachGeneratedOutput(rawGenerated);
+
+  return {
+    ok: true,
+    input,
+    query,
+    grounded: {
+      totalSize: grounded.totalSize,
+      results: grounded.results.slice(0, 3)
+    },
+    generated: draft
   };
 }
 
@@ -388,7 +441,38 @@ app.post('/api/recruiter-search', async (req, res, next) => {
     return next(error);
   }
 });
-app.post('/api/webhook/n8n', async (req, res, next) => {
+
+app.post('/api/outreach-draft', async (req, res, next) => {
+  try {
+    const payload = await runOutreachDraft(req.body);
+    res.json(payload);
+  } catch (error) {
+    if (error?.status >= 400) {
+      return next(error);
+    }
+
+    const status = error?.status || error?.statusCode;
+    const openaiCode = error?.code || null;
+    const openaiType = error?.type || null;
+
+    if (typeof status === 'number' || openaiCode || openaiType) {
+      return next(
+        new AppError('OpenAI request failed', {
+          status: typeof status === 'number' ? status : 502,
+          code: 'OPENAI_REQUEST_FAILED',
+          details: {
+            openaiCode,
+            openaiType,
+            message: error?.message || null
+          }
+        })
+      );
+    }
+
+    return next(error);
+  }
+});
+
 app.post('/api/webhook/n8n', async (req, res, next) => {
   const requestId = getRequestId(req);
 

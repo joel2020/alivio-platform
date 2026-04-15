@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "node server.js",
     "start": "node server.js",
-    "check": "node --check server.js && node --check config.js && node --check vertex.js && node --check normalize.js && node --check ranking.js && node --check errors.js && node --check logger.js && node --check scripts/smoke.js && node --check scripts/smoke-health.js && node --check scripts/smoke-vertex.js && node --check scripts/smoke-recruiter.js && node --check scripts/validate-recruiter-shape.js && node --check scripts/lib/http.js && node --check scripts/validate-deployment.js",
+    "check": "node --check server.js && node --check config.js && node --check vertex.js && node --check normalize.js && node --check ranking.js && node --check outreach.js && node --check errors.js && node --check logger.js && node --check scripts/smoke.js && node --check scripts/smoke-health.js && node --check scripts/smoke-vertex.js && node --check scripts/smoke-recruiter.js && node --check scripts/validate-recruiter-shape.js && node --check scripts/lib/http.js && node --check scripts/validate-deployment.js",
     "smoke": "node scripts/smoke.js",
     "smoke:health": "node scripts/smoke-health.js",
     "smoke:vertex": "node scripts/smoke-vertex.js",
