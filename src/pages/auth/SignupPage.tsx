@@ -46,7 +46,7 @@ export default function SignupPage() {
   useEffect(() => {
     if (!loading) {
       if (session && user) navigate(safeNext ?? '/dashboard', { replace: true });
-      else if (session && !user) navigate(withNextParam('/onboarding', safeNext), { replace: true });
+      else if (session && !user) navigate(withNextParam('/onboarding/org', safeNext), { replace: true });
     }
   }, [loading, session, user, navigate, safeNext]);
 
@@ -94,7 +94,7 @@ export default function SignupPage() {
       return;
     }
 
-    navigate(withNextParam('/onboarding', safeNext));
+    navigate(withNextParam('/onboarding/org', safeNext));
   }
 
   async function handleGoogleSignup() {

@@ -135,7 +135,7 @@ export default function OnboardingOrgPage() {
     try {
       await createOrg(companyName.trim(), companySize);
       await refreshProfile();
-      navigate(withNextParam('/onboarding/first-role', safeNext));
+      navigate(withNextParam('/onboarding/role', safeNext));
     } catch {
       setError('Failed to set up your organization. Please try again.');
       setSubmitting(false);
@@ -150,7 +150,7 @@ export default function OnboardingOrgPage() {
         currentSession?.user?.email?.split('@')[1]?.split('.')[0] || 'My Company';
       await createOrg(defaultName, '1-10');
       await refreshProfile();
-      navigate(withNextParam('/onboarding/first-role', safeNext));
+      navigate(withNextParam('/onboarding/role', safeNext));
     } catch {
       setError('Something went wrong. Please try again.');
       setSubmitting(false);
