@@ -7,6 +7,7 @@ Production-leaning Express backend for Alivio Search Partners retrieval and recr
 - `GET /health`
 - `POST /api/vertex-search`
 - `POST /api/recruiter-search`
+- `POST /api/webhook/n8n`
 
 Reusable sample recruiter query:
 
@@ -22,6 +23,8 @@ npm run dev
 ```
 
 Server binds to `process.env.PORT` and defaults to `8080` when unset.
+
+Server structure keeps `app.js` focused on middleware/routes and `server.js` focused on startup + fatal process handlers.
 
 
 ## Smoke tests, payload fixtures, and response validation
@@ -45,6 +48,8 @@ npm run smoke:health
 npm run smoke:vertex
 npm run smoke:recruiter
 npm run smoke
+npm run check
+npm run check:load
 ```
 
 Optional payload override examples:
