@@ -79,26 +79,64 @@ export default function AgentsPage() {
     try {
       if (agentKey === 'scout') {
         console.log('Running scout agent', { roleId: role.id, title: role.title });
-        const result = await sourceCandidates(`${role.title} in ${role.location}. ${role.description || ''}`, role.must_have_requirements || []);
-        const inserts = result.data.candidatePersonas.slice(0, 5).map((persona, idx) => ({
-          org_id: role.org_id,
-          role_id: role.id,
-          full_name: `${persona.title} Candidate ${idx + 1}`,
-          current_title: persona.title,
-          current_company: persona.industries[0] || 'Healthcare Organization',
-          location: persona.locations[0] || role.location,
-          experience_years: role.experience_min + idx,
-          skills: persona.keywords.slice(0, 8),
-          licenses: [],
-          certifications: [],
-          source: 'AI Scout',
-          profile_data: { persona },
-          pipeline_stage: 'discovered',
-        }));
-        if (inserts.length > 0) {
-          await supabase.from('candidates').insert(inserts);
+        const localBackendUrl = import.meta.env.VITE_LOCAL_BACKEND_URL as string | undefined;
+        if (localBackendUrl) {
+          // ── Local Express backend path ──────────────────────────────────
+          const res = await fetch(`${localBackendUrl}/api/agents/scoutready/run`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ role: role.title, geography: role.location, limit: 5 }),
+          });
+          if (!res.ok) throw new Error(`Backend returned ${res.status}: ${res.statusText}`);
+          const backendResult = await res.json();
+          // leads items are shaped { candidate: {...}, freshnessSignal, confidenceSignal }
+          // candidates items (future) would be the candidate object directly
+          const rawItems: any[] = backendResult.leads ?? backendResult.candidates ?? [];
+          const inserts = rawItems.map((item: any, idx: number) => {
+            const c = item?.candidate ?? item; // unwrap leads wrapper if present
+            return {
+              org_id: role.org_id,
+              role_id: role.id,
+              full_name: c.fullName ?? c.full_name ?? c.name ?? `${role.title} Candidate ${idx + 1}`,
+              current_title: c.title ?? c.current_title ?? null,
+              current_company: c.recentEmployers?.[0] ?? c.current_company ?? c.company ?? null,
+              location: c.location ?? role.location,
+              experience_years: c.yearsExperience ?? c.experience_years ?? null,
+              skills: Array.isArray(c.specialties) ? c.specialties : Array.isArray(c.skills) ? c.skills : [],
+              licenses: Array.isArray(c.licenses) ? c.licenses : [],
+              certifications: Array.isArray(c.certifications) ? c.certifications : [],
+              source: 'ScoutReady Backend',
+              profile_data: { backend: item },
+              pipeline_stage: 'discovered',
+            };
+          });
+          if (inserts.length > 0) {
+            await supabase.from('candidates').insert(inserts);
+          }
+          await log('scout', 'Run Scout completed (local backend)', `Generated ${inserts.length} candidates from Express backend.`);
+        } else {
+          // ── Fallback: existing Supabase Edge Function path ──────────────
+          const result = await sourceCandidates(`${role.title} in ${role.location}. ${role.description || ''}`, role.must_have_requirements || []);
+          const inserts = result.data.candidatePersonas.slice(0, 5).map((persona, idx) => ({
+            org_id: role.org_id,
+            role_id: role.id,
+            full_name: `${persona.title} Candidate ${idx + 1}`,
+            current_title: persona.title,
+            current_company: persona.industries[0] || 'Healthcare Organization',
+            location: persona.locations[0] || role.location,
+            experience_years: role.experience_min + idx,
+            skills: persona.keywords.slice(0, 8),
+            licenses: [],
+            certifications: [],
+            source: 'AI Scout',
+            profile_data: { persona },
+            pipeline_stage: 'discovered',
+          }));
+          if (inserts.length > 0) {
+            await supabase.from('candidates').insert(inserts);
+          }
+          await log('scout', `Run Scout completed`, `Generated ${inserts.length} candidate profiles from AI sourcing plan.`);
         }
-        await log('scout', `Run Scout completed`, `Generated ${inserts.length} candidate profiles from AI sourcing plan.`);
       } else if (agentKey === 'match') {
         const response = await matchCandidates(role.title, candidates.map((c) => ({ id: c.id, name: c.full_name, experienceYears: c.experience_years ?? 0, skills: c.skills })));
         setMatchResults(response.data.matches);

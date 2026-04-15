@@ -16,7 +16,9 @@ Deno.serve(async (req: Request) => {
 
   try {
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+    const defaultFrom = Deno.env.get("NOTIFICATION_FROM_EMAIL");
     if (!RESEND_API_KEY) throw new Error("RESEND_API_KEY is not configured");
+    if (!defaultFrom) throw new Error("NOTIFICATION_FROM_EMAIL is not configured");
 
     const { to, subject, body, from } = await req.json() as { to: string; subject: string; body: string; from?: string };
     if (!to?.trim() || !subject?.trim() || !body?.trim()) {
@@ -30,7 +32,7 @@ Deno.serve(async (req: Request) => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: from || "Alivio Recruiting <noreply@aliviosearchpartners.com>",
+        from: from || defaultFrom,
         to: [to],
         subject,
         text: body,

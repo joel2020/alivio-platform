@@ -19,12 +19,14 @@ Deno.serve(async (req: Request) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     const resendApiKey = Deno.env.get("RESEND_API_KEY");
-    // Email addresses loaded from env — no hardcoded values.
-    const notificationFromEmail = Deno.env.get("NOTIFICATION_FROM_EMAIL") ?? "noreply@aliviosearchpartners.com";
     const adminNotificationEmail = Deno.env.get("ADMIN_NOTIFICATION_EMAIL");
+    const notificationFromEmail = Deno.env.get("NOTIFICATION_FROM_EMAIL");
     const appBaseUrl = Deno.env.get("APP_BASE_URL") ?? "https://aliviosearchpartners.com";
 
-    if (!supabaseUrl || !serviceRoleKey || !resendApiKey) throw new Error("Missing required env vars");
+    // Email addresses are loaded from env instead of being hardcoded.
+    if (!supabaseUrl || !serviceRoleKey || !resendApiKey || !notificationFromEmail) {
+      throw new Error("Missing required env vars");
+    }
 
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
@@ -98,7 +100,7 @@ Deno.serve(async (req: Request) => {
             source: "email_agent",
             notes: `Auto-created from inbox. Subject: ${email.subject || ""}`,
           });
-          // Only send admin notification if ADMIN_NOTIFICATION_EMAIL is configured.
+
           if (adminNotificationEmail) {
             await fetch("https://api.resend.com/emails", {
               method: "POST",
@@ -111,6 +113,7 @@ Deno.serve(async (req: Request) => {
               }),
             });
           }
+
           await supabase.from("email_inbox").update({ processed: true, processing_status: "completed" }).eq("id", email.id);
           results.push({ email_id: email.id, action: "client_inquiry", status: "completed" });
           continue;

@@ -21,15 +21,15 @@ Deno.serve(async (req: Request) => {
 
   const status = {
     supabase: "error" as "ok" | "error",
-    ollama: "error" as "ok" | "unreachable" | "error",
+    scheduler: "error" as "configured" | "missing_secret" | "error",
+    resend: "error" as "ok" | "missing_key" | "error",
+    notifications: "error" as "ok" | "not_configured" | "error",
+    ollama: "error" as "ok" | "unreachable" | "not_configured",
     openrouter: "error" as "ok" | "missing_key" | "error",
     imap: "error" as "ok" | "not_configured" | "error",
-    resend: "error" as "ok" | "missing_key" | "error",
-    scheduler: "unknown" as "ok" | "stale" | "unknown" | "error",
     timestamp: new Date().toISOString(),
   };
 
-  // --- Supabase DB connectivity ---
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
@@ -37,85 +37,13 @@ Deno.serve(async (req: Request) => {
       const sb = createClient(supabaseUrl, serviceRoleKey);
       const { error } = await sb.from("organizations").select("id").limit(1);
       status.supabase = error ? "error" : "ok";
-
-      // --- Scheduler last-run check ---
-      // Checks agent_activity_log for any scheduler-triggered entry in the last 2 hours.
-      try {
-        const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
-        const { data: schedulerRows, error: schedErr } = await sb
-          .from("agent_activity_log")
-          .select("created_at")
-          .eq("agent_name", "scheduler")
-          .gte("created_at", twoHoursAgo)
-          .limit(1);
-        if (schedErr) {
-          status.scheduler = "error";
-        } else if (!schedulerRows || schedulerRows.length === 0) {
-          // No scheduler activity in last 2h - could be stale or just not yet run
-          status.scheduler = "stale";
-        } else {
-          status.scheduler = "ok";
-        }
-      } catch {
-        status.scheduler = "error";
-      }
     }
   } catch {
     status.supabase = "error";
   }
 
-  // --- Ollama ---
-  const ollamaUrl = Deno.env.get("OLLAMA_URL")?.trim();
-  if (ollamaUrl) {
-    try {
-      const ollamaAuth = Deno.env.get("OLLAMA_AUTH")?.trim();
-      const response = await fetchWithTimeout(`${ollamaUrl}/api/tags`, {
-        headers: {
-          ...(ollamaAuth ? { Authorization: `Basic ${btoa(ollamaAuth)}` } : {}),
-        },
-      });
-      status.ollama = response.ok ? "ok" : "unreachable";
-    } catch {
-      status.ollama = "unreachable";
-    }
-  } else {
-    status.ollama = "unreachable";
-  }
+  status.scheduler = Deno.env.get("SCHEDULER_SECRET")?.trim() ? "configured" : "missing_secret";
 
-  // --- OpenRouter ---
-  const openRouterKey = Deno.env.get("OPENROUTER_API_KEY")?.trim();
-  if (!openRouterKey) {
-    status.openrouter = "missing_key";
-  } else {
-    try {
-      const model = Deno.env.get("OPENROUTER_MODEL")?.trim() || "meta-llama/llama-3.1-8b-instruct:free";
-      const response = await fetchWithTimeout("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${openRouterKey}`,
-          "HTTP-Referer": "https://aliviosearchpartners.com",
-          "X-OpenRouter-Title": "Alivio Health Check",
-        },
-        body: JSON.stringify({ model, messages: [{ role: "user", content: "respond with: ok" }], max_tokens: 5 }),
-      });
-      status.openrouter = response.ok ? "ok" : "error";
-    } catch {
-      status.openrouter = "error";
-    }
-  }
-
-  // --- IMAP config check ---
-  const imapHost = Deno.env.get("IMAP_HOST")?.trim();
-  const imapUser = Deno.env.get("IMAP_USER")?.trim();
-  const imapPassword = Deno.env.get("IMAP_PASSWORD")?.trim();
-  if (!imapHost || !imapUser || !imapPassword) {
-    status.imap = "not_configured";
-  } else {
-    status.imap = "ok";
-  }
-
-  // --- Resend email API ---
   const resendApiKey = Deno.env.get("RESEND_API_KEY")?.trim();
   if (!resendApiKey) {
     status.resend = "missing_key";
@@ -130,7 +58,50 @@ Deno.serve(async (req: Request) => {
     }
   }
 
-  // Overall health: ok if supabase is ok; degraded if any service is down
+  const adminNotificationEmail = Deno.env.get("ADMIN_NOTIFICATION_EMAIL")?.trim();
+  const notificationFromEmail = Deno.env.get("NOTIFICATION_FROM_EMAIL")?.trim();
+  status.notifications = adminNotificationEmail && notificationFromEmail ? "ok" : "not_configured";
+
+  const ollamaUrl = Deno.env.get("OLLAMA_URL")?.trim();
+  if (ollamaUrl) {
+    try {
+      const ollamaAuth = Deno.env.get("OLLAMA_AUTH")?.trim();
+      const response = await fetchWithTimeout(`${ollamaUrl}/api/tags`, {
+        headers: {
+          ...(ollamaAuth ? { Authorization: `Basic ${btoa(ollamaAuth)}` } : {}),
+        },
+      });
+      status.ollama = response.ok ? "ok" : "unreachable";
+    } catch {
+      status.ollama = "unreachable";
+    }
+  } else {
+    status.ollama = "not_configured";
+  }
+
+  const openRouterKey = Deno.env.get("OPENROUTER_API_KEY")?.trim();
+  if (!openRouterKey) {
+    status.openrouter = "missing_key";
+  } else {
+    try {
+      const response = await fetchWithTimeout("https://openrouter.ai/api/v1/models", {
+        headers: {
+          Authorization: `Bearer ${openRouterKey}`,
+          "HTTP-Referer": "https://aliviosearchpartners.com",
+          "X-OpenRouter-Title": "Alivio Health Check",
+        },
+      });
+      status.openrouter = response.ok ? "ok" : "error";
+    } catch {
+      status.openrouter = "error";
+    }
+  }
+
+  const imapHost = Deno.env.get("IMAP_HOST")?.trim();
+  const imapUser = Deno.env.get("IMAP_USER")?.trim();
+  const imapPassword = Deno.env.get("IMAP_PASSWORD")?.trim();
+  status.imap = !imapHost || !imapUser || !imapPassword ? "not_configured" : "ok";
+
   const overallOk = status.supabase === "ok";
   return new Response(JSON.stringify({ ...status, healthy: overallOk }), {
     status: overallOk ? 200 : 503,

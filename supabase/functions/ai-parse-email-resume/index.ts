@@ -40,7 +40,11 @@ Deno.serve(async (req: Request) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     const resendApiKey = Deno.env.get("RESEND_API_KEY");
-    if (!supabaseUrl || !serviceRoleKey || !resendApiKey) throw new Error("Missing required env vars");
+    const adminNotificationEmail = Deno.env.get("ADMIN_NOTIFICATION_EMAIL");
+    const notificationFromEmail = Deno.env.get("NOTIFICATION_FROM_EMAIL");
+    if (!supabaseUrl || !serviceRoleKey || !resendApiKey || !adminNotificationEmail || !notificationFromEmail) {
+      throw new Error("Missing required env vars");
+    }
 
     const { resume_attachment_id, email_id, resume_text } = await req.json() as { resume_attachment_id?: string; email_id?: string; resume_text?: string };
     if (!resume_attachment_id && !resume_text) {
@@ -173,7 +177,7 @@ Deno.serve(async (req: Request) => {
     await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${resendApiKey}` },
-      body: JSON.stringify({ from: "Alivio Search Partners <noreply@aliviosearchpartners.com>", to: ["joel@aliviosearchpartners.com"], subject: `New Candidate: ${parsed.full_name || "Unknown"} - ${parsed.current_title || "No title"}`, text: messageBody }),
+      body: JSON.stringify({ from: notificationFromEmail, to: [adminNotificationEmail], subject: `New Candidate: ${parsed.full_name || "Unknown"} - ${parsed.current_title || "No title"}`, text: messageBody }),
     });
 
     return new Response(JSON.stringify({ candidate_id: candidateId, matched_role: matchedRoleName, parsed, provider: ai.provider, model: ai.model }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });

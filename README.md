@@ -68,11 +68,14 @@ Set these Supabase project secrets before deploying the new email functions:
 supabase secrets set \
   IMAP_HOST=your_imap_host \
   IMAP_PORT=993 \
-  IMAP_USER=joel@aliviosearchpartners.com \
+  IMAP_USER=your_imap_user \
   IMAP_PASSWORD=your_email_password \
   IMAP_TLS=true \
   OPENROUTER_API_KEY=your_openrouter_api_key \
-  RESEND_API_KEY=your_resend_api_key
+  RESEND_API_KEY=your_resend_api_key \
+  SCHEDULER_SECRET=your_scheduler_secret \
+  ADMIN_NOTIFICATION_EMAIL=ops@yourdomain.com \
+  NOTIFICATION_FROM_EMAIL="Alivio Search Partners <noreply@yourdomain.com>"
 ```
 
 Deploy functions:
@@ -85,6 +88,8 @@ supabase functions deploy email-pipeline
 ```
 
 The migration `20260414113000_add_email_agent_pipeline.sql` schedules `email-pipeline` every 30 minutes (`*/30 * * * *`) via `pg_cron`.
+Cron-authenticated jobs now use `SCHEDULER_SECRET`, not the service-role key.
+Because `pg_cron` reads Postgres settings rather than Supabase edge-function secrets, set the database setting `app.settings.scheduler_secret` to the same value as the Supabase function secret `SCHEDULER_SECRET`.
 
 
 

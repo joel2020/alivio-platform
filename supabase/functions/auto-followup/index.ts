@@ -30,9 +30,11 @@ Deno.serve(async (req: Request) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     const resendApiKey = Deno.env.get("RESEND_API_KEY");
+    const notificationFromEmail = Deno.env.get("NOTIFICATION_FROM_EMAIL");
 
     if (!supabaseUrl || !serviceRoleKey) throw new Error("SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY missing");
     if (!resendApiKey) throw new Error("RESEND_API_KEY is not configured");
+    if (!notificationFromEmail) throw new Error("NOTIFICATION_FROM_EMAIL is not configured");
 
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
@@ -93,7 +95,7 @@ Deno.serve(async (req: Request) => {
           Authorization: `Bearer ${resendApiKey}`,
         },
         body: JSON.stringify({
-          from: "Alivio Search Partners <noreply@aliviosearchpartners.com>",
+          from: notificationFromEmail,
           to: [client.contact_email],
           subject,
           text: body,
