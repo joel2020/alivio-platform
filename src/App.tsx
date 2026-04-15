@@ -214,6 +214,7 @@ export default function App() {
 
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/dashboard/pipeline" element={<Navigate to="/pipeline" replace />} />
             <Route path="/pipeline" element={<PipelineOverviewPage />} />
             <Route path="/roles" element={<RolesPage />} />
             <Route path="/roles/new" element={<RoleNewPage />} />

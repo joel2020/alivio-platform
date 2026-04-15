@@ -6,6 +6,7 @@ import { useAuth } from '../../lib/auth';
 import type { Role, AgentActivityLog, Candidate } from '../../lib/types';
 import LiveActivityFeed from '../../components/app/LiveActivityFeed';
 import Toast from '../../components/app/Toast';
+import OnboardingWizard from '../../components/app/OnboardingWizard';
 
 interface RoleWithStats extends Role {
   totalScored: number;
@@ -177,12 +178,13 @@ function EmptyDashboard() {
 }
 
 export default function DashboardPage() {
-  const { user } = useAuth();
+  const { user, org } = useAuth();
   const [roles, setRoles] = useState<RoleWithStats[]>([]);
   const [activity, setActivity] = useState<AgentActivityLog[]>([]);
   const [metrics, setMetrics] = useState({ discovered: 0, avgScore: 0, qualRate: 0, scheduled: 0 });
   const [loading, setLoading] = useState(true);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [showOnboardingWizard, setShowOnboardingWizard] = useState(false);
 
   useEffect(() => {
     const roleTitle = sessionStorage.getItem('onboarding_role_created');
@@ -196,8 +198,9 @@ export default function DashboardPage() {
     if (!user?.org_id) return;
     setLoading(true);
 
-    const [rolesRes, activityRes, candidatesRes, callsRes] = await Promise.all([
+    const [rolesRes, rolesCountRes, activityRes, candidatesRes, callsRes] = await Promise.all([
       supabase.from('roles').select('*').eq('org_id', user.org_id).neq('status', 'closed').order('created_at', { ascending: false }),
+      supabase.from('roles').select('id', { count: 'exact', head: true }).eq('org_id', user.org_id),
       supabase.from('agent_activity_log').select('*').eq('org_id', user.org_id).order('created_at', { ascending: false }).limit(20),
       supabase.from('candidates').select('id, score, pipeline_stage, role_id').eq('org_id', user.org_id),
       supabase.from('voice_calls').select('qualification_status').eq('org_id', user.org_id).eq('status', 'completed'),
@@ -228,8 +231,9 @@ export default function DashboardPage() {
       qualRate: Math.round(qualRate),
       scheduled: allCandidates.filter(c => c.pipeline_stage === 'scheduled').length,
     });
+    setShowOnboardingWizard((rolesCountRes.count ?? 0) === 0 && !org?.onboarding_complete);
     setLoading(false);
-  }, [user?.org_id]);
+  }, [org?.onboarding_complete, user?.org_id]);
 
   useEffect(() => {
     if (!user?.org_id) return;
@@ -485,6 +489,14 @@ export default function DashboardPage() {
           message={toastMessage}
           onDismiss={() => setToastMessage(null)}
           duration={5000}
+        />
+      )}
+      {showOnboardingWizard && (
+        <OnboardingWizard
+          onComplete={async () => {
+            setShowOnboardingWizard(false);
+            await loadData();
+          }}
         />
       )}
     </div>

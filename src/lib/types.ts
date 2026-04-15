@@ -3,6 +3,7 @@ export interface Organization {
   name: string;
   size: '1-50' | '51-200' | '201-1000' | '1000+';
   industry: string;
+  onboarding_complete?: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -20,6 +21,8 @@ export interface Role {
   id: string;
   org_id: string;
   title: string;
+  care_setting?: string | null;
+  required_credentials?: string[] | null;
   location: string;
   remote: boolean;
   employment_type: 'full-time' | 'contract' | 'per-diem';
@@ -31,6 +34,9 @@ export interface Role {
   compensation_max: number | null;
   compensation_currency: string;
   description: string | null;
+  onboarding_urgency?: string | null;
+  onboarding_outreach_style?: string | null;
+  onboarding_notify_email?: string | null;
   target_candidate_volume: number;
   outreach_tone: 'professional' | 'conversational' | 'direct';
   status: 'active' | 'paused' | 'closed' | 'draft';
