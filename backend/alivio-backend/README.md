@@ -7,6 +7,7 @@ Production-leaning Express backend for Alivio Search Partners retrieval and recr
 - `GET /health`
 - `POST /api/vertex-search`
 - `POST /api/recruiter-search`
+- `POST /api/outreach-draft`
 - `POST /api/recruiter-search/report`
 - `GET /api/recruiter-search/report/:id`
 - `POST /api/webhook/n8n`
@@ -130,6 +131,17 @@ For `POST /api/recruiter-search`, smoke + shape validation expect:
 - `generated.explanation` (string)
 - `generated.outreach_draft` (string)
 
+For `POST /api/outreach-draft`, expect:
+
+- `ok`
+- `input.role` (string)
+- `input.outreach_tone` (`professional` | `warm` | `direct`)
+- `grounded.results` (array, first 3 results)
+- `generated.subject_line` (string)
+- `generated.outreach_message` (string)
+- `generated.fit_summary` (array)
+- `generated.talking_points` (array)
+
 Use the standalone validator against a saved response:
 
 ```bash
@@ -147,6 +159,72 @@ cat /tmp/recruiter-response.json | npm run validate:recruiter-shape
 - `job-to-candidate-matching.json`
 - `candidate-to-job-matching.json`
 - `recruiter-copilot.json`
+
+
+### `POST /api/outreach-draft`
+
+Use this when a recruiter already knows the hiring context and wants a practical outreach draft that is grounded in Vertex retrieval before LLM drafting.
+
+Request JSON:
+
+```json
+{
+  "role": "Director of Nursing",
+  "location": "New Jersey",
+  "care_setting": "Skilled Nursing Facility",
+  "seniority": "Director",
+  "outreach_tone": "warm",
+  "reason_for_fit": "Multi-site SNF leadership and survey readiness ownership",
+  "pageSize": 8
+}
+```
+
+Success response example:
+
+```json
+{
+  "ok": true,
+  "input": {
+    "role": "Director of Nursing",
+    "location": "New Jersey",
+    "care_setting": "Skilled Nursing Facility",
+    "seniority": "Director",
+    "outreach_tone": "warm",
+    "reason_for_fit": "Multi-site SNF leadership and survey readiness ownership",
+    "pageSize": 8
+  },
+  "query": "Find healthcare candidates for recruiter outreach. Role: Director of Nursing. Location: New Jersey. Care setting: Skilled Nursing Facility. Seniority: Director",
+  "grounded": {
+    "totalSize": 11,
+    "results": []
+  },
+  "generated": {
+    "subject_line": "Director of Nursing opportunity in New Jersey SNF settings",
+    "outreach_message": "Hi <First Name>, I support SNF operators in New Jersey that are hiring Director-level nursing leaders. Your background appears aligned with the role scope, especially around multi-site leadership and readiness work. If you are open, I would value a short call to share details and hear what you want in your next step.",
+    "fit_summary": [
+      "Targets Director of Nursing leadership in NJ SNF environments.",
+      "Centers on the recruiter-provided fit reason for survey readiness and multi-site oversight."
+    ],
+    "talking_points": [
+      "Scope of teams and facilities currently led",
+      "Survey outcomes and quality improvement ownership",
+      "Compensation and relocation preferences"
+    ]
+  }
+}
+```
+
+Sample outreach outputs for common Alivio workflows:
+
+1) **LNHA (direct tone)**
+
+- Subject: `LNHA leadership opening | Post-acute growth facility`
+- Message: `Hi <First Name>, I am recruiting for a post-acute operator seeking an LNHA to stabilize census and lead interdisciplinary operations. Your profile appears relevant to turnaround-focused leadership in skilled settings. Would you be open to a 15-minute call this week to discuss scope and support model?`
+
+2) **MDS Coordinator (professional tone)**
+
+- Subject: `MDS Coordinator role | quality and reimbursement focus`
+- Message: `Hello <First Name>, we are partnering with a skilled nursing team seeking an MDS Coordinator with strong assessment accuracy and reimbursement workflow ownership. Your background appears aligned with the clinical documentation priorities for this opening. If you are open, I can share role details and expected onboarding timeline in a short call.`
 
 ## Docker build and run
 
