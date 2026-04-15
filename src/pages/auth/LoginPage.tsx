@@ -44,7 +44,7 @@ export default function LoginPage() {
   useEffect(() => {
     if (!loading) {
       if (session && user) navigate(safeNext ?? '/dashboard', { replace: true });
-      else if (session && !user) navigate(withNextParam('/onboarding', safeNext), { replace: true });
+      else if (session && !user) navigate(withNextParam('/onboarding/org', safeNext), { replace: true });
     }
   }, [loading, session, user, navigate, safeNext]);
 

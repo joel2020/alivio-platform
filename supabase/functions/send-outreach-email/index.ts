@@ -1,4 +1,5 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { requireAuth } from "../_shared/auth.ts";
 import { requireFunctionAuth } from "../_shared/security.ts";
 
 const corsHeaders = {
@@ -8,13 +9,16 @@ const corsHeaders = {
 };
 
 Deno.serve(async (req: Request) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
-  if (req.method !== "POST") return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-
-  const auth = await requireFunctionAuth(req, "send-outreach-email");
-  if (!auth.ok) return new Response(JSON.stringify({ error: auth.error }), { status: auth.status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-
   try {
+    if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+    if (req.method !== "POST") return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+    const user = await requireAuth(req);
+    void user;
+
+    const auth = await requireFunctionAuth(req, "send-outreach-email");
+    if (!auth.ok) return new Response(JSON.stringify({ error: auth.error }), { status: auth.status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
     const defaultFrom = Deno.env.get("NOTIFICATION_FROM_EMAIL");
     if (!RESEND_API_KEY) throw new Error("RESEND_API_KEY is not configured");
@@ -43,7 +47,8 @@ Deno.serve(async (req: Request) => {
     if (!response.ok) throw new Error(payload?.message ?? payload?.error ?? `Resend error ${response.status}`);
 
     return new Response(JSON.stringify({ data: { id: payload.id } }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
-  } catch (error) {
-    return new Response(JSON.stringify({ error: (error as Error).message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  } catch (e) {
+    if (e instanceof Response) return e;
+    return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

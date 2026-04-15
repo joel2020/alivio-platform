@@ -33,9 +33,6 @@ import AgentsPage from './pages/app/AgentsPage';
 import CandidatePage from './pages/app/CandidatePage';
 import RoleSettingsPage from './pages/app/RoleSettingsPage';
 import SettingsPage from './pages/app/SettingsPage';
-import CrmPage from './pages/app/crm/CrmPage';
-import CrmClientPage from './pages/app/crm/CrmClientPage';
-import CrmTemplatesPage from './pages/app/crm/CrmTemplatesPage';
 import EmailInboxPage from './pages/app/admin/EmailInboxPage';
 import { useSeo } from './lib/seo';
 
@@ -212,8 +209,8 @@ export default function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
 
-          <Route path="/onboarding" element={<OnboardingOrgPage />} />
-          <Route path="/onboarding/first-role" element={<OnboardingRolePage />} />
+          <Route path="/onboarding/org" element={<OnboardingOrgPage />} />
+          <Route path="/onboarding/role" element={<OnboardingRolePage />} />
 
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
@@ -226,9 +223,10 @@ export default function App() {
             <Route path="/agents" element={<AgentsPage />} />
             <Route path="/candidates/:id" element={<CandidatePage />} />
             <Route path="/settings" element={<SettingsPage />} />
-            <Route path="/dashboard/crm" element={<CrmPage />} />
-            <Route path="/dashboard/crm/templates" element={<CrmTemplatesPage />} />
-            <Route path="/dashboard/crm/:id" element={<CrmClientPage />} />
+            {/* // FROZEN - not needed for MVP */}
+            {/* <Route path="/dashboard/crm" element={<CrmPage />} /> */}
+            {/* <Route path="/dashboard/crm/templates" element={<CrmTemplatesPage />} /> */}
+            {/* <Route path="/dashboard/crm/:id" element={<CrmClientPage />} /> */}
             <Route element={<AdminRoute />}>
               <Route path="/admin" element={<AdminDashboardPage />} />
               <Route path="/admin/users" element={<AdminUsersPage />} />

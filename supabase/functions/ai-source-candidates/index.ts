@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { callAiWithFallback } from "../_shared/ai.ts";
+import { callGemini } from "../_shared/gemini.ts";
+import { requireAuth } from "../_shared/auth.ts";
 import { requireFunctionAuth } from "../_shared/security.ts";
 
 const corsHeaders = {
@@ -15,13 +16,16 @@ type SourceResult = {
 };
 
 Deno.serve(async (req: Request) => {
-  if (req.method === "OPTIONS") return new Response("ok", { status: 200, headers: corsHeaders });
-  if (req.method !== "POST") return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-
-  const auth = await requireFunctionAuth(req, "ai-source-candidates");
-  if (!auth.ok) return new Response(JSON.stringify({ error: auth.error }), { status: auth.status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-
   try {
+    if (req.method === "OPTIONS") return new Response("ok", { status: 200, headers: corsHeaders });
+    if (req.method !== "POST") return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+    const user = await requireAuth(req);
+    void user;
+
+    const auth = await requireFunctionAuth(req, "ai-source-candidates");
+    if (!auth.ok) return new Response(JSON.stringify({ error: auth.error }), { status: auth.status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
     const { roleDescription, criteria } = await req.json() as { roleDescription: string; criteria: string[] };
     if (!roleDescription?.trim()) return new Response(JSON.stringify({ error: "roleDescription is required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
@@ -39,10 +43,12 @@ Return strict JSON only:
 }
 Create actionable sourcing guidance.`;
 
-    const ai = await callAiWithFallback({ prompt: `Role description: ${roleDescription}\nCriteria: ${(criteria || []).join(", ")}`, systemPrompt: system, temperature: 0.3, timeoutMs: 60_000 });
-    const data = JSON.parse(ai.content) as SourceResult;
-    return new Response(JSON.stringify({ data, provider: ai.provider, model: ai.model }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
-  } catch (error) {
-    return new Response(JSON.stringify({ error: (error as Error).message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    const prompt = `${system}\n\nRole description: ${roleDescription}\nCriteria: ${(criteria || []).join(", ")}`;
+    const content = await callGemini(prompt, "gemini-2.0-flash-001");
+    const data = JSON.parse(content) as SourceResult;
+    return new Response(JSON.stringify({ data, provider: "google-vertex", model: "gemini-2.0-flash-001" }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  } catch (e) {
+    if (e instanceof Response) return e;
+    return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });
