@@ -47,3 +47,28 @@ Lightweight, reusable prompt fixtures for **frontend flows**, **backend examples
 - Frontend: expose a prompt picker by `useCase` and `roleFamily`.
 - Backend examples/tests: pull fixture by `id` and hydrate template placeholders.
 - Agent workflows: chain fixture IDs from `recruiter-workflow-examples.json` as playbooks.
+
+## Quick usage
+
+Use fixture IDs as stable handles in demos, examples, and automation:
+
+```ts
+import prompts from "./recruiter-prompts.fixtures.json";
+
+const fixture = prompts.promptTypes.find((p) => p.id === "candidate-search-healthcare-don");
+// hydrate fixture.userPromptTemplate with runtime variables before calling your model
+```
+
+Typical flow:
+1. Filter by `useCase` (for example, `candidate_search`).
+2. Filter by `roleFamily` (for example, `healthcare`).
+3. Select a fixture by `id` and fill template placeholders (`{location}`, `{result_count}`, etc.).
+4. Enforce `outputShape.fields` in your parser so responses stay recruiter-friendly.
+
+### Healthcare coverage map
+
+- DON: `candidate-search-healthcare-don`
+- LNHA: `job-search-healthcare-lnha`, `candidate-to-job-match-healthcare-lnha`
+- MDS Coordinator: `job-to-candidate-match-healthcare-mds`
+- Allied health: `candidate-search-healthcare-allied-health`, `recruiter-copilot-healthcare-allied`
+- Physicians: `job-search-healthcare-physician`, `candidate-to-job-match-healthcare-physician`

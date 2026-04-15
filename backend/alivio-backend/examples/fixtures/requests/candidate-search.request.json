@@ -1,0 +1,10 @@
+{
+  "workflow_type": "candidate_search",
+  "query": "Find Directors of Nursing and MDS Coordinators in New Jersey skilled nursing facilities with survey readiness and multi-site leadership experience.",
+  "pageSize": 10,
+  "metadata": {
+    "tenant": "alivio-demo",
+    "use_case": "documentation",
+    "request_source": "synthetic-fixture"
+  }
+}

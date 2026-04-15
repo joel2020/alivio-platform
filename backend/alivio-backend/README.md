@@ -8,10 +8,31 @@ Production-leaning Express backend for Alivio Search Partners retrieval and recr
 - `POST /api/vertex-search`
 - `POST /api/recruiter-search`
 - `POST /api/outreach-draft`
+- `POST /api/recruiter-search/report`
+- `GET /api/recruiter-search/report/:id`
+- `POST /api/webhook/n8n`
 
 Reusable sample recruiter query:
 
 `Find Directors of Nursing in New Jersey with SNF experience and multi-site leadership`
+
+## Backend structure
+
+- `app.js` builds the Express app, middleware, and route mounting.
+- `server.js` is startup-only (`listen`) plus fatal process handlers.
+- `routes/` contains lightweight route modules (`health`, `vertex-search`, `recruiter-search`, `webhook-n8n`).
+- `services/search.js` holds search/recruiter parsing + service logic used by route handlers.
+
+## Boot safety checks
+
+Run these before deployment when iterating locally:
+
+```bash
+npm run check
+npm run check:boot
+```
+
+`check:boot` verifies core modules load and `createApp()` can build without starting a listener.
 
 ## Local run
 
@@ -23,6 +44,30 @@ npm run dev
 ```
 
 Server binds to `process.env.PORT` and defaults to `8080` when unset.
+
+## Pre-merge / pre-deploy validation (lightweight)
+
+When deploys are rate-limited, run these local safety checks before merging:
+
+```bash
+cd backend/alivio-backend
+npm run check:syntax
+npm run check:load
+npm run check:boot
+```
+
+What each check does:
+
+- `check:syntax`: runs `node --check` on core backend entry points and smoke/validation scripts to catch syntax issues early.
+- `check:load`: requires key backend modules (without starting the server) to catch module resolution or import-time failures.
+- `check:boot`: convenience command that runs both checks in sequence.
+
+Recommended quick gate before merge:
+
+```bash
+npm run check:boot
+```
+Server structure keeps `app.js` focused on middleware/routes and `server.js` focused on startup + fatal process handlers.
 
 
 ## Smoke tests, payload fixtures, and response validation
@@ -46,6 +91,8 @@ npm run smoke:health
 npm run smoke:vertex
 npm run smoke:recruiter
 npm run smoke
+npm run check
+npm run check:load
 ```
 
 Optional payload override examples:
@@ -364,6 +411,54 @@ Request JSON:
 - `generated.outreach_draft` (string): render in recruiter outreach editor.
 - `grounded.results` (array): optional evidence/debug panel for confidence and provenance.
 - `requestId` (string, on errors and some proxies): surface in support logs and incident tickets when available.
+
+
+### `POST /api/recruiter-search/report`
+
+Use this to convert recruiter-search output into a reusable Alivio report artifact for retained healthcare workflows.
+
+Request JSON accepts either a recruiter-search result directly or wrapped under `recruiter_result`:
+
+```json
+{
+  "query": "Match this role to likely candidates: Director of Nursing in New Jersey, SNF and multi-site leadership required",
+  "grounded": {
+    "totalSize": 4,
+    "results": [
+      {
+        "rank": 1,
+        "title": "Regional Director of Nursing",
+        "location": "New Jersey"
+      }
+    ]
+  },
+  "generated": {
+    "ranked_matches": [
+      {
+        "rank": 1,
+        "name_or_title": "Alex Morgan, RN",
+        "fit_reasoning": "Led multi-site SNF operations in NJ with direct DON oversight."
+      }
+    ],
+    "explanation": "Top matches show direct DON ownership and multi-site SNF outcomes in New Jersey.",
+    "outreach_draft": "Hi Alex, your NJ SNF leadership background aligns with our Director of Nursing search. Open to a brief intro call this week?"
+  },
+  "summary": {
+    "top_role": "Director of Nursing",
+    "geography": "New Jersey",
+    "search_type": "matching"
+  }
+}
+```
+
+Success response returns a report artifact with generated `id`, `createdAt`, and persisted recruiter-friendly fields (`query`, `timestamp`, `grounded`, `generated`, `summary`).
+
+### `GET /api/recruiter-search/report/:id`
+
+Returns a previously created report artifact from the in-memory local store.
+
+- Returns `404` with `REPORT_NOT_FOUND` when the report id does not exist.
+- Store is intentionally lightweight and local-only for now (no external database).
 
 Error response shape (`4xx/5xx`):
 

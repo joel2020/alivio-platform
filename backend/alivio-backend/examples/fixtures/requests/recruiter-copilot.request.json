@@ -1,0 +1,10 @@
+{
+  "workflow_type": "copilot",
+  "query": "Create a ranked shortlist and outreach draft for MDS Coordinators, allied health professionals, and physicians in Florida post-acute care systems with turnaround experience.",
+  "pageSize": 8,
+  "metadata": {
+    "tenant": "alivio-demo",
+    "persona": "recruiter-copilot",
+    "request_source": "synthetic-fixture"
+  }
+}

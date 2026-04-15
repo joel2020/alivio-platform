@@ -1,0 +1,60 @@
+{
+  "ok": true,
+  "requestId": "fixture-grounded-001",
+  "query": "Find Directors of Nursing, LNHAs, MDS Coordinators, allied health leaders, and physicians for multi-state post-acute systems.",
+  "grounded": {
+    "totalSize": 5,
+    "results": [
+      {
+        "rank": 1,
+        "sourceType": "candidate",
+        "title": "Director of Nursing",
+        "name": "Morgan Patel, RN",
+        "location": "Newark, NJ",
+        "yearsExperience": 13,
+        "snippet": "Led quality recovery across three SNFs and improved retention for nursing and allied health teams.",
+        "source": "CRM profile"
+      },
+      {
+        "rank": 2,
+        "sourceType": "candidate",
+        "title": "Licensed Nursing Home Administrator",
+        "name": "Cameron Ruiz, LNHA",
+        "location": "Allentown, PA",
+        "yearsExperience": 11,
+        "snippet": "Managed two facilities with census growth and physician partnership initiatives.",
+        "source": "Parsed resume"
+      },
+      {
+        "rank": 3,
+        "sourceType": "candidate",
+        "title": "MDS Coordinator",
+        "name": "Jordan Kim, RN-BC",
+        "location": "Tampa, FL",
+        "yearsExperience": 9,
+        "snippet": "Strong RAI accuracy, PPS coding, and survey preparation outcomes in 120+ bed settings.",
+        "source": "Applicant tracking"
+      },
+      {
+        "rank": 4,
+        "sourceType": "candidate",
+        "title": "Director of Rehabilitation (Allied Health)",
+        "name": "Avery Brooks, DPT",
+        "location": "Cleveland, OH",
+        "yearsExperience": 10,
+        "snippet": "Oversaw PT/OT/SLP staffing and reduced therapy denials through documentation quality programs.",
+        "source": "Referral network"
+      },
+      {
+        "rank": 5,
+        "sourceType": "candidate",
+        "title": "Medical Director, Post-Acute Care",
+        "name": "Riley Thompson, MD",
+        "location": "Orlando, FL",
+        "yearsExperience": 15,
+        "snippet": "Supported multi-site clinical governance and reduced avoidable readmissions in SNF partnerships.",
+        "source": "Physician outreach list"
+      }
+    ]
+  }
+}

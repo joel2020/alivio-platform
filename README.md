@@ -87,6 +87,17 @@ supabase functions deploy email-pipeline
 The migration `20260414113000_add_email_agent_pipeline.sql` schedules `email-pipeline` every 30 minutes (`*/30 * * * *`) via `pg_cron`.
 
 
+
+## Recruiter prompt/query library
+
+Reusable recruiter prompt fixtures live in `shared/prompt-library/` for backend examples, frontend demos, and automation playbooks.
+
+- Canonical fixtures: `shared/prompt-library/recruiter-prompts.fixtures.json`
+- Workflow chains: `shared/prompt-library/recruiter-workflow-examples.json`
+- Usage/taxonomy: `shared/prompt-library/README.md`, `shared/prompt-library/prompt-taxonomy.md`
+
+Use fixture `id` + placeholder hydration to keep prompts practical, recruiter-friendly, and consistent across implementations.
+
 ## Alivio Multi-Agent Backend
 See `backend/README.md` for the TypeScript multi-agent backend and API routes (future layer, not the first Vercel production deploy target).
 
