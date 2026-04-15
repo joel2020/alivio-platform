@@ -10,6 +10,8 @@ const { AppError, errorToResponse } = require('./errors');
 const { runVertexSearch } = require('./vertex');
 const { buildGroundedPayload, validateGroundedPayload } = require('./normalize');
 const { buildRankedGrounding } = require('./ranking');
+const { createReportStore } = require('./report-store');
+const { parseReportCreateInput } = require('./report-utils');
 
 const mockVertexFixture = require('./examples/mock-fixtures/recruiter-search-result-list.json');
 const mockRecruiterFixture = require('./examples/mock-fixtures/recruiter-copilot-answer-card.json');
@@ -77,6 +79,7 @@ if (config.enableCors) {
 
 const openai = new OpenAI({ apiKey: config.openai.apiKey });
 const isMockMode = config.appMode === 'mock';
+const reportStore = createReportStore();
 
 function getRequestId(req) {
   return req.requestId || crypto.randomUUID();
@@ -388,7 +391,60 @@ app.post('/api/recruiter-search', async (req, res, next) => {
     return next(error);
   }
 });
-app.post('/api/webhook/n8n', async (req, res, next) => {
+
+app.post('/api/recruiter-search/report', (req, res, next) => {
+  try {
+    const requestId = getRequestId(req);
+    const reportInput = parseReportCreateInput(req.body);
+
+    const report = reportStore.save({
+      requestId,
+      query: reportInput.query,
+      timestamp: new Date().toISOString(),
+      grounded: reportInput.grounded,
+      generated: reportInput.generated,
+      summary: reportInput.summary
+    });
+
+    res.status(201).json({
+      ok: true,
+      report
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get('/api/recruiter-search/report/:id', (req, res, next) => {
+  try {
+    const reportId = typeof req.params?.id === 'string' ? req.params.id.trim() : '';
+
+    if (!reportId) {
+      throw new AppError('Missing report id', {
+        status: 400,
+        code: 'VALIDATION_ERROR',
+        details: { field: 'id' }
+      });
+    }
+
+    const report = reportStore.getById(reportId);
+    if (!report) {
+      throw new AppError('Recruiter report not found', {
+        status: 404,
+        code: 'REPORT_NOT_FOUND',
+        details: { id: reportId }
+      });
+    }
+
+    res.json({
+      ok: true,
+      report
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.post('/api/webhook/n8n', async (req, res, next) => {
   const requestId = getRequestId(req);
 
