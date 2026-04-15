@@ -29,6 +29,36 @@
       "notes": "Use for first-pass sourcing when hiring managers need interviewable candidates in under 24 hours."
     },
     {
+      "id": "candidate-search-healthcare-allied-health",
+      "useCase": "candidate_search",
+      "title": "Allied health rapid shortlist search",
+      "audience": "recruiter",
+      "roleFamily": "healthcare",
+      "targetRoles": [
+        "Physical Therapist",
+        "Occupational Therapist",
+        "Speech Language Pathologist",
+        "Radiologic Technologist"
+      ],
+      "goal": "Build a practical shortlist of allied health candidates for active requisitions.",
+      "systemPrompt": "You are an allied health recruiting assistant. Return concise, recruiter-ready shortlist entries with immediate outreach angles.",
+      "userPromptTemplate": "Find {result_count} allied health candidates for {discipline} roles in {location}. Prioritize state license fit, setting experience ({setting_type}), shift flexibility, and travel willingness. Include credential highlights and likely response hooks.",
+      "outputShape": {
+        "fields": [
+          "candidate_name",
+          "discipline",
+          "location",
+          "license_and_certifications",
+          "setting_experience",
+          "availability_window",
+          "outreach_hook",
+          "risk_flags"
+        ],
+        "maxResults": 12
+      },
+      "notes": "Use for high-volume allied health reqs where speed-to-submittal matters."
+    },
+    {
       "id": "candidate-search-tech-staff-frontend",
       "useCase": "candidate_search",
       "title": "Staff Frontend Engineer search",
@@ -79,6 +109,35 @@
         "maxResults": 12
       },
       "notes": "Use when reverse-marketing a candidate and building target account list."
+    },
+    {
+      "id": "job-search-healthcare-physician",
+      "useCase": "job_search",
+      "title": "Physician opportunity search",
+      "audience": "recruiter",
+      "roleFamily": "healthcare",
+      "targetRoles": [
+        "Hospitalist",
+        "Family Medicine Physician",
+        "Internal Medicine Physician"
+      ],
+      "goal": "Identify physician openings aligned to credential and schedule constraints.",
+      "systemPrompt": "You are a physician placement assistant. Focus on realistic opportunities and recruiter-relevant constraints.",
+      "userPromptTemplate": "Find {result_count} physician openings in {region}. Prioritize specialty match ({specialty}), board certification requirements, visa policy, call burden, and compensation transparency. Include if schedule is 7-on/7-off, outpatient only, or mixed.",
+      "outputShape": {
+        "fields": [
+          "organization",
+          "job_title",
+          "specialty",
+          "location",
+          "schedule_model",
+          "comp_range",
+          "credential_requirements",
+          "placement_notes"
+        ],
+        "maxResults": 12
+      },
+      "notes": "Use when reverse-marketing physicians or re-engaging passive candidates."
     },
     {
       "id": "job-search-tech-data-platform",

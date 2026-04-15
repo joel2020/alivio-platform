@@ -9,10 +9,29 @@ Production-leaning Express backend for Alivio Search Partners retrieval and recr
 - `POST /api/recruiter-search`
 - `POST /api/recruiter-search/report`
 - `GET /api/recruiter-search/report/:id`
+- `POST /api/webhook/n8n`
 
 Reusable sample recruiter query:
 
 `Find Directors of Nursing in New Jersey with SNF experience and multi-site leadership`
+
+## Backend structure
+
+- `app.js` builds the Express app, middleware, and route mounting.
+- `server.js` is startup-only (`listen`) plus fatal process handlers.
+- `routes/` contains lightweight route modules (`health`, `vertex-search`, `recruiter-search`, `webhook-n8n`).
+- `services/search.js` holds search/recruiter parsing + service logic used by route handlers.
+
+## Boot safety checks
+
+Run these before deployment when iterating locally:
+
+```bash
+npm run check
+npm run check:boot
+```
+
+`check:boot` verifies core modules load and `createApp()` can build without starting a listener.
 
 ## Local run
 
@@ -24,6 +43,30 @@ npm run dev
 ```
 
 Server binds to `process.env.PORT` and defaults to `8080` when unset.
+
+## Pre-merge / pre-deploy validation (lightweight)
+
+When deploys are rate-limited, run these local safety checks before merging:
+
+```bash
+cd backend/alivio-backend
+npm run check:syntax
+npm run check:load
+npm run check:boot
+```
+
+What each check does:
+
+- `check:syntax`: runs `node --check` on core backend entry points and smoke/validation scripts to catch syntax issues early.
+- `check:load`: requires key backend modules (without starting the server) to catch module resolution or import-time failures.
+- `check:boot`: convenience command that runs both checks in sequence.
+
+Recommended quick gate before merge:
+
+```bash
+npm run check:boot
+```
+Server structure keeps `app.js` focused on middleware/routes and `server.js` focused on startup + fatal process handlers.
 
 
 ## Smoke tests, payload fixtures, and response validation
@@ -47,6 +90,8 @@ npm run smoke:health
 npm run smoke:vertex
 npm run smoke:recruiter
 npm run smoke
+npm run check
+npm run check:load
 ```
 
 Optional payload override examples:

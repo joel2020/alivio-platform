@@ -130,6 +130,14 @@ Provider flow:
 
 ---
 
+
+## Recruiter request + webhook quick reference
+
+- For a concise, recruiter-focused flow (request path, ranking, generation, webhook integration notes), see `backend/docs/recruiter-request-flow.md`.
+- This backend currently exposes agent routes under `/api/agents/*` and does not register a dedicated `/api/webhook/*` route in `src/app.ts`.
+
+---
+
 ## Module glossary (who owns what)
 
 ### Composition & runtime

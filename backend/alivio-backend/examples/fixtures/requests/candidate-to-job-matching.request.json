@@ -1,0 +1,10 @@
+{
+  "workflow_type": "match",
+  "query": "Find best-fit jobs for this candidate profile: Licensed Nursing Home Administrator with 11 years multi-facility operations plus physician relations and MDS oversight across the Midwest.",
+  "pageSize": 12,
+  "metadata": {
+    "match_direction": "candidate_to_job",
+    "tenant": "alivio-demo",
+    "request_source": "synthetic-fixture"
+  }
+}

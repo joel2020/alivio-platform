@@ -93,6 +93,64 @@
           "expectedOutcome": "Daily actions, interview prep, and follow-up templates"
         }
       ]
+    },
+    {
+      "workflowId": "healthcare-allied-health-rapid-fill",
+      "industry": "healthcare",
+      "role": "Allied Health",
+      "steps": [
+        {
+          "order": 1,
+          "promptType": "candidate_search",
+          "fixtureId": "candidate-search-healthcare-allied-health",
+          "exampleInput": {
+            "result_count": 10,
+            "discipline": "Physical Therapist",
+            "location": "Phoenix, AZ",
+            "setting_type": "SNF and outpatient"
+          },
+          "expectedOutcome": "Shortlist of licensed allied candidates with outreach hooks"
+        },
+        {
+          "order": 2,
+          "promptType": "recruiter_copilot",
+          "fixtureId": "recruiter-copilot-healthcare-allied",
+          "exampleInput": {
+            "query": "Prioritize who to submit today for PT openings in Phoenix.",
+            "grounded_payload": "<grounded_results_json>"
+          },
+          "expectedOutcome": "Action-oriented submission plan and personalized follow-up"
+        }
+      ]
+    },
+    {
+      "workflowId": "healthcare-physician-candidate-marketing",
+      "industry": "healthcare",
+      "role": "Physician",
+      "steps": [
+        {
+          "order": 1,
+          "promptType": "job_search",
+          "fixtureId": "job-search-healthcare-physician",
+          "exampleInput": {
+            "result_count": 8,
+            "region": "Midwest US",
+            "specialty": "Hospitalist"
+          },
+          "expectedOutcome": "Current physician openings with schedule and credential constraints"
+        },
+        {
+          "order": 2,
+          "promptType": "candidate_to_job_match",
+          "fixtureId": "candidate-to-job-match-healthcare-physician",
+          "exampleInput": {
+            "result_count": 5,
+            "region_scope": "Midwest US",
+            "candidate_profile": "Board-certified Internal Medicine physician preferring 7-on/7-off schedule with no visa sponsorship needed."
+          },
+          "expectedOutcome": "Ranked physician opportunities with fit tradeoffs and pitch angles"
+        }
+      ]
     }
   ]
 }
