@@ -1,5 +1,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
+// Functions that are only invokable by the scheduler/service, not end-users.
+// They require either the SCHEDULER_SECRET or the SUPABASE_SERVICE_ROLE_KEY.
 export const SERVICE_ONLY_FUNCTIONS = new Set([
   "fetch-emails",
   "email-pipeline",
@@ -19,16 +21,24 @@ export async function requireFunctionAuth(req: Request, functionName: string): P
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  // SCHEDULER_SECRET: a dedicated secret for scheduler/cron invocations.
+  // Prefer this over passing the raw service role key to schedulers.
+  const schedulerSecret = Deno.env.get("SCHEDULER_SECRET");
 
   if (!supabaseUrl || !anonKey || !serviceRoleKey) {
     return { ok: false, status: 500, error: "Supabase auth env vars are not fully configured" };
   }
 
-  const isServiceCall = token === serviceRoleKey;
+  // A call is a trusted service call if it presents either the scheduler secret
+  // (preferred) or the service role key (legacy fallback).
+  const isServiceCall =
+    (schedulerSecret && token === schedulerSecret) ||
+    token === serviceRoleKey;
+
   const isServiceOnly = SERVICE_ONLY_FUNCTIONS.has(functionName);
 
   if (isServiceOnly && !isServiceCall) {
-    return { ok: false, status: 403, error: "Forbidden: service role required" };
+    return { ok: false, status: 403, error: "Forbidden: service role or scheduler secret required" };
   }
 
   if (!isServiceCall) {
