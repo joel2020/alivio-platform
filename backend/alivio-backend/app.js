@@ -6,21 +6,13 @@ const express = require('express');
 const config = require('./config');
 const logger = require('./logger');
 const { errorToResponse } = require('./errors');
-const { createHealthRouter } = require('./routes/health');
-const { createVertexSearchRouter } = require('./routes/vertex-search');
-const { createRecruiterSearchRouter } = require('./routes/recruiter-search');
-const { createWebhookN8nRouter } = require('./routes/webhook-n8n');
-const { createRecruiterSearchService, getRequestId } = require('./services/search');
 
-const mockVertexFixture = require('./examples/mock-fixtures/recruiter-search-result-list.json');
-const mockRecruiterFixture = require('./examples/mock-fixtures/recruiter-copilot-answer-card.json');
+const healthRoutes = require('./routes/health');
+const vertexSearchRoutes = require('./routes/vertex-search');
+const recruiterSearchRoutes = require('./routes/recruiter-search');
+const webhookN8nRoutes = require('./routes/webhook-n8n');
 
-function createApp() {
-  const app = express();
-  const isMockMode = config.appMode === 'mock';
-
-  app.use(express.json({ limit: config.maxRequestBytes }));
-
+function attachErrorLogging(app) {
   app.use((req, res, next) => {
     const startTime = process.hrtime.bigint();
 
@@ -45,7 +37,9 @@ function createApp() {
 
     next();
   });
+}
 
+function attachRequestId(app) {
   app.use((req, res, next) => {
     const incomingRequestId = req.headers[config.requestIdHeader];
     const requestId =
@@ -58,41 +52,35 @@ function createApp() {
 
     next();
   });
+}
 
-  if (config.enableCors) {
-    app.use((req, res, next) => {
-      const allowedOrigin = config.corsOrigin;
-
-      if (allowedOrigin) {
-        res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
-        res.setHeader('Vary', 'Origin');
-      }
-
-      res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-      res.setHeader('Access-Control-Allow-Headers', `Content-Type,${config.requestIdHeader}`);
-
-      if (req.method === 'OPTIONS') {
-        return res.status(204).end();
-      }
-
-      return next();
-    });
+function attachCors(app) {
+  if (!config.enableCors) {
+    return;
   }
 
-  const runRecruiterSearch = createRecruiterSearchService({
-    config,
-    isMockMode,
-    mockRecruiterFixture
+  app.use((req, res, next) => {
+    const allowedOrigin = config.corsOrigin;
+
+    if (allowedOrigin) {
+      res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
+      res.setHeader('Vary', 'Origin');
+    }
+
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', `Content-Type,${config.requestIdHeader}`);
+
+    if (req.method === 'OPTIONS') {
+      return res.status(204).end();
+    }
+
+    return next();
   });
+}
 
-  app.use(createHealthRouter({ config }));
-  app.use(createVertexSearchRouter({ config, isMockMode, mockVertexFixture }));
-  app.use(createRecruiterSearchRouter({ runRecruiterSearch }));
-  app.use(createWebhookN8nRouter({ config, runRecruiterSearch }));
-
+function attachErrorHandler(app) {
   app.use((error, req, res, _next) => {
     const { status, payload } = errorToResponse(error);
-    const requestId = getRequestId(req);
 
     res.locals.errorContext = {
       errorCode: payload.error.code,
@@ -101,10 +89,25 @@ function createApp() {
 
     res.status(status).json({
       ...payload,
-      requestId
+      requestId: req.requestId || crypto.randomUUID()
     });
   });
+}
 
+function createApp() {
+  const app = express();
+  app.use(express.json({ limit: config.maxRequestBytes }));
+
+  attachErrorLogging(app);
+  attachRequestId(app);
+  attachCors(app);
+
+  app.use(healthRoutes);
+  app.use(vertexSearchRoutes);
+  app.use(recruiterSearchRoutes);
+  app.use(webhookN8nRoutes);
+
+  attachErrorHandler(app);
   return app;
 }
 

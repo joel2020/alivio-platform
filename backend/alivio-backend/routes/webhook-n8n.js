@@ -1,34 +1,35 @@
 const express = require('express');
 
-const { getRequestId, parseMetadata, parseWorkflowType, validateWebhookSecret } = require('../services/search');
-const { toOpenAiAppError } = require('./recruiter-search');
+const {
+  normalizeOpenAiError,
+  parseMetadata,
+  parseWorkflowType,
+  searchRecruiter,
+  validateWebhookSecret
+} = require('../services/search-service');
 
-function createWebhookN8nRouter({ config, runRecruiterSearch }) {
-  const router = express.Router();
+const router = express.Router();
 
-  router.post('/api/webhook/n8n', async (req, res, next) => {
-    const requestId = getRequestId(req);
+router.post('/api/webhook/n8n', async (req, res, next) => {
+  const requestId = req.requestId;
 
-    try {
-      validateWebhookSecret(req, config);
-      parseWorkflowType(req.body?.workflow_type);
-      parseMetadata(req.body?.metadata);
+  try {
+    validateWebhookSecret(req);
+    parseWorkflowType(req.body?.workflow_type);
+    parseMetadata(req.body?.metadata);
 
-      const payload = await runRecruiterSearch(
-        {
-          query: req.body?.query,
-          pageSize: req.body?.pageSize
-        },
-        requestId
-      );
+    const payload = await searchRecruiter(
+      {
+        query: req.body?.query,
+        pageSize: req.body?.pageSize
+      },
+      requestId
+    );
 
-      return res.json(payload);
-    } catch (error) {
-      return next(toOpenAiAppError(error, requestId));
-    }
-  });
+    res.json(payload);
+  } catch (error) {
+    next(normalizeOpenAiError(error, requestId));
+  }
+});
 
-  return router;
-}
-
-module.exports = { createWebhookN8nRouter };
+module.exports = router;

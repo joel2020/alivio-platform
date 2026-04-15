@@ -1,32 +1,30 @@
 const express = require('express');
 
-function createHealthRouter({ config }) {
-  const router = express.Router();
+const config = require('../config');
 
-  router.get('/health', (_req, res) => {
-    res.status(200).json({
-      ok: true,
-      status: 'healthy',
-      service: config.serviceName,
-      env: config.env,
-      timestamp: new Date().toISOString()
-    });
+const router = express.Router();
+
+router.get('/health', (_req, res) => {
+  res.status(200).json({
+    ok: true,
+    status: 'healthy',
+    service: config.serviceName,
+    env: config.env,
+    timestamp: new Date().toISOString()
   });
+});
 
-  router.get('/api/status', (_req, res) => {
-    res.status(200).json({
-      ok: true,
-      version: process.env.npm_package_version,
-      uptime: process.uptime(),
-      mode: process.env.APP_MODE || 'live',
-      vertexEndpoint: config.vertex.endpoint ? 'configured' : 'missing',
-      openaiKey: config.openai.apiKey ? 'configured' : 'missing',
-      gcpCredentials: process.env.GOOGLE_APPLICATION_CREDENTIALS ? 'configured' : 'missing',
-      timestamp: new Date().toISOString()
-    });
+router.get('/api/status', (_req, res) => {
+  res.status(200).json({
+    ok: true,
+    version: process.env.npm_package_version,
+    uptime: process.uptime(),
+    mode: process.env.APP_MODE || 'live',
+    vertexEndpoint: config.vertex.endpoint ? 'configured' : 'missing',
+    openaiKey: config.openai.apiKey ? 'configured' : 'missing',
+    gcpCredentials: process.env.GOOGLE_APPLICATION_CREDENTIALS ? 'configured' : 'missing',
+    timestamp: new Date().toISOString()
   });
+});
 
-  return router;
-}
-
-module.exports = { createHealthRouter };
+module.exports = router;
