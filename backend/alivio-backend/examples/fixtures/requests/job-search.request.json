@@ -1,0 +1,10 @@
+{
+  "workflow_type": "job_search",
+  "query": "Open Licensed Nursing Home Administrator and physician leadership opportunities in Pennsylvania long-term care networks with relocation support.",
+  "pageSize": 10,
+  "metadata": {
+    "tenant": "alivio-demo",
+    "use_case": "smoke-test",
+    "request_source": "synthetic-fixture"
+  }
+}

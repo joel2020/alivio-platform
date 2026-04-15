@@ -1,0 +1,107 @@
+{
+  "ok": true,
+  "requestId": "fixture-recruiter-001",
+  "query": "Who should we prioritize first for a Florida and Pennsylvania leadership search spanning DON, LNHA, MDS, allied health, and physician roles?",
+  "grounded": {
+    "totalSize": 4,
+    "results": [
+      {
+        "rank": 1,
+        "sourceType": "candidate",
+        "title": "Director of Nursing",
+        "name": "Morgan Patel, RN",
+        "location": "Jacksonville, FL",
+        "yearsExperience": 13,
+        "snippet": "Multi-site DON leadership and documented survey turnaround wins.",
+        "source": "CRM profile"
+      },
+      {
+        "rank": 2,
+        "sourceType": "candidate",
+        "title": "Licensed Nursing Home Administrator",
+        "name": "Cameron Ruiz, LNHA",
+        "location": "Pittsburgh, PA",
+        "yearsExperience": 11,
+        "snippet": "Led operations recovery and census growth for two long-term care facilities.",
+        "source": "Parsed resume"
+      },
+      {
+        "rank": 3,
+        "sourceType": "candidate",
+        "title": "MDS Coordinator",
+        "name": "Jordan Kim, RN-BC",
+        "location": "Tampa, FL",
+        "yearsExperience": 9,
+        "snippet": "Consistent RAI and PPS quality outcomes with strong interdisciplinary collaboration.",
+        "source": "Applicant tracking"
+      },
+      {
+        "rank": 4,
+        "sourceType": "candidate",
+        "title": "Medical Director, Post-Acute Care",
+        "name": "Riley Thompson, MD",
+        "location": "Harrisburg, PA",
+        "yearsExperience": 15,
+        "snippet": "Clinical governance leadership and SNF physician alignment experience.",
+        "source": "Physician outreach list"
+      }
+    ]
+  },
+  "generated": {
+    "ranked_matches": [
+      {
+        "rank": 1,
+        "name_or_title": "Morgan Patel, RN — Director of Nursing",
+        "fit_reasoning": "Best alignment for immediate DON coverage due to multi-site leadership and proven survey turnaround outcomes.",
+        "strengths": [
+          "13 years in skilled nursing leadership",
+          "Documented quality and staffing stabilization outcomes",
+          "Experience leading interdisciplinary teams including allied health"
+        ],
+        "gaps_or_unknowns": [
+          "No explicit compensation target in current profile",
+          "Relocation preference not yet confirmed"
+        ],
+        "confidence": {
+          "level": "high",
+          "rationale": "Strong direct evidence from recent multi-site DON assignments and measurable outcomes."
+        }
+      },
+      {
+        "rank": 2,
+        "name_or_title": "Cameron Ruiz, LNHA — Licensed Nursing Home Administrator",
+        "fit_reasoning": "High fit for PA operations leadership with census recovery and physician partnership experience.",
+        "strengths": [
+          "11 years as LNHA across multiple facilities",
+          "Operational turnaround and census growth track record",
+          "Works closely with physician leadership on care model changes"
+        ],
+        "gaps_or_unknowns": [
+          "Current non-compete status not specified"
+        ],
+        "confidence": {
+          "level": "high",
+          "rationale": "Role and geography alignment are clear with specific operational outcomes present."
+        }
+      },
+      {
+        "rank": 3,
+        "name_or_title": "Jordan Kim, RN-BC — MDS Coordinator",
+        "fit_reasoning": "Strong specialist option for MDS-heavy facilities needing quality coding and survey support.",
+        "strengths": [
+          "Deep RAI and PPS coding expertise",
+          "Cross-functional communication with nursing and rehab teams"
+        ],
+        "gaps_or_unknowns": [
+          "Leadership scope beyond MDS team is not fully detailed"
+        ],
+        "confidence": {
+          "level": "medium",
+          "rationale": "Technical MDS evidence is strong, but broader leadership depth needs confirmation."
+        }
+      }
+    ],
+    "explanation": "Morgan and Cameron are strongest immediate priorities because both have direct leadership scope and measurable outcomes tied to the target searches. Jordan is also a valuable shortlist candidate for MDS-critical openings where coding quality and compliance support are primary needs.",
+    "outreach_draft": "Hi Morgan — your multi-site Director of Nursing background and turnaround outcomes stand out for an active healthcare leadership search we are running across Florida and Pennsylvania. We are also reviewing aligned opportunities that value interdisciplinary coordination with allied health and physician partners. Would you be open to a brief conversation this week to discuss fit and timing?"
+  }
+}

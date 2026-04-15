@@ -1,0 +1,10 @@
+{
+  "workflow_type": "match",
+  "query": "Match this role to candidates: Director of Nursing for a 180-bed SNF in Ohio requiring Medicare/Medicaid compliance, quality metrics improvement, and allied health team collaboration.",
+  "pageSize": 12,
+  "metadata": {
+    "match_direction": "job_to_candidate",
+    "tenant": "alivio-demo",
+    "request_source": "synthetic-fixture"
+  }
+}
