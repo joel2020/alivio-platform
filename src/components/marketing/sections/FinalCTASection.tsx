@@ -4,15 +4,15 @@ import { CAL_COM_BOOKING_URL, DEMO_EVENT_DESCRIPTION, DEMO_EVENT_TITLE } from '.
 
 export default function FinalCTASection() {
   return (
-    <section style={{ padding: '160px 0', background: '#FAFAFA' }}>
+    <section style={{ padding: '96px 0', background: '#FFFFFF' }}>
       <div className="mkt-container">
         <AnimateInView>
-          <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto' }}>
-            <h2 style={{ fontSize: '44px', fontWeight: 700, letterSpacing: '-0.025em', lineHeight: 1.15, color: 'var(--text-primary)', margin: '0 0 16px 0' }}>
-              Fill More Clinical Roles Without Paying Agency Placement Fees
+          <div style={{ textAlign: 'center', maxWidth: '760px', margin: '0 auto' }}>
+            <h2 style={{ fontSize: '44px', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1.15, color: 'var(--text-primary)', margin: '0 0 16px 0' }}>
+              Power your team with AI recruiting—book demo.
             </h2>
-            <p style={{ fontSize: '18px', color: 'var(--text-secondary)', lineHeight: 1.7, margin: '0 auto 40px', maxWidth: '560px' }}>
-              Fill your next Director of Nursing in under 14 days — for one flat monthly fee, with no agency commissions.
+            <p style={{ fontSize: '18px', color: 'var(--text-secondary)', lineHeight: 1.7, margin: '0 auto 34px', maxWidth: '640px' }}>
+              Replace manual sourcing with autonomous workflows and deploy an AI recruitment platform that delivers shortlist-ready candidates 24/7.
             </p>
             <a
               href={CAL_COM_BOOKING_URL}
@@ -22,12 +22,9 @@ export default function FinalCTASection() {
               style={{ display: 'inline-flex' }}
               title={`${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}`}
             >
-              Book a Demo
+              Book Demo
               <ArrowRight size={18} />
             </a>
-            <p style={{ fontSize: '13px', color: 'var(--text-muted)', margin: '16px 0 0 0' }}>
-              A 30-minute demo for healthcare HR leaders.
-            </p>
           </div>
         </AnimateInView>
       </div>
