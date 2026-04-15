@@ -20,6 +20,7 @@ This folder is a local backend service that runs in **mock mode by default** and
 - **Services**: search, matching, enrichment, fit scoring, outreach, monitoring, resume parsing.
 - **Agents**: ScoutReady, MatchReady, EnrichReady, SignalReady, EngageReady, MonitorReady, Parse Resume.
 - Detailed architecture doc (flows + module glossary + Mermaid): `backend/docs/architecture.md`.
+- Recruiter-facing request flow reference (including webhook integration notes): `backend/docs/recruiter-request-flow.md`.
 
 ## Quick start
 
