@@ -7,6 +7,7 @@ Production-leaning Express backend for Alivio Search Partners retrieval and recr
 - `GET /health`
 - `POST /api/vertex-search`
 - `POST /api/recruiter-search`
+- `POST /api/webhook/n8n`
 
 Reusable sample recruiter query:
 
@@ -45,6 +46,7 @@ Recommended quick gate before merge:
 ```bash
 npm run check:boot
 ```
+Server structure keeps `app.js` focused on middleware/routes and `server.js` focused on startup + fatal process handlers.
 
 
 ## Smoke tests, payload fixtures, and response validation
@@ -68,6 +70,8 @@ npm run smoke:health
 npm run smoke:vertex
 npm run smoke:recruiter
 npm run smoke
+npm run check
+npm run check:load
 ```
 
 Optional payload override examples:
