@@ -24,9 +24,12 @@ Deno.serve(async (req: Request) => {
     ollama: "error" as "ok" | "unreachable" | "error",
     openrouter: "error" as "ok" | "missing_key" | "error",
     imap: "error" as "ok" | "not_configured" | "error",
+    resend: "error" as "ok" | "missing_key" | "error",
+    scheduler: "unknown" as "ok" | "stale" | "unknown" | "error",
     timestamp: new Date().toISOString(),
   };
 
+  // --- Supabase DB connectivity ---
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
@@ -34,11 +37,34 @@ Deno.serve(async (req: Request) => {
       const sb = createClient(supabaseUrl, serviceRoleKey);
       const { error } = await sb.from("organizations").select("id").limit(1);
       status.supabase = error ? "error" : "ok";
+
+      // --- Scheduler last-run check ---
+      // Checks agent_activity_log for any scheduler-triggered entry in the last 2 hours.
+      try {
+        const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString();
+        const { data: schedulerRows, error: schedErr } = await sb
+          .from("agent_activity_log")
+          .select("created_at")
+          .eq("agent_name", "scheduler")
+          .gte("created_at", twoHoursAgo)
+          .limit(1);
+        if (schedErr) {
+          status.scheduler = "error";
+        } else if (!schedulerRows || schedulerRows.length === 0) {
+          // No scheduler activity in last 2h - could be stale or just not yet run
+          status.scheduler = "stale";
+        } else {
+          status.scheduler = "ok";
+        }
+      } catch {
+        status.scheduler = "error";
+      }
     }
   } catch {
     status.supabase = "error";
   }
 
+  // --- Ollama ---
   const ollamaUrl = Deno.env.get("OLLAMA_URL")?.trim();
   if (ollamaUrl) {
     try {
@@ -56,6 +82,7 @@ Deno.serve(async (req: Request) => {
     status.ollama = "unreachable";
   }
 
+  // --- OpenRouter ---
   const openRouterKey = Deno.env.get("OPENROUTER_API_KEY")?.trim();
   if (!openRouterKey) {
     status.openrouter = "missing_key";
@@ -78,6 +105,7 @@ Deno.serve(async (req: Request) => {
     }
   }
 
+  // --- IMAP config check ---
   const imapHost = Deno.env.get("IMAP_HOST")?.trim();
   const imapUser = Deno.env.get("IMAP_USER")?.trim();
   const imapPassword = Deno.env.get("IMAP_PASSWORD")?.trim();
@@ -87,5 +115,25 @@ Deno.serve(async (req: Request) => {
     status.imap = "ok";
   }
 
-  return new Response(JSON.stringify(status), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  // --- Resend email API ---
+  const resendApiKey = Deno.env.get("RESEND_API_KEY")?.trim();
+  if (!resendApiKey) {
+    status.resend = "missing_key";
+  } else {
+    try {
+      const response = await fetchWithTimeout("https://api.resend.com/domains", {
+        headers: { Authorization: `Bearer ${resendApiKey}` },
+      });
+      status.resend = response.ok ? "ok" : "error";
+    } catch {
+      status.resend = "error";
+    }
+  }
+
+  // Overall health: ok if supabase is ok; degraded if any service is down
+  const overallOk = status.supabase === "ok";
+  return new Response(JSON.stringify({ ...status, healthy: overallOk }), {
+    status: overallOk ? 200 : 503,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
 });
