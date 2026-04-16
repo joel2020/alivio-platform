@@ -34,7 +34,7 @@ export default function MarketingFooter() {
               <a href="https://x.com/aliviosearch" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter" style={{ color: '#A1A1AA', fontSize: '14px', textDecoration: 'none' }}>X</a>
               <a href="mailto:hello@aliviosearchpartners.com" aria-label="Contact email" style={{ color: '#A1A1AA' }}><Mail size={18} /></a>
             </div>
-            <p style={{ fontSize: '13px', color: '#71717A', marginTop: '14px' }}>Yonkers, NY</p>
+            <p style={{ fontSize: '13px', color: '#71717A', marginTop: '14px' }}>AI Recruitment Infrastructure for Healthcare & Tech</p>
             <p style={{ fontSize: '13px', color: '#71717A', marginTop: '6px' }}>hello@aliviosearchpartners.com</p>
             <p style={{ fontSize: '13px', color: '#71717A', marginTop: '6px' }}><a href="/" style={{ color: '#71717A' }}>aliviosearchpartners.com</a></p>
           </div>

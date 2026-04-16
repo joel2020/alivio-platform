@@ -9,10 +9,10 @@ export default function FinalCTASection() {
         <AnimateInView>
           <div style={{ textAlign: 'center', maxWidth: '760px', margin: '0 auto' }}>
             <h2 style={{ fontSize: '44px', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1.15, color: 'var(--text-primary)', margin: '0 0 16px 0' }}>
-              Power your team with AI recruiting—book demo.
+              Ready to install your AI talent engine?
             </h2>
             <p style={{ fontSize: '18px', color: 'var(--text-secondary)', lineHeight: 1.7, margin: '0 auto 34px', maxWidth: '640px' }}>
-              Replace manual sourcing with autonomous workflows and deploy an AI recruitment platform that delivers shortlist-ready candidates 24/7.
+              Alivio&apos;s AI agents run your recruiting pipeline around the clock so your team can focus on interviews, offers, and closing.
             </p>
             <a
               href={CAL_COM_BOOKING_URL}
@@ -22,7 +22,7 @@ export default function FinalCTASection() {
               style={{ display: 'inline-flex' }}
               title={`${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}`}
             >
-              Book Demo
+              Book a Strategy Call
               <ArrowRight size={18} />
             </a>
           </div>
