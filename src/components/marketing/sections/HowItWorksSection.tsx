@@ -2,20 +2,20 @@ import AnimateInView from '../AnimateInView';
 
 const steps = [
   {
-    title: 'Source',
-    description: 'Proprietary AI agents continuously discover talent from global networks and maintain fresh pipelines for every open role.',
+    title: 'AI Intake & Role Calibration',
+    description: 'We configure the targeting model to your exact role requirements, licensure filters, compensation bands, and must-have experience.',
   },
   {
-    title: 'Screen',
-    description: 'Autonomous workflows evaluate role fit, qualifications, and intent signals to instantly prioritize your best candidates.',
+    title: 'Autonomous Sourcing',
+    description: 'AI agents scan databases, job boards, and professional networks around the clock to build an always-on intelligent pipeline.',
   },
   {
-    title: 'Engage',
-    description: 'AI agents launch personalized, multi-step outreach and adapt messaging based on response behavior in real time.',
+    title: 'Intelligent Scoring',
+    description: 'Candidates are ranked by fit score, credential match, and engagement likelihood before any human touches the pipeline.',
   },
   {
-    title: 'Place',
-    description: 'Your team receives placement-ready shortlists and can move top talent through interviews and offers faster.',
+    title: 'Human Validation & Delivery',
+    description: 'Our recruiters validate top AI-ranked matches and deliver a high-confidence shortlist your team can interview immediately.',
   },
 ];
 
@@ -26,10 +26,10 @@ export default function HowItWorksSection() {
         <AnimateInView>
           <div style={{ textAlign: 'center', maxWidth: '760px', margin: '0 auto 48px' }}>
             <h2 style={{ fontSize: '44px', fontWeight: 700, letterSpacing: '-0.03em', margin: '0 0 16px 0', color: 'var(--text-primary)' }}>
-              How Alivio&apos;s AI agents transform your pipeline
+              How your AI talent engine runs
             </h2>
             <p style={{ margin: 0, fontSize: '18px', lineHeight: 1.7, color: 'var(--text-secondary)' }}>
-              One AI-native platform orchestrates your end-to-end talent pipeline with autonomous workflows that never stop.
+              No manual cold outreach. No guesswork. Just a pipeline built to convert.
             </p>
           </div>
         </AnimateInView>

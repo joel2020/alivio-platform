@@ -46,7 +46,7 @@ import AdminTasksPage from './pages/admin/AdminTasksPage';
 
 
 const SITE_URL = 'https://aliviosearchpartners.com';
-const DEFAULT_KEYWORDS = 'healthcare recruiting, healthcare staffing, nurse recruitment, clinician sourcing, healthcare talent acquisition, healthcare executive search';
+const DEFAULT_KEYWORDS = 'ai recruitment, healthcare recruiting, healthcare staffing, nurse recruitment, clinician sourcing, tech leadership hiring, AI talent engine';
 const DEFAULT_OG_IMAGE = `${SITE_URL}/og`;
 
 function SeoManager() {
@@ -54,14 +54,14 @@ function SeoManager() {
   const pathname = location.pathname;
   const canonicalUrl = `${SITE_URL}${pathname}`;
 
-  let title = 'Alivio Search Partners | AI-Powered Healthcare Recruiting';
-  let description = 'Alivio Search Partners helps hospitals and health systems hire nurses and clinical staff faster using AI. Cut time-to-hire by 60%. Book a free demo today.';
+  let title = 'Alivio Search Partners | AI-Powered Recruitment for Healthcare & Tech';
+  let description = 'Alivio deploys AI agents that source, score, and deliver pre-vetted candidates for healthcare and tech organizations — in 21 days or less.';
   let keywords = DEFAULT_KEYWORDS;
   let robots = 'index, follow';
 
   if (pathname === '/product') {
-    title = 'Healthcare Recruiting Software | Alivio Search Partners';
-    description = 'See how Alivio Search Partners automates healthcare recruiting workflows, candidate sourcing, and outreach for hospitals and provider groups.';
+    title = 'Alivio Talent Engine | AI-Powered Hiring System';
+    description = 'Explore the Alivio Talent Engine: AI agents for autonomous sourcing, fit scoring, outreach orchestration, and human-validated shortlist delivery.';
   } else if (pathname === '/pricing') {
     title = 'Healthcare Staffing Software Pricing | Alivio Search Partners';
     description = 'Explore Alivio Search Partners pricing for healthcare recruiting teams hiring nurses, clinicians, and healthcare operations leaders.';
@@ -123,7 +123,7 @@ function SeoManager() {
       '@type': 'Organization',
       name: 'Alivio Search Partners',
       url: SITE_URL,
-      description: 'AI-powered healthcare recruiting platform helping hospitals hire nurses and clinical staff faster',
+      description: 'AI-powered recruitment infrastructure for healthcare and tech organizations',
       contactPoint: {
         '@type': 'ContactPoint',
         email: 'joel@aliviosearchpartners.com',
@@ -138,7 +138,7 @@ function SeoManager() {
       '@type': 'SoftwareApplication',
       name: 'Alivio Search Partners',
       applicationCategory: 'BusinessApplication',
-      description: 'AI-powered healthcare recruiting software for hospitals and health systems',
+      description: 'AI-powered hiring system for healthcare and tech recruiting teams',
       offers: {
         '@type': 'Offer',
         price: '499',

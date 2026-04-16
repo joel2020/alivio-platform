@@ -1,9 +1,10 @@
 import AnimateInView from '../AnimateInView';
 
 const resultRows = [
-  { metric: 'Sourcing time', outcome: '50% less sourcing time', impact: 'Autonomous agents keep pipelines full without manual prospecting.' },
-  { metric: 'Placement performance', outcome: '3x more placements', impact: 'AI scoring and ranking surface the highest-converting candidates first.' },
-  { metric: 'Fill rate', outcome: '90% fill rate', impact: 'Placement-ready shortlists accelerate interview-to-offer velocity.' },
+  { metric: 'Shortlist speed', outcome: '21-Day Avg Shortlist', impact: 'Autonomous sourcing and scoring compress time-to-shortlist without sacrificing fit.' },
+  { metric: 'Retention quality', outcome: '90%+ Retention at 12 Months', impact: 'AI-ranked candidates plus recruiter validation improve long-term placement success.' },
+  { metric: 'Candidate quality', outcome: 'AI-Matched Candidates Only', impact: 'Every submitted profile passes fit scoring before delivery to your hiring team.' },
+  { metric: 'Commercial reliability', outcome: 'Zero Contingency Surprises', impact: 'Transparent pipeline reporting and validated shortlists reduce avoidable hiring risk.' },
 ];
 
 export default function MetricsSection() {
@@ -12,12 +13,12 @@ export default function MetricsSection() {
       <div className="mkt-container">
         <AnimateInView>
           <div style={{ textAlign: 'center', maxWidth: '760px', margin: '0 auto 24px' }}>
-            <p className="mkt-label" style={{ margin: '0 0 14px 0' }}>AGENCY RESULTS</p>
+            <p className="mkt-label" style={{ margin: '0 0 14px 0' }}>PIPELINE PERFORMANCE</p>
             <h2 style={{ fontSize: '42px', letterSpacing: '-0.03em', margin: '0 0 14px 0', color: 'var(--text-primary)' }}>
-              Proven ROI for modern recruiting teams
+              Outcomes from an AI-first recruiting system
             </h2>
             <p style={{ margin: 0, fontSize: '18px', lineHeight: 1.7, color: 'var(--text-secondary)' }}>
-              Teams using Alivio reduce time-to-fill by up to 70%, increase placement rates 3x, and lower talent acquisition costs by 50% across industries and role types.
+              Alivio replaces manual recruiting operations with an always-on talent engine built for speed, quality, and retention.
             </p>
           </div>
         </AnimateInView>

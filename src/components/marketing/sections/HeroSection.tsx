@@ -2,20 +2,20 @@ import { ArrowRight } from 'lucide-react';
 
 const workflowBullets = [
   {
-    title: 'Source globally',
-    description: 'Autonomous AI agents scan 800M+ profiles and surface qualified candidates in every market.',
+    title: 'Autonomous candidate sourcing',
+    description: 'AI agents continuously scan healthcare and tech talent data to surface net-new, role-aligned candidates 24/7.',
   },
   {
-    title: 'Screen, score, rank',
-    description: 'AI-native platform workflows evaluate fit, prioritize top talent, and keep your shortlist placement-ready.',
+    title: 'AI fit scoring engine',
+    description: 'Each profile is fit-scored against requirements, credentials, trajectory, and response intent before recruiter review.',
   },
   {
-    title: 'Engage with precision',
-    description: 'Automated candidate sourcing 24/7 meets personalized outreach built for higher reply rates.',
+    title: 'Automated multi-channel outreach',
+    description: 'Always-on agents run personalized outreach sequences across channels and adapt messaging by engagement signals.',
   },
   {
-    title: 'Place faster',
-    description: 'Move from requisition to shortlist in days with AI agents for talent acquisition running continuously.',
+    title: 'Human-validated shortlists',
+    description: 'Expert recruiters validate top-ranked candidates so hiring teams receive quality-controlled shortlists in 21–30 days.',
   },
 ];
 
@@ -24,7 +24,7 @@ export default function HeroSection() {
     <section style={{ padding: '88px 0 72px', background: 'linear-gradient(180deg, #F8FAFF 0%, #FFFFFF 100%)' }}>
       <div className="mkt-container" style={{ maxWidth: '1120px' }}>
         <div style={{ maxWidth: '880px', margin: '0 auto', textAlign: 'center' }}>
-          <p className="mkt-label" style={{ margin: '0 0 18px 0' }}>AI RECRUITMENT PLATFORM</p>
+          <p className="mkt-label" style={{ margin: '0 0 18px 0' }}>INTELLIGENT TALENT DELIVERY</p>
           <h1
             style={{
               fontSize: 'clamp(40px, 6vw, 68px)',
@@ -34,10 +34,10 @@ export default function HeroSection() {
               color: 'var(--text-primary)',
             }}
           >
-            Scale Recruiting 24/7 with AI Agents
+            AI Agents That Source, Score, and Deliver Candidates — 24/7
           </h1>
           <p style={{ fontSize: '20px', lineHeight: 1.7, color: 'var(--text-secondary)', margin: '0 auto 34px', maxWidth: '760px' }}>
-            Alivio is the AI recruitment platform that runs your talent pipeline 24/7—so agencies, HR teams, and enterprise recruiters can scale hiring without adding headcount.
+            Alivio operates an always-on hiring engine for healthcare and tech teams, delivering shortlist-ready candidates in 21–30 days with 90%+ 12-month retention.
           </p>
         </div>
 
@@ -54,7 +54,7 @@ export default function HeroSection() {
 
         <div style={{ textAlign: 'center' }}>
           <a href="/signup" className="mkt-btn-primary-lg" style={{ display: 'inline-flex' }}>
-            Start Free Trial
+            See the AI in Action
             <ArrowRight size={18} />
           </a>
         </div>
