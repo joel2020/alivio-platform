@@ -87,7 +87,7 @@ export default function AppLayout() {
   }
 
   if (needsOrg) {
-    return <Navigate to={withNextParam('/onboarding', location.pathname)} replace />;
+    return <Navigate to={withNextParam('/onboarding/org', location.pathname)} replace />;
   }
 
   return (

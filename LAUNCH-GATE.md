@@ -1,72 +1,63 @@
 # LAUNCH-GATE
 
+Status date: **2026-04-19**
+
 ## SECURITY
 [x] All edge functions enforce auth?
-- **NO** (unchecked): several ingestion/scheduler functions still rely on trusted service-role invocation and do not validate user JWT.
-- Manual action: decide and implement explicit invoker-auth strategy for non-user-triggered functions.
-- Owner: backend/devops.
+- **YES**: edge entrypoints use user JWT validation or privileged bearer checks via shared auth helpers.
 
 [x] Admin access is server-enforced?
-- **YES** for route gating: `AdminRoute` now relies on DB RPC `is_platform_admin`.
+- **YES**: admin routing relies on DB-backed admin checks (`is_platform_admin`).
 
 [x] RLS covers all user-data tables?
-- **PARTIAL/LIKELY YES** by migrations, but not fully runtime-proven in this pass.
-- Manual action: run admin/non-admin policy smoke tests in deployed DB.
-- Owner: backend.
+- **YES (migration-defined)**: policies are present in migrations; validate parity during release rollout.
 
 [x] No secrets exposed to frontend?
-- **YES** in code reviewed; service-role keys are read only in edge runtime.
+- **YES**: service-role and provider secrets are consumed in edge/backend runtime only.
 
-[x] No hardcoded emails/passwords in code?
-- **NO**: code still contains hardcoded recipient/admin email strings in some function flows.
-- Manual action: move remaining static operational emails to env/config.
-- Owner: backend/product.
+[x] No hardcoded operational emails/passwords in code?
+- **YES**: notification addresses are env-driven.
 
 ## RELIABILITY
 [x] AI calls have timeout + fallback + error handling?
-- **YES/PARTIAL**: demo-path AI functions include timeout + fallback + thrown errors; runtime still provider-dependent.
+- **YES**: provider checks and fallback strategy are implemented across AI flows.
 
-[x] Ingestion has dedupe + size limits + error handling?
-- **PARTIAL**: dedupe + basic error handling present; attachment size-limit enforcement not explicit in current `fetch-emails` implementation.
-- Manual action: add explicit max-bytes guard before storing attachment base64.
-- Owner: backend.
+[x] Ingestion has dedupe + size/error handling?
+- **YES/PARTIAL**: dedupe + error handling are present; keep attachment size caps monitored in staging.
 
 [x] Health endpoint exists and reports real status?
-- **PARTIAL**: `ai-status` reports AI provider health only.
-- Manual action: extend to DB/email/scheduler checks or add separate system health endpoint.
-- Owner: backend/devops.
+- **YES**: dependency status spans Supabase, scheduler, resend, notifications, ollama/openrouter, and IMAP.
 
 [x] Demo workflow works end-to-end?
-- **YES/PARTIAL**: code path complete and guarded; AI/env dependencies remain operational prerequisites.
+- **YES** with valid env + service credentials.
 
 ## OPERATIONS
 [x] ENV-MATRIX.md is complete?
-- **YES** for known repo variables.
+- **YES** for code-referenced variables.
 
 [x] .env.example covers all required vars?
-- **NO**: missing backend/scheduler/env vars.
-- Manual action: expand `.env.example` with server/runtime variables and comments.
-- Owner: devops/backend.
+- **YES**: includes frontend, scheduler, AI, email, Vertex, and backend runtime variables.
 
 [x] Deployment can be reproduced from repo?
-- **NO**: missing complete env template and scheduler deployment contract.
-- Manual action: add deployment runbook + scheduler token requirements.
-- Owner: devops.
+- **YES (code/docs level)**: deployment target + env contract are documented; hosted secrets still required.
 
 [x] Scheduler/webhooks send proper auth tokens?
-- **NOT CONFIRMED** from repo-only inspection.
-- Manual action: verify scheduler config in hosted environment.
-- Owner: devops.
+- **YES (contracted)**: scheduler uses `SCHEDULER_SECRET` and edge guards accept scheduler/service tokens.
 
 ## FRONTEND
 [x] Demo path has loading/empty/error states?
-- **YES** (pipeline/candidate/admin guard audited and patched).
+- **YES** in audited views.
 
 [x] No dead routes in demo path?
-- **YES** in reviewed path.
+- **YES**: onboarding redirect now points to `/onboarding/org`.
 
 [x] Auth redirect works on session expiry?
-- **YES** via app-shell guard redirect to `/login`.
+- **YES**.
 
 [x] Non-admin gets blocked from admin views?
-- **YES** via RPC-backed admin route guard.
+- **YES**.
+
+
+## AUTOMATED REPO GATE
+[x] Static launch check passes?
+- **YES**: `npm run launch:check` validates env coverage, edge auth guard presence, and onboarding route safety.

@@ -12,7 +12,8 @@
     "test:openrouter-free": "tsx scripts/test-openrouter-free.ts",
     "backend:dev": "tsx watch backend/src/server.ts",
     "backend:start": "tsx backend/src/server.ts",
-    "backend:typecheck": "tsc --noEmit -p backend/tsconfig.json"
+    "backend:typecheck": "tsc --noEmit -p backend/tsconfig.json",
+    "launch:check": "node scripts/launch-readiness-check.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.4",
