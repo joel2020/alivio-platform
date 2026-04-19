@@ -300,17 +300,16 @@ export default function PipelinePage() {
 
   if (loading) {
     return (
-      <div
-        className="min-h-screen flex items-center justify-center"
-        style={{ backgroundColor: 'var(--bg-base)' }}
-      >
-        <div className="flex gap-1.5">
-          {[0, 1, 2].map(i => (
-            <div
-              key={i}
-              className="w-1.5 h-1.5 rounded-full animate-bounce"
-              style={{ backgroundColor: 'var(--accent)', animationDelay: `${i * 150}ms` }}
-            />
+      <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-base)', padding: '24px' }}>
+        <div className="skeleton h-12 w-full mb-4" />
+        <div className="skeleton h-12 w-full mb-4" />
+        <div className="space-y-3">
+          {Array.from({ length: 6 }).map((_, idx) => (
+            <div key={idx} className="card p-4">
+              <div className="skeleton h-4 w-40 mb-3" />
+              <div className="skeleton h-3 w-3/4 mb-2" />
+              <div className="skeleton h-3 w-1/2" />
+            </div>
           ))}
         </div>
       </div>
@@ -320,7 +319,10 @@ export default function PipelinePage() {
   if (unauthorized) return (
     <div className="p-8">
       <div className="card p-4" style={{ color: 'var(--text-secondary)' }}>
-        Your session does not have access to this pipeline. Please sign in again.
+        <p style={{ marginBottom: '12px' }}>Your session does not have access to this pipeline. Please sign in again.</p>
+        <button className="btn-primary" style={{ minHeight: '44px' }} onClick={() => navigate('/login')}>
+          Go to login
+        </button>
       </div>
     </div>
   );
@@ -328,7 +330,10 @@ export default function PipelinePage() {
   if (loadError) return (
     <div className="p-8">
       <div className="card p-4" style={{ color: 'var(--text-secondary)' }}>
-        We could not load this pipeline right now. {loadError}
+        <p style={{ marginBottom: '12px' }}>We could not load this pipeline right now. {loadError}</p>
+        <button className="btn-primary" style={{ minHeight: '44px' }} onClick={() => void loadData()}>
+          Retry
+        </button>
       </div>
     </div>
   );
@@ -513,6 +518,9 @@ export default function PipelinePage() {
                 <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', maxWidth: '300px', margin: '0 auto', lineHeight: '1.6' }}>
                   Scout is sourcing candidates. First profiles typically appear within 15–30 minutes.
                 </p>
+                <Link to="/agents" className="btn-primary" style={{ minHeight: '44px', marginTop: '16px', display: 'inline-flex' }}>
+                  Open agent activity
+                </Link>
               </>
             ) : (
               <>
