@@ -26,11 +26,14 @@ export default function BlogPostPage() {
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [reloadToken, setReloadToken] = useState(0);
 
   useEffect(() => {
     if (!slug) { setError('Missing blog slug.'); setLoading(false); return; }
+    setLoading(true);
+    setError(null);
     fetchBlogPostBySlug(slug).then(setPost).catch((err) => setError(err instanceof Error ? err.message : 'Unable to load this post.')).finally(() => setLoading(false));
-  }, [slug]);
+  }, [slug, reloadToken]);
 
   const sanitizedContent = useMemo(() => (post ? stripDuplicateHeading(post.content, post.title) : ''), [post]);
 
@@ -43,8 +46,25 @@ export default function BlogPostPage() {
   return (
     <article className="mkt-container" style={{ paddingTop: '48px', paddingBottom: '72px', maxWidth: '880px' }}>
       <Link to="/blog" style={{ color: 'var(--accent)', textDecoration: 'none', fontWeight: 600 }}>← Back to blog</Link>
-      {loading ? <p style={{ marginTop: '18px' }}>Loading post...</p> : null}
-      {error ? <p style={{ marginTop: '18px', color: 'var(--error)' }}>{error}</p> : null}
+      {loading ? (
+        <section style={{ marginTop: '20px' }} aria-label="Loading post">
+          <div className="skeleton h-4 w-36 mb-4" />
+          <div className="skeleton h-12 w-4/5 mb-3" />
+          <div className="skeleton h-12 w-3/5 mb-6" />
+          <div className="skeleton h-56 w-full mb-6" />
+          <div className="skeleton h-4 w-full mb-2" />
+          <div className="skeleton h-4 w-11/12 mb-2" />
+          <div className="skeleton h-4 w-3/4" />
+        </section>
+      ) : null}
+      {error ? (
+        <div className="card" style={{ marginTop: '18px', borderColor: 'var(--error)', padding: '18px' }}>
+          <p style={{ color: 'var(--error)', marginBottom: '12px' }}>We couldn&apos;t load this article. {error}</p>
+          <button className="mkt-btn-primary" style={{ minHeight: '44px' }} onClick={() => setReloadToken((prev) => prev + 1)}>
+            Retry
+          </button>
+        </div>
+      ) : null}
 
       {!loading && !error && post ? (
         <>
@@ -55,6 +75,20 @@ export default function BlogPostPage() {
           <div style={{ height: '220px', borderRadius: '16px', marginBottom: '22px', background: gradientFromSeed(post.slug || post.title) }} aria-hidden="true" />
           <div className="blog-markdown" dangerouslySetInnerHTML={{ __html: renderMarkdownToHtml(sanitizedContent) }} />
         </>
+      ) : null}
+
+      {!loading && !error && !post ? (
+        <section style={{ marginTop: '30px' }} className="card">
+          <div style={{ padding: '24px', textAlign: 'center' }}>
+            <h2 style={{ marginBottom: '8px' }}>This article isn&apos;t available</h2>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: '16px' }}>
+              It may have been moved or unpublished. Browse all posts for similar insights.
+            </p>
+            <Link to="/blog" className="mkt-btn-primary" style={{ minHeight: '44px' }}>
+              Browse all blog posts
+            </Link>
+          </div>
+        </section>
       ) : null}
 
       {post ? (

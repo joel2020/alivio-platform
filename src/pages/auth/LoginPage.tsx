@@ -132,8 +132,9 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: '16px' }}>
-              <label style={labelStyle}>Work email</label>
+              <label htmlFor="login-email" style={labelStyle}>Work email</label>
               <input
+                id="login-email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -146,9 +147,10 @@ export default function LoginPage() {
             </div>
 
             <div style={{ marginBottom: '8px' }}>
-              <label style={labelStyle}>Password</label>
+              <label htmlFor="login-password" style={labelStyle}>Password</label>
               <div style={{ position: 'relative' }}>
                 <input
+                  id="login-password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -161,6 +163,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
                   style={{
                     position: 'absolute',
                     right: '12px',
@@ -172,9 +175,10 @@ export default function LoginPage() {
                     color: '#A1A1AA',
                     display: 'flex',
                     alignItems: 'center',
-                    padding: '2px',
+                    justifyContent: 'center',
+                    width: '44px',
+                    height: '44px',
                   }}
-                  tabIndex={-1}
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>

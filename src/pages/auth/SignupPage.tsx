@@ -169,8 +169,9 @@ export default function SignupPage() {
 
           <form onSubmit={handleSubmit} noValidate>
             <div style={{ marginBottom: '16px' }}>
-              <label style={labelStyle}>Full name</label>
+              <label htmlFor="signup-full-name" style={labelStyle}>Full name</label>
               <input
+                id="signup-full-name"
                 type="text"
                 value={fullName}
                 onChange={(e) => { setFullName(e.target.value); setFieldErrors(p => ({ ...p, fullName: '' })); }}
@@ -186,8 +187,9 @@ export default function SignupPage() {
             </div>
 
             <div style={{ marginBottom: '16px' }}>
-              <label style={labelStyle}>Work email</label>
+              <label htmlFor="signup-email" style={labelStyle}>Work email</label>
               <input
+                id="signup-email"
                 type="email"
                 value={email}
                 onChange={(e) => { setEmail(e.target.value); setFieldErrors(p => ({ ...p, email: '' })); }}
@@ -203,9 +205,10 @@ export default function SignupPage() {
             </div>
 
             <div style={{ marginBottom: '8px' }}>
-              <label style={labelStyle}>Password</label>
+              <label htmlFor="signup-password" style={labelStyle}>Password</label>
               <div style={{ position: 'relative' }}>
                 <input
+                  id="signup-password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => { setPassword(e.target.value); setFieldErrors(p => ({ ...p, password: '' })); }}
@@ -218,6 +221,7 @@ export default function SignupPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
                   style={{
                     position: 'absolute',
                     right: '12px',
@@ -229,9 +233,10 @@ export default function SignupPage() {
                     color: '#A1A1AA',
                     display: 'flex',
                     alignItems: 'center',
-                    padding: '2px',
+                    justifyContent: 'center',
+                    width: '44px',
+                    height: '44px',
                   }}
-                  tabIndex={-1}
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>

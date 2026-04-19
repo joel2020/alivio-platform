@@ -135,27 +135,39 @@ export default function RolesPage() {
   const { user } = useAuth();
   const [roles, setRoles] = useState<RoleWithCount[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | Role['status']>('all');
 
   const loadRoles = useCallback(async () => {
     if (!user?.org_id) return;
     setLoading(true);
+    setError(null);
 
-    const { data: rolesData } = await supabase
+    const { data: rolesData, error: rolesError } = await supabase
       .from('roles')
       .select('*')
       .eq('org_id', user.org_id)
       .order('created_at', { ascending: false });
 
-    if (!rolesData) { setLoading(false); return; }
+    if (rolesError || !rolesData) {
+      setError(rolesError?.message ?? 'Unable to load roles right now.');
+      setLoading(false);
+      return;
+    }
 
     const roleIds = rolesData.map(r => r.id);
-    const { data: counts } = roleIds.length > 0
+    const { data: counts, error: countError } = roleIds.length > 0
       ? await supabase
           .from('candidates')
           .select('role_id')
           .in('role_id', roleIds)
-      : { data: [] };
+      : { data: [], error: null };
+
+    if (countError) {
+      setError(countError.message);
+      setLoading(false);
+      return;
+    }
 
     const countMap: Record<string, number> = {};
     (counts || []).forEach((c: { role_id: string }) => {
@@ -214,6 +226,14 @@ export default function RolesPage() {
       </div>
 
       <div className="page-content">
+        {error ? (
+          <div className="card" style={{ borderColor: 'var(--error)', padding: '16px', marginBottom: '16px' }}>
+            <p style={{ color: 'var(--error)', marginBottom: '10px' }}>Unable to load roles. {error}</p>
+            <button className="btn-primary" style={{ minHeight: '44px' }} onClick={() => void loadRoles()}>
+              Retry
+            </button>
+          </div>
+        ) : null}
         {!loading && roles.length === 0 ? (
           <EmptyState />
         ) : (
@@ -289,11 +309,14 @@ export default function RolesPage() {
                 style={{
                   padding: '64px 24px',
                   textAlign: 'center',
-                  color: 'var(--text-muted)',
-                  fontSize: '14px',
+                  color: 'var(--text-muted)'
                 }}
               >
-                No {filter} roles found.
+                <h2 style={{ fontSize: '18px', marginBottom: '8px', color: 'var(--text-primary)' }}>No {filter} roles found</h2>
+                <p style={{ fontSize: '14px', marginBottom: '16px' }}>Try switching to a different status filter or create a new role.</p>
+                <Link to="/roles/new" className="btn-primary" style={{ minHeight: '44px' }}>
+                  Create a role
+                </Link>
               </div>
             ) : (
               <div className="space-y-3">
