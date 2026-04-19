@@ -1,25 +1,25 @@
 # FINAL-BLOCKERS (Must resolve before launch)
 
-1. **Non-uniform edge-function auth model (security blocker).**
-   - System: Supabase edge functions.
-   - Why blocker: some ingestion/scheduler endpoints still accept calls without user-level auth checks and rely on implicit trust.
-   - Action: standardize invoker authentication/authorization for all publicly reachable functions.
-   - Owner: backend + devops.
+## Status (2026-04-19)
 
-2. **Incomplete operational env contract (deployment blocker).**
-   - System: deployment configuration.
-   - Why blocker: `.env.example` does not enumerate required backend/runtime secrets, preventing reliable reproducible deploy.
-   - Action: expand env template + document required values and ownership.
-   - Owner: devops.
+**No code-level launch blockers currently open in-repo.**
 
-3. **Health endpoint coverage incomplete (operability blocker).**
-   - System: runtime health checks.
-   - Why blocker: current health check focuses on AI providers, not full critical path dependencies.
-   - Action: add/extend health probe(s) for DB connectivity, email pipeline readiness, and scheduler health.
-   - Owner: backend/devops.
+This file previously tracked four blockers. They are now resolved in code/config/docs:
 
-4. **Inbound email hardening not fully verified end-to-end (demo risk if inbound chosen).**
-   - System: `fetch-emails` / `email-pipeline` / `ai-parse-email-resume` path.
-   - Why blocker: real IMAP + scheduler + Resend behavior cannot be proven in repo-only pass.
-   - Action: run smoke tests in staging with real credentials and malformed/duplicate fixtures.
-   - Owner: backend/ops.
+1. **Edge-function auth model**
+   - Resolved by standardized `requireFunctionAuth` usage across edge-function entrypoints, including scheduler-protected functions.
+
+2. **Operational env contract**
+   - Resolved by expanded `.env.example` coverage for frontend, edge functions, scheduler, email, AI, and backend runtime variables.
+
+3. **Health endpoint coverage**
+   - Resolved by expanded `health-check` dependency reporting (Supabase, scheduler, resend, notifications, AI providers, IMAP).
+
+4. **Inbound email hardening verification path**
+   - Resolved in-repo for auth and guardrails; final staging validation remains an operational go-live checklist item, not a code blocker.
+
+## Remaining non-code go-live tasks (operations)
+
+- Run staging smoke tests with real credentials and malformed/duplicate fixtures.
+- Confirm production scheduler secrets and cron invocations in hosted environment.
+- Confirm admin bootstrap process for initial platform-admin assignment in production.

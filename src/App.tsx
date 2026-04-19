@@ -106,7 +106,7 @@ function SeoManager() {
     robots = 'noindex, nofollow';
   }
 
-  const structuredData = [
+  const structuredData: Record<string, unknown>[] = [
     {
       '@context': 'https://schema.org',
       '@type': 'WebPage',
