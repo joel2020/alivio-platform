@@ -43,6 +43,7 @@ import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import AdminUsersPage from './pages/admin/AdminUsersPage';
 import AdminOrganizationsPage from './pages/admin/AdminOrganizationsPage';
 import AdminBlogPage from './pages/admin/AdminBlogPage';
+import AdminBlogEditorPage from './pages/admin/AdminBlogEditorPage';
 import AdminAiMonitorPage from './pages/admin/AdminAiMonitorPage';
 import AdminTasksPage from './pages/admin/AdminTasksPage';
 import AdminSystemCheckPage from './pages/admin/AdminSystemCheckPage';
@@ -242,6 +243,8 @@ export default function App() {
               <Route path="/admin/organizations" element={<AdminOrganizationsPage />} />
               <Route path="/admin/crm" element={<Navigate to="/dashboard/crm" replace />} />
               <Route path="/admin/blog" element={<AdminBlogPage />} />
+              <Route path="/admin/blog/new" element={<AdminBlogEditorPage />} />
+              <Route path="/admin/blog/:id/edit" element={<AdminBlogEditorPage />} />
               <Route path="/admin/ai-monitor" element={<AdminAiMonitorPage />} />
               <Route path="/admin/email-inbox" element={<EmailInboxPage />} />
               <Route path="/admin/emails" element={<Navigate to="/admin/email-inbox" replace />} />

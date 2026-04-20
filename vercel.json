@@ -23,6 +23,15 @@
   ],
   "headers": [
     {
+      "source": "/blog/:path*",
+      "headers": [
+        {
+          "key": "x-robots-tag",
+          "value": "index, follow"
+        }
+      ]
+    },
+    {
       "source": "/(.*)",
       "headers": [
         {
