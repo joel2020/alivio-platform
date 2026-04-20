@@ -44,9 +44,9 @@ Return strict JSON only:
 Create actionable sourcing guidance.`;
 
     const prompt = `${system}\n\nRole description: ${roleDescription}\nCriteria: ${(criteria || []).join(", ")}`;
-    const content = await callGemini(prompt, "gemini-2.0-flash-001");
+    const content = await callGemini(prompt);
     const data = JSON.parse(content) as SourceResult;
-    return new Response(JSON.stringify({ data, provider: "google-vertex", model: "gemini-2.0-flash-001" }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ data, provider: "azure-openai" }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     if (e instanceof Response) return e;
     return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });

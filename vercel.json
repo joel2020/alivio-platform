@@ -13,7 +13,7 @@
   ],
   "rewrites": [
     {
-      "source": "/((?!api|assets|robots\\.txt|sitemap\\.xml|favicon\\.ico|favicon\\.png|favicon\\.svg|apple-touch-icon\\.png|_next|_vercel|images|icons|fonts|manifest\\.json).*)",
+      "source": "/((?!api|assets|robots\\.txt|sitemap\\.xml|favicon\\.png|favicon\\.svg|apple-touch-icon\\.png|_next|_vercel|images|icons|fonts|manifest\\.json).*)",
       "destination": "/index.html"
     },
     {
@@ -23,7 +23,25 @@
   ],
   "headers": [
     {
-      "source": "/blog/:path*",
+      "source": "/(dashboard|candidates|roles|settings|pipeline|calls|outreach|agents|onboarding|admin)(.*)",
+      "headers": [
+        {
+          "key": "x-robots-tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/",
+      "headers": [
+        {
+          "key": "x-robots-tag",
+          "value": "index, follow"
+        }
+      ]
+    },
+    {
+      "source": "/(about|pricing|blog|blog/.*)",
       "headers": [
         {
           "key": "x-robots-tag",
@@ -92,21 +110,6 @@
         {
           "key": "Content-Type",
           "value": "application/xml"
-        }
-      ]
-    },
-    {
-      "source": "/(dashboard|candidates|roles|settings)(.*)",
-      "has": [
-        {
-          "type": "cookie",
-          "key": "sb-ovxttubotjebnaoedllu-auth-token"
-        }
-      ],
-      "headers": [
-        {
-          "key": "x-robots-tag",
-          "value": "noindex, nofollow"
         }
       ]
     }
