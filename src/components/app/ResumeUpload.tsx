@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState, type DragEvent } from 'react';
-import { parseResume, type ParsedResumeOutput } from '../../lib/ai';
+import { parseResume, scoreCandidate, type ParsedResumeOutput } from '../../lib/ai';
 import { supabase } from '../../lib/supabase';
 
 interface ResumeUploadProps {
@@ -183,7 +183,7 @@ export default function ResumeUpload({ candidateId, accountId, onParsed }: Resum
 
     const { data: existingCandidate, error: candidateFetchError } = await supabase
       .from('candidates')
-      .select('full_name, email, phone, location, current_title, experience_years, skills')
+      .select('full_name, email, phone, location, current_title, experience_years, skills, role_id')
       .eq('id', candidateId)
       .single();
 
@@ -206,6 +206,18 @@ export default function ResumeUpload({ candidateId, accountId, onParsed }: Resum
     const { error: updateError } = await supabase.from('candidates').update(updates).eq('id', candidateId);
     if (updateError) {
       throw new Error(`Could not update candidate fields: ${updateError.message}`);
+    }
+
+    if (existingCandidate.role_id) {
+      try {
+        await scoreCandidate(candidateId, existingCandidate.role_id);
+      } catch (scoreError) {
+        setWarning(
+          scoreError instanceof Error
+            ? `Resume parsed, but AI scoring failed: ${scoreError.message}`
+            : 'Resume parsed, but AI scoring failed.',
+        );
+      }
     }
 
     setLastParsed(parsed.data);

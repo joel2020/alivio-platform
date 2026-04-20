@@ -104,6 +104,16 @@ export interface SourceCandidatesOutput {
   outreachAngles: string[];
 }
 
+export interface CandidateAIScoreOutput {
+  candidate_id: string;
+  role_id: string;
+  match_score: number;
+  top_strengths: string[];
+  gaps: string[];
+  recommendation: string;
+  confidence: 'high' | 'medium' | 'low';
+}
+
 interface EdgeResponse<T> {
   data?: T;
   model?: string;
@@ -199,6 +209,10 @@ class AIService {
   sourceCandidates(roleDescription: string, criteria: string[], options?: AIRequestOptions) {
     return this.invoke<SourceCandidatesOutput>('ai-source-candidates', { roleDescription, criteria }, options);
   }
+
+  scoreCandidate(candidateId: string, roleId: string, options?: AIRequestOptions) {
+    return this.invoke<CandidateAIScoreOutput>('score-candidate', { candidate_id: candidateId, role_id: roleId }, options);
+  }
 }
 
 export const aiService = new AIService();
@@ -228,3 +242,6 @@ export const parseResume = (resumeText: string, options?: AIRequestOptions) =>
 
 export const sourceCandidates = (roleDescription: string, criteria: string[], options?: AIRequestOptions) =>
   aiService.sourceCandidates(roleDescription, criteria, options);
+
+export const scoreCandidate = (candidateId: string, roleId: string, options?: AIRequestOptions) =>
+  aiService.scoreCandidate(candidateId, roleId, options);

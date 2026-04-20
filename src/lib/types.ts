@@ -71,6 +71,14 @@ export interface Candidate {
     engagement_propensity?: number;
   };
   score_rationale: string | null;
+  ai_score: number | null;
+  ai_summary: {
+    top_strengths?: string[];
+    gaps?: string[];
+    recommendation?: string;
+    confidence?: 'high' | 'medium' | 'low';
+  } | null;
+  ai_scored_at: string | null;
   pipeline_stage: PipelineStage;
   archived_reason: string | null;
   created_at: string;
