@@ -58,6 +58,13 @@ interface ExtractedData {
   availability?: Record<string, string | number | boolean>;
   compensation?: Record<string, string | number | boolean>;
 }
+interface VoiceSummary {
+  summary?: string;
+  interest_level?: string;
+  availability?: string;
+  compensation_expectations?: string;
+  candidate_signals?: string[];
+}
 
 interface ResumeFileRow {
   id: string;
@@ -377,7 +384,7 @@ export default function CandidatePage() {
   const [transcriptSearch, setTranscriptSearch] = useState('');
   const [transcriptLoading, setTranscriptLoading] = useState(false);
   const [transcriptError, setTranscriptError] = useState<string | null>(null);
-  const [aiSummary, setAiSummary] = useState<string | null>(null);
+  const [aiSummary, setAiSummary] = useState<VoiceSummary | null>(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
   const [summaryError, setSummaryError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -386,6 +393,7 @@ export default function CandidatePage() {
   const [showParsedData, setShowParsedData] = useState(false);
   const [showReplaceResume, setShowReplaceResume] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [startingCall, setStartingCall] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [unauthorized, setUnauthorized] = useState(false);
 
@@ -413,27 +421,23 @@ export default function CandidatePage() {
       setAiSummary(null);
       return;
     }
+    if (!selectedCallId) return;
 
-    const prompt = [
-      'Summarize this recruiting screening call transcript.',
-      'Return plain text with these sections:',
-      '1) Call Summary',
-      '2) Interest Level',
-      '3) Availability',
-      '4) Compensation Expectations',
-      '',
-      JSON.stringify(transcript.entries),
-    ].join('\n');
+    const cachedSummary = calls.find((call) => call.id === selectedCallId)?.ai_summary as VoiceSummary | null;
+    if (cachedSummary) {
+      setAiSummary(cachedSummary);
+      setSummaryError(null);
+      setSummaryLoading(false);
+      return;
+    }
 
     setSummaryLoading(true);
     setSummaryError(null);
     supabase.functions
-      .invoke<{ content?: string; error?: string }>('ai-completion', {
+      .invoke<{ data?: VoiceSummary; error?: string }>('ai-voice-summary', {
         body: {
-          prompt,
-          systemMessage:
-            'You are a healthcare recruiting assistant. Be concise and only use transcript evidence.',
-          model: 'openrouter/free',
+          callId: selectedCallId,
+          transcriptEntries: transcript.entries,
         },
       })
       .then(({ data, error }) => {
@@ -441,14 +445,17 @@ export default function CandidatePage() {
           setSummaryError(error.message);
           return;
         }
-        if (!data?.content) {
+        if (!data?.data) {
           setSummaryError(data?.error ?? 'AI summary unavailable.');
           return;
         }
-        setAiSummary(data.content);
+        setAiSummary(data.data);
+        setCalls((current) => current.map((call) => (
+          call.id === selectedCallId ? { ...call, ai_summary: data.data } : call
+        )));
       })
       .finally(() => setSummaryLoading(false));
-  }, [transcript]);
+  }, [transcript, calls, selectedCallId]);
 
   const loadData = useCallback(async () => {
     if (!id) return;
@@ -534,6 +541,51 @@ export default function CandidatePage() {
     setFeedbackRating(5);
     setFeedbackModalOpen(false);
     setFeedbackSubmitting(false);
+  }
+
+  async function startVoiceCall() {
+    if (!candidate || !role || !user?.org_id) return;
+    setStartingCall(true);
+    setLoadError(null);
+    const attempt = calls.length + 1;
+
+    const { data: callRow, error: callError } = await supabase
+      .from('voice_calls')
+      .insert({
+        org_id: user.org_id,
+        role_id: role.id,
+        candidate_id: candidate.id,
+        status: 'initiated',
+        call_type: 'outbound',
+        attempt_number: attempt,
+        provider: 'manual',
+        started_at: new Date().toISOString(),
+      })
+      .select('*')
+      .single();
+
+    if (callError || !callRow) {
+      setToast(`Unable to start call: ${callError?.message ?? 'Unknown error'}`);
+      setStartingCall(false);
+      return;
+    }
+
+    const { error: transcriptInsertError } = await supabase
+      .from('voice_transcripts')
+      .insert({
+        call_id: callRow.id,
+        entries: [],
+      });
+
+    if (transcriptInsertError) {
+      setToast(`Call created, but transcript initialization failed: ${transcriptInsertError.message}`);
+    } else {
+      setToast('Voice call initiated and logged.');
+    }
+
+    setCalls((current) => [callRow as VoiceCall, ...current]);
+    setSelectedCallId(callRow.id);
+    setStartingCall(false);
   }
 
   function handleResumeParsed(parsed: ParsedResumeOutput) {
@@ -1002,7 +1054,10 @@ export default function CandidatePage() {
 
                     {transcriptLoading && (
                       <div className="p-5 rounded-xl border" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)' }}>
-                        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Transcript processing...</p>
+                        <div className="skeleton h-4 w-40 mb-3" />
+                        <div className="skeleton h-3 w-full mb-2" />
+                        <div className="skeleton h-3 w-5/6 mb-2" />
+                        <div className="skeleton h-3 w-2/3" />
                       </div>
                     )}
 
@@ -1055,12 +1110,26 @@ export default function CandidatePage() {
 
                         <div className="mt-5 pt-4 border-t" style={{ borderColor: 'var(--border)' }}>
                           <h3 className="text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>AI Summary & Candidate Signals</h3>
-                          {summaryLoading && <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Generating summary...</p>}
+                          {summaryLoading && (
+                            <div>
+                              <p className="text-sm mb-2" style={{ color: 'var(--text-muted)' }}>Generating summary...</p>
+                              <div className="skeleton h-4 w-full mb-2" />
+                              <div className="skeleton h-4 w-4/5 mb-2" />
+                              <div className="skeleton h-4 w-2/3" />
+                            </div>
+                          )}
                           {summaryError && <p className="text-sm" style={{ color: 'var(--error)' }}>{summaryError}</p>}
                           {aiSummary && (
-                            <p className="text-sm whitespace-pre-wrap" style={{ color: 'var(--text-secondary)', lineHeight: '1.7' }}>
-                              {aiSummary}
-                            </p>
+                            <div className="rounded-lg border p-4 space-y-3" style={{ borderColor: 'var(--border)' }}>
+                              <p className="text-sm" style={{ color: 'var(--text-secondary)', lineHeight: '1.7' }}>
+                                {aiSummary.summary ?? 'Summary unavailable.'}
+                              </p>
+                              <div className="grid md:grid-cols-3 gap-3 text-xs">
+                                <div><p style={{ color: 'var(--text-muted)' }}>Interest level</p><p style={{ color: 'var(--text-primary)' }}>{aiSummary.interest_level ?? 'N/A'}</p></div>
+                                <div><p style={{ color: 'var(--text-muted)' }}>Availability</p><p style={{ color: 'var(--text-primary)' }}>{aiSummary.availability ?? 'N/A'}</p></div>
+                                <div><p style={{ color: 'var(--text-muted)' }}>Compensation</p><p style={{ color: 'var(--text-primary)' }}>{aiSummary.compensation_expectations ?? 'N/A'}</p></div>
+                              </div>
+                            </div>
                           )}
                         </div>
                       </div>
@@ -1185,6 +1254,17 @@ export default function CandidatePage() {
             </div>
           </div>
         </div>
+      )}
+      {activeTab === 'voice' && calls.length === 0 && (
+        <button
+          type="button"
+          onClick={() => void startVoiceCall()}
+          disabled={startingCall}
+          className="fixed bottom-6 right-6 px-4 py-3 rounded-lg text-sm font-semibold text-white disabled:opacity-60"
+          style={{ backgroundColor: 'var(--accent)' }}
+        >
+          {startingCall ? 'Starting call…' : 'Initiate voice call'}
+        </button>
       )}
       {toast && <Toast message={toast} onDismiss={() => setToast(null)} />}
     </div>

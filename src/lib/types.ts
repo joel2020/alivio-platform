@@ -96,6 +96,13 @@ export interface VoiceCall {
   recording_url: string | null;
   qualification_status: QualificationStatus | null;
   extracted_data: Record<string, unknown> | null;
+  ai_summary: {
+    summary?: string;
+    interest_level?: string;
+    availability?: string;
+    compensation_expectations?: string;
+    candidate_signals?: string[];
+  } | null;
   call_summary: string | null;
   escalated: boolean;
   escalation_reason: string | null;

@@ -44,6 +44,7 @@ import AdminOrganizationsPage from './pages/admin/AdminOrganizationsPage';
 import AdminBlogPage from './pages/admin/AdminBlogPage';
 import AdminAiMonitorPage from './pages/admin/AdminAiMonitorPage';
 import AdminTasksPage from './pages/admin/AdminTasksPage';
+import AdminSystemCheckPage from './pages/admin/AdminSystemCheckPage';
 
 
 const SITE_URL = 'https://aliviosearchpartners.com';
@@ -243,6 +244,7 @@ export default function App() {
               <Route path="/admin/email-inbox" element={<EmailInboxPage />} />
               <Route path="/admin/emails" element={<Navigate to="/admin/email-inbox" replace />} />
               <Route path="/admin/tasks" element={<AdminTasksPage />} />
+              <Route path="/admin/system-check" element={<AdminSystemCheckPage />} />
             </Route>
           </Route>
 

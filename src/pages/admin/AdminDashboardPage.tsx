@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 
 interface RecentSignup {
@@ -78,6 +79,9 @@ export default function AdminDashboardPage() {
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-base)' }}>
       <div className="page-header">
         <h1 style={{ fontSize: '0.9375rem', fontWeight: 700, letterSpacing: '-0.025em', color: 'var(--text-primary)' }}>Admin Dashboard</h1>
+        <Link to="/admin/system-check" className="btn-secondary" style={{ fontSize: '0.8125rem' }}>
+          System Check
+        </Link>
       </div>
 
       <div className="page-content space-y-6">

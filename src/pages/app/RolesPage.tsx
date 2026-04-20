@@ -234,7 +234,17 @@ export default function RolesPage() {
             </button>
           </div>
         ) : null}
-        {!loading && roles.length === 0 ? (
+        {loading ? (
+          <div className="space-y-3">
+            {Array.from({ length: 4 }).map((_, idx) => (
+              <div key={idx} className="card p-4">
+                <div className="skeleton h-4 w-40 mb-2" />
+                <div className="skeleton h-3 w-2/3 mb-2" />
+                <div className="skeleton h-3 w-1/2" />
+              </div>
+            ))}
+          </div>
+        ) : roles.length === 0 ? (
           <EmptyState />
         ) : (
           <>
