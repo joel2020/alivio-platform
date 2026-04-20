@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, ThumbsUp, ThumbsDown, ChevronDown, Sparkles, RefreshCw, CheckCircle, Mic, Clock } from 'lucide-react';
+import { ArrowLeft, ChevronDown, Sparkles, RefreshCw, CheckCircle, Mic, Clock, MessageSquare } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import type { Candidate, VoiceCall, VoiceTranscript, AgentActivityLog, CandidateFeedback, PipelineStage, Role } from '../../lib/types';
@@ -368,9 +368,18 @@ export default function CandidatePage() {
   const [selectedCallId, setSelectedCallId] = useState<string | null>(null);
   const [activityLog, setActivityLog] = useState<AgentActivityLog[]>([]);
   const [feedback, setFeedback] = useState<CandidateFeedback[]>([]);
-  const [feedbackRating, setFeedbackRating] = useState<'thumbs_up' | 'thumbs_down' | null>(null);
+  const [feedbackRating, setFeedbackRating] = useState<number>(5);
+  const [feedbackStage, setFeedbackStage] = useState<'screened' | 'interviewed' | 'rejected' | 'hired'>('screened');
   const [feedbackNote, setFeedbackNote] = useState('');
+  const [feedbackSubmitting, setFeedbackSubmitting] = useState(false);
+  const [feedbackError, setFeedbackError] = useState<string | null>(null);
+  const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
   const [transcriptSearch, setTranscriptSearch] = useState('');
+  const [transcriptLoading, setTranscriptLoading] = useState(false);
+  const [transcriptError, setTranscriptError] = useState<string | null>(null);
+  const [aiSummary, setAiSummary] = useState<string | null>(null);
+  const [summaryLoading, setSummaryLoading] = useState(false);
+  const [summaryError, setSummaryError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [resumeFile, setResumeFile] = useState<ResumeFileRow | null>(null);
   const [resumeParseJob, setResumeParseJob] = useState<ResumeParseJobRow | null>(null);
@@ -382,8 +391,64 @@ export default function CandidatePage() {
 
   useEffect(() => {
     if (!selectedCallId) return;
-    supabase.from('voice_transcripts').select('*').eq('call_id', selectedCallId).maybeSingle().then(({ data }) => setTranscript(data));
+    setTranscriptLoading(true);
+    setTranscriptError(null);
+    supabase
+      .from('voice_transcripts')
+      .select('*')
+      .eq('call_id', selectedCallId)
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (error) {
+          setTranscriptError(error.message);
+          return;
+        }
+        setTranscript(data);
+      })
+      .finally(() => setTranscriptLoading(false));
   }, [selectedCallId]);
+
+  useEffect(() => {
+    if (!transcript?.entries?.length) {
+      setAiSummary(null);
+      return;
+    }
+
+    const prompt = [
+      'Summarize this recruiting screening call transcript.',
+      'Return plain text with these sections:',
+      '1) Call Summary',
+      '2) Interest Level',
+      '3) Availability',
+      '4) Compensation Expectations',
+      '',
+      JSON.stringify(transcript.entries),
+    ].join('\n');
+
+    setSummaryLoading(true);
+    setSummaryError(null);
+    supabase.functions
+      .invoke<{ content?: string; error?: string }>('ai-completion', {
+        body: {
+          prompt,
+          systemMessage:
+            'You are a healthcare recruiting assistant. Be concise and only use transcript evidence.',
+          model: 'openrouter/free',
+        },
+      })
+      .then(({ data, error }) => {
+        if (error) {
+          setSummaryError(error.message);
+          return;
+        }
+        if (!data?.content) {
+          setSummaryError(data?.error ?? 'AI summary unavailable.');
+          return;
+        }
+        setAiSummary(data.content);
+      })
+      .finally(() => setSummaryLoading(false));
+  }, [transcript]);
 
   const loadData = useCallback(async () => {
     if (!id) return;
@@ -442,13 +507,33 @@ export default function CandidatePage() {
   }
 
   async function submitFeedback() {
-    if (!user || !candidate || !feedbackRating) return;
-    const { data } = await supabase.from('candidate_feedback').insert({
-      candidate_id: candidate.id, user_id: user.id, org_id: user.org_id, rating: feedbackRating, note: feedbackNote || null,
-    }).select().single();
+    if (!user || !candidate) return;
+    setFeedbackSubmitting(true);
+    setFeedbackError(null);
+    const { data, error } = await supabase
+      .from('candidate_feedback')
+      .insert({
+        candidate_id: candidate.id,
+        role_id: candidate.role_id,
+        user_id: user.id,
+        org_id: user.org_id,
+        rating: feedbackRating,
+        stage: feedbackStage,
+        notes: feedbackNote || null,
+      })
+      .select()
+      .single();
+    if (error) {
+      setFeedbackError(error.message);
+      setFeedbackSubmitting(false);
+      return;
+    }
     if (data) setFeedback([data, ...feedback]);
     setFeedbackNote('');
-    setFeedbackRating(null);
+    setFeedbackStage('screened');
+    setFeedbackRating(5);
+    setFeedbackModalOpen(false);
+    setFeedbackSubmitting(false);
   }
 
   function handleResumeParsed(parsed: ParsedResumeOutput) {
@@ -759,55 +844,30 @@ export default function CandidatePage() {
               className="p-6 rounded-xl border"
               style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)', boxShadow: 'var(--shadow)' }}
             >
-              <h2 className="text-sm font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>Feedback</h2>
-              <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>Is this a good candidate for this role?</p>
-              <div className="flex items-center gap-2 mb-3">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h2 className="text-sm font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>Candidate Feedback</h2>
+                  <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Capture stage, rating, and notes from call reviews.</p>
+                </div>
                 <button
-                  onClick={() => setFeedbackRating('thumbs_up')}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg border text-sm font-medium transition-all"
-                  style={{
-                    borderColor: feedbackRating === 'thumbs_up' ? 'var(--success)' : 'var(--border)',
-                    color: feedbackRating === 'thumbs_up' ? 'var(--success)' : 'var(--text-secondary)',
-                    backgroundColor: feedbackRating === 'thumbs_up' ? 'var(--success-subtle)' : 'transparent',
-                  }}
+                  onClick={() => setFeedbackModalOpen(true)}
+                  className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold text-white"
+                  style={{ backgroundColor: 'var(--accent)' }}
                 >
-                  <ThumbsUp size={13} /> Yes
-                </button>
-                <button
-                  onClick={() => setFeedbackRating('thumbs_down')}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg border text-sm font-medium transition-all"
-                  style={{
-                    borderColor: feedbackRating === 'thumbs_down' ? 'var(--error)' : 'var(--border)',
-                    color: feedbackRating === 'thumbs_down' ? 'var(--error)' : 'var(--text-secondary)',
-                    backgroundColor: feedbackRating === 'thumbs_down' ? 'var(--error-subtle)' : 'transparent',
-                  }}
-                >
-                  <ThumbsDown size={13} /> No
+                  <MessageSquare size={14} />
+                  Leave Feedback
                 </button>
               </div>
-              <input
-                value={feedbackNote}
-                onChange={e => setFeedbackNote(e.target.value)}
-                placeholder="Add a note (optional)..."
-                className="input-base w-full px-3 py-2 text-sm mb-3"
-              />
-              <button
-                onClick={submitFeedback}
-                disabled={!feedbackRating}
-                className="px-4 py-2 rounded-lg text-sm font-semibold text-white disabled:opacity-40 transition-all hover:opacity-90"
-                style={{ backgroundColor: 'var(--accent)' }}
-              >
-                Submit
-              </button>
               {feedback.length > 0 && (
                 <div className="mt-5 pt-4 border-t space-y-3" style={{ borderColor: 'var(--border)' }}>
                   {feedback.map(f => (
-                    <div key={f.id} className="flex items-start gap-2">
-                      {f.rating === 'thumbs_up'
-                        ? <ThumbsUp size={13} style={{ color: 'var(--success)', marginTop: 2 }} />
-                        : <ThumbsDown size={13} style={{ color: 'var(--error)', marginTop: 2 }} />}
+                    <div key={f.id} className="rounded-lg border p-3" style={{ borderColor: 'var(--border)' }}>
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-xs font-semibold uppercase" style={{ color: 'var(--text-muted)' }}>{f.stage}</p>
+                        <p className="text-xs font-semibold" style={{ color: 'var(--warning)' }}>{'★'.repeat(Math.max(1, Math.min(5, f.rating)))}</p>
+                      </div>
                       <div>
-                        {f.note && <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{f.note}</p>}
+                        {f.notes && <p className="text-sm mt-2" style={{ color: 'var(--text-secondary)' }}>{f.notes}</p>}
                         <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{formatRelativeTime(f.created_at)}</p>
                       </div>
                     </div>
@@ -940,6 +1000,24 @@ export default function CandidatePage() {
                       </div>
                     )}
 
+                    {transcriptLoading && (
+                      <div className="p-5 rounded-xl border" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)' }}>
+                        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Transcript processing...</p>
+                      </div>
+                    )}
+
+                    {!transcriptLoading && !transcript && !transcriptError && (
+                      <div className="p-5 rounded-xl border" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)' }}>
+                        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Transcript processing...</p>
+                      </div>
+                    )}
+
+                    {transcriptError && (
+                      <div className="p-5 rounded-xl border" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--error)' }}>
+                        <p className="text-sm" style={{ color: 'var(--error)' }}>Could not load transcript: {transcriptError}</p>
+                      </div>
+                    )}
+
                     {transcript && (
                       <div
                         className="p-5 rounded-xl border"
@@ -974,6 +1052,17 @@ export default function CandidatePage() {
                             </div>
                           ))}
                         </div>
+
+                        <div className="mt-5 pt-4 border-t" style={{ borderColor: 'var(--border)' }}>
+                          <h3 className="text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>AI Summary & Candidate Signals</h3>
+                          {summaryLoading && <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Generating summary...</p>}
+                          {summaryError && <p className="text-sm" style={{ color: 'var(--error)' }}>{summaryError}</p>}
+                          {aiSummary && (
+                            <p className="text-sm whitespace-pre-wrap" style={{ color: 'var(--text-secondary)', lineHeight: '1.7' }}>
+                              {aiSummary}
+                            </p>
+                          )}
+                        </div>
                       </div>
                     )}
                   </>
@@ -989,13 +1078,34 @@ export default function CandidatePage() {
 
         {activeTab === 'activity' && (
           <div>
-            {activityLog.length === 0 ? (
+            {activityLog.length === 0 && feedback.length === 0 ? (
               <div className="py-16 text-center">
                 <p className="text-sm font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>No activity yet</p>
                 <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Agent actions for this candidate will appear here as they run.</p>
               </div>
             ) : (
               <div className="space-y-2">
+                {feedback.map((item) => (
+                  <div
+                    key={`feedback-${item.id}`}
+                    className="flex items-start gap-3 p-4 rounded-xl border transition-theme"
+                    style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)', boxShadow: 'var(--shadow-sm)' }}
+                  >
+                    <div className="w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5 text-white" style={{ backgroundColor: 'var(--accent)' }}>
+                      FB
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <span className="text-xs font-semibold capitalize" style={{ color: 'var(--text-primary)' }}>
+                          Feedback · {item.stage}
+                        </span>
+                        <span className="text-xs" style={{ color: 'var(--warning)' }}>{'★'.repeat(Math.max(1, Math.min(5, item.rating)))}</span>
+                        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{formatRelativeTime(item.created_at)}</span>
+                      </div>
+                      {item.notes && <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{item.notes}</p>}
+                    </div>
+                  </div>
+                ))}
                 {activityLog.map((log) => (
                   <div
                     key={log.id}
@@ -1023,6 +1133,59 @@ export default function CandidatePage() {
           </div>
         )}
       </div>
+      {feedbackModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.45)' }}>
+          <div className="w-full max-w-lg rounded-xl border p-5" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)' }}>
+            <h3 className="text-base font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>Leave Feedback</h3>
+            <label className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Rating</label>
+            <div className="flex items-center gap-1 mt-2 mb-4">
+              {[1, 2, 3, 4, 5].map((value) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => setFeedbackRating(value)}
+                  className="text-lg"
+                  style={{ color: value <= feedbackRating ? 'var(--warning)' : 'var(--border-strong)' }}
+                >
+                  ★
+                </button>
+              ))}
+            </div>
+            <label className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Stage</label>
+            <select
+              value={feedbackStage}
+              onChange={(event) => setFeedbackStage(event.target.value as 'screened' | 'interviewed' | 'rejected' | 'hired')}
+              className="input-base w-full px-3 py-2 text-sm mt-2 mb-4"
+            >
+              <option value="screened">Screened</option>
+              <option value="interviewed">Interviewed</option>
+              <option value="rejected">Rejected</option>
+              <option value="hired">Hired</option>
+            </select>
+            <label className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Notes</label>
+            <textarea
+              value={feedbackNote}
+              onChange={(event) => setFeedbackNote(event.target.value)}
+              placeholder="What did you learn from this conversation?"
+              className="input-base w-full px-3 py-2 text-sm mt-2"
+              rows={4}
+            />
+            {feedbackError && <p className="text-xs mt-2" style={{ color: 'var(--error)' }}>{feedbackError}</p>}
+            <div className="flex justify-end gap-2 mt-4">
+              <button type="button" onClick={() => setFeedbackModalOpen(false)} className="btn-secondary">Cancel</button>
+              <button
+                type="button"
+                onClick={() => void submitFeedback()}
+                disabled={feedbackSubmitting}
+                className="px-4 py-2 rounded-lg text-sm font-semibold text-white disabled:opacity-60"
+                style={{ backgroundColor: 'var(--accent)' }}
+              >
+                {feedbackSubmitting ? 'Saving...' : 'Submit feedback'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {toast && <Toast message={toast} onDismiss={() => setToast(null)} />}
     </div>
   );

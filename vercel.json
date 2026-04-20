@@ -85,6 +85,21 @@
           "value": "application/xml"
         }
       ]
+    },
+    {
+      "source": "/(dashboard|candidates|roles|settings)(.*)",
+      "has": [
+        {
+          "type": "cookie",
+          "key": "sb-ovxttubotjebnaoedllu-auth-token"
+        }
+      ],
+      "headers": [
+        {
+          "key": "x-robots-tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     }
   ]
 }

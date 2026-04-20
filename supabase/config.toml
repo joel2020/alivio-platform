@@ -1,0 +1,5 @@
+project_id = "ovxttubotjebnaoedllu"
+
+[auth]
+enable_signup = true
+leaked_password_protection_enabled = true
