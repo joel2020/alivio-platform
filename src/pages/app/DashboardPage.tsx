@@ -1,190 +1,272 @@
-import { useCallback, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Plus, TrendingUp, Users, Mic, Calendar, ArrowRight, Search } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { Download, Mic, Search, TrendingUp, UserRoundCheck, Users } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
-import type { Role, AgentActivityLog, Candidate } from '../../lib/types';
-import LiveActivityFeed from '../../components/app/LiveActivityFeed';
 import Toast from '../../components/app/Toast';
 import OnboardingWizard from '../../components/app/OnboardingWizard';
 
-interface RoleWithStats extends Role {
-  totalScored: number;
-  voiceQualified: number;
-  scheduled: number;
-}
+const DATE_RANGE_OPTIONS = [
+  { label: 'Last 7d', days: 7 },
+  { label: 'Last 30d', days: 30 },
+  { label: 'Last 90d', days: 90 },
+] as const;
 
-type CandidateMetricsRow = Pick<Candidate, 'id' | 'score' | 'pipeline_stage' | 'role_id'>;
+type DateRangeDays = typeof DATE_RANGE_OPTIONS[number]['days'];
 
-const AGENT_DOT_COLORS: Record<string, string> = {
-  scout: '#3B82F6',
-  enrich: '#10B981',
-  signal: '#F59E0B',
-  voice: '#22C55E',
-  engage: '#EC4899',
-  schedule: '#06B6D4',
-  cortex: '#6366F1',
+type CandidateRow = {
+  id: string;
+  score: number | null;
+  pipeline_stage: string;
+  role_id: string;
+  created_at: string;
 };
 
-const AGENT_NAMES = ['scout', 'enrich', 'signal', 'voice', 'engage', 'schedule', 'cortex'] as const;
+type RoleRow = {
+  id: string;
+  title: string;
+  status: string;
+};
 
-function AgentStatusRow({ active }: { active: boolean }) {
-  return (
-    <div className="flex items-center gap-1.5">
-      {AGENT_NAMES.map((agent, i) => {
-        const color = AGENT_DOT_COLORS[agent];
-        return (
-          <div key={agent} className="relative group" title={`${agent} — ${active ? 'running' : 'idle'}`}>
-            {active ? (
-              <span className="relative flex h-1.5 w-1.5">
-                <span
-                  className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-50"
-                  style={{ backgroundColor: color, animationDelay: `${i * 120}ms`, animationDuration: '2s' }}
-                />
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ backgroundColor: color }} />
-              </span>
-            ) : (
-              <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--border-strong)' }} />
-            )}
-          </div>
-        );
-      })}
-    </div>
-  );
-}
+type AgentActivityRow = {
+  role_id: string | null;
+  created_at: string;
+};
+
+type KpiStats = {
+  totalCandidates: number;
+  activeRoles: number;
+  voiceCallsThisWeek: number;
+  averageAiScore: number;
+  placementsThisMonth: number;
+};
+
+type CandidatesByDayPoint = {
+  date: string;
+  count: number;
+};
+
+type FunnelPoint = {
+  stage: string;
+  count: number;
+};
+
+type RoleActivityPoint = {
+  role: string;
+  activityCount: number;
+};
 
 interface MetricCardProps {
   label: string;
   value: string | number;
-  icon: React.ReactNode;
-  trend?: string;
-  accentColor: string;
+  icon: ReactNode;
   loading?: boolean;
 }
 
-function MetricCard({ label, value, icon, trend, accentColor, loading }: MetricCardProps) {
+function MetricCard({ label, value, icon, loading }: MetricCardProps) {
   if (loading) {
     return (
       <div className="card p-5">
-        <div className="skeleton h-3 w-16 mb-4" />
-        <div className="skeleton h-8 w-20 mb-2" />
-        <div className="skeleton h-2.5 w-12" />
+        <div className="skeleton h-3 w-20 mb-4" />
+        <div className="skeleton h-8 w-24 mb-2" />
+        <div className="skeleton h-4 w-16" />
       </div>
     );
   }
+
   return (
-    <div className="card p-5 transition-theme">
+    <div className="card p-5">
       <div className="flex items-start justify-between mb-3">
-        <p
-          className="section-label"
-          style={{ letterSpacing: '0.06em' }}
-        >
-          {label}
-        </p>
-        <div style={{ color: accentColor, opacity: 0.7 }}>
-          {icon}
-        </div>
+        <p className="section-label">{label}</p>
+        <div style={{ color: 'var(--text-muted)' }}>{icon}</div>
       </div>
-      <p className="metric-value mb-1.5">{value}</p>
-      {trend && (
-        <div className="flex items-center gap-1">
-          <TrendingUp size={10} style={{ color: 'var(--success)' }} />
-          <span style={{ fontSize: '0.6875rem', color: 'var(--success)', fontWeight: 500 }}>{trend}</span>
+      <p className="metric-value">{value}</p>
+    </div>
+  );
+}
+
+function ChartSkeleton() {
+  return (
+    <div className="space-y-3">
+      <div className="skeleton h-4 w-40" />
+      <div className="skeleton h-56 w-full" />
+    </div>
+  );
+}
+
+function EmptyChartState({ message }: { message: string }) {
+  return (
+    <div className="h-64 flex items-center justify-center text-center px-5" style={{ color: 'var(--text-muted)', fontSize: '0.8125rem' }}>
+      {message}
+    </div>
+  );
+}
+
+function LineChartCard({ data, loading }: { data: CandidatesByDayPoint[]; loading: boolean }) {
+  if (loading) return <ChartSkeleton />;
+  if (data.every(point => point.count === 0)) {
+    return <EmptyChartState message="No candidates were added in this date range yet." />;
+  }
+
+  const width = 640;
+  const height = 220;
+  const padding = 24;
+  const maxCount = Math.max(...data.map(point => point.count), 1);
+  const stepX = data.length > 1 ? (width - padding * 2) / (data.length - 1) : width - padding * 2;
+
+  const points = data.map((point, idx) => {
+    const x = padding + idx * stepX;
+    const y = height - padding - ((height - padding * 2) * point.count) / maxCount;
+    return `${x},${y}`;
+  }).join(' ');
+
+  return (
+    <div className="overflow-x-auto">
+      <svg viewBox={`0 0 ${width} ${height}`} className="w-full min-w-[600px]" role="img" aria-label="Candidates added by day">
+        <line x1={padding} y1={height - padding} x2={width - padding} y2={height - padding} stroke="var(--border)" />
+        <polyline fill="none" stroke="#3B82F6" strokeWidth="3" points={points} />
+        {data.map((point, idx) => {
+          const x = padding + idx * stepX;
+          const y = height - padding - ((height - padding * 2) * point.count) / maxCount;
+          return <circle key={point.date} cx={x} cy={y} r="3.5" fill="#3B82F6" />;
+        })}
+      </svg>
+      <div className="flex justify-between mt-2" style={{ fontSize: '0.6875rem', color: 'var(--text-muted)' }}>
+        <span>{data[0]?.date ?? ''}</span>
+        <span>{data[data.length - 1]?.date ?? ''}</span>
+      </div>
+    </div>
+  );
+}
+
+function FunnelChartCard({ data, loading }: { data: FunnelPoint[]; loading: boolean }) {
+  if (loading) return <ChartSkeleton />;
+  const maxCount = Math.max(...data.map(item => item.count), 0);
+  if (maxCount === 0) {
+    return <EmptyChartState message="No pipeline stage distribution is available yet." />;
+  }
+
+  return (
+    <div className="space-y-3">
+      {data.map((item) => (
+        <div key={item.stage}>
+          <div className="flex items-center justify-between mb-1" style={{ fontSize: '0.75rem' }}>
+            <span style={{ color: 'var(--text-primary)' }}>{item.stage}</span>
+            <span style={{ color: 'var(--text-muted)' }}>{item.count}</span>
+          </div>
+          <div className="h-3 rounded-full" style={{ backgroundColor: 'var(--bg-subtle)' }}>
+            <div
+              className="h-3 rounded-full"
+              style={{
+                width: `${Math.max((item.count / maxCount) * 100, 4)}%`,
+                background: 'linear-gradient(90deg, #6366F1, #3B82F6)',
+              }}
+            />
+          </div>
         </div>
-      )}
+      ))}
+    </div>
+  );
+}
+
+function BarChartCard({ data, loading }: { data: RoleActivityPoint[]; loading: boolean }) {
+  if (loading) return <ChartSkeleton />;
+  const maxCount = Math.max(...data.map(item => item.activityCount), 0);
+  if (maxCount === 0) {
+    return <EmptyChartState message="No agent activity has been logged for roles in this range." />;
+  }
+
+  return (
+    <div className="space-y-3">
+      {data.map((item) => (
+        <div key={item.role}>
+          <div className="flex items-center justify-between mb-1" style={{ fontSize: '0.75rem' }}>
+            <span className="truncate pr-3" style={{ color: 'var(--text-primary)' }}>{item.role}</span>
+            <span style={{ color: 'var(--text-muted)' }}>{item.activityCount}</span>
+          </div>
+          <div className="h-3 rounded-full" style={{ backgroundColor: 'var(--bg-subtle)' }}>
+            <div
+              className="h-3 rounded-full"
+              style={{
+                width: `${Math.max((item.activityCount / maxCount) * 100, 6)}%`,
+                backgroundColor: '#14B8A6',
+              }}
+            />
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
 
 function EmptyDashboard() {
   return (
-    <div
-      className="flex items-center justify-center"
-      style={{ minHeight: 'calc(100vh - 64px)', padding: '48px 24px' }}
-    >
-      <div style={{ textAlign: 'center', maxWidth: '480px' }}>
-        <div
-          style={{
-            width: '56px',
-            height: '56px',
-            margin: '0 auto 24px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Search size={48} strokeWidth={1.25} style={{ color: '#D4D4D8' }} />
-        </div>
-        <h2
-          style={{
-            fontSize: '24px',
-            fontWeight: 600,
-            color: '#09090B',
-            letterSpacing: '-0.02em',
-            marginBottom: '12px',
-          }}
-        >
-          Welcome to Alivio
-        </h2>
-        <p
-          style={{
-            fontSize: '16px',
-            fontWeight: 400,
-            color: '#71717A',
-            lineHeight: 1.7,
-            marginBottom: '32px',
-            maxWidth: '420px',
-            margin: '0 auto 32px',
-          }}
-        >
-          Create your first role and let our AI agents start finding candidates.
-        </p>
-        <Link
-          to="/roles/new"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px',
-            height: '48px',
-            padding: '0 28px',
-            backgroundColor: '#2563EB',
-            color: '#FFFFFF',
-            fontSize: '15px',
-            fontWeight: 600,
-            fontFamily: 'Inter, sans-serif',
-            borderRadius: '10px',
-            textDecoration: 'none',
-            transition: 'background-color 0.15s ease',
-          }}
-          onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#1D4ED8'; }}
-          onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#2563EB'; }}
-        >
-          <Plus size={16} />
-          Create Your First Role
-        </Link>
-        <p
-          style={{
-            fontSize: '13px',
-            color: '#A1A1AA',
-            marginTop: '12px',
-          }}
-        >
-          Takes about 2 minutes
-        </p>
+    <div className="card p-8 text-center" style={{ maxWidth: '560px', margin: '48px auto' }}>
+      <div className="mx-auto mb-4 w-12 h-12 flex items-center justify-center rounded-full" style={{ backgroundColor: 'var(--bg-subtle)' }}>
+        <Search size={22} style={{ color: 'var(--text-muted)' }} />
       </div>
+      <h2 style={{ fontSize: '1.125rem', fontWeight: 600, color: 'var(--text-primary)' }}>No roles yet</h2>
+      <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginTop: '6px' }}>
+        Create your first role to start generating analytics from candidate and agent activity.
+      </p>
     </div>
   );
 }
 
 export default function DashboardPage() {
   const { user, org } = useAuth();
-  const [roles, setRoles] = useState<RoleWithStats[]>([]);
-  const [activity, setActivity] = useState<AgentActivityLog[]>([]);
-  const [metrics, setMetrics] = useState({ discovered: 0, avgScore: 0, qualRate: 0, scheduled: 0 });
-  const [loading, setLoading] = useState(true);
+  const [selectedRange, setSelectedRange] = useState<DateRangeDays>(30);
+  const [kpis, setKpis] = useState<KpiStats>({
+    totalCandidates: 0,
+    activeRoles: 0,
+    voiceCallsThisWeek: 0,
+    averageAiScore: 0,
+    placementsThisMonth: 0,
+  });
+  const [lineChartData, setLineChartData] = useState<CandidatesByDayPoint[]>([]);
+  const [funnelData, setFunnelData] = useState<FunnelPoint[]>([]);
+  const [roleActivityData, setRoleActivityData] = useState<RoleActivityPoint[]>([]);
+  const [hasRoles, setHasRoles] = useState(true);
+  const [loadingKpis, setLoadingKpis] = useState(true);
+  const [loadingCharts, setLoadingCharts] = useState(true);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [showOnboardingWizard, setShowOnboardingWizard] = useState(false);
+
+  const csvData = useMemo(() => {
+    const kpiRows = [
+      ['metric', 'value'],
+      ['total_candidates_in_pipeline', String(kpis.totalCandidates)],
+      ['active_roles_open', String(kpis.activeRoles)],
+      ['voice_calls_this_week', String(kpis.voiceCallsThisWeek)],
+      ['average_ai_score', String(kpis.averageAiScore)],
+      ['placements_this_month', String(kpis.placementsThisMonth)],
+      [],
+      ['candidates_added_per_day'],
+      ['date', 'count'],
+      ...lineChartData.map(point => [point.date, String(point.count)]),
+      [],
+      ['pipeline_funnel'],
+      ['stage', 'count'],
+      ...funnelData.map(point => [point.stage, String(point.count)]),
+      [],
+      ['top_roles_by_activity'],
+      ['role', 'activity_count'],
+      ...roleActivityData.map(point => [point.role, String(point.activityCount)]),
+    ];
+
+    return kpiRows.map(row => row.join(',')).join('\n');
+  }, [funnelData, kpis, lineChartData, roleActivityData]);
+
+  const exportCsv = () => {
+    const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `dashboard-analytics-${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   useEffect(() => {
     const roleTitle = sessionStorage.getItem('onboarding_role_created');
@@ -194,308 +276,226 @@ export default function DashboardPage() {
     }
   }, []);
 
-  const loadData = useCallback(async () => {
+  const loadKpis = useCallback(async () => {
     if (!user?.org_id) return;
-    setLoading(true);
 
-    const [rolesRes, rolesCountRes, activityRes, candidatesRes, callsRes] = await Promise.all([
-      supabase.from('roles').select('*').eq('org_id', user.org_id).neq('status', 'closed').order('created_at', { ascending: false }),
-      supabase.from('roles').select('id', { count: 'exact', head: true }).eq('org_id', user.org_id),
-      supabase.from('agent_activity_log').select('*').eq('org_id', user.org_id).order('created_at', { ascending: false }).limit(20),
-      supabase.from('candidates').select('id, score, pipeline_stage, role_id').eq('org_id', user.org_id),
-      supabase.from('voice_calls').select('qualification_status').eq('org_id', user.org_id).eq('status', 'completed'),
+    setLoadingKpis(true);
+    const now = new Date();
+    const startOfWeek = new Date(now);
+    const day = startOfWeek.getUTCDay();
+    const diffToMonday = day === 0 ? 6 : day - 1;
+    startOfWeek.setUTCDate(startOfWeek.getUTCDate() - diffToMonday);
+    startOfWeek.setUTCHours(0, 0, 0, 0);
+
+    const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+
+    const [rolesRes, candidatesRes, voiceCallsRes, feedbackRes] = await Promise.all([
+      supabase.from('roles').select('id, title, status').eq('org_id', user.org_id),
+      supabase.from('candidates').select('id, score, pipeline_stage, role_id, created_at').eq('org_id', user.org_id),
+      supabase.from('voice_calls').select('created_at').eq('org_id', user.org_id).gte('created_at', startOfWeek.toISOString()),
+      supabase.from('candidate_feedback').select('stage, created_at').eq('org_id', user.org_id).eq('stage', 'hired').gte('created_at', startOfMonth.toISOString()),
     ]);
 
-    const allCandidates: CandidateMetricsRow[] = candidatesRes.data || [];
-    const allCalls = callsRes.data || [];
+    if (rolesRes.error || candidatesRes.error || voiceCallsRes.error || feedbackRes.error) {
+      setToastMessage(rolesRes.error?.message || candidatesRes.error?.message || voiceCallsRes.error?.message || feedbackRes.error?.message || 'Unable to load dashboard metrics.');
+      setLoadingKpis(false);
+      return;
+    }
 
-    const rolesWithStats: RoleWithStats[] = (rolesRes.data || []).map((role: Role) => {
-      const roleCands = allCandidates.filter((c) => c.role_id === role.id);
-      return {
-        ...role,
-        totalScored: roleCands.filter((c) => c.pipeline_stage !== 'discovered').length,
-        voiceQualified: roleCands.filter((c) => c.pipeline_stage === 'voice_qualified').length,
-        scheduled: roleCands.filter((c) => c.pipeline_stage === 'scheduled').length,
-      };
+    const roles = (rolesRes.data ?? []) as RoleRow[];
+    const candidates = (candidatesRes.data ?? []) as CandidateRow[];
+    const scoredCandidates = candidates.filter(candidate => candidate.score !== null);
+    const avgAiScore = scoredCandidates.length > 0
+      ? scoredCandidates.reduce((sum, candidate) => sum + (candidate.score ?? 0), 0) / scoredCandidates.length
+      : 0;
+
+    setHasRoles(roles.length > 0);
+    setKpis({
+      totalCandidates: candidates.filter(candidate => candidate.pipeline_stage !== 'archived').length,
+      activeRoles: roles.filter(role => role.status === 'active').length,
+      voiceCallsThisWeek: (voiceCallsRes.data ?? []).length,
+      averageAiScore: Math.round(avgAiScore * 100),
+      placementsThisMonth: (feedbackRes.data ?? []).length,
     });
 
-    const scored = allCandidates.filter(c => c.score !== null);
-    const avgScore = scored.length > 0 ? scored.reduce((sum, c) => sum + (c.score || 0), 0) / scored.length : 0;
-    const qualRate = allCalls.length > 0 ? (allCalls.filter(c => c.qualification_status === 'qualified').length / allCalls.length) * 100 : 0;
-
-    setRoles(rolesWithStats);
-    setActivity(activityRes.data || []);
-    setMetrics({
-      discovered: allCandidates.length,
-      avgScore: Math.round(avgScore * 100),
-      qualRate: Math.round(qualRate),
-      scheduled: allCandidates.filter(c => c.pipeline_stage === 'scheduled').length,
-    });
-    setShowOnboardingWizard((rolesCountRes.count ?? 0) === 0 && !org?.onboarding_complete);
-    setLoading(false);
+    setShowOnboardingWizard(roles.length === 0 && !org?.onboarding_complete);
+    setLoadingKpis(false);
   }, [org?.onboarding_complete, user?.org_id]);
+
+  const loadCharts = useCallback(async () => {
+    if (!user?.org_id) return;
+    setLoadingCharts(true);
+
+    const now = new Date();
+    const startDate = new Date(now);
+    startDate.setUTCDate(startDate.getUTCDate() - (selectedRange - 1));
+    startDate.setUTCHours(0, 0, 0, 0);
+
+    const [candidatesRes, activityRes, rolesRes] = await Promise.all([
+      supabase
+        .from('candidates')
+        .select('id, score, pipeline_stage, role_id, created_at')
+        .eq('org_id', user.org_id)
+        .gte('created_at', startDate.toISOString()),
+      supabase
+        .from('agent_activity_log')
+        .select('role_id, created_at')
+        .eq('org_id', user.org_id)
+        .gte('created_at', startDate.toISOString()),
+      supabase.from('roles').select('id, title').eq('org_id', user.org_id),
+    ]);
+
+    if (candidatesRes.error || activityRes.error || rolesRes.error) {
+      setToastMessage(candidatesRes.error?.message || activityRes.error?.message || rolesRes.error?.message || 'Unable to load dashboard charts.');
+      setLoadingCharts(false);
+      return;
+    }
+
+    const candidates = (candidatesRes.data ?? []) as CandidateRow[];
+    const activity = (activityRes.data ?? []) as AgentActivityRow[];
+    const roles = (rolesRes.data ?? []) as Pick<RoleRow, 'id' | 'title'>[];
+
+    const dayLabels = Array.from({ length: selectedRange }, (_, idx) => {
+      const date = new Date(startDate);
+      date.setUTCDate(startDate.getUTCDate() + idx);
+      return date.toISOString().slice(0, 10);
+    });
+
+    const candidateCountByDay = new Map<string, number>(dayLabels.map(date => [date, 0]));
+    candidates.forEach((candidate) => {
+      const dayKey = candidate.created_at.slice(0, 10);
+      candidateCountByDay.set(dayKey, (candidateCountByDay.get(dayKey) ?? 0) + 1);
+    });
+
+    setLineChartData(dayLabels.map(date => ({ date: date.slice(5), count: candidateCountByDay.get(date) ?? 0 })));
+
+    const stageBuckets: Record<string, number> = {
+      sourced: 0,
+      screened: 0,
+      interviewed: 0,
+      offered: 0,
+      placed: 0,
+    };
+
+    candidates.forEach((candidate) => {
+      const stage = candidate.pipeline_stage;
+      if (stage === 'discovered') stageBuckets.sourced += 1;
+      if (stage === 'scored' || stage === 'voice_qualified') stageBuckets.screened += 1;
+      if (stage === 'engaged' || stage === 'responded') stageBuckets.interviewed += 1;
+      if (stage === 'scheduled') stageBuckets.offered += 1;
+      if (stage === 'archived') stageBuckets.placed += 1;
+    });
+
+    setFunnelData([
+      { stage: 'Sourced', count: stageBuckets.sourced },
+      { stage: 'Screened', count: stageBuckets.screened },
+      { stage: 'Interviewed', count: stageBuckets.interviewed },
+      { stage: 'Offered', count: stageBuckets.offered },
+      { stage: 'Placed', count: stageBuckets.placed },
+    ]);
+
+    const roleNameById = new Map<string, string>(roles.map(role => [role.id, role.title]));
+    const activityByRole = new Map<string, number>();
+
+    activity.forEach((entry) => {
+      if (!entry.role_id) return;
+      const roleName = roleNameById.get(entry.role_id) ?? 'Unknown Role';
+      activityByRole.set(roleName, (activityByRole.get(roleName) ?? 0) + 1);
+    });
+
+    const topRoles = Array.from(activityByRole.entries())
+      .sort((left, right) => right[1] - left[1])
+      .slice(0, 5)
+      .map(([role, activityCount]) => ({ role, activityCount }));
+
+    setRoleActivityData(topRoles);
+    setLoadingCharts(false);
+  }, [selectedRange, user?.org_id]);
 
   useEffect(() => {
     if (!user?.org_id) return;
-    loadData();
-  }, [loadData, user?.org_id]);
+    loadKpis();
+  }, [loadKpis, user?.org_id]);
 
-  const activeRoles = roles.filter(r => r.status === 'active');
-  const hasRoles = roles.length > 0;
+  useEffect(() => {
+    if (!user?.org_id) return;
+    loadCharts();
+  }, [loadCharts, user?.org_id]);
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-base)' }}>
-      <div className="page-header">
-        <div className="flex items-center gap-3">
-          <h1
-            style={{
-              fontSize: '0.9375rem',
-              fontWeight: 700,
-              letterSpacing: '-0.025em',
-              color: 'var(--text-primary)',
-            }}
-          >
-            Dashboard
-          </h1>
-          {hasRoles && activeRoles.length > 0 && (
-            <div className="flex items-center gap-1.5">
-              <span
-                className="relative inline-flex h-1.5 w-1.5 rounded-full"
-                style={{ backgroundColor: 'var(--success)' }}
-              >
-                <span
-                  className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-60"
-                  style={{ backgroundColor: 'var(--success)' }}
-                />
-              </span>
-              <span
+      <div className="page-header flex-wrap gap-3">
+        <h1 style={{ fontSize: '0.9375rem', fontWeight: 700, letterSpacing: '-0.025em', color: 'var(--text-primary)' }}>
+          Analytics Dashboard
+        </h1>
+
+        <div className="flex items-center gap-2 ml-auto flex-wrap justify-end">
+          <div className="rounded-lg border p-1 flex" style={{ borderColor: 'var(--border)' }}>
+            {DATE_RANGE_OPTIONS.map((option) => (
+              <button
+                key={option.days}
+                type="button"
+                className="px-3 py-1.5 rounded-md"
                 style={{
-                  fontSize: '0.6875rem',
-                  color: 'var(--text-muted)',
-                  fontWeight: 500,
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  backgroundColor: selectedRange === option.days ? 'var(--bg-subtle)' : 'transparent',
+                  color: selectedRange === option.days ? 'var(--text-primary)' : 'var(--text-muted)',
                 }}
+                onClick={() => setSelectedRange(option.days)}
               >
-                {activeRoles.length} active
-              </span>
-            </div>
-          )}
+                {option.label}
+              </button>
+            ))}
+          </div>
+
+          <button type="button" className="btn-secondary" onClick={exportCsv}>
+            <Download size={14} />
+            Export CSV
+          </button>
         </div>
-        <Link to="/roles/new" className="btn-primary" style={{ fontSize: '0.8125rem' }}>
-          <Plus size={13} />
-          New Role
-        </Link>
       </div>
 
-      {!hasRoles ? (
+      {!hasRoles && !loadingKpis ? (
         <EmptyDashboard />
       ) : (
         <div className="page-content space-y-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <MetricCard
-              label="Candidates Discovered"
-              value={metrics.discovered}
-              icon={<Users size={15} />}
-              trend="+12 today"
-              accentColor="#3B82F6"
-              loading={loading}
-            />
-            <MetricCard
-              label="Avg Signal Score"
-              value={`${metrics.avgScore}%`}
-              icon={<TrendingUp size={15} />}
-              accentColor="#F59E0B"
-              loading={loading}
-            />
-            <MetricCard
-              label="Voice Qual Rate"
-              value={`${metrics.qualRate}%`}
-              icon={<Mic size={15} />}
-              accentColor="#22C55E"
-              loading={loading}
-            />
-            <MetricCard
-              label="Interviews Scheduled"
-              value={metrics.scheduled}
-              icon={<Calendar size={15} />}
-              trend="+2 this week"
-              accentColor="#06B6D4"
-              loading={loading}
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
+            <MetricCard label="Total Candidates in Pipeline" value={kpis.totalCandidates} icon={<Users size={16} />} loading={loadingKpis} />
+            <MetricCard label="Active Roles Open" value={kpis.activeRoles} icon={<TrendingUp size={16} />} loading={loadingKpis} />
+            <MetricCard label="Voice Calls This Week" value={kpis.voiceCallsThisWeek} icon={<Mic size={16} />} loading={loadingKpis} />
+            <MetricCard label="Average AI Score" value={`${kpis.averageAiScore}%`} icon={<Search size={16} />} loading={loadingKpis} />
+            <MetricCard label="Placements This Month" value={kpis.placementsThisMonth} icon={<UserRoundCheck size={16} />} loading={loadingKpis} />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-            <div className="lg:col-span-3 space-y-3">
-              <div className="flex items-center justify-between">
-                <h2
-                  className="section-label"
-                >
-                  Active Roles
-                </h2>
-                <span style={{ fontSize: '0.6875rem', color: 'var(--text-muted)' }}>
-                  {roles.length} total
-                </span>
-              </div>
-
-              <div className="space-y-2">
-                {loading ? (
-                  Array.from({ length: 3 }).map((_, i) => (
-                    <div key={i} className="card p-5">
-                      <div className="skeleton h-4 w-40 mb-2" />
-                      <div className="skeleton h-3 w-24 mb-4" />
-                      <div className="flex gap-6">
-                        <div className="skeleton h-5 w-8" />
-                        <div className="skeleton h-5 w-8" />
-                        <div className="skeleton h-5 w-8" />
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  roles.map((role) => {
-                    const isActive = role.status === 'active';
-                    return (
-                      <Link
-                        key={role.id}
-                        to={`/roles/${role.id}/pipeline`}
-                        className="card card-interactive block group"
-                        style={{ textDecoration: 'none' }}
-                      >
-                        <div className="p-5">
-                          <div className="flex items-start justify-between gap-4">
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2.5 mb-1">
-                                <p
-                                  style={{
-                                    fontSize: '0.875rem',
-                                    fontWeight: 600,
-                                    color: 'var(--text-primary)',
-                                    letterSpacing: '-0.01em',
-                                  }}
-                                >
-                                  {role.title}
-                                </p>
-                                <span
-                                  className={`badge ${isActive ? 'badge-success' : 'badge-warning'}`}
-                                >
-                                  {isActive ? 'Active' : role.status}
-                                </span>
-                              </div>
-                              <p
-                                style={{
-                                  fontSize: '0.75rem',
-                                  color: 'var(--text-muted)',
-                                  marginBottom: isActive ? '12px' : '16px',
-                                }}
-                              >
-                                {role.location} · {role.employment_type}
-                              </p>
-
-                              {isActive && (
-                                <div className="flex items-center gap-2 mb-4">
-                                  <span
-                                    style={{
-                                      fontSize: '0.6875rem',
-                                      color: 'var(--text-muted)',
-                                      fontWeight: 500,
-                                    }}
-                                  >
-                                    Agents
-                                  </span>
-                                  <AgentStatusRow active={isActive} />
-                                </div>
-                              )}
-
-                              <div className="flex items-center gap-5">
-                                {[
-                                  { val: role.totalScored, label: 'scored', color: 'var(--text-primary)' },
-                                  { val: role.voiceQualified, label: 'voice qual', color: 'var(--success)' },
-                                  { val: role.scheduled, label: 'scheduled', color: '#0891B2' },
-                                ].map(({ val, label, color }, idx) => (
-                                  <div key={label} className="flex items-center gap-5">
-                                    {idx > 0 && (
-                                      <div
-                                        className="w-px h-6"
-                                        style={{ backgroundColor: 'var(--border)' }}
-                                      />
-                                    )}
-                                    <div>
-                                      <p
-                                        style={{
-                                          fontSize: '1.0625rem',
-                                          fontWeight: 700,
-                                          color,
-                                          letterSpacing: '-0.02em',
-                                          lineHeight: 1,
-                                        }}
-                                      >
-                                        {val}
-                                      </p>
-                                      <p
-                                        style={{
-                                          fontSize: '0.6875rem',
-                                          color: 'var(--text-muted)',
-                                          marginTop: '2px',
-                                        }}
-                                      >
-                                        {label}
-                                      </p>
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-
-                            <div
-                              className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
-                              style={{ color: 'var(--accent)' }}
-                            >
-                              <span style={{ fontSize: '0.75rem', fontWeight: 500 }}>Pipeline</span>
-                              <ArrowRight size={13} />
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
-                    );
-                  })
-                )}
-              </div>
+          <div className="grid grid-cols-1 gap-6">
+            <div className="card p-5">
+              <h2 className="section-label mb-4">Candidates Added Per Day ({selectedRange}d)</h2>
+              <LineChartCard data={lineChartData} loading={loadingCharts} />
             </div>
 
-            <div className="lg:col-span-2">
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="section-label">Agent Activity</h2>
-                <div className="flex items-center gap-1.5">
-                  <span
-                    className="relative inline-flex h-1.5 w-1.5 rounded-full"
-                    style={{ backgroundColor: 'var(--success)' }}
-                  >
-                    <span
-                      className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-60"
-                      style={{ backgroundColor: 'var(--success)' }}
-                    />
-                  </span>
-                  <span style={{ fontSize: '0.6875rem', color: 'var(--text-muted)', fontWeight: 500 }}>
-                    live
-                  </span>
-                </div>
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+              <div className="card p-5">
+                <h2 className="section-label mb-4">Pipeline Funnel</h2>
+                <FunnelChartCard data={funnelData} loading={loadingCharts} />
               </div>
-              <LiveActivityFeed initialEntries={activity} simulate={activeRoles.length > 0} />
+              <div className="card p-5">
+                <h2 className="section-label mb-4">Top 5 Roles by Candidate Activity</h2>
+                <BarChartCard data={roleActivityData} loading={loadingCharts} />
+              </div>
             </div>
           </div>
         </div>
       )}
 
       {toastMessage && (
-        <Toast
-          message={toastMessage}
-          onDismiss={() => setToastMessage(null)}
-          duration={5000}
-        />
+        <Toast message={toastMessage} onDismiss={() => setToastMessage(null)} duration={5000} />
       )}
       {showOnboardingWizard && (
         <OnboardingWizard
           onComplete={async () => {
             setShowOnboardingWizard(false);
-            await loadData();
+            await Promise.all([loadKpis(), loadCharts()]);
           }}
         />
       )}
