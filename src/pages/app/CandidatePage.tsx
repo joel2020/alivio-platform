@@ -723,6 +723,13 @@ export default function CandidatePage() {
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
+            <Link
+              to={`/outreach?candidateId=${candidate.id}`}
+              className="btn-secondary"
+              style={{ fontSize: '0.75rem', padding: '5px 11px' }}
+            >
+              Start Outreach
+            </Link>
             <div className="relative">
               <select
                 onChange={e => advanceStage(e.target.value as PipelineStage)}
