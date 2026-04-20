@@ -4,6 +4,8 @@ export interface Organization {
   size: '1-50' | '51-200' | '201-1000' | '1000+';
   industry: string;
   onboarding_complete?: boolean;
+  location?: string | null;
+  logo_url?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -14,6 +16,7 @@ export interface User {
   full_name: string;
   email: string;
   role: 'owner' | 'admin' | 'editor' | 'viewer';
+  is_active?: boolean;
   created_at: string;
 }
 
@@ -81,6 +84,8 @@ export interface Candidate {
   ai_scored_at: string | null;
   pipeline_stage: PipelineStage;
   archived_reason: string | null;
+  location?: string | null;
+  logo_url?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -115,6 +120,8 @@ export interface VoiceCall {
   escalated: boolean;
   escalation_reason: string | null;
   escalated_to: string | null;
+  location?: string | null;
+  logo_url?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -163,6 +170,8 @@ export interface VoiceSettings {
   disclosure_text: string;
   escalation_email: string | null;
   escalation_slack_channel: string | null;
+  location?: string | null;
+  logo_url?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -235,6 +244,8 @@ export interface Client {
   notes: string | null;
   last_contacted_at: string | null;
   next_followup_at: string | null;
+  location?: string | null;
+  logo_url?: string | null;
   created_at: string;
   updated_at: string;
 }
