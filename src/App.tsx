@@ -34,6 +34,7 @@ import AgentsPage from './pages/app/AgentsPage';
 import CandidatePage from './pages/app/CandidatePage';
 import RoleSettingsPage from './pages/app/RoleSettingsPage';
 import SettingsPage from './pages/app/SettingsPage';
+import CallsPage from './pages/app/CallsPage';
 import EmailInboxPage from './pages/app/admin/EmailInboxPage';
 import { useSeo } from './lib/seo';
 
@@ -98,7 +99,7 @@ function SeoManager() {
     title = 'Sign Up | Alivio Search Partners';
     description = 'Create your Alivio Search Partners account to accelerate healthcare recruiting and staffing workflows.';
     robots = 'noindex, nofollow';
-  } else if (pathname.startsWith('/onboarding') || pathname.startsWith('/dashboard') || pathname.startsWith('/pipeline') || pathname.startsWith('/roles') || pathname.startsWith('/outreach') || pathname.startsWith('/agents') || pathname.startsWith('/candidates') || pathname.startsWith('/settings') || pathname.startsWith('/admin')) {
+  } else if (pathname.startsWith('/onboarding') || pathname.startsWith('/dashboard') || pathname.startsWith('/pipeline') || pathname.startsWith('/roles') || pathname.startsWith('/outreach') || pathname.startsWith('/calls') || pathname.startsWith('/agents') || pathname.startsWith('/candidates') || pathname.startsWith('/settings') || pathname.startsWith('/admin')) {
     title = 'Alivio Platform | Healthcare Recruiting Workspace';
     description = 'Manage healthcare recruiting campaigns, role requirements, and clinician pipelines inside the Alivio platform.';
     robots = 'noindex, nofollow';
@@ -230,6 +231,7 @@ export default function App() {
             <Route path="/agents" element={<AgentsPage />} />
             <Route path="/candidates/:id" element={<CandidatePage />} />
             <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/calls" element={<CallsPage />} />
             {/* // FROZEN - not needed for MVP */}
             {/* <Route path="/dashboard/crm" element={<CrmPage />} /> */}
             {/* <Route path="/dashboard/crm/templates" element={<CrmTemplatesPage />} /> */}
