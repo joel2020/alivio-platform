@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import type { CSSProperties } from 'react';
+import type { DragEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DndContext, PointerSensor, TouchSensor, closestCorners, useDraggable, useDroppable, useSensor, useSensors } from '@dnd-kit/core';
-import type { DragEndEvent } from '@dnd-kit/core';
-import { CSS } from '@dnd-kit/utilities';
 import { Search } from 'lucide-react';
 import Toast from '../../components/app/Toast';
 import { useAuth } from '../../lib/auth';
@@ -106,23 +103,27 @@ function candidateInitials(name: string): string {
     .join('');
 }
 
-function CandidateCard({ candidate, onOpen }: { candidate: CandidateCardData; onOpen: (candidateId: string) => void }) {
-  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: candidate.id });
-
-  const style: CSSProperties = {
-    transform: CSS.Translate.toString(transform),
-    opacity: isDragging ? 0.65 : 1,
-  };
-
+function CandidateCard({
+  candidate,
+  onOpen,
+  onDragStart,
+  onDragEnd,
+  isDragging,
+}: {
+  candidate: CandidateCardData;
+  onOpen: (candidateId: string) => void;
+  onDragStart: (candidateId: string) => void;
+  onDragEnd: () => void;
+  isDragging: boolean;
+}) {
   return (
     <button
       type="button"
-      ref={setNodeRef}
-      style={style}
+      draggable="true"
       onClick={() => onOpen(candidate.id)}
-      className="w-full rounded-xl border p-3 text-left transition hover:border-slate-300 hover:shadow-sm"
-      {...attributes}
-      {...listeners}
+      onDragStart={() => onDragStart(candidate.id)}
+      onDragEnd={onDragEnd}
+      className={`w-full rounded-xl border p-3 text-left transition hover:border-slate-300 hover:shadow-sm ${isDragging ? 'scale-[1.01] border-blue-300 opacity-65 shadow-md' : ''}`}
     >
       <div className="mb-2 flex items-start justify-between gap-2">
         <div className="flex items-center gap-2">
@@ -147,17 +148,31 @@ function PipelineColumn({
   id,
   candidates,
   onOpen,
+  onDragStart,
+  onDragEnd,
+  onDragOver,
+  onDragLeave,
+  onDrop,
+  isHovered,
+  draggingCandidateId,
 }: {
   id: PipelineColumnId;
   candidates: CandidateCardData[];
   onOpen: (candidateId: string) => void;
+  onDragStart: (candidateId: string) => void;
+  onDragEnd: () => void;
+  onDragOver: (columnId: PipelineColumnId, event: DragEvent<HTMLElement>) => void;
+  onDragLeave: (columnId: PipelineColumnId) => void;
+  onDrop: (columnId: PipelineColumnId, event: DragEvent<HTMLElement>) => void;
+  isHovered: boolean;
+  draggingCandidateId: string | null;
 }) {
-  const { isOver, setNodeRef } = useDroppable({ id });
-
   return (
     <section
-      ref={setNodeRef}
-      className={`w-[280px] min-w-[280px] rounded-2xl border p-3 md:w-auto md:min-w-0 md:flex-1 ${isOver ? 'border-blue-300 bg-blue-50/40' : 'border-slate-200 bg-slate-50/40'}`}
+      onDragOver={(event) => onDragOver(id, event)}
+      onDragLeave={() => onDragLeave(id)}
+      onDrop={(event) => onDrop(id, event)}
+      className={`w-[280px] min-w-[280px] rounded-2xl border p-3 md:w-auto md:min-w-0 md:flex-1 ${isHovered ? 'border-blue-300 bg-blue-50/40' : 'border-slate-200 bg-slate-50/40'}`}
     >
       <header className="mb-3 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-slate-800">{COLUMN_LABELS[id]}</h2>
@@ -169,7 +184,16 @@ function PipelineColumn({
             Drop candidates here
           </div>
         ) : (
-          candidates.map((candidate) => <CandidateCard key={candidate.id} candidate={candidate} onOpen={onOpen} />)
+          candidates.map((candidate) => (
+            <CandidateCard
+              key={candidate.id}
+              candidate={candidate}
+              onOpen={onOpen}
+              onDragStart={onDragStart}
+              onDragEnd={onDragEnd}
+              isDragging={draggingCandidateId === candidate.id}
+            />
+          ))
         )}
       </div>
     </section>
@@ -185,8 +209,8 @@ export default function PipelineOverviewPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<string | null>(null);
-
-  const sensors = useSensors(useSensor(PointerSensor), useSensor(TouchSensor));
+  const [draggingCandidateId, setDraggingCandidateId] = useState<string | null>(null);
+  const [hoverColumnId, setHoverColumnId] = useState<PipelineColumnId | null>(null);
 
   const loadPipelineData = useCallback(async () => {
     if (!user?.org_id) return;
@@ -270,12 +294,7 @@ export default function PipelineOverviewPage() {
     }, {} as Record<PipelineColumnId, CandidateCardData[]>);
   }, [visibleCandidates]);
 
-  async function handleDragEnd(event: DragEndEvent) {
-    const candidateId = String(event.active.id);
-    const destination = event.over?.id;
-    if (!destination) return;
-
-    const nextColumn = String(destination) as PipelineColumnId;
+  async function moveCandidateToColumn(candidateId: string, nextColumn: PipelineColumnId) {
     if (!COLUMN_ORDER.includes(nextColumn)) return;
 
     const targetCandidate = candidates.find((candidate) => candidate.id === candidateId);
@@ -292,6 +311,37 @@ export default function PipelineOverviewPage() {
     if (error) {
       setCandidates((prev) => prev.map((candidate) => (candidate.id === candidateId ? { ...candidate, pipeline_stage: previousStage } : candidate)));
       setToast(`Could not move candidate: ${error.message}`);
+    }
+  }
+
+  function handleCardDragStart(candidateId: string) {
+    setDraggingCandidateId(candidateId);
+  }
+
+  function handleCardDragEnd() {
+    setDraggingCandidateId(null);
+    setHoverColumnId(null);
+  }
+
+  function handleColumnDragOver(columnId: PipelineColumnId, event: DragEvent<HTMLElement>) {
+    event.preventDefault();
+    if (hoverColumnId !== columnId) {
+      setHoverColumnId(columnId);
+    }
+  }
+
+  function handleColumnDrop(columnId: PipelineColumnId, event: DragEvent<HTMLElement>) {
+    event.preventDefault();
+    const candidateId = draggingCandidateId;
+    setHoverColumnId(null);
+    setDraggingCandidateId(null);
+    if (!candidateId) return;
+    void moveCandidateToColumn(candidateId, columnId);
+  }
+
+  function handleColumnDragLeave(columnId: PipelineColumnId) {
+    if (hoverColumnId === columnId) {
+      setHoverColumnId(null);
     }
   }
 
@@ -343,18 +393,23 @@ export default function PipelineOverviewPage() {
         ) : (
           <div className="relative">
             <div className="overflow-x-auto pb-2">
-              <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
-                <div className="flex gap-3 md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-                  {COLUMN_ORDER.map((columnId) => (
-                    <PipelineColumn
-                      key={columnId}
-                      id={columnId}
-                      candidates={candidatesByColumn[columnId]}
-                      onOpen={handleOpenCandidate}
-                    />
-                  ))}
-                </div>
-              </DndContext>
+              <div className="flex gap-3 md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+                {COLUMN_ORDER.map((columnId) => (
+                  <PipelineColumn
+                    key={columnId}
+                    id={columnId}
+                    candidates={candidatesByColumn[columnId]}
+                    onOpen={handleOpenCandidate}
+                    onDragStart={handleCardDragStart}
+                    onDragEnd={handleCardDragEnd}
+                    onDragOver={handleColumnDragOver}
+                    onDragLeave={handleColumnDragLeave}
+                    onDrop={handleColumnDrop}
+                    isHovered={hoverColumnId === columnId}
+                    draggingCandidateId={draggingCandidateId}
+                  />
+                ))}
+              </div>
             </div>
             <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-white to-transparent md:hidden" />
           </div>
