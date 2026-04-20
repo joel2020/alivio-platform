@@ -49,7 +49,7 @@ Return strict JSON:
 }`;
     const userPrompt = `Subject: ${email.subject || ""}\nFrom: ${email.from_name || ""} <${email.from_email || ""}>\nHas attachment: ${email.has_attachment}\nAttachment names: ${(email.attachment_names || []).join(", ")}\nBody:\n${(email.body_text || "").slice(0, 6000)}`;
 
-    const content = await callGemini(`${systemPrompt}\n\n${userPrompt}`, "gemini-2.0-flash-001");
+    const content = await callGemini(`${systemPrompt}\n\n${userPrompt}`);
     const parsed = JSON.parse(content) as {
       classification: Classification;
       confidence: number;
@@ -66,7 +66,7 @@ Return strict JSON:
       processing_status: "processing",
     }).eq("id", email_id);
 
-    return new Response(JSON.stringify({ data: parsed, provider: "google-vertex", model: "gemini-2.0-flash-001" }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ data: parsed, provider: "azure-openai" }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     if (e instanceof Response) return e;
     return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });

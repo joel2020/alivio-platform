@@ -24,8 +24,7 @@ Deno.serve(async (req: Request) => {
     scheduler: "error" as "configured" | "missing_secret" | "error",
     resend: "error" as "ok" | "missing_key" | "error",
     notifications: "error" as "ok" | "not_configured" | "error",
-    ollama: "error" as "ok" | "unreachable" | "not_configured",
-    openrouter: "error" as "ok" | "missing_key" | "error",
+    azure_openai: "error" as "ok" | "missing_config" | "error",
     imap: "error" as "ok" | "not_configured" | "error",
     timestamp: new Date().toISOString(),
   };
@@ -62,38 +61,33 @@ Deno.serve(async (req: Request) => {
   const notificationFromEmail = Deno.env.get("NOTIFICATION_FROM_EMAIL")?.trim();
   status.notifications = adminNotificationEmail && notificationFromEmail ? "ok" : "not_configured";
 
-  const ollamaUrl = Deno.env.get("OLLAMA_URL")?.trim();
-  if (ollamaUrl) {
-    try {
-      const ollamaAuth = Deno.env.get("OLLAMA_AUTH")?.trim();
-      const response = await fetchWithTimeout(`${ollamaUrl}/api/tags`, {
-        headers: {
-          ...(ollamaAuth ? { Authorization: `Basic ${btoa(ollamaAuth)}` } : {}),
-        },
-      });
-      status.ollama = response.ok ? "ok" : "unreachable";
-    } catch {
-      status.ollama = "unreachable";
-    }
-  } else {
-    status.ollama = "not_configured";
-  }
+  const azureEndpoint = Deno.env.get("AZURE_OPENAI_ENDPOINT")?.trim();
+  const azureApiKey = Deno.env.get("AZURE_OPENAI_API_KEY")?.trim();
+  const azureApiVersion = Deno.env.get("AZURE_OPENAI_API_VERSION")?.trim();
+  const azurePrimaryDeployment = Deno.env.get("AZURE_OPENAI_PRIMARY_DEPLOYMENT")?.trim();
 
-  const openRouterKey = Deno.env.get("OPENROUTER_API_KEY")?.trim();
-  if (!openRouterKey) {
-    status.openrouter = "missing_key";
+  if (!azureEndpoint || !azureApiKey || !azureApiVersion || !azurePrimaryDeployment) {
+    status.azure_openai = "missing_config";
   } else {
     try {
-      const response = await fetchWithTimeout("https://openrouter.ai/api/v1/models", {
-        headers: {
-          Authorization: `Bearer ${openRouterKey}`,
-          "HTTP-Referer": "https://aliviosearchpartners.com",
-          "X-OpenRouter-Title": "Alivio Health Check",
+      const response = await fetchWithTimeout(
+        `${azureEndpoint}/openai/deployments/${azurePrimaryDeployment}/chat/completions?api-version=${azureApiVersion}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "api-key": azureApiKey,
+          },
+          body: JSON.stringify({
+            messages: [{ role: "user", content: "health-check" }],
+            max_tokens: 5,
+            temperature: 0,
+          }),
         },
-      });
-      status.openrouter = response.ok ? "ok" : "error";
+      );
+      status.azure_openai = response.ok ? "ok" : "error";
     } catch {
-      status.openrouter = "error";
+      status.azure_openai = "error";
     }
   }
 

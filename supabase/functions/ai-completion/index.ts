@@ -8,7 +8,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
-const DEFAULT_MODEL = "openrouter/free";
+const DEFAULT_MODEL = "azure-openai";
 
 interface CompletionRequest {
   prompt: string;
@@ -16,7 +16,7 @@ interface CompletionRequest {
   model?: string;
 }
 
-const isAllowedFreeModel = (model: string): boolean => model === "openrouter/free" || model.endsWith(":free");
+const isAllowedModel = (model: string): boolean => model === "azure-openai";
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response(null, { status: 200, headers: corsHeaders });
@@ -34,14 +34,14 @@ Deno.serve(async (req: Request) => {
     }
 
     const requestedModel = model?.trim();
-    const selectedModel = requestedModel && isAllowedFreeModel(requestedModel) ? requestedModel : DEFAULT_MODEL;
+    const selectedModel = requestedModel && isAllowedModel(requestedModel) ? requestedModel : DEFAULT_MODEL;
+    void selectedModel;
     const ai = await callAiWithFallback({
       prompt,
       systemPrompt: systemMessage?.trim() || "You are an AI assistant. Always return valid JSON.",
       timeoutMs: 60_000,
       temperature: 0.3,
-      openRouterModel: selectedModel,
-      forceOpenRouter: true,
+      
     });
 
     return new Response(JSON.stringify({ content: ai.content, provider: ai.provider, model: ai.model }), {
