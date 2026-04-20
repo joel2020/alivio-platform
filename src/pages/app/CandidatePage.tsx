@@ -6,7 +6,7 @@ import { useAuth } from '../../lib/auth';
 import type { Candidate, VoiceCall, VoiceTranscript, AgentActivityLog, CandidateFeedback, PipelineStage, Role } from '../../lib/types';
 import { AGENT_COLORS, PIPELINE_STAGES, STAGE_LABELS } from '../../lib/types';
 import ScoreExplainer from '../../components/app/ScoreExplainer';
-import { generateOutreachEmail, type ParsedResumeOutput } from '../../lib/ai';
+import { generateOutreachEmail, scoreCandidate, type ParsedResumeOutput } from '../../lib/ai';
 import Toast from '../../components/app/Toast';
 import ResumeUpload from '../../components/app/ResumeUpload';
 
@@ -81,6 +81,21 @@ interface ResumeParseJobRow {
   status: string;
   parsed_data: ParsedResumeOutput;
   created_at: string;
+}
+
+function AIScoreBadge({ score }: { score: number | null }) {
+  if (score === null) {
+    return <span className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>AI score pending</span>;
+  }
+
+  const color = score >= 80 ? 'var(--success)' : score >= 60 ? 'var(--warning)' : 'var(--error)';
+  const bg = score >= 80 ? 'var(--success-subtle)' : score >= 60 ? 'var(--warning-subtle)' : 'var(--error-subtle)';
+
+  return (
+    <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold" style={{ color, backgroundColor: bg }}>
+      AI Score {score}
+    </span>
+  );
 }
 
 function OutreachTab({ candidate, role }: { candidate: Candidate; role: Role | null }) {
@@ -392,6 +407,7 @@ export default function CandidatePage() {
   const [resumeParseJob, setResumeParseJob] = useState<ResumeParseJobRow | null>(null);
   const [showParsedData, setShowParsedData] = useState(false);
   const [showReplaceResume, setShowReplaceResume] = useState(false);
+  const [rescoring, setRescoring] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [startingCall, setStartingCall] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -606,6 +622,24 @@ export default function CandidatePage() {
     void loadData();
   }
 
+  async function handleRescore() {
+    if (!candidate?.role_id) {
+      setToast('Unable to re-score candidate because role is missing.');
+      return;
+    }
+
+    setRescoring(true);
+    try {
+      await scoreCandidate(candidate.id, candidate.role_id);
+      await loadData();
+      setToast('Candidate re-scored successfully.');
+    } catch (error) {
+      setToast(error instanceof Error ? `AI re-score failed: ${error.message}` : 'AI re-score failed.');
+    } finally {
+      setRescoring(false);
+    }
+  }
+
   const selectedCall = calls.find(c => c.id === selectedCallId) || null;
   const extractedData = selectedCall?.extracted_data as ExtractedData | null;
   const filteredEntries = transcript?.entries.filter(e =>
@@ -680,10 +714,11 @@ export default function CandidatePage() {
                   {candidate.location}
                 </p>
               )}
-              <div className="mt-2.5">
+              <div className="mt-2.5 flex items-center gap-2">
                 <span className="badge badge-accent">
                   {STAGE_LABELS[candidate.pipeline_stage]}
                 </span>
+                <AIScoreBadge score={candidate.ai_score} />
               </div>
             </div>
           </div>
@@ -704,6 +739,14 @@ export default function CandidatePage() {
                 style={{ color: 'var(--text-muted)' }}
               />
             </div>
+            <button
+              onClick={handleRescore}
+              className="btn-secondary"
+              style={{ fontSize: '0.75rem', padding: '5px 11px' }}
+              disabled={rescoring}
+            >
+              {rescoring ? 'Re-scoring...' : 'Re-score'}
+            </button>
             <button
               onClick={() => advanceStage('archived')}
               className="btn-secondary"
@@ -765,6 +808,52 @@ export default function CandidatePage() {
             {candidate.score !== null && (
               <ScoreExplainer candidate={candidate} role={role} />
             )}
+
+            <div
+              className="p-6 rounded-xl border"
+              style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)', boxShadow: 'var(--shadow)' }}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>AI Candidate Fit</h2>
+                <AIScoreBadge score={candidate.ai_score} />
+              </div>
+              {candidate.ai_summary ? (
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-xs font-medium mb-1" style={{ color: 'var(--text-muted)' }}>Top strengths</p>
+                    {candidate.ai_summary.top_strengths?.length ? (
+                      <ul className="list-disc pl-5 text-sm space-y-1" style={{ color: 'var(--text-primary)' }}>
+                        {candidate.ai_summary.top_strengths.map((strength) => <li key={strength}>{strength}</li>)}
+                      </ul>
+                    ) : <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No strengths provided yet.</p>}
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium mb-1" style={{ color: 'var(--text-muted)' }}>Gaps</p>
+                    {candidate.ai_summary.gaps?.length ? (
+                      <ul className="list-disc pl-5 text-sm space-y-1" style={{ color: 'var(--text-primary)' }}>
+                        {candidate.ai_summary.gaps.map((gap) => <li key={gap}>{gap}</li>)}
+                      </ul>
+                    ) : <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No gaps provided yet.</p>}
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium mb-1" style={{ color: 'var(--text-muted)' }}>Recommendation</p>
+                    <p className="text-sm" style={{ color: 'var(--text-primary)' }}>
+                      {candidate.ai_summary.recommendation || 'No recommendation provided yet.'}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Confidence:</span>
+                    <span className="text-xs px-2 py-1 rounded-md badge-neutral">
+                      {(candidate.ai_summary.confidence || 'low').toUpperCase()}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                  AI breakdown is not available yet. Upload a resume or click Re-score.
+                </p>
+              )}
+            </div>
 
             <div
               className="p-6 rounded-xl border"

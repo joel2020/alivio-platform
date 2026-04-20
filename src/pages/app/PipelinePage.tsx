@@ -8,9 +8,8 @@ import Toast from '../../components/app/Toast';
 
 function ScoreBadge({ score }: { score: number | null }) {
   if (score === null) return <span style={{ color: 'var(--text-muted)' }}>—</span>;
-  const pct = Math.round(score * 100);
-  const color = score >= 0.85 ? 'var(--success)' : score >= 0.70 ? 'var(--warning)' : 'var(--error)';
-  const bg = score >= 0.85 ? 'var(--success-subtle)' : score >= 0.70 ? 'var(--warning-subtle)' : 'var(--error-subtle)';
+  const color = score >= 80 ? 'var(--success)' : score >= 60 ? 'var(--warning)' : 'var(--error)';
+  const bg = score >= 80 ? 'var(--success-subtle)' : score >= 60 ? 'var(--warning-subtle)' : 'var(--error-subtle)';
   return (
     <span
       style={{
@@ -25,7 +24,7 @@ function ScoreBadge({ score }: { score: number | null }) {
         fontVariantNumeric: 'tabular-nums',
       }}
     >
-      {pct}%
+      {score}
     </span>
   );
 }
@@ -553,7 +552,7 @@ export default function PipelinePage() {
                     </th>
                     <th onClick={() => handleSort('score')} style={{ cursor: 'pointer' }}>
                       <span className="flex items-center">
-                        Score
+                        AI Score
                         <SortIcon field="score" active={sortField === 'score'} dir={sortDir} />
                       </span>
                     </th>
@@ -601,7 +600,7 @@ export default function PipelinePage() {
                             </p>
                           )}
                         </td>
-                        <td><ScoreBadge score={c.score} /></td>
+                        <td><ScoreBadge score={c.ai_score} /></td>
                         <td><StageBadge stage={c.pipeline_stage} /></td>
                         <td>
                           {call
