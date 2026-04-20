@@ -77,7 +77,7 @@ export interface Candidate {
   updated_at: string;
 }
 
-export type CallStatus = 'initiated' | 'ringing' | 'in_progress' | 'completed' | 'no_answer' | 'voicemail_left' | 'failed';
+export type CallStatus = 'initiated' | 'ringing' | 'in_progress' | 'completed' | 'no_answer' | 'no-answer' | 'voicemail_left' | 'failed' | 'scheduled';
 export type QualificationStatus = 'qualified' | 'disqualified' | 'needs_review' | 'declined' | 'escalated';
 
 export interface VoiceCall {
@@ -97,6 +97,7 @@ export interface VoiceCall {
   qualification_status: QualificationStatus | null;
   extracted_data: Record<string, unknown> | null;
   call_summary: string | null;
+  ai_summary?: string | null;
   escalated: boolean;
   escalation_reason: string | null;
   escalated_to: string | null;
