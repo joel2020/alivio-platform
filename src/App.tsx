@@ -17,6 +17,7 @@ import ContactPage from './pages/marketing/ContactPage';
 
 import LoginPage from './pages/auth/LoginPage';
 import SignupPage from './pages/auth/SignupPage';
+import { RequireLoggedOut, RequireOnboarding } from './components/auth/RouteGuards';
 
 import OnboardingOrgPage from './pages/app/OnboardingOrgPage';
 import OnboardingRolePage from './pages/app/OnboardingRolePage';
@@ -206,11 +207,15 @@ export default function App() {
           <Route path="/industries/*" element={<Navigate to="/" replace />} />
           <Route path="/resources/*" element={<Navigate to="/" replace />} />
 
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
+          <Route element={<RequireLoggedOut />}>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+          </Route>
 
-          <Route path="/onboarding/org" element={<OnboardingOrgPage />} />
-          <Route path="/onboarding/role" element={<OnboardingRolePage />} />
+          <Route element={<RequireOnboarding />}>
+            <Route path="/onboarding/org" element={<OnboardingOrgPage />} />
+            <Route path="/onboarding/role" element={<OnboardingRolePage />} />
+          </Route>
 
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />

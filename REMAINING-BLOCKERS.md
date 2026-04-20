@@ -2,18 +2,9 @@
 
 ## OPEN
 
-1. **Platform-admin bootstrap is manual**
-   - `users.is_platform_admin` exists and is now authoritative.
-   - No automated provisioning flow sets it yet.
-   - Manual SQL/admin action required to mark platform admins.
-
-2. **RLS production-state parity not confirmed**
+1. **RLS production-state parity not confirmed**
    - Migration history shows repeated policy/function redefinitions.
    - Not confirmed that all deployed environments have identical migration state.
-
-3. **Onboarding/app route guard consistency not fully proven**
-   - Router-level explicit auth guards are still partial; some flows depend on layout/page behavior.
-   - Not confirmed via automated E2E.
 
 ## RESOLVED
 
@@ -36,3 +27,8 @@
 9. **Scheduler/webhook rollout** — Service-only auth gates active. pgcron jobs wired with `SCHEDULERSECRET` via Vault.
 
 10. **Cron jobs created** — `alivio-auto-followup-daily-9am` (9am daily) and `alivio-email-pipeline-30min` (every 30 min) active in production.
+
+11. **Platform-admin bootstrap automation** — `public.apply_platform_admin_bootstrap()` trigger now auto-promotes emails from `app.settings.platform_admin_emails`; includes backfill migration for existing users.
+
+12. **Onboarding/auth route guards hardened** — Added centralized router guards for logged-out-only and onboarding-only flows (`RequireLoggedOut`, `RequireOnboarding`) and applied them in `App.tsx`.
+
