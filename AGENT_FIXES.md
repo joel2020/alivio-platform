@@ -38,3 +38,8 @@
 
 ## Notes
 - Live DB log query (`public.agent_activity_log`) was not executed in this environment because project runtime credentials were unavailable in the shell session.
+
+
+## Merge conflict scan
+- Searched for unresolved markers (`<<<<<<<`, `=======`, `>>>>>>>`) across the repository.
+- No unresolved git merge conflict markers were found.
