@@ -1,5 +1,5 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { callGemini } from "../_shared/gemini.ts";
+import { callAzureAI } from "../_shared/azure.ts";
 import { requireAuth } from "../_shared/auth.ts";
 import { requireFunctionAuth } from "../_shared/security.ts";
 
@@ -24,16 +24,20 @@ Deno.serve(async (req: Request) => {
     if (req.method === "OPTIONS") return new Response("ok", { status: 200, headers: corsHeaders });
     if (req.method !== "POST") return new Response(JSON.stringify({ error: "Method not allowed" }), { status: 405, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-    const user = await requireAuth(req);
-    void user;
+    await requireAuth(req);
 
     const auth = await requireFunctionAuth(req, "ai-match-candidates");
     if (!auth.ok) return new Response(JSON.stringify({ error: auth.error }), { status: auth.status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 
-    const { role, candidateList } = await req.json() as { role: string; candidateList: unknown[] };
-    if (!role?.trim() || !Array.isArray(candidateList)) return new Response(JSON.stringify({ error: "role and candidateList are required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    const body = await req.json().catch(() => null) as { role?: string; candidateList?: unknown[] } | null;
+    if (!body?.role?.trim() || !Array.isArray(body.candidateList)) {
+      return new Response(JSON.stringify({ error: "Invalid request body" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
 
-    const system = `You are an AI candidate matching engine.
+    const { content, deployment } = await callAzureAI([
+      {
+        role: "system",
+        content: `You are an AI candidate matching engine.
 Return strict JSON:
 {
   "roleSummary": string,
@@ -44,12 +48,16 @@ Return strict JSON:
     "nextStep": "screen" | "hold" | "reject"
   }]
 }
-Rules: matchScore must be 0..1 and nextStep must be one allowed value.`;
+Rules: matchScore must be 0..1 and nextStep must be one allowed value.`,
+      },
+      {
+        role: "user",
+        content: `Role: ${body.role}\nCandidate list: ${JSON.stringify(body.candidateList)}`,
+      },
+    ]);
 
-    const prompt = `${system}\n\nRole: ${role}\nCandidate list: ${JSON.stringify(candidateList)}`;
-    const content = await callGemini(prompt, "gemini-2.0-flash-001");
     const data = JSON.parse(content) as MatchResult;
-    return new Response(JSON.stringify({ data, provider: "google-vertex", model: "gemini-2.0-flash-001" }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ data, provider: "azure-openai", model: deployment }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     if (e instanceof Response) return e;
     return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });

@@ -12,6 +12,8 @@ export default function CrmClientPage() {
   const [history, setHistory] = useState<OutreachHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [draft, setDraft] = useState({ subject: '', body: '' });
+  const [generating, setGenerating] = useState(false);
+  const [sendError, setSendError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!id || !canAccessCrm(user?.role)) return;
@@ -35,7 +37,9 @@ export default function CrmClientPage() {
 
   async function generateWithAi() {
     if (!client) return;
-    const { data, error } = await supabase.functions.invoke<{ data: { subject: string; body: string } }>('ai-generate-outreach', {
+    setGenerating(true);
+    setSendError(null);
+    const { data, error } = await supabase.functions.invoke<{ data: { subject: string; body: string } }>('generate-outreach', {
       body: {
         contact_name: client.contact_name,
         hospital_name: client.name,
@@ -44,7 +48,12 @@ export default function CrmClientPage() {
         sequence_step: nextStep,
       },
     });
-    if (!error && data?.data) setDraft({ subject: data.data.subject, body: data.data.body });
+    if (error) {
+      setSendError(error.message);
+    } else if (data?.data) {
+      setDraft({ subject: data.data.subject, body: data.data.body });
+    }
+    setGenerating(false);
   }
 
   async function sendOutreach() {
@@ -53,7 +62,10 @@ export default function CrmClientPage() {
     const sendRes = await supabase.functions.invoke('send-outreach-email', {
       body: { to: client.contact_email, subject: draft.subject, body: draft.body },
     });
-    if (sendRes.error) return;
+    if (sendRes.error) {
+      setSendError(sendRes.error.message);
+      return;
+    }
 
     await supabase.from('outreach_history').insert({
       org_id: client.org_id,
@@ -111,8 +123,9 @@ export default function CrmClientPage() {
           <textarea value={draft.body} onChange={(e) => setDraft((prev) => ({ ...prev, body: e.target.value }))} rows={7} placeholder="Email body" style={{ width: '100%', borderRadius: 8, border: '1px solid var(--border)', padding: 10 }} />
           <div style={{ marginTop: 10, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             <button className="btn-primary" style={{ height: 36, padding: '0 12px' }} onClick={sendOutreach}>Send Outreach</button>
-            <button className="btn-ghost" style={{ height: 36, padding: '0 12px' }} onClick={generateWithAi}>Generate Email with AI</button>
+            <button className="btn-ghost" style={{ height: 36, padding: '0 12px' }} onClick={generateWithAi} disabled={generating}>{generating ? 'Generating…' : 'Generate Email with AI'}</button>
           </div>
+          {sendError ? <p style={{ marginTop: 8, color: 'var(--error)', fontSize: 12 }}>{sendError}</p> : null}
         </div>
 
         <div className="card p-4" style={{ gridColumn: '1 / -1' }}>
@@ -127,6 +140,7 @@ export default function CrmClientPage() {
             ))}
             {history.length === 0 && <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>No outreach history yet.</p>}
           </div>
+          {sendError ? <p style={{ marginTop: 8, color: 'var(--error)', fontSize: 12 }}>{sendError}</p> : null}
         </div>
       </div>
     </div>

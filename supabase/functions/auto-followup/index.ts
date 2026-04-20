@@ -63,25 +63,21 @@ Deno.serve(async (req: Request) => {
 
       const sequenceStep = Math.min(3, (historyRows?.length || 0) + 1) as 1 | 2 | 3;
 
-      const aiRes = await fetch(`${supabaseUrl}/functions/v1/ai-generate-outreach`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${serviceRoleKey}`,
+      const { data: aiPayload, error: aiError } = await supabase.functions.invoke<{ data?: { subject?: string; body?: string } }>("generate-outreach", {
+        body: {
+          candidate: {
+            id: client.id,
+            name: client.contact_name,
+            notes: `Client: ${client.name}; Step: ${sequenceStep}`,
+          },
+          role: client.title || "Healthcare outreach",
+          tone: "professional",
+          channel: "email",
         },
-        body: JSON.stringify({
-          contact_name: client.contact_name,
-          hospital_name: client.name,
-          title: client.title,
-          location: client.location,
-          sequence_step: sequenceStep,
-        }),
-        signal: AbortSignal.timeout(30000),
       });
 
-      const aiPayload = await aiRes.json();
-      if (!aiRes.ok) {
-        processed.push({ client_id: client.id, status: "failed", detail: aiPayload?.error || "AI generation failed" });
+      if (aiError) {
+        processed.push({ client_id: client.id, status: "failed", detail: aiError.message || "AI generation failed" });
         continue;
       }
 

@@ -171,7 +171,7 @@ class AIService {
 
       return {
         data: data.data,
-        model: data.model ?? 'openrouter/free',
+        model: data.model ?? 'azure-openai',
       };
     } catch (error) {
       const aiError = (error as AIServiceError).code
