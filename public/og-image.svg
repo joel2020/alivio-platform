@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Alivio Open Graph Image</title>
+  <desc id="desc">Alivio AI Recruiting Platform for Healthcare Staffing</desc>
+  <rect width="1200" height="630" fill="#0f1a1a" />
+  <rect x="120" y="140" width="12" height="350" fill="#01696f" opacity="0.95" />
+  <rect x="120" y="502" width="960" height="8" fill="#01696f" opacity="0.75" />
+  <text x="600" y="300" fill="#01696f" font-size="132" font-family="Inter, Arial, Helvetica, sans-serif" font-weight="700" text-anchor="middle" letter-spacing="1">
+    Alivio
+  </text>
+  <text x="600" y="372" fill="#ffffff" font-size="42" font-family="Inter, Arial, Helvetica, sans-serif" font-weight="500" text-anchor="middle">
+    AI Recruiting Platform for Healthcare Staffing
+  </text>
+</svg>

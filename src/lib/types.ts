@@ -169,10 +169,12 @@ export interface AgentActivityLog {
 export interface CandidateFeedback {
   id: string;
   candidate_id: string;
+  role_id: string | null;
   user_id: string;
   org_id: string;
-  rating: 'thumbs_up' | 'thumbs_down';
-  note: string | null;
+  rating: number;
+  stage: 'screened' | 'interviewed' | 'rejected' | 'hired';
+  notes: string | null;
   created_at: string;
 }
 
