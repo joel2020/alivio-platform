@@ -20,6 +20,14 @@ interface EnvStatus {
   [key: string]: boolean;
 }
 
+interface AgentHealthStatus {
+  azure: "ok" | "error";
+  db: "ok" | "error";
+  storage: "ok" | "error";
+  timestamp: string;
+  errors?: Record<string, string>;
+}
+
 interface FunctionStatus {
   database_connection: boolean;
   database_error: string | null;
@@ -38,6 +46,8 @@ export default function AdminSystemCheckPage() {
   const [error, setError] = useState<string | null>(null);
   const [rpcStatus, setRpcStatus] = useState<RpcStatus | null>(null);
   const [fnStatus, setFnStatus] = useState<FunctionStatus | null>(null);
+  const [health, setHealth] = useState<AgentHealthStatus | null>(null);
+  const [healthLoading, setHealthLoading] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -66,6 +76,17 @@ export default function AdminSystemCheckPage() {
 
     void load();
   }, []);
+
+  const runAgentHealthCheck = async () => {
+    setHealthLoading(true);
+    const { data, error: healthError } = await supabase.functions.invoke<AgentHealthStatus>('health-check', { body: {} });
+    if (healthError) {
+      setError((existing) => existing ? `${existing} | ${healthError.message}` : healthError.message);
+    } else {
+      setHealth(data ?? null);
+    }
+    setHealthLoading(false);
+  };
 
   const envEntries = Object.entries(fnStatus?.env ?? {});
 
@@ -137,6 +158,22 @@ export default function AdminSystemCheckPage() {
               {envEntries.length === 0 && <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No env data available.</p>}
             </div>
           )}
+        </div>
+        <div className="card p-5">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>Agent Health Check</h2>
+            <button className="btn-primary" onClick={runAgentHealthCheck} disabled={healthLoading}>
+              {healthLoading ? 'Running…' : 'Run Agent Health Check'}
+            </button>
+          </div>
+          {health ? (
+            <div className="mt-3 text-sm" style={{ color: 'var(--text-secondary)' }}>
+              <p>Azure OpenAI: <span style={{ color: health.azure === 'ok' ? 'var(--success)' : 'var(--error)' }}>{health.azure}</span></p>
+              <p>Database: <span style={{ color: health.db === 'ok' ? 'var(--success)' : 'var(--error)' }}>{health.db}</span></p>
+              <p>Storage: <span style={{ color: health.storage === 'ok' ? 'var(--success)' : 'var(--error)' }}>{health.storage}</span></p>
+              <p>Checked at: {new Date(health.timestamp).toLocaleString()}</p>
+            </div>
+          ) : <p className="mt-3 text-sm" style={{ color: 'var(--text-muted)' }}>Run the check to validate agent dependencies.</p>}
         </div>
       </div>
     </div>

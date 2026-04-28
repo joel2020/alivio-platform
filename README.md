@@ -129,3 +129,21 @@ Then open:
 By default, the page calls `https://api.aliviosearchpartners.com`.
 
 To target a different backend, define `window.ALIVIO_API_BASE` before loading the page script (for example in an inline script tag above the API client include), then reload the page.
+
+## Supabase Edge Function secrets (agents)
+
+> These are **Supabase project secrets** for edge functions. They are separate from Vercel env vars.
+
+```bash
+supabase secrets set AZURE_OPENAI_ENDPOINT="https://your-resource.openai.azure.com/" \
+  AZURE_OPENAI_API_KEY="your-key" \
+  AZURE_OPENAI_API_VERSION="2024-02-01" \
+  AZURE_OPENAI_PRIMARY_DEPLOYMENT="gpt-4o" \
+  AZURE_OPENAI_FALLBACK_DEPLOYMENT="gpt-4o-mini" \
+  SUPABASE_SERVICE_ROLE_KEY="your-service-role-key" \
+  SUPABASE_URL="https://your-project-ref.supabase.co" \
+  SUPABASE_ANON_KEY="your-anon-key" \
+  LLM_API_KEY="your-llm-key" \
+  LLM_MODEL="your-model" \
+  RESEND_API_KEY="your-resend-key"
+```

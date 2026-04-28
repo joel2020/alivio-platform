@@ -1,6 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
-import { AzureOpenAI } from "npm:openai@4.103.0";
+import { AzureOpenAI } from "npm:openai";
 import { requireAuth } from "../_shared/auth.ts";
 import { requireFunctionAuth } from "../_shared/security.ts";
 
