@@ -23,11 +23,15 @@
   ],
   "headers": [
     {
-      "source": "/(dashboard|candidates|roles|settings|pipeline|calls|outreach|agents|onboarding|admin)(.*)",
+      "source": "/(dashboard|crm|candidates|roles|settings|pipeline|calls|outreach|agents|onboarding|admin)(.*)",
       "headers": [
         {
           "key": "x-robots-tag",
           "value": "noindex, nofollow"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
         }
       ]
     },
@@ -37,6 +41,10 @@
         {
           "key": "x-robots-tag",
           "value": "index, follow"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, max-age=0, must-revalidate"
         }
       ]
     },
@@ -46,6 +54,10 @@
         {
           "key": "x-robots-tag",
           "value": "index, follow"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, max-age=0, must-revalidate"
         }
       ]
     },
