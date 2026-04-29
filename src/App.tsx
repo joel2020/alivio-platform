@@ -36,6 +36,9 @@ import RoleSettingsPage from './pages/app/RoleSettingsPage';
 import SettingsPage from './pages/app/SettingsPage';
 import CallsPage from './pages/app/CallsPage';
 import EmailInboxPage from './pages/app/admin/EmailInboxPage';
+import CrmPage from './pages/app/crm/CrmPage';
+import CrmTemplatesPage from './pages/app/crm/CrmTemplatesPage';
+import CrmClientPage from './pages/app/crm/CrmClientPage';
 import { useSeo } from './lib/seo';
 
 import AdminRoute from './components/admin/AdminRoute';
@@ -233,10 +236,9 @@ export default function App() {
             <Route path="/candidates/:id" element={<CandidatePage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/calls" element={<CallsPage />} />
-            {/* // FROZEN - not needed for MVP */}
-            {/* <Route path="/dashboard/crm" element={<CrmPage />} /> */}
-            {/* <Route path="/dashboard/crm/templates" element={<CrmTemplatesPage />} /> */}
-            {/* <Route path="/dashboard/crm/:id" element={<CrmClientPage />} /> */}
+            <Route path="/dashboard/crm" element={<CrmPage />} />
+            <Route path="/dashboard/crm/templates" element={<CrmTemplatesPage />} />
+            <Route path="/dashboard/crm/:id" element={<CrmClientPage />} />
             <Route element={<AdminRoute />}>
               <Route path="/admin" element={<AdminDashboardPage />} />
               <Route path="/admin/users" element={<AdminUsersPage />} />
