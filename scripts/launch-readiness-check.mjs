@@ -14,6 +14,22 @@ const ENV_ALLOWLIST = new Set([
   'npm_package_version',
 ]);
 
+const REQUIRED_FRONTEND_ENV_KEYS = [
+  'VITE_SUPABASE_URL',
+  'VITE_SUPABASE_ANON_KEY',
+];
+
+const REQUIRED_EDGE_FUNCTIONS = [
+  'health-check',
+  'generate-outreach',
+  'ai-completion',
+  'ai-parse-resume',
+  'ai-score-candidates',
+  'ai-match-candidates',
+  'ai-source-candidates',
+  'ai-process-email',
+];
+
 function readFileSafe(filePath) {
   try {
     return fs.readFileSync(filePath, 'utf8');
@@ -92,6 +108,20 @@ function checkOnboardingRedirect() {
   return null;
 }
 
+function checkRequiredRuntimeEnv() {
+  return REQUIRED_FRONTEND_ENV_KEYS.filter((key) => !process.env[key]);
+}
+
+function collectSupabaseFunctionNames() {
+  const base = path.join(repoRoot, 'supabase/functions');
+  if (!fs.existsSync(base)) return new Set();
+  return new Set(
+    fs.readdirSync(base, { withFileTypes: true })
+      .filter((d) => d.isDirectory() && d.name !== '_shared')
+      .map((d) => d.name),
+  );
+}
+
 function main() {
   const tsJsFiles = walk(repoRoot, (file) => /\.(ts|tsx|js|mjs|cjs)$/.test(file) && !file.includes('/node_modules/') && !file.includes('/.git/'));
   const codeEnv = collectEnvFromCode(tsJsFiles);
@@ -100,6 +130,9 @@ function main() {
   const missingEnv = [...codeEnv].filter((k) => !envExampleKeys.has(k)).sort();
   const missingAuthFiles = checkFunctionAuthCoverage();
   const onboardingIssue = checkOnboardingRedirect();
+  const missingRuntimeEnv = checkRequiredRuntimeEnv();
+  const availableFunctions = collectSupabaseFunctionNames();
+  const missingFunctions = REQUIRED_EDGE_FUNCTIONS.filter((name) => !availableFunctions.has(name));
 
   let failed = false;
 
@@ -117,6 +150,22 @@ function main() {
     for (const file of missingAuthFiles) console.error(`  - ${file}`);
   } else {
     console.log('✅ All edge function entrypoints reference auth guards.');
+  }
+
+  if (missingRuntimeEnv.length > 0) {
+    failed = true;
+    console.error('❌ Missing required runtime environment variables (values hidden):');
+    for (const key of missingRuntimeEnv) console.error(`  - ${key}`);
+  } else {
+    console.log('✅ Required frontend environment variables are present.');
+  }
+
+  if (missingFunctions.length > 0) {
+    failed = true;
+    console.error('❌ Missing required Supabase Edge Functions:');
+    for (const name of missingFunctions) console.error(`  - ${name}`);
+  } else {
+    console.log('✅ Required Supabase Edge Functions are present.');
   }
 
   if (onboardingIssue) {

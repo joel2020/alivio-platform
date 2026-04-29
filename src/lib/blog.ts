@@ -75,7 +75,11 @@ export async function fetchPublishedCategories() {
 
 export async function fetchPublishedBlogPostBySlug(slug: string) {
   const { data, error } = await supabase.from('blog_posts').select(BLOG_SELECT).eq('slug', slug).eq('status', 'published').maybeSingle();
-  if (error) throw error;
+  if (error) {
+    const isNotFound = error.code === 'PGRST116' || error.details?.includes('0 rows');
+    if (isNotFound) return null;
+    throw error;
+  }
   return (data as BlogPost | null) ?? null;
 }
 

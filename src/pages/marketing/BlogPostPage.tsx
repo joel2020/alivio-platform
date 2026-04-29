@@ -21,6 +21,7 @@ export default function BlogPostPage() {
   const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [notFound, setNotFound] = useState(false);
   const [reloadToken, setReloadToken] = useState(0);
 
   useEffect(() => {
@@ -33,6 +34,7 @@ export default function BlogPostPage() {
     async function loadPost() {
       setLoading(true);
       setError(null);
+      setNotFound(false);
 
       try {
         const loadedPost = await fetchPublishedBlogPostBySlug(slug);
@@ -42,6 +44,7 @@ export default function BlogPostPage() {
           const related = await fetchRelatedPublishedPosts(loadedPost.id, loadedPost.category);
           setRelatedPosts(related);
         } else {
+          setNotFound(true);
           setRelatedPosts([]);
         }
       } catch (err) {
@@ -141,6 +144,7 @@ export default function BlogPostPage() {
         <section style={{ marginTop: '30px' }} className="card">
           <div style={{ padding: '24px', textAlign: 'center' }}>
             <h2 style={{ marginBottom: '8px' }}>This article isn&apos;t available</h2>
+            {notFound && slug ? <p style={{ color: 'var(--text-secondary)', marginBottom: '16px' }}>We couldn&apos;t find a published post for <code>{slug}</code>.</p> : null}
             <Link to="/blog" className="mkt-btn-primary" style={{ minHeight: '44px' }}>Browse all blog posts</Link>
           </div>
         </section>
