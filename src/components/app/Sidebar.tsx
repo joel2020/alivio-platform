@@ -36,7 +36,6 @@ export default function Sidebar() {
     });
     return () => { cancelled = true; };
   }, [supabaseUser]);
-  const canAccessCrm = user?.role === 'admin' || user?.role === 'owner';
   const isAdminUser = isPlatformAdmin;
   const adminNavItems = [
     { label: 'Admin Dashboard', href: '/admin', icon: Shield },
@@ -54,7 +53,7 @@ export default function Sidebar() {
     { label: 'Roles', href: '/roles', icon: Briefcase, badge: activeRoleCount },
     { label: 'Outreach', href: '/outreach', icon: Mail },
     { label: 'Calls', href: '/calls', icon: PhoneCall },
-    ...(canAccessCrm ? [{ label: 'CRM', href: '/dashboard/crm', icon: Building2 }] : []),
+    { label: 'CRM', href: '/dashboard/crm', icon: Building2 },
     { label: 'Agents', href: '/agents', icon: Zap },
     { label: 'Settings', href: '/settings', icon: Settings },
   ];
