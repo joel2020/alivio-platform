@@ -104,16 +104,6 @@ export interface SourceCandidatesOutput {
   outreachAngles: string[];
 }
 
-export interface CandidateAIScoreOutput {
-  candidate_id: string;
-  role_id: string;
-  match_score: number;
-  top_strengths: string[];
-  gaps: string[];
-  recommendation: string;
-  confidence: 'high' | 'medium' | 'low';
-}
-
 interface EdgeResponse<T> {
   data?: T;
   model?: string;
@@ -210,8 +200,17 @@ class AIService {
     return this.invoke<SourceCandidatesOutput>('ai-source-candidates', { roleDescription, criteria }, options);
   }
 
-  scoreCandidate(candidateId: string, roleId: string, options?: AIRequestOptions) {
-    return this.invoke<CandidateAIScoreOutput>('score-candidate', { candidate_id: candidateId, role_id: roleId }, options);
+  /**
+   * Score a single candidate against a role.
+   * Routes to the ai-score-candidates batch endpoint with a single-item array.
+   * For full candidate data, prefer scoreCandidates() directly.
+   */
+  scoreCandidate(candidateId: string, roleDescription: string, options?: AIRequestOptions) {
+    return this.invoke<ScoreCandidatesOutput>(
+      'ai-score-candidates',
+      { role: roleDescription, candidates: [{ id: candidateId, name: candidateId, skills: [] }] },
+      options,
+    );
   }
 }
 
@@ -243,5 +242,5 @@ export const parseResume = (resumeText: string, options?: AIRequestOptions) =>
 export const sourceCandidates = (roleDescription: string, criteria: string[], options?: AIRequestOptions) =>
   aiService.sourceCandidates(roleDescription, criteria, options);
 
-export const scoreCandidate = (candidateId: string, roleId: string, options?: AIRequestOptions) =>
-  aiService.scoreCandidate(candidateId, roleId, options);
+export const scoreCandidate = (candidateId: string, roleDescription: string, options?: AIRequestOptions) =>
+  aiService.scoreCandidate(candidateId, roleDescription, options);
