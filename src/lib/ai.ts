@@ -107,6 +107,7 @@ export interface SourceCandidatesOutput {
 interface EdgeResponse<T> {
   data?: T;
   model?: string;
+  provider?: string;
   error?: string;
 }
 
@@ -142,13 +143,25 @@ class AIService {
     options?.onLoadingChange?.(true);
 
     try {
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
+
+      if (sessionError || !session?.access_token) {
+        throw buildError(
+          'REQUEST_FAILED',
+          'You are not signed in or your session expired. Please refresh and sign in again.',
+          sessionError,
+        );
+      }
+
       const { data, error } = await supabase.functions.invoke<EdgeResponse<T>>(functionName, {
         body: payload,
-        headers: supabaseAnonKey
-          ? {
-              apikey: supabaseAnonKey,
-            }
-          : undefined,
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          ...(supabaseAnonKey ? { apikey: supabaseAnonKey } : {}),
+        },
       });
 
       if (error) {
@@ -161,7 +174,7 @@ class AIService {
 
       return {
         data: data.data,
-        model: data.model ?? 'azure-openai',
+        model: data.model ?? data.provider ?? 'azure-openai',
       };
     } catch (error) {
       const aiError = (error as AIServiceError).code
@@ -200,11 +213,6 @@ class AIService {
     return this.invoke<SourceCandidatesOutput>('ai-source-candidates', { roleDescription, criteria }, options);
   }
 
-  /**
-   * Score a single candidate against a role.
-   * Routes to the ai-score-candidates batch endpoint with a single-item array.
-   * For full candidate data, prefer scoreCandidates() directly.
-   */
   scoreCandidate(candidateId: string, roleDescription: string, options?: AIRequestOptions) {
     return this.invoke<ScoreCandidatesOutput>(
       'ai-score-candidates',
