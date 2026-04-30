@@ -1,80 +1,115 @@
-import { CAL_COM_BOOKING_URL, DEMO_EVENT_DESCRIPTION, DEMO_EVENT_TITLE } from '../../lib/demoBooking';
+import { ArrowRight, BarChart3, Bot, Brain, CheckCircle2, FileText, Gauge, MessageSquare, Search, ShieldCheck, Sparkles, Target, Users } from 'lucide-react';
+import { CAL_COM_BOOKING_URL } from '../../lib/demoBooking';
 
-const agents = [
-  {
-    name: 'SCOUT', subtitle: 'Autonomous Sourcing Agent',
-    what: 'Discovers qualified RNs, nurse practitioners, clinical directors, and healthcare leaders across Doximity, Vivian Health, nursing networks, and 40+ healthcare-specific data sources.',
-    how: ['Ingests role requirements including licensure, certifications, and specialty → constructs healthcare-specific search ontology', 'Executes parallel queries across 40+ data sources', 'Deduplicates and surfaces net-new credentialed candidates', 'Runs continuously on configurable cadence'],
-    key: 'Scout builds a credentialed candidate pipeline — per role, per facility, per run.',
-    color: '#3B82F6',
-  },
-  {
-    name: 'ENRICH', subtitle: 'Profile Assembly Agent',
-    what: 'Assembles comprehensive profiles including licenses, certifications, clinical experience, and facility history from multiple healthcare sources.',
-    how: ['Cross-references professional history across platforms', 'Constructs normalized candidate object', 'Validates nursing licenses, board certifications, ACLS/BLS, and state-specific credentials', 'Outputs enriched profile to scoring pipeline'],
-    key: 'Turns fragmented credentials and work history into unified clinical candidate intelligence.',
-    color: '#8B5CF6',
-  },
-  {
-    name: 'SIGNAL', subtitle: 'Scoring & Ranking Agent',
-    what: 'Evaluates and ranks healthcare candidates using multi-dimensional scoring models including credential match, clinical experience, specialty fit, and engagement likelihood.',
-    how: ['Generates candidate embeddings from enriched profile', 'Computes similarity against role requirement vectors', 'Fuses credential match, clinical trajectory, specialty adjacency, and engagement propensity', 'Outputs ranked pipeline with explainable score breakdowns'],
-    key: 'Ranks every nurse and clinician by credential match, specialty fit, and location — so you see your best candidates first.',
-    color: '#F59E0B',
-  },
-  {
-    name: 'CORTEX', subtitle: 'System Intelligence Layer',
-    what: 'Learns from every healthcare placement to improve sourcing, scoring, and outreach across your organization.',
-    how: ['Ingests feedback signals from recruiter and hiring manager actions', 'Retrains scoring parameters based on hiring outcomes', 'Surfaces pipeline health insights and anomaly detection', 'Compounds organizational intelligence across every hire'],
-    key: 'Every placement makes Alivio smarter — improving candidate scoring and sourcing accuracy across every future search.',
-    color: '#6366F1',
-  },
+const engineModules = [
+  ['Source', Search, 'Build target lists across technology, physician, healthcare leadership, and nearshore markets.'],
+  ['Score', Target, 'Apply role-specific scorecards for fit, compensation alignment, seniority, geography, and motivation.'],
+  ['Engage', MessageSquare, 'Launch personalized outreach workflows with human review before candidate-facing messages.'],
+  ['Prioritize', Gauge, 'Rank candidates by match quality, response signals, and search-stage readiness.'],
+  ['Report', BarChart3, 'Turn activity into pipeline dashboards, shortlist reports, and hiring-market feedback.'],
+  ['Optimize', Brain, 'Review results monthly and tune searches, messaging, scorecards, and market assumptions.'],
+];
+
+const offers = [
+  ['AI Candidate Engine Install', '$5K–$10K setup', 'For companies that want a repeatable recruiting engine configured around their ICP, role scorecards, outbound workflows, and reporting.'],
+  ['Managed Search Engine', '$2K–$3K monthly retainer', 'For healthcare and technology teams that want Alivio to run sourcing, outreach, screening support, pipeline review, and optimization.'],
+  ['Search + Success Fee', 'Custom', 'For priority searches where Alivio combines retained search discipline with AI-enabled execution and shortlist delivery.'],
+];
+
+const useCases = [
+  'VC-backed AI startup hiring full-stack engineers, AI/ML engineers, technical product managers, and GTM leaders.',
+  'Physician group recruiting emergency medicine physicians, hospitalists, medical directors, and specialists in competitive markets.',
+  'Multi-site healthcare operator hiring DONs, LNHAs, MDS coordinators, revenue cycle leaders, and clinical operations leadership.',
+  'Healthtech company building recurring talent pipelines across product, engineering, data, customer success, and implementation roles.',
 ];
 
 export default function ProductPage() {
   return (
-    <div style={{ backgroundColor: '#0A0A0A' }}>
-      <section className="max-w-7xl mx-auto px-6 pt-20 pb-16 border-b" style={{ borderColor: '#1E1E1E' }}>
-        <p className="text-xs font-semibold uppercase tracking-widest mb-6" style={{ color: '#4F46E5' }}>The Platform</p>
-        <h1 className="font-bold text-white mb-6" style={{ fontSize: '56px', lineHeight: '1.05' }}>AI Agents for Healthcare Recruiting Teams</h1>
+    <main style={{ background: '#fff', color: '#071226' }}>
+      <section style={{ padding: '86px 0 70px', background: 'radial-gradient(circle at 78% 18%, rgba(85,130,255,.2), transparent 30%), linear-gradient(135deg,#061636 0%,#081F4A 55%,#020A1A 100%)', color: '#fff', overflow: 'hidden' }}>
+        <div className="mkt-container" style={{ maxWidth: 1240 }}>
+          <div className="engine-hero" style={{ display: 'grid', gridTemplateColumns: '0.95fr 1.05fr', gap: 40, alignItems: 'center' }}>
+            <div>
+              <p className="mkt-label" style={{ color: '#9DBBFF', letterSpacing: '.3em' }}>ALIVIO AI CANDIDATE ENGINE</p>
+              <h1 style={{ fontSize: 'clamp(44px,5.6vw,78px)', lineHeight: .96, letterSpacing: '-.055em', margin: '16px 0 22px' }}>Install an AI-powered recruiting engine for hard-to-fill hiring.</h1>
+              <p style={{ fontSize: 19, lineHeight: 1.75, color: 'rgba(255,255,255,.76)', maxWidth: 720 }}>Alivio helps technology companies, physician groups, and healthcare organizations build a repeatable candidate engine for sourcing, outreach, matching, shortlist delivery, and pipeline optimization — with human recruiter oversight built in.</p>
+              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 28 }}>
+                <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary-lg" style={{ background: '#fff', color: '#061636' }}>Book an Intro Call <ArrowRight size={18} /></a>
+                <a href="#pricing" className="mkt-btn-secondary" style={{ color: '#fff', borderColor: 'rgba(255,255,255,.35)' }}>View Engine Options</a>
+              </div>
+            </div>
+            <div style={{ border: '1px solid rgba(157,187,255,.25)', background: 'rgba(255,255,255,.045)', borderRadius: 24, padding: 22, boxShadow: '0 28px 70px rgba(0,0,0,.28)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}><strong>Engine Command Center</strong><span style={{ color: '#7EE6A6' }}>Live</span></div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12 }} className="engine-metrics">
+                {[
+                  ['Target Accounts', '186'], ['Candidate Matches', '742'], ['Outreach Queued', '328'], ['Shortlists', '18'], ['Interview Ready', '41'], ['Avg Match', '91%'],
+                ].map(([k, v]) => <div key={k} style={{ border: '1px solid rgba(157,187,255,.18)', borderRadius: 14, padding: 14, background: 'rgba(5,16,40,.48)' }}><p style={{ margin: 0, color: 'rgba(255,255,255,.58)', fontSize: 12 }}>{k}</p><p style={{ margin: '8px 0 0', fontSize: 28, fontWeight: 800 }}>{v}</p></div>)}
+              </div>
+              <div style={{ marginTop: 16, border: '1px solid rgba(157,187,255,.18)', borderRadius: 16, padding: 16, background: 'rgba(5,16,40,.48)' }}>
+                {['AI/ML Engineer search calibrated', 'Emergency Medicine Physician target list built', 'DON shortlist report generated', 'Technical PM outreach sequence approved'].map((item) => <div key={item} style={{ display: 'flex', gap: 10, alignItems: 'center', padding: '9px 0', color: 'rgba(255,255,255,.82)' }}><CheckCircle2 size={16} color="#7EE6A6" />{item}</div>)}
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-6">
-        {agents.map((agent, idx) => {
-          const light = idx % 2 === 1;
-          return (
-            <section key={agent.name} className="py-20 border-b" style={{ borderColor: light ? '#E4E4E7' : '#1E1E1E', backgroundColor: light ? '#FFFFFF' : 'transparent' }}>
-              <div className="grid md:grid-cols-2 gap-16 items-start">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: agent.color }}>Agent</p>
-                  <h2 className="font-semibold mb-1" style={{ fontSize: '26px', color: light ? '#09090B' : '#FFFFFF' }}>{agent.name}</h2>
-                  <p className="text-base mb-6" style={{ color: light ? '#52525B' : '#6B6B6B' }}>{agent.subtitle}</p>
-                  <p className="mb-6" style={{ color: light ? '#3F3F46' : '#A0A0A0', lineHeight: '1.7' }}>{agent.what}</p>
-                  <div className="p-4 rounded-lg border-l-2" style={{ backgroundColor: light ? '#F4F4F5' : '#141414', borderColor: agent.color }}>
-                    <p className="text-sm font-semibold" style={{ color: light ? '#18181B' : '#FFFFFF' }}>&quot;{agent.key}&quot;</p>
-                  </div>
-                </div>
-                <div className="p-6 rounded-lg border" style={{ backgroundColor: light ? '#F9FAFB' : '#141414', borderColor: light ? '#E4E4E7' : '#1E1E1E' }}>
-                  <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: light ? '#71717A' : '#6B6B6B' }}>How it works</p>
-                  <ul className="space-y-3">
-                    {agent.how.map((step, i) => <li key={i} className="flex items-start gap-3 text-sm" style={{ color: light ? '#3F3F46' : '#A0A0A0' }}><span className="font-mono text-xs mt-0.5" style={{ color: agent.color }}>0{i + 1}</span>{step}</li>)}
-                  </ul>
-                </div>
-              </div>
-            </section>
-          );
-        })}
+      <section style={{ padding: '70px 0' }}>
+        <div className="mkt-container">
+          <div style={{ maxWidth: 850 }}>
+            <p className="mkt-label" style={{ color: '#1D55C6' }}>WHAT THE ENGINE DOES</p>
+            <h2 style={{ fontSize: 'clamp(34px,4vw,56px)', lineHeight: 1.02, letterSpacing: '-.04em', margin: '12px 0 18px' }}>A recruiting operating system for sourcing, scoring, outreach, and shortlist delivery.</h2>
+            <p style={{ color: '#4D5E7B', fontSize: 18, lineHeight: 1.75 }}>The AI Candidate Engine is built for companies that need consistent candidate flow without depending on random job applicants or disconnected spreadsheets. It can support individual searches or become the foundation for a monthly candidate pipeline program.</p>
+          </div>
+          <div className="engine-modules" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,minmax(0,1fr))', gap: 18, marginTop: 34 }}>
+            {engineModules.map(([title, Icon, copy]) => <div key={String(title)} style={{ border: '1px solid #DCE4F2', borderRadius: 20, padding: 24, background: '#fff', boxShadow: '0 10px 32px rgba(7,25,62,.06)' }}><Icon size={26} color="#1D55C6" /><h3 style={{ fontSize: 22, margin: '16px 0 8px' }}>{String(title)}</h3><p style={{ color: '#4D5E7B', lineHeight: 1.7 }}>{String(copy)}</p></div>)}
+          </div>
+        </div>
+      </section>
 
-        <section className="py-20" style={{ backgroundColor: '#FFFFFF' }}>
-          <h2 className="font-semibold mb-4" style={{ fontSize: '32px', color: '#09090B' }}>Your command center.</h2>
-          <p className="mb-8" style={{ color: '#3F3F46', maxWidth: '600px' }}>
-            A single workspace for your entire clinical hiring pipeline. Designed for healthcare HR teams managing multiple facilities and roles.
-          </p>
-          <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="inline-block px-6 py-3 rounded font-medium text-white" style={{ backgroundColor: '#4F46E5' }} title={`${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}`}>
-            Book a Demo →
-          </a>
-        </section>
-      </div>
-    </div>
+      <section style={{ padding: '72px 0', background: '#F6F9FF' }}>
+        <div className="mkt-container" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 28 }} className="engine-two-col">
+          <div style={{ border: '1px solid #DCE4F2', borderRadius: 24, padding: 30, background: '#fff' }}>
+            <Bot size={30} color="#1D55C6" />
+            <h2>AI where it speeds the work.</h2>
+            <p style={{ color: '#4D5E7B', lineHeight: 1.75 }}>AI supports research, data normalization, profile summarization, fit scoring, outreach drafting, pipeline prioritization, and reporting. It gives the recruiting process more speed and structure.</p>
+          </div>
+          <div style={{ border: '1px solid #DCE4F2', borderRadius: 24, padding: 30, background: '#fff' }}>
+            <ShieldCheck size={30} color="#1D55C6" />
+            <h2>Humans where judgment matters.</h2>
+            <p style={{ color: '#4D5E7B', lineHeight: 1.75 }}>Human recruiters validate search strategy, candidate motivation, compensation alignment, communication quality, and client-specific fit before candidates are advanced.</p>
+          </div>
+        </div>
+      </section>
+
+      <section style={{ padding: '72px 0', background: '#061636', color: '#fff' }}>
+        <div className="mkt-container">
+          <h2 style={{ fontSize: 'clamp(34px,4vw,54px)', letterSpacing: '-.04em', marginTop: 0 }}>Built for high-value searches and repeatable pipeline creation.</h2>
+          <div className="use-cases" style={{ display: 'grid', gridTemplateColumns: 'repeat(2,minmax(0,1fr))', gap: 16, marginTop: 28 }}>
+            {useCases.map((useCase) => <div key={useCase} style={{ border: '1px solid rgba(157,187,255,.22)', borderRadius: 18, padding: 22, background: 'rgba(255,255,255,.045)', color: 'rgba(255,255,255,.8)', lineHeight: 1.65 }}>{useCase}</div>)}
+          </div>
+        </div>
+      </section>
+
+      <section id="pricing" style={{ padding: '72px 0' }}>
+        <div className="mkt-container">
+          <p className="mkt-label" style={{ color: '#1D55C6' }}>PRODUCTIZED OFFER</p>
+          <h2 style={{ fontSize: 'clamp(34px,4vw,54px)', letterSpacing: '-.04em', margin: '12px 0 28px' }}>Install the engine, run the pipeline, improve every month.</h2>
+          <div className="offers" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,minmax(0,1fr))', gap: 18 }}>
+            {offers.map(([name, price, copy]) => <div key={name} style={{ border: '1px solid #DCE4F2', borderRadius: 22, padding: 28, background: '#fff', boxShadow: '0 10px 32px rgba(7,25,62,.06)' }}><h3 style={{ marginTop: 0, fontSize: 24 }}>{name}</h3><p style={{ color: '#1D55C6', fontWeight: 800, fontSize: 22 }}>{price}</p><p style={{ color: '#4D5E7B', lineHeight: 1.7 }}>{copy}</p></div>)}
+          </div>
+        </div>
+      </section>
+
+      <section style={{ padding: '34px 0 78px' }}>
+        <div className="mkt-container" style={{ borderRadius: 28, background: '#061636', color: '#fff', padding: '54px 34px', textAlign: 'center' }}>
+          <Sparkles size={34} color="#9DBBFF" />
+          <h2 style={{ fontSize: 'clamp(34px,4vw,54px)', letterSpacing: '-.04em', margin: '16px 0' }}>Want to see how the AI Engine would run your searches?</h2>
+          <p style={{ color: 'rgba(255,255,255,.74)', fontSize: 18, lineHeight: 1.75, maxWidth: 760, margin: '0 auto 26px' }}>Book a short call and we will map your roles, target market, candidate sources, outreach workflows, and reporting structure.</p>
+          <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary-lg" style={{ background: '#fff', color: '#061636', display: 'inline-flex' }}>Book an Intro Call <ArrowRight size={18} /></a>
+        </div>
+      </section>
+
+      <style>{`@media(max-width:1100px){.engine-hero,.engine-two-col,.offers{grid-template-columns:1fr!important}.engine-modules,.use-cases{grid-template-columns:1fr!important}}@media(max-width:760px){.engine-metrics{grid-template-columns:1fr!important}}`}</style>
+    </main>
   );
 }
