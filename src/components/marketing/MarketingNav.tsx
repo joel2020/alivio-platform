@@ -5,10 +5,13 @@ import { useAuth } from '../../lib/auth';
 import { CAL_COM_BOOKING_URL, DEMO_EVENT_DESCRIPTION, DEMO_EVENT_TITLE } from '../../lib/demoBooking';
 
 const navLinks = [
-  { label: 'Product', href: '/product' },
-  { label: 'How It Works', href: '/#how-it-works' },
-  { label: 'Pricing', href: '/pricing' },
-  { label: 'Blog', href: '/blog' },
+  { label: 'Search Specialties', href: '/product' },
+  { label: 'Healthcare', href: '/product' },
+  { label: 'Technology', href: '/product' },
+  { label: 'Process', href: '/product' },
+  { label: 'About', href: '/developers' },
+  { label: 'Insights', href: '/blog' },
+  { label: 'Contact', href: '/contact' },
 ];
 
 function handleHashLink(href: string, e: React.MouseEvent, closeMenu?: () => void) {
@@ -64,9 +67,9 @@ export default function MarketingNav() {
         }}
       >
         <div className="mkt-container" style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '6px', textDecoration: 'none' }}>
-            <span style={{ width: '28px', height: '28px', background: 'var(--accent)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '14px', fontWeight: 700 }}>A</span>
-            <span style={{ fontSize: '20px', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Alivio — AI Recruitment Infrastructure</span>
+          <Link to="/" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2px', textDecoration: 'none' }}>
+            <span style={{ fontSize: '34px', fontWeight: 700, color: '#0B1530', letterSpacing: '0.24em' }}>ALIVIO</span>
+            <span style={{ fontSize: '12px', fontWeight: 600, color: '#2D5CE5', letterSpacing: '0.48em', marginLeft: '2px' }}>SEARCH PARTNERS</span>
           </Link>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }} className="hidden-mobile">
@@ -102,7 +105,7 @@ export default function MarketingNav() {
               className="mkt-btn-primary hidden-mobile"
               style={{ height: '40px' }}
             >
-              Book a Demo
+              Book a Call
             </a>
             <button
               onClick={() => setMobileOpen((o) => !o)}
@@ -128,7 +131,7 @@ export default function MarketingNav() {
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
           <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary" style={{ flex: 1, justifyContent: 'center' }} title={`${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}`}>
-            Book a Demo
+            Book a Call
           </a>
           {showStartFree ? <Link to="/signup" className="mkt-btn-secondary" style={{ flex: 1, justifyContent: 'center' }}>Start Free</Link> : null}
           <Link to="/login" className="mkt-btn-primary" style={{ flex: 1, justifyContent: 'center' }}>Sign In</Link>
