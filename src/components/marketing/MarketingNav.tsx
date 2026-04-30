@@ -63,9 +63,9 @@ export default function MarketingNav() {
         }}
       >
         <div className="mkt-container" style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Link to="/" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2px', textDecoration: 'none' }}>
-            <span style={{ fontSize: '34px', fontWeight: 700, color: '#0B1530', letterSpacing: '0.24em' }}>ALIVIO</span>
-            <span style={{ fontSize: '12px', fontWeight: 600, color: '#2D5CE5', letterSpacing: '0.48em', marginLeft: '2px' }}>SEARCH PARTNERS</span>
+          <Link to="/" className="marketing-brand" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2px', textDecoration: 'none' }}>
+            <span className="marketing-brand-name" style={{ fontSize: '34px', fontWeight: 700, color: '#0B1530', letterSpacing: '0.24em' }}>ALIVIO</span>
+            <span className="marketing-brand-subtitle" style={{ fontSize: '12px', fontWeight: 600, color: '#2D5CE5', letterSpacing: '0.48em', marginLeft: '2px' }}>SEARCH PARTNERS</span>
           </Link>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }} className="hidden-mobile">
@@ -116,7 +116,7 @@ export default function MarketingNav() {
 
       <div onClick={() => setMobileOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 98, background: 'rgba(9,9,11,0.4)', opacity: mobileOpen ? 1 : 0, pointerEvents: mobileOpen ? 'auto' : 'none', transition: 'opacity 0.3s ease' }} />
 
-      <div style={{ position: 'fixed', top: '64px', left: 0, right: 0, zIndex: 99, background: '#FFFFFF', borderBottom: '1px solid #E4E4E7', padding: '8px 24px 24px', boxShadow: '0 8px 24px rgba(0,0,0,0.08)', transform: mobileOpen ? 'translateY(0)' : 'translateY(-8px)', opacity: mobileOpen ? 1 : 0, pointerEvents: mobileOpen ? 'auto' : 'none', transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease' }}>
+      <div className="mobile-nav-panel" style={{ position: 'fixed', top: '64px', left: 0, right: 0, zIndex: 99, background: '#FFFFFF', borderBottom: '1px solid #E4E4E7', padding: '8px 24px 24px', boxShadow: '0 8px 24px rgba(0,0,0,0.08)', transform: mobileOpen ? 'translateY(0)' : 'translateY(-8px)', opacity: mobileOpen ? 1 : 0, pointerEvents: mobileOpen ? 'auto' : 'none', transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease' }}>
         <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '16px' }}>
           {navLinks.map((link) => (
             <Link key={link.href} to={link.href} onClick={(e) => handleHashLink(link.href, e, () => setMobileOpen(false))} style={{ display: 'block', fontSize: '16px', fontWeight: 500, color: 'var(--text-primary)', textDecoration: 'none', padding: '13px 12px', borderRadius: '10px', borderBottom: '1px solid #F4F4F5' }}>
@@ -124,7 +124,7 @@ export default function MarketingNav() {
             </Link>
           ))}
         </div>
-        <div style={{ display: 'flex', gap: '10px' }}>
+        <div className="mobile-nav-actions" style={{ display: 'flex', gap: '10px' }}>
           <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary" style={{ flex: 1, justifyContent: 'center' }} title={`${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}`}>
             Book a Call
           </a>
@@ -133,9 +133,16 @@ export default function MarketingNav() {
       </div>
 
       <style>{`
-        @media (max-width: 768px) {
+        @media (max-width: 1100px) {
           .hidden-mobile { display: none !important; }
           .mobile-only { display: flex !important; }
+        }
+        @media (max-width: 520px) {
+          .marketing-brand-name { font-size: 26px !important; letter-spacing: 0.18em !important; }
+          .marketing-brand-subtitle { font-size: 10px !important; letter-spacing: 0.34em !important; }
+          .mobile-nav-panel { padding-left: 16px !important; padding-right: 16px !important; }
+          .mobile-nav-actions { flex-direction: column !important; }
+          .mobile-nav-actions > a { width: 100%; min-height: 48px; }
         }
       `}</style>
     </>
