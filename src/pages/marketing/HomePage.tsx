@@ -116,6 +116,40 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section style={{ padding: '18px 0 10px' }}>
+        <div className="mkt-container" style={{ border: '1px solid #DFE6F2', borderRadius: '16px', padding: '26px', background: '#FFFFFF' }}>
+          <h2 style={{ margin: '0 0 12px', fontSize: '30px', color: '#0F2142' }}>Senior search execution, powered by modern recruiting intelligence.</h2>
+          <p style={{ margin: 0, fontSize: '17px', lineHeight: 1.68, color: '#4D5E7B' }}>
+            Led by Joel Carias, Alivio Search Partners combines hands-on recruiting execution with AI-enabled sourcing workflows to help healthcare and technology organizations move faster on critical hires.
+          </p>
+        </div>
+      </section>
+
+      <section style={{ padding: '18px 0 10px' }}>
+        <div className="mkt-container" style={{ border: '1px solid #E1E8F4', borderRadius: '16px', padding: '24px', background: '#F9FBFF' }}>
+          <h2 style={{ margin: '0 0 14px', fontSize: '30px', color: '#102344' }}>Who We Help</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '12px' }} className="who-we-help-grid">
+            {['Hospitals & Health Systems', 'Skilled Nursing Operators', 'Healthcare Groups', 'Healthtech Companies', 'AI & Technology Startups', 'PE-Backed Operators'].map((item) => (
+              <div key={item} style={{ border: '1px solid #E2E8F5', borderRadius: '12px', padding: '14px 16px', background: '#fff', color: '#33496D', fontWeight: 600 }}>{item}</div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section style={{ padding: '18px 0 10px' }}>
+        <div className="mkt-container" style={{ border: '1px solid #DEE5F2', borderRadius: '16px', padding: '26px', background: '#fff' }}>
+          <h2 style={{ margin: '0 0 12px', fontSize: '30px', color: '#0F2142' }}>Shortlists Built for Faster Hiring Decisions</h2>
+          <p style={{ margin: '0 0 14px', fontSize: '17px', lineHeight: 1.68, color: '#4D5E7B' }}>
+            Each submission is structured around role fit, compensation alignment, availability, candidate motivation, risks, and recommended next steps.
+          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '12px' }} className="shortlist-grid">
+            {['Role-fit summary', 'Compensation and availability signals', 'Interview-ready candidate notes'].map((item) => (
+              <div key={item} style={{ border: '1px solid #E1E8F3', borderRadius: '12px', padding: '14px 16px', color: '#2F4467', background: '#FBFDFF', fontWeight: 600 }}><ShieldCheck size={16} color="#2D5CE5" style={{ marginBottom: '8px' }} />{item}</div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section id="contact" style={{ padding: '28px 0 54px' }}>
         <div className="mkt-container" style={{ borderRadius: '18px', border: '1px solid #DCE4F2', background: 'linear-gradient(180deg,#F9FBFF 0%, #FFFFFF 100%)', padding: '34px', textAlign: 'center' }}>
           <h2 style={{ margin: '0 0 12px', fontSize: '34px', color: '#0D1B39' }}>Ready to build a stronger candidate pipeline?</h2>
@@ -126,7 +160,7 @@ export default function HomePage() {
 
       <style>{`
       @media (max-width: 1200px){.hero-grid,.process-grid{grid-template-columns:1fr!important}.overview-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}.trust-grid,.proof-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
-      @media (max-width: 900px){.specialties-grid{grid-template-columns:1fr!important}}
+      @media (max-width: 900px){.specialties-grid,.who-we-help-grid,.shortlist-grid{grid-template-columns:1fr!important}}
       @media (max-width: 768px){.overview-grid,.proof-grid{grid-template-columns:1fr!important}.candidate-row{grid-template-columns:1fr!important}.hero-cta{flex-direction:column}.trust-grid{grid-template-columns:1fr!important}}
       `}</style>
     </div>
