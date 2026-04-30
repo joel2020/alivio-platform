@@ -19,7 +19,7 @@ const candidateRows = [
 export default function HomePage() {
   return (
     <div style={{ background: '#fff' }}>
-      <section style={{ padding: '78px 0 42px' }}>
+      <section className="home-hero" style={{ padding: '78px 0 42px' }}>
         <div className="mkt-container" style={{ maxWidth: '1240px' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1.02fr 0.98fr', gap: '34px', alignItems: 'start' }} className="hero-grid">
             <div>
@@ -37,7 +37,7 @@ export default function HomePage() {
               <p style={{ margin: 0, color: '#41526F', fontSize: '15px', fontWeight: 500 }}>Director of Nursing • LNHA • Full-Stack Engineers • AI Technical PMs</p>
             </div>
 
-            <div style={{ background: 'radial-gradient(140% 120% at 0% 0%, #0D2E69 0%, #04132F 55%, #031027 100%)', borderRadius: '18px', border: '1px solid #24467B', boxShadow: '0 12px 30px rgba(8,19,48,0.34)', padding: '22px' }}>
+            <div className="search-intel-panel" style={{ background: 'radial-gradient(140% 120% at 0% 0%, #0D2E69 0%, #04132F 55%, #031027 100%)', borderRadius: '18px', border: '1px solid #24467B', boxShadow: '0 12px 30px rgba(8,19,48,0.34)', padding: '22px' }}>
               <h2 style={{ margin: '0 0 14px', fontSize: '24px', color: '#D9E7FF' }}>Active Search Intelligence</h2>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, minmax(0, 1fr))', gap: '10px', marginBottom: '14px' }} className="overview-grid">
                 {overviewCards.map(({ icon: Icon, label, value }) => (
@@ -51,7 +51,7 @@ export default function HomePage() {
               <div style={{ border: '1px solid #35588D', borderRadius: '12px', overflow: 'hidden' }}>
                 {candidateRows.map(([name, role, score, status], idx) => (
                   <div key={name} style={{ display: 'grid', gridTemplateColumns: '1.3fr 1fr 80px 110px', gap: '10px', padding: '11px 12px', borderBottom: idx < candidateRows.length - 1 ? '1px solid rgba(112,148,211,0.35)' : 'none', background: 'rgba(9,31,67,0.72)', color: '#EAF1FF', fontSize: '13px' }} className="candidate-row">
-                    <span>{name}</span><span>{role}</span><span style={{ color: '#91F1B2', fontWeight: 600 }}>{score}</span><span>{status}</span>
+                    <span className="candidate-name">{name}</span><span>{role}</span><span style={{ color: '#91F1B2', fontWeight: 600 }}>{score}</span><span>{status}</span>
                   </div>
                 ))}
               </div>
@@ -70,7 +70,7 @@ export default function HomePage() {
       </section>
 
       <section id="search-specialties" style={{ padding: '46px 0 20px' }}>
-        <div className="mkt-container" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '18px' }}>
+        <div className="mkt-container service-card-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '18px' }}>
           <article style={{ border: '1px solid #DCE3F0', borderRadius: '16px', padding: '28px', boxShadow: '0 8px 30px rgba(7,25,62,0.06)' }}>
             <h2 style={{ margin: '0 0 12px', fontSize: '28px', color: '#132647' }}>Healthcare Leadership Search</h2>
             <p style={{ margin: 0, fontSize: '17px', lineHeight: 1.65, color: '#4B5D7D' }}>Director of Nursing, LNHA, MDS, physician, allied health, and clinical leadership searches.</p>
@@ -87,7 +87,7 @@ export default function HomePage() {
       </section>
 
       <section style={{ padding: '20px 0' }}>
-        <div className="mkt-container" style={{ border: '1px solid #E2E8F4', borderRadius: '16px', padding: '22px', background: '#F9FBFF', display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0,1fr))', gap: '12px' }} className="proof-grid">
+        <div className="mkt-container proof-grid" style={{ border: '1px solid #E2E8F4', borderRadius: '16px', padding: '22px', background: '#F9FBFF', display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0,1fr))', gap: '12px' }}>
           {['Nationwide search coverage', 'Healthcare + technology specialization', 'Shortlist-driven delivery', 'High-touch recruiting execution'].map((point) => <div key={point} style={{ fontWeight: 600, color: '#263859', display: 'flex', gap: '8px', alignItems: 'center' }}><CheckCircle2 size={16} color="#2D5CE5" />{point}</div>)}
         </div>
       </section>
@@ -104,7 +104,7 @@ export default function HomePage() {
       </section>
 
       <section id="healthcare" style={{ padding: '24px 0 12px' }}>
-        <div className="mkt-container" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }} className="specialties-grid">
+        <div className="mkt-container specialties-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
           <div style={{ border: '1px solid #E0E6F2', borderRadius: '14px', padding: '20px' }}>
             <h2 style={{ marginTop: 0 }}>Healthcare Search Specialties</h2>
             <p style={{ margin: 0, color: '#4E607E' }}>Director of Nursing • LNHA • MDS Coordinator • Physicians • Allied Health • Clinical leadership</p>
@@ -154,14 +154,16 @@ export default function HomePage() {
         <div className="mkt-container" style={{ borderRadius: '18px', border: '1px solid #DCE4F2', background: 'linear-gradient(180deg,#F9FBFF 0%, #FFFFFF 100%)', padding: '34px', textAlign: 'center' }}>
           <h2 style={{ margin: '0 0 12px', fontSize: '34px', color: '#0D1B39' }}>Ready to build a stronger candidate pipeline?</h2>
           <p style={{ margin: '0 0 20px', color: '#526381', fontSize: '18px' }}>Tell us what you’re hiring for, and we’ll map the search strategy, target market, and candidate profile.</p>
-          <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary-lg" style={{ display: 'inline-flex' }}>Book an Intro Call</a>
+          <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary-lg final-home-cta" style={{ display: 'inline-flex' }}>Book an Intro Call</a>
         </div>
       </section>
 
       <style>{`
       @media (max-width: 1200px){.hero-grid,.process-grid{grid-template-columns:1fr!important}.overview-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}.trust-grid,.proof-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+      @media (max-width: 1000px){.service-card-grid{grid-template-columns:1fr!important}.search-intel-panel{max-width:760px;margin:0 auto}}
       @media (max-width: 900px){.specialties-grid,.who-we-help-grid,.shortlist-grid{grid-template-columns:1fr!important}}
-      @media (max-width: 768px){.overview-grid,.proof-grid{grid-template-columns:1fr!important}.candidate-row{grid-template-columns:1fr!important}.hero-cta{flex-direction:column}.trust-grid{grid-template-columns:1fr!important}}
+      @media (max-width: 768px){.home-hero{padding-top:52px!important}.hero-cta{flex-direction:column}.hero-cta>a{width:100%;min-width:0!important}.overview-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.proof-grid,.trust-grid{grid-template-columns:1fr!important}.candidate-row{grid-template-columns:minmax(0,1fr) auto!important;gap:6px 12px!important;padding:13px 12px!important}.candidate-row span{min-width:0}.candidate-row span:nth-child(2){grid-column:1/2;color:#B8C8E9}.candidate-row span:nth-child(3){grid-column:2/3;grid-row:1/2;text-align:right}.candidate-row span:nth-child(4){grid-column:2/3;grid-row:2/3;text-align:right;color:#D9E7FF}.candidate-name{font-weight:700}.final-home-cta{width:100%}}
+      @media (max-width: 520px){.search-intel-panel{padding:16px!important;border-radius:14px!important}.overview-grid{grid-template-columns:1fr!important}.trust-grid{gap:10px!important}.proof-grid{padding:18px!important}.process-grid{grid-template-columns:1fr!important}}
       `}</style>
     </div>
   );
