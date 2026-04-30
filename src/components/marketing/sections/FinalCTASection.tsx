@@ -22,9 +22,12 @@ export default function FinalCTASection() {
               style={{ display: 'inline-flex' }}
               title={`${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}`}
             >
-              Book a Strategy Call
+              Discuss a Search
               <ArrowRight size={18} />
             </a>
+            <p style={{ fontSize: '13px', color: 'var(--text-muted)', margin: '16px 0 0 0' }}>
+              Or email joel@aliviosearchpartners.com with the role you need to fill.
+            </p>
           </div>
         </AnimateInView>
       </div>

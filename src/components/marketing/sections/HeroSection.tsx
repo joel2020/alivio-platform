@@ -1,4 +1,5 @@
 import { ArrowRight } from 'lucide-react';
+import { CAL_COM_BOOKING_URL, DEMO_EVENT_DESCRIPTION, DEMO_EVENT_TITLE } from '../../../lib/demoBooking';
 
 const workflowBullets = [
   {
@@ -15,7 +16,7 @@ const workflowBullets = [
   },
   {
     title: 'Human-validated shortlists',
-    description: 'Expert recruiters validate top-ranked candidates so hiring teams receive quality-controlled shortlists in 21–30 days.',
+    description: 'Expert recruiters validate top-ranked candidates so hiring teams receive quality-controlled shortlists in 21-30 days.',
   },
 ];
 
@@ -34,10 +35,10 @@ export default function HeroSection() {
               color: 'var(--text-primary)',
             }}
           >
-            AI Agents That Source, Score, and Deliver Candidates — 24/7
+            AI Agents That Source, Score, and Deliver Candidates - 24/7
           </h1>
           <p style={{ fontSize: '20px', lineHeight: 1.7, color: 'var(--text-secondary)', margin: '0 auto 34px', maxWidth: '760px' }}>
-            Alivio operates an always-on hiring engine for healthcare and tech teams, delivering shortlist-ready candidates in 21–30 days with 90%+ 12-month retention.
+            Alivio operates an always-on hiring engine for healthcare and tech teams, delivering shortlist-ready candidates in 21-30 days with 90%+ 12-month retention.
           </p>
         </div>
 
@@ -53,8 +54,15 @@ export default function HeroSection() {
         </div>
 
         <div style={{ textAlign: 'center' }}>
-          <a href="/signup" className="mkt-btn-primary-lg" style={{ display: 'inline-flex' }}>
-            See the AI in Action
+          <a
+            href={CAL_COM_BOOKING_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mkt-btn-primary-lg"
+            style={{ display: 'inline-flex' }}
+            title={`${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}`}
+          >
+            Book an Intro Call
             <ArrowRight size={18} />
           </a>
         </div>

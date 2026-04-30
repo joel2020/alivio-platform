@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { CAL_COM_BOOKING_URL, DEMO_EVENT_DESCRIPTION, DEMO_EVENT_TITLE } from '../../lib/demoBooking';
@@ -41,7 +40,7 @@ export default function PricingPage() {
                   );
                 })}
               </ul>
-              <Link to="/signup" className="block text-center px-4 py-2.5 rounded font-medium text-sm" style={{ backgroundColor: '#4F46E5', color: '#FFFFFF' }}>Start Free →</Link>
+              <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="block text-center px-4 py-2.5 rounded font-medium text-sm" style={{ backgroundColor: '#4F46E5', color: '#FFFFFF' }} title={`${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}`}>Discuss a Search →</a>
             </div>
           ))}
         </div>
@@ -64,10 +63,10 @@ export default function PricingPage() {
 
       <section className="max-w-4xl mx-auto px-6 pb-24 text-center">
         <p style={{ color: '#FFFFFF', fontSize: '24px', marginBottom: '18px' }}>Ready to stop overpaying agencies?</p>
-        <p style={{ color: '#A0A0A0', marginBottom: '20px' }}>Book a demo or start free — no credit card required.</p>
+        <p style={{ color: '#A0A0A0', marginBottom: '20px' }}>Book an intro call or email joel@aliviosearchpartners.com with the role you need to fill.</p>
         <div style={{ display: 'flex', justifyContent: 'center', gap: '12px' }}>
-          <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-secondary" title={`${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}`}>Book a Demo</a>
-          <Link to="/signup" className="mkt-btn-primary">Start Free</Link>
+          <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-secondary" title={`${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}`}>Book an Intro Call</a>
+          <a href="mailto:joel@aliviosearchpartners.com" className="mkt-btn-primary">Send Us a Role</a>
         </div>
       </section>
     </div>

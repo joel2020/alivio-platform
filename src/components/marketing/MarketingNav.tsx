@@ -100,7 +100,7 @@ export default function MarketingNav() {
               className="mkt-btn-primary hidden-mobile"
               style={{ height: '40px' }}
             >
-              Book a Call
+              Book an Intro Call
             </a>
             <button
               onClick={() => setMobileOpen((o) => !o)}
@@ -126,7 +126,7 @@ export default function MarketingNav() {
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
           <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary" style={{ flex: 1, justifyContent: 'center' }} title={`${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}`}>
-            Book a Call
+            Book an Intro Call
           </a>
           <Link to="/login" className="mkt-btn-primary" style={{ flex: 1, justifyContent: 'center' }}>Sign In</Link>
         </div>
