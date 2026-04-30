@@ -55,6 +55,7 @@ import AdminSystemCheckPage from './pages/admin/AdminSystemCheckPage';
 const SITE_URL = 'https://aliviosearchpartners.com';
 const DEFAULT_KEYWORDS = 'ai recruitment, healthcare recruiting, healthcare staffing, nurse recruitment, clinician sourcing, tech leadership hiring, AI talent engine';
 const DEFAULT_OG_IMAGE = `${SITE_URL}/og`;
+const ENABLE_CLIENT_SHORTLIST_PORTAL = import.meta.env.VITE_ENABLE_CLIENT_SHORTLIST_PORTAL === 'true';
 
 function SeoManager() {
   const location = useLocation();
@@ -161,7 +162,9 @@ export default function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
             </Route>
-            <Route path="/client/shortlist/:token" element={<ClientShortlistPage />} />
+            {ENABLE_CLIENT_SHORTLIST_PORTAL && (
+              <Route path="/client/shortlist/:token" element={<ClientShortlistPage />} />
+            )}
             <Route element={<RequireOnboarding />}>
               <Route path="/onboarding/org" element={<OnboardingOrgPage />} />
               <Route path="/onboarding/role" element={<OnboardingRolePage />} />
