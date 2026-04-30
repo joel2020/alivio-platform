@@ -1,17 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
-import { useAuth } from '../../lib/auth';
 import { CAL_COM_BOOKING_URL, DEMO_EVENT_DESCRIPTION, DEMO_EVENT_TITLE } from '../../lib/demoBooking';
 
 const navLinks = [
-  { label: 'Search Specialties', href: '/product' },
-  { label: 'Healthcare', href: '/product' },
-  { label: 'Technology', href: '/product' },
-  { label: 'Process', href: '/product' },
+  { label: 'Search Specialties', href: '/#search-specialties' },
+  { label: 'Healthcare', href: '/#healthcare' },
+  { label: 'Technology', href: '/#technology' },
+  { label: 'Process', href: '/#process' },
   { label: 'About', href: '/developers' },
   { label: 'Insights', href: '/blog' },
-  { label: 'Contact', href: '/contact' },
+  { label: 'Contact', href: '/#contact' },
 ];
 
 function handleHashLink(href: string, e: React.MouseEvent, closeMenu?: () => void) {
@@ -26,11 +25,8 @@ function handleHashLink(href: string, e: React.MouseEvent, closeMenu?: () => voi
 
 export default function MarketingNav() {
   const location = useLocation();
-  const { session } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  const showStartFree = !session;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -95,7 +91,6 @@ export default function MarketingNav() {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Link to="/login" className="mkt-btn-ghost hidden-mobile" style={{ height: '40px' }}>Sign In</Link>
-            {showStartFree ? <Link to="/signup" className="mkt-btn-secondary hidden-mobile" style={{ height: '40px' }}>Start Free</Link> : null}
             <a
               href={CAL_COM_BOOKING_URL}
               target="_blank"
@@ -133,7 +128,6 @@ export default function MarketingNav() {
           <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary" style={{ flex: 1, justifyContent: 'center' }} title={`${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}`}>
             Book a Call
           </a>
-          {showStartFree ? <Link to="/signup" className="mkt-btn-secondary" style={{ flex: 1, justifyContent: 'center' }}>Start Free</Link> : null}
           <Link to="/login" className="mkt-btn-primary" style={{ flex: 1, justifyContent: 'center' }}>Sign In</Link>
         </div>
       </div>
