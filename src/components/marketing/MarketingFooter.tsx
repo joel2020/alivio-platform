@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Linkedin, Mail } from 'lucide-react';
-import { CAL_COM_BOOKING_URL, DEMO_EVENT_DESCRIPTION, DEMO_EVENT_TITLE } from '../../lib/demoBooking';
+import { CAL_COM_BOOKING_URL, CONTACT_EMAIL, DEMO_EVENT_DESCRIPTION, DEMO_EVENT_TITLE } from '../../lib/demoBooking';
 
 const productLinks = [
   { label: 'How It Works', href: '/#how-it-works' },
@@ -9,7 +9,7 @@ const productLinks = [
 ];
 
 const companyLinks = [
-  { label: 'Book a Demo', href: CAL_COM_BOOKING_URL, external: true },
+  { label: 'Book an Intro Call', href: CAL_COM_BOOKING_URL, external: true },
   { label: 'Changelog', href: '/developers', external: false },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/company/aliviosearchpartners/', external: true },
 ];
@@ -32,10 +32,10 @@ export default function MarketingFooter() {
             <div style={{ display: 'flex', gap: '12px' }}>
               <a href="https://www.linkedin.com/company/aliviosearchpartners/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" style={{ color: '#A1A1AA' }}><Linkedin size={18} /></a>
               <a href="https://x.com/aliviosearch" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter" style={{ color: '#A1A1AA', fontSize: '14px', textDecoration: 'none' }}>X</a>
-              <a href="mailto:joel@aliviosearchpartners.com" aria-label="Contact email" style={{ color: '#A1A1AA' }}><Mail size={18} /></a>
+              <a href={`mailto:${CONTACT_EMAIL}`} aria-label="Contact email" style={{ color: '#A1A1AA' }}><Mail size={18} /></a>
             </div>
             <p style={{ fontSize: '13px', color: '#71717A', marginTop: '14px' }}>AI Recruitment Infrastructure for Healthcare & Tech</p>
-            <p style={{ fontSize: '13px', color: '#71717A', marginTop: '6px' }}>joel@aliviosearchpartners.com</p>
+            <p style={{ fontSize: '13px', color: '#71717A', marginTop: '6px' }}>{CONTACT_EMAIL}</p>
             <p style={{ fontSize: '13px', color: '#71717A', marginTop: '6px' }}><a href="/" style={{ color: '#71717A' }}>aliviosearchpartners.com</a></p>
           </div>
 
@@ -51,7 +51,7 @@ export default function MarketingFooter() {
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {companyLinks.map((item) => (
                 <li key={item.label}>
-                  <a href={item.href} target={item.external ? '_blank' : undefined} rel={item.external ? 'noopener noreferrer' : undefined} style={{ fontSize: '14px', color: '#A1A1AA', textDecoration: 'none' }} title={item.label === 'Book a Demo' ? `${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}` : undefined}>
+                  <a href={item.href} target={item.external ? '_blank' : undefined} rel={item.external ? 'noopener noreferrer' : undefined} style={{ fontSize: '14px', color: '#A1A1AA', textDecoration: 'none' }} title={item.label === 'Book an Intro Call' ? `${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}` : undefined}>
                     {item.label}
                   </a>
                 </li>

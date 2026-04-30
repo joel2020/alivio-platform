@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
 import { useSeo } from '../../lib/seo';
+import { CAL_COM_BOOKING_URL } from '../../lib/demoBooking';
 
 const endpoints = `POST   /roles                           Create a new role
 GET    /roles/{id}                      Get role details
@@ -168,9 +168,9 @@ export default function DevelopersPage() {
           ))}
         </div>
         <div className="flex gap-4">
-          <Link to="/signup" className="px-6 py-3 rounded font-medium text-white" style={{ backgroundColor: '#4F46E5' }}>
-            Get API Key →
-          </Link>
+          <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="px-6 py-3 rounded font-medium text-white" style={{ backgroundColor: '#4F46E5' }}>
+            Book an Intro Call →
+          </a>
           <a href="#" className="px-6 py-3 rounded font-medium border" style={{ color: '#FFFFFF', borderColor: '#1E1E1E' }}>
             Read Full Documentation →
           </a>

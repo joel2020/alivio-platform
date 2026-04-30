@@ -71,7 +71,7 @@ export default function ProductPage() {
             A single workspace for your entire clinical hiring pipeline. Designed for healthcare HR teams managing multiple facilities and roles.
           </p>
           <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="inline-block px-6 py-3 rounded font-medium text-white" style={{ backgroundColor: '#4F46E5' }} title={`${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}`}>
-            Book a Demo →
+            Book an Intro Call →
           </a>
         </section>
       </div>

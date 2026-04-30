@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { Check } from 'lucide-react';
 import AnimateInView from '../AnimateInView';
 import { CAL_COM_BOOKING_URL } from '../../../lib/demoBooking';
@@ -8,10 +7,11 @@ const plans = [
     name: 'Starter',
     price: '$0',
     period: '/month',
-    tagline: 'For exploring the platform',
+    tagline: 'For a focused search discussion',
     features: ['1 active role', 'Up to 50 sourced candidates', 'Basic scoring', 'Email outreach'],
-    cta: 'Start Free',
-    ctaLink: '/signup',
+    cta: 'Discuss a Search',
+    ctaLink: CAL_COM_BOOKING_URL,
+    external: true,
     highlight: false,
   },
   {
@@ -27,8 +27,9 @@ const plans = [
       'Agent activity dashboard',
       'Priority support',
     ],
-    cta: 'Start Free',
-    ctaLink: '/signup',
+    cta: 'Book an Intro Call',
+    ctaLink: CAL_COM_BOOKING_URL,
+    external: true,
     highlight: true,
     badge: 'Most Popular',
   },
@@ -44,7 +45,7 @@ const plans = [
       'SLA guarantees',
       'Volume pricing',
     ],
-    cta: 'Contact Us',
+    cta: 'Send Us a Role',
     ctaLink: CAL_COM_BOOKING_URL,
     external: true,
     highlight: false,
@@ -130,25 +131,15 @@ export default function PricingSection() {
                   </ul>
                 </div>
 
-                {plan.external ? (
-                  <a
-                    href={plan.ctaLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={plan.highlight ? 'mkt-btn-primary' : 'mkt-btn-secondary'}
-                    style={{ width: '100%', justifyContent: 'center' }}
-                  >
-                    {plan.cta}
-                  </a>
-                ) : (
-                  <Link
-                    to={plan.ctaLink}
-                    className={plan.highlight ? 'mkt-btn-primary' : 'mkt-btn-secondary'}
-                    style={{ width: '100%', justifyContent: 'center' }}
-                  >
-                    {plan.cta}
-                  </Link>
-                )}
+                <a
+                  href={plan.ctaLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={plan.highlight ? 'mkt-btn-primary' : 'mkt-btn-secondary'}
+                  style={{ width: '100%', justifyContent: 'center' }}
+                >
+                  {plan.cta}
+                </a>
               </div>
             </AnimateInView>
           ))}
