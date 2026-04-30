@@ -8,11 +8,11 @@ import LiveActivityFeed from '../../components/app/LiveActivityFeed';
 import Toast from '../../components/app/Toast';
 
 interface ParsedResumePreview {
-  fullName?: string;
-  currentTitle?: string;
-  currentCompany?: string;
-  location?: string;
-  yearsExperience?: number;
+  fullName?: string | null;
+  currentTitle?: string | null;
+  currentCompany?: string | null;
+  location?: string | null;
+  yearsExperience?: number | null;
   skills?: string[];
   licenses?: string[];
   certifications?: string[];
