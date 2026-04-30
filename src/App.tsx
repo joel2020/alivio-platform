@@ -60,8 +60,8 @@ function SeoManager() {
   const location = useLocation();
   const pathname = location.pathname;
   const canonicalUrl = `${SITE_URL}${pathname}`;
-  let title = 'Alivio Search Partners | AI-Powered Recruitment for Healthcare & Tech';
-  let description = 'Alivio deploys AI agents that source, score, and deliver pre-vetted candidates for healthcare and tech organizations — in 21 days or less.';
+  let title = 'Alivio Search Partners | Healthcare & Technology Executive Search';
+  let description = 'Alivio Search Partners is an executive search and recruiting firm specializing in healthcare recruiting, technology recruiting, AI recruiting, and candidate sourcing for hard-to-fill roles.';
   let keywords = DEFAULT_KEYWORDS;
   let robots = 'index, follow';
   if (pathname === '/product') {
