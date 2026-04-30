@@ -14,6 +14,7 @@ import TermsPage from './pages/marketing/TermsPage';
 import BlogPage from './pages/marketing/BlogPage';
 import BlogPostPage from './pages/marketing/BlogPostPage';
 import ContactPage from './pages/marketing/ContactPage';
+import SiteVersionPage from './pages/marketing/SiteVersionPage';
 
 import LoginPage from './pages/auth/LoginPage';
 import SignupPage from './pages/auth/SignupPage';
@@ -77,6 +78,10 @@ function SeoManager() {
   } else if (pathname === '/contact') {
     title = 'Contact Alivio Search Partners | Healthcare Recruiting Experts';
     description = 'Talk with Alivio Search Partners about healthcare recruiting strategy, candidate pipelines, and AI-enabled staffing support.';
+  } else if (pathname === '/site-version') {
+    title = 'Site Version | Alivio Search Partners';
+    description = 'Deployment smoke-test markers for the Alivio Search Partners homepage.';
+    robots = 'noindex, nofollow';
   } else if (pathname === '/blog') {
     title = 'Healthcare Recruiting Insights | Alivio Search Partners Blog';
     description = 'Expert insights on healthcare recruiting, nursing shortage solutions, and AI-powered clinical staffing strategies.';
@@ -149,6 +154,7 @@ export default function App() {
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:slug" element={<BlogPostPage />} />
               <Route path="/contact" element={<ContactPage />} />
+              <Route path="/site-version" element={<SiteVersionPage />} />
             </Route>
             <Route path="/about/*" element={<Navigate to="/" replace />} />
             <Route path="/services/*" element={<Navigate to="/" replace />} />
