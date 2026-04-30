@@ -13,7 +13,9 @@
     "backend:dev": "tsx watch backend/src/server.ts",
     "backend:start": "tsx backend/src/server.ts",
     "backend:typecheck": "tsc --noEmit -p backend/tsconfig.json",
-    "launch:check": "node scripts/launch-readiness-check.mjs"
+    "launch:check": "node scripts/launch-readiness-check.mjs",
+    "verify:homepage": "node scripts/verify-homepage.mjs",
+    "verify:production": "node scripts/verify-production-readiness.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.4",
