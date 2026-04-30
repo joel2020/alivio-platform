@@ -65,8 +65,13 @@ export default function ClientShortlistPage() {
   }, [token]);
 
   useEffect(() => {
-    if (!endpoint) return;
+    if (!endpoint) {
+      setLoading(false);
+      setError('Client shortlist is unavailable because Supabase is not configured.');
+      return;
+    }
     setLoading(true);
+    setError(null);
     fetch(endpoint)
       .then(async (res) => {
         const json = await res.json();

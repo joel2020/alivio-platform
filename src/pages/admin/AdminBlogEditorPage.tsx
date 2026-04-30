@@ -32,12 +32,13 @@ export default function AdminBlogEditorPage() {
 
   useEffect(() => {
     if (!isEdit || !id) return;
+    const postId = id;
 
     async function loadPost() {
       setLoading(true);
       setError(null);
       try {
-        const post = await fetchAdminBlogPostById(id);
+        const post = await fetchAdminBlogPostById(postId);
         if (!post) {
           setError('Post not found.');
           return;

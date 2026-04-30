@@ -36,6 +36,12 @@ function callStatusLabel(status: string) {
   return status;
 }
 
+function callSummaryText(call: VoiceCall) {
+  if (typeof call.ai_summary === 'string') return call.ai_summary;
+  if (call.ai_summary?.summary) return call.ai_summary.summary;
+  return call.call_summary ?? '';
+}
+
 function StatusBadge({ status }: { status: string }) {
   const normalized = callStatusLabel(status);
   const styles: Record<string, { bg: string; text: string }> = {
@@ -321,19 +327,22 @@ export default function CallsPage() {
     setTranscriptLoading(true);
     setDetailTranscript(null);
 
-    supabase
-      .from('voice_transcripts')
-      .select('*')
-      .eq('call_id', detailCall.call.id)
-      .maybeSingle()
-      .then(({ data, error: transcriptError }) => {
+    void (async () => {
+      try {
+        const { data, error: transcriptError } = await supabase
+          .from('voice_transcripts')
+          .select('*')
+          .eq('call_id', detailCall.call.id)
+          .maybeSingle();
         if (transcriptError) {
           setToast(`Unable to load transcript: ${transcriptError.message}`);
           return;
         }
         setDetailTranscript(data);
-      })
-      .finally(() => setTranscriptLoading(false));
+      } finally {
+        setTranscriptLoading(false);
+      }
+    })();
   }, [detailCall]);
 
   const callRows = useMemo<CallRow[]>(() => {
@@ -362,7 +371,7 @@ export default function CallsPage() {
   function exportCsv() {
     const headers = ['Candidate Name', 'Role', 'Date/Time', 'Duration', 'Status', 'AI Summary'];
     const lines = filteredRows.map((row) => {
-      const summary = (row.call.ai_summary ?? row.call.call_summary ?? '').replace(/"/g, '""');
+      const summary = callSummaryText(row.call).replace(/"/g, '""');
       return [
         `"${row.candidateName.replace(/"/g, '""')}"`,
         `"${row.roleTitle.replace(/"/g, '""')}"`,
@@ -526,7 +535,7 @@ export default function CallsPage() {
                       <td style={{ padding: '12px', color: 'var(--text-secondary)', fontSize: '0.8125rem' }}>{formatDuration(row.call.duration_seconds)}</td>
                       <td style={{ padding: '12px' }}><StatusBadge status={row.call.status} /></td>
                       <td style={{ padding: '12px', color: 'var(--text-muted)', fontSize: '0.75rem', maxWidth: '320px' }}>
-                        {(row.call.ai_summary ?? row.call.call_summary ?? 'No summary yet.').slice(0, 120)}
+                        {(callSummaryText(row.call) || 'No summary yet.').slice(0, 120)}
                       </td>
                     </tr>
                   ))
@@ -554,7 +563,7 @@ export default function CallsPage() {
                 <div className="card" style={{ padding: '12px' }}>
                   <p style={{ fontSize: '0.6875rem', color: 'var(--text-muted)', marginBottom: '4px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>AI Summary</p>
                   <p style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                    {detailCall.call.ai_summary ?? detailCall.call.call_summary ?? 'Summary not available yet.'}
+                    {callSummaryText(detailCall.call) || 'Summary not available yet.'}
                   </p>
                 </div>
 
@@ -609,7 +618,7 @@ export default function CallsPage() {
         onSubmit={handleCreateCall}
       />
 
-      <Toast message={toast} onClose={() => setToast(null)} />
+      {toast && <Toast message={toast} onDismiss={() => setToast(null)} />}
     </div>
   );
 }

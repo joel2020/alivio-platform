@@ -84,7 +84,6 @@ export interface Candidate {
   ai_scored_at: string | null;
   pipeline_stage: PipelineStage;
   archived_reason: string | null;
-  location?: string | null;
   logo_url?: string | null;
   created_at: string;
   updated_at: string;
@@ -109,7 +108,7 @@ export interface VoiceCall {
   recording_url: string | null;
   qualification_status: QualificationStatus | null;
   extracted_data: Record<string, unknown> | null;
-  ai_summary: {
+  ai_summary: string | {
     summary?: string;
     interest_level?: string;
     availability?: string;
@@ -117,11 +116,9 @@ export interface VoiceCall {
     candidate_signals?: string[];
   } | null;
   call_summary: string | null;
-  ai_summary?: string | null;
   escalated: boolean;
   escalation_reason: string | null;
   escalated_to: string | null;
-  location?: string | null;
   logo_url?: string | null;
   created_at: string;
   updated_at: string;
@@ -245,7 +242,6 @@ export interface Client {
   notes: string | null;
   last_contacted_at: string | null;
   next_followup_at: string | null;
-  location?: string | null;
   logo_url?: string | null;
   created_at: string;
   updated_at: string;
