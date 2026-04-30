@@ -30,6 +30,7 @@ export default function BlogPostPage() {
       setLoading(false);
       return;
     }
+    const postSlug = slug;
 
     async function loadPost() {
       setLoading(true);
@@ -37,7 +38,7 @@ export default function BlogPostPage() {
       setNotFound(false);
 
       try {
-        const loadedPost = await fetchPublishedBlogPostBySlug(slug);
+        const loadedPost = await fetchPublishedBlogPostBySlug(postSlug);
         setPost(loadedPost);
 
         if (loadedPost) {

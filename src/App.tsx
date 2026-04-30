@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
 import { AuthProvider } from './lib/auth';
 import { ThemeProvider } from './lib/theme';
 import { isSupabaseConfigured, supabaseConfigError } from './lib/supabase';
@@ -103,7 +103,7 @@ function SeoManager() {
     title = 'Client Candidate Shortlist | Alivio Search Partners';
     description = 'Review AI-ranked candidate shortlists prepared by Alivio Search Partners.';
     robots = 'noindex, nofollow';
-  } else if (pathname.startsWith('/onboarding') || pathname.startsWith('/dashboard') || pathname.startsWith('/crm') || pathname.startsWith('/pipeline') || pathname.startsWith('/roles') || pathname.startsWith('/outreach') || pathname.startsWith('/calls') || pathname.startsWith('/agents') || pathname.startsWith('/candidates') || pathname.startsWith('/settings') || pathname.startsWith('/admin')) {
+  } else if (pathname.startsWith('/app') || pathname.startsWith('/onboarding') || pathname.startsWith('/dashboard') || pathname.startsWith('/crm') || pathname.startsWith('/pipeline') || pathname.startsWith('/roles') || pathname.startsWith('/outreach') || pathname.startsWith('/calls') || pathname.startsWith('/agents') || pathname.startsWith('/candidates') || pathname.startsWith('/settings') || pathname.startsWith('/admin')) {
     title = 'Alivio Platform | Healthcare Recruiting Workspace';
     description = 'Manage healthcare recruiting campaigns, role requirements, and clinician pipelines inside the Alivio platform.';
     robots = 'noindex, nofollow';
@@ -119,20 +119,24 @@ function SeoManager() {
   return null;
 }
 
+function SupabaseConfigNotice() {
+  return (
+    <div className="min-h-screen flex items-center justify-center p-6" style={{ backgroundColor: 'var(--bg-base)' }}>
+      <div className="max-w-xl w-full rounded-xl border p-6" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)' }}>
+        <h1 className="text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Supabase environment not configured</h1>
+        <p className="text-sm mb-3" style={{ color: 'var(--text-secondary)' }}>{supabaseConfigError}</p>
+        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Create a local <code>.env</code> file from <code>.env.example</code>, then restart the dev server.</p>
+      </div>
+    </div>
+  );
+}
+
+function RequireSupabaseConfig() {
+  if (!isSupabaseConfigured) return <SupabaseConfigNotice />;
+  return <Outlet />;
+}
+
 export default function App() {
-  if (!isSupabaseConfigured) {
-    return (
-      <ThemeProvider>
-        <div className="min-h-screen flex items-center justify-center p-6" style={{ backgroundColor: 'var(--bg-base)' }}>
-          <div className="max-w-xl w-full rounded-xl border p-6" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border)' }}>
-            <h1 className="text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Supabase environment not configured</h1>
-            <p className="text-sm mb-3" style={{ color: 'var(--text-secondary)' }}>{supabaseConfigError}</p>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Create a local <code>.env</code> file from <code>.env.example</code>, then restart the dev server.</p>
-          </div>
-        </div>
-      </ThemeProvider>
-    );
-  }
   return (
     <ThemeProvider>
       <AuthProvider>
@@ -161,42 +165,46 @@ export default function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
             </Route>
-            <Route path="/client/shortlist/:token" element={<ClientShortlistPage />} />
-            <Route element={<RequireOnboarding />}>
-              <Route path="/onboarding/org" element={<OnboardingOrgPage />} />
-              <Route path="/onboarding/role" element={<OnboardingRolePage />} />
-            </Route>
-            <Route element={<AppLayout />}>
-              <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/dashboard/pipeline" element={<Navigate to="/pipeline" replace />} />
-              <Route path="/pipeline" element={<PipelineOverviewPage />} />
-              <Route path="/roles" element={<RolesPage />} />
-              <Route path="/roles/new" element={<RoleNewPage />} />
-              <Route path="/roles/:id/pipeline" element={<PipelinePage />} />
-              <Route path="/roles/:id/settings" element={<RoleSettingsPage />} />
-              <Route path="/outreach" element={<OutreachPage />} />
-              <Route path="/agents" element={<AgentsPage />} />
-              <Route path="/candidates/:id" element={<CandidatePage />} />
-              <Route path="/settings" element={<SettingsPage />} />
-              <Route path="/calls" element={<CallsPage />} />
-              <Route path="/crm" element={<Navigate to="/dashboard/crm" replace />} />
-              <Route path="/crm/templates" element={<Navigate to="/dashboard/crm/templates" replace />} />
-              <Route path="/dashboard/crm" element={<CrmPage />} />
-              <Route path="/dashboard/crm/templates" element={<CrmTemplatesPage />} />
-              <Route path="/dashboard/crm/:id" element={<CrmClientPage />} />
-              <Route element={<AdminRoute />}>
-                <Route path="/admin" element={<AdminDashboardPage />} />
-                <Route path="/admin/users" element={<AdminUsersPage />} />
-                <Route path="/admin/organizations" element={<AdminOrganizationsPage />} />
-                <Route path="/admin/crm" element={<Navigate to="/dashboard/crm" replace />} />
-                <Route path="/admin/blog" element={<AdminBlogPage />} />
-                <Route path="/admin/blog/new" element={<AdminBlogEditorPage />} />
-                <Route path="/admin/blog/:id/edit" element={<AdminBlogEditorPage />} />
-                <Route path="/admin/ai-monitor" element={<AdminAiMonitorPage />} />
-                <Route path="/admin/email-inbox" element={<EmailInboxPage />} />
-                <Route path="/admin/emails" element={<Navigate to="/admin/email-inbox" replace />} />
-                <Route path="/admin/tasks" element={<AdminTasksPage />} />
-                <Route path="/admin/system-check" element={<AdminSystemCheckPage />} />
+            <Route element={<RequireSupabaseConfig />}>
+              <Route path="/client/shortlist/:token" element={<ClientShortlistPage />} />
+              <Route element={<RequireOnboarding />}>
+                <Route path="/onboarding/org" element={<OnboardingOrgPage />} />
+                <Route path="/onboarding/role" element={<OnboardingRolePage />} />
+              </Route>
+              <Route element={<AppLayout />}>
+                <Route path="/app" element={<Navigate to="/dashboard" replace />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/dashboard/pipeline" element={<Navigate to="/pipeline" replace />} />
+                <Route path="/pipeline" element={<PipelineOverviewPage />} />
+                <Route path="/roles" element={<RolesPage />} />
+                <Route path="/roles/new" element={<RoleNewPage />} />
+                <Route path="/roles/:id/pipeline" element={<PipelinePage />} />
+                <Route path="/roles/:id/settings" element={<RoleSettingsPage />} />
+                <Route path="/outreach" element={<OutreachPage />} />
+                <Route path="/agents" element={<AgentsPage />} />
+                <Route path="/candidates" element={<Navigate to="/pipeline" replace />} />
+                <Route path="/candidates/:id" element={<CandidatePage />} />
+                <Route path="/settings" element={<SettingsPage />} />
+                <Route path="/calls" element={<CallsPage />} />
+                <Route path="/crm" element={<Navigate to="/dashboard/crm" replace />} />
+                <Route path="/crm/templates" element={<Navigate to="/dashboard/crm/templates" replace />} />
+                <Route path="/dashboard/crm" element={<CrmPage />} />
+                <Route path="/dashboard/crm/templates" element={<CrmTemplatesPage />} />
+                <Route path="/dashboard/crm/:id" element={<CrmClientPage />} />
+                <Route element={<AdminRoute />}>
+                  <Route path="/admin" element={<AdminDashboardPage />} />
+                  <Route path="/admin/users" element={<AdminUsersPage />} />
+                  <Route path="/admin/organizations" element={<AdminOrganizationsPage />} />
+                  <Route path="/admin/crm" element={<Navigate to="/dashboard/crm" replace />} />
+                  <Route path="/admin/blog" element={<AdminBlogPage />} />
+                  <Route path="/admin/blog/new" element={<AdminBlogEditorPage />} />
+                  <Route path="/admin/blog/:id/edit" element={<AdminBlogEditorPage />} />
+                  <Route path="/admin/ai-monitor" element={<AdminAiMonitorPage />} />
+                  <Route path="/admin/email-inbox" element={<EmailInboxPage />} />
+                  <Route path="/admin/emails" element={<Navigate to="/admin/email-inbox" replace />} />
+                  <Route path="/admin/tasks" element={<AdminTasksPage />} />
+                  <Route path="/admin/system-check" element={<AdminSystemCheckPage />} />
+                </Route>
               </Route>
             </Route>
             <Route path="/og" element={<OGImagePage />} />

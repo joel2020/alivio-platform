@@ -23,7 +23,7 @@
   ],
   "headers": [
     {
-      "source": "/(dashboard|crm|candidates|roles|settings|pipeline|calls|outreach|agents|onboarding|admin)(.*)",
+      "source": "/(app|dashboard|crm|candidates|roles|settings|pipeline|calls|outreach|agents|onboarding|admin)(.*)",
       "headers": [
         {
           "key": "x-robots-tag",

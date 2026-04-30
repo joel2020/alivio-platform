@@ -87,7 +87,7 @@ export default function HomePage() {
       </section>
 
       <section style={{ padding: '20px 0' }}>
-        <div className="mkt-container" style={{ border: '1px solid #E2E8F4', borderRadius: '16px', padding: '22px', background: '#F9FBFF', display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0,1fr))', gap: '12px' }} className="proof-grid">
+        <div className="mkt-container proof-grid" style={{ border: '1px solid #E2E8F4', borderRadius: '16px', padding: '22px', background: '#F9FBFF', display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0,1fr))', gap: '12px' }}>
           {['Nationwide search coverage', 'Healthcare + technology specialization', 'Shortlist-driven delivery', 'High-touch recruiting execution'].map((point) => <div key={point} style={{ fontWeight: 600, color: '#263859', display: 'flex', gap: '8px', alignItems: 'center' }}><CheckCircle2 size={16} color="#2D5CE5" />{point}</div>)}
         </div>
       </section>
@@ -104,7 +104,7 @@ export default function HomePage() {
       </section>
 
       <section id="healthcare" style={{ padding: '24px 0 12px' }}>
-        <div className="mkt-container" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }} className="specialties-grid">
+        <div className="mkt-container specialties-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
           <div style={{ border: '1px solid #E0E6F2', borderRadius: '14px', padding: '20px' }}>
             <h2 style={{ marginTop: 0 }}>Healthcare Search Specialties</h2>
             <p style={{ margin: 0, color: '#4E607E' }}>Director of Nursing • LNHA • MDS Coordinator • Physicians • Allied Health • Clinical leadership</p>
