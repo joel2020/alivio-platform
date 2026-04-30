@@ -60,8 +60,8 @@ function SeoManager() {
   const location = useLocation();
   const pathname = location.pathname;
   const canonicalUrl = `${SITE_URL}${pathname}`;
-  let title = 'Alivio Search Partners | Healthcare & Technology Executive Search';
-  let description = 'Alivio Search Partners is an executive search and recruiting firm specializing in healthcare recruiting, technology recruiting, AI recruiting, and candidate sourcing for hard-to-fill roles.';
+  let title = 'Alivio Search Partners | Healthcare & Technology Recruiting Firm';
+  let description = 'Alivio Search Partners helps healthcare and technology organizations hire hard-to-find talent through senior recruiting expertise, AI-enabled sourcing, and client-ready candidate shortlists.';
   let keywords = DEFAULT_KEYWORDS;
   let robots = 'index, follow';
   if (pathname === '/product') {
