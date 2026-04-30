@@ -202,7 +202,16 @@ export default function AgentsPage() {
     setParsingResume(true);
     try {
       const parsed = await parseResume(resumeText.trim());
-      setParsedPreview(parsed.data);
+      setParsedPreview({
+        fullName: parsed.data.fullName ?? undefined,
+        currentTitle: parsed.data.recentRoles[0]?.title,
+        currentCompany: parsed.data.recentRoles[0]?.company,
+        location: parsed.data.location ?? undefined,
+        yearsExperience: parsed.data.yearsExperience ?? undefined,
+        skills: parsed.data.skills,
+        certifications: parsed.data.certifications,
+        education: parsed.data.education,
+      });
       setToast('Resume parsed successfully.');
     } catch (error) {
       console.error(error);

@@ -417,19 +417,22 @@ export default function CandidatePage() {
     if (!selectedCallId) return;
     setTranscriptLoading(true);
     setTranscriptError(null);
-    supabase
-      .from('voice_transcripts')
-      .select('*')
-      .eq('call_id', selectedCallId)
-      .maybeSingle()
-      .then(({ data, error }) => {
+    void (async () => {
+      try {
+        const { data, error } = await supabase
+          .from('voice_transcripts')
+          .select('*')
+          .eq('call_id', selectedCallId)
+          .maybeSingle();
         if (error) {
           setTranscriptError(error.message);
           return;
         }
         setTranscript(data);
-      })
-      .finally(() => setTranscriptLoading(false));
+      } finally {
+        setTranscriptLoading(false);
+      }
+    })();
   }, [selectedCallId]);
 
   useEffect(() => {
@@ -467,7 +470,7 @@ export default function CandidatePage() {
         }
         setAiSummary(data.data);
         setCalls((current) => current.map((call) => (
-          call.id === selectedCallId ? { ...call, ai_summary: data.data } : call
+          call.id === selectedCallId ? { ...call, ai_summary: data.data ?? null } : call
         )));
       })
       .finally(() => setSummaryLoading(false));
