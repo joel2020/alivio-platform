@@ -49,7 +49,7 @@
       ]
     },
     {
-      "source": "/(about|pricing|blog|blog/.*)",
+      "source": "/(about|blog|blog/.*)",
       "headers": [
         {
           "key": "x-robots-tag",

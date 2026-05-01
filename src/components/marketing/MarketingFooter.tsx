@@ -4,7 +4,6 @@ import { CAL_COM_BOOKING_URL, DEMO_EVENT_DESCRIPTION, DEMO_EVENT_TITLE } from '.
 
 const productLinks = [
   { label: 'How It Works', href: '/#how-it-works' },
-  { label: 'Pricing', href: '/pricing' },
   { label: 'Features', href: '/#how-it-works' },
 ];
 
