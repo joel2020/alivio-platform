@@ -4,13 +4,13 @@ import { CAL_COM_BOOKING_URL, DEMO_EVENT_DESCRIPTION, DEMO_EVENT_TITLE } from '.
 
 const productLinks = [
   { label: 'How It Works', href: '/#how-it-works' },
-  { label: 'Pricing', href: '/pricing' },
+  { label: 'Industries', href: '/industries' },
   { label: 'Features', href: '/#how-it-works' },
 ];
 
 const companyLinks = [
   { label: 'Book a Demo', href: CAL_COM_BOOKING_URL, external: true },
-  { label: 'Changelog', href: '/developers', external: false },
+  { label: 'Case Studies', href: '/case-studies', external: false },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/company/aliviosearchpartners/', external: true },
 ];
 
