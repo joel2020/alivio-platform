@@ -7,13 +7,14 @@ import AppLayout from './components/app/AppLayout';
 
 import HomePage from './pages/marketing/HomePage';
 import ProductPage from './pages/marketing/ProductPage';
-import PricingPage from './pages/marketing/PricingPage';
 import DevelopersPage from './pages/marketing/DevelopersPage';
 import PrivacyPage from './pages/marketing/PrivacyPage';
 import TermsPage from './pages/marketing/TermsPage';
 import BlogPage from './pages/marketing/BlogPage';
 import BlogPostPage from './pages/marketing/BlogPostPage';
 import ContactPage from './pages/marketing/ContactPage';
+import CaseStudiesPage from './pages/marketing/CaseStudiesPage';
+import IndustriesPage from './pages/marketing/IndustriesPage';
 
 import LoginPage from './pages/auth/LoginPage';
 import SignupPage from './pages/auth/SignupPage';
@@ -67,9 +68,6 @@ function SeoManager() {
   if (pathname === '/product') {
     title = 'Alivio Talent Engine | AI-Powered Hiring System';
     description = 'Explore the Alivio Talent Engine: AI agents for autonomous sourcing, fit scoring, outreach orchestration, and human-validated shortlist delivery.';
-  } else if (pathname === '/pricing') {
-    title = 'Healthcare Staffing Software Pricing | Alivio Search Partners';
-    description = 'Explore Alivio Search Partners pricing for healthcare recruiting teams hiring nurses, clinicians, and healthcare operations leaders.';
   } else if (pathname === '/developers') {
     title = 'Healthcare Recruiting API & Integrations | Alivio Search Partners';
     description = 'Connect Alivio Search Partners to your ATS and healthcare recruiting stack with API-first workflows and automation.';
@@ -142,21 +140,20 @@ export default function App() {
             <Route element={<MarketingLayout />}>
               <Route path="/" element={<HomePage />} />
               <Route path="/product" element={<ProductPage />} />
-              <Route path="/pricing" element={<PricingPage />} />
               <Route path="/developers" element={<DevelopersPage />} />
               <Route path="/privacy" element={<PrivacyPage />} />
               <Route path="/terms" element={<TermsPage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:slug" element={<BlogPostPage />} />
               <Route path="/contact" element={<ContactPage />} />
+              <Route path="/case-studies" element={<CaseStudiesPage />} />
+              <Route path="/industries" element={<IndustriesPage />} />
             </Route>
             <Route path="/about/*" element={<Navigate to="/" replace />} />
             <Route path="/services/*" element={<Navigate to="/" replace />} />
             <Route path="/team/*" element={<Navigate to="/" replace />} />
             <Route path="/careers/*" element={<Navigate to="/" replace />} />
-            <Route path="/case-studies/*" element={<Navigate to="/" replace />} />
-            <Route path="/industries/*" element={<Navigate to="/" replace />} />
-            <Route path="/resources/*" element={<Navigate to="/" replace />} />
+                                    <Route path="/resources/*" element={<Navigate to="/" replace />} />
             <Route element={<RequireLoggedOut />}>
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />

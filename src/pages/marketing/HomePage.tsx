@@ -39,24 +39,24 @@ export default function HomePage() {
         <div className="mkt-container" style={{ maxWidth: '1180px' }}>
           <div className="hero-grid" style={{ display: 'grid', gridTemplateColumns: '0.95fr 1.05fr', gap: '30px', alignItems: 'center' }}>
             <div>
-              <p className="mkt-label" style={{ margin: '0 0 12px', color: '#1D55C6', letterSpacing: '0.22em', fontSize: 11 }}>AI-POWERED SEARCH. HUMAN-DRIVEN RESULTS.</p>
+              <p className="mkt-label" style={{ margin: '0 0 12px', color: '#1D55C6', letterSpacing: '0.22em', fontSize: 11 }}>RETAINED SEARCH FOR HEALTHCARE + AI LEADERS</p>
               <h1 style={{ fontSize: 'clamp(36px, 4.4vw, 58px)', lineHeight: 1.02, letterSpacing: '-0.04em', margin: '0 0 16px', color: '#071226', fontWeight: 750 }}>
-                Venture-Backed HealthTech Hiring, Built for AI Product Velocity
+                Retained Executive & Technical Search for High-Growth HealthTech
               </h1>
               <p style={{ margin: '0 0 22px', fontSize: '17px', lineHeight: 1.6, color: '#3C4A62', maxWidth: '650px' }}>
-                Alivio helps founders and startup leadership teams hire full-stack engineers, AI-forward product leaders, and healthcare operators who can ship fast inside regulated environments.
+                Alivio Search Partners runs retained searches for founders, CTOs, and operating leaders who need precise, high-stakes hires across product, engineering, clinical operations, and revenue workflows.
               </p>
               <div className="hero-cta" style={{ display: 'flex', gap: '10px', marginBottom: '22px', flexWrap: 'wrap' }}>
-                <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary-lg" style={{ minWidth: '180px', height: 48, justifyContent: 'center', background: '#061636', boxShadow: '0 12px 26px rgba(6,22,54,0.16)' }}>Book a Hiring Strategy Call <ArrowRight size={16} /></a>
+                <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary-lg" style={{ minWidth: '180px', height: 48, justifyContent: 'center', background: '#061636', boxShadow: '0 12px 26px rgba(6,22,54,0.16)' }}>Book a Retained Search Consult <ArrowRight size={16} /></a>
                 <a href="#ai-engine" className="mkt-btn-secondary" style={{ minWidth: '160px', height: 48, justifyContent: 'center', borderColor: '#B9C4D8', background: 'rgba(255,255,255,0.72)' }}>See Startup Search Model</a>
-                <a href="/start" className="mkt-btn-secondary" style={{ minWidth: '150px', height: 48, justifyContent: 'center', borderColor: '#B9C4D8', background: 'rgba(255,255,255,0.72)' }}>Request a Search Plan</a>
+                <a href="/start" className="mkt-btn-secondary" style={{ minWidth: '150px', height: 48, justifyContent: 'center', borderColor: '#B9C4D8', background: 'rgba(255,255,255,0.72)' }}>Request Search Scope + Timeline</a>
               </div>
               <div className="proof-badges" style={{ display: 'grid', gridTemplateColumns: 'repeat(2,minmax(0,1fr))', gap: '10px', color: '#30415F', fontSize: '13px', maxWidth: 560 }}>
                 {[
-                  ['HealthTech + AI Startup Search', ShieldCheck],
+                  ['Retained Search Specialists', ShieldCheck],
                   ['AI Candidate Engine', Sparkles],
-                  ['48-Hour Speed-to-Slate', Users],
-                  ['Retention-Focused Hiring', Target],
+                  ['72-Hour Market Map', Users],
+                  ['Board-Level Hiring Rigor', Target],
                 ].map(([label, Icon]) => (
                   <div key={String(label)} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                     <span style={{ width: 30, height: 30, borderRadius: 999, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: '#fff', border: '1px solid #E0E8F8', boxShadow: '0 6px 14px rgba(20,50,100,0.05)', color: '#1D55C6' }}><Icon size={14} /></span>
@@ -110,7 +110,7 @@ export default function HomePage() {
 
       <section style={{ background: 'linear-gradient(100deg, #081F4A 0%, #052255 45%, #02183E 100%)', padding: '18px 0', color: '#fff' }}>
         <div className="mkt-container" style={{ textAlign: 'center', maxWidth: 1180 }}>
-          <p style={{ margin: '0 0 12px', fontSize: '11px', letterSpacing: '0.22em', color: '#B8C8E9', textTransform: 'uppercase' }}>built for high-growth healthcare + ai teams</p>
+          <p style={{ margin: '0 0 12px', fontSize: '11px', letterSpacing: '0.22em', color: '#B8C8E9', textTransform: 'uppercase' }}>trusted by teams hiring where failure is expensive</p>
           <div className="trust-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', gap: '12px', fontSize: '13px', fontWeight: 700, color: '#EAF0FF', alignItems: 'center' }}>
             {['Seed to Series B HealthTech', 'AI-Native Product Teams', 'Behavioral Health Platforms', 'Provider Operators', 'Revenue Cycle Teams', 'Clinical Software Builders', 'Founder-Led Startups'].map((name) => <div key={name}>{name}</div>)}
           </div>
@@ -120,10 +120,10 @@ export default function HomePage() {
       <section id="ai-engine" style={{ padding: '46px 0', background: '#061636', color: '#fff' }}>
         <div className="mkt-container ai-engine-grid" style={{ maxWidth: 1180, display: 'grid', gridTemplateColumns: '0.9fr 1.1fr', gap: 24, alignItems: 'center' }}>
           <div>
-            <p className="mkt-label" style={{ color: '#9DBBFF', fontSize: 11 }}>PRODUCTIZED AI RECRUITING INFRASTRUCTURE</p>
+            <p className="mkt-label" style={{ color: '#9DBBFF', fontSize: 11 }}>RETAINED EXECUTION MODEL + AI INFRASTRUCTURE</p>
             <h2 style={{ fontSize: 'clamp(28px,3.2vw,42px)', lineHeight: 1.06, letterSpacing: '-0.035em', margin: '10px 0 14px' }}>The Alivio AI Candidate Engine</h2>
             <p style={{ color: 'rgba(255,255,255,.74)', fontSize: 16, lineHeight: 1.6 }}>Alivio can support individual searches, or install a repeatable AI-enabled candidate engine for teams that need consistent sourcing, outreach, matching, and pipeline visibility.</p>
-            <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary-lg" style={{ marginTop: 18, display: 'inline-flex', height: 48, background: '#fff', color: '#061636' }}>Get a Pipeline Audit</a>
+            <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary-lg" style={{ marginTop: 18, display: 'inline-flex', height: 48, background: '#fff', color: '#061636' }}>Get a Retained Search Brief</a>
           </div>
           <div className="engine-cards" style={{ display: 'grid', gridTemplateColumns: 'repeat(2,minmax(0,1fr))', gap: 10 }}>
             {['AI-enabled sourcing engine', 'Role scorecards', 'Candidate matching', 'Personalized outreach', 'Pipeline dashboards', 'Shortlist reports', 'Monthly optimization', 'Human oversight'].map((item) => (
@@ -155,6 +155,19 @@ export default function HomePage() {
             ['AI + Human', 'Quality Control'],
             ['Nationwide', 'U.S. + Nearshore'],
           ].map(([value, label]) => <div key={label} style={{ borderLeft: '1px solid rgba(255,255,255,.1)' }}><p style={{ margin: 0, fontSize: 24, fontWeight: 700 }}>{value}</p><p style={{ margin: '5px 0 0', color: 'rgba(255,255,255,.62)', fontSize: 12 }}>{label}</p></div>)}
+        </div>
+      </section>
+
+      <section style={{ padding: '38px 0', background: '#0A1E45', color: '#fff' }}>
+        <div className="mkt-container" style={{ maxWidth: 1180 }}>
+          <p className="mkt-label" style={{ color: '#9DBBFF', fontSize: 11 }}>RETAINED SEARCH, STRUCTURED FOR SPEED + CERTAINTY</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,minmax(0,1fr))', gap: 14 }}>
+            {[
+              ['Dedicated partner-led search', 'Senior operators run your search from kickoff to close with weekly market intelligence and calibrated candidate narratives.'],
+              ['Mapped market in days, not months', 'We deliver a defensible target-company map and outreach strategy within 72 hours for urgent leadership and technical roles.'],
+              ['Precision over volume', 'Every shortlist includes fit rationale, compensation positioning, risk flags, and close-plan recommendations.'],
+            ].map(([title, copy]) => <div key={title} style={{ border: '1px solid rgba(157,187,255,.28)', borderRadius: 16, padding: 18, background: 'rgba(255,255,255,.04)' }}><h3 style={{ margin: '0 0 8px', fontSize: 19, color: '#F5F8FF' }}>{title}</h3><p style={{ margin: 0, color: 'rgba(255,255,255,.76)', lineHeight: 1.55, fontSize: 14 }}>{copy}</p></div>)}
+          </div>
         </div>
       </section>
 
@@ -207,11 +220,11 @@ export default function HomePage() {
 
       <section id="contact" style={{ padding: '28px 0 54px' }}>
         <div className="mkt-container" style={{ maxWidth: 1000, borderRadius: '24px', border: '1px solid #DCE4F2', background: '#061636', padding: '38px 28px', textAlign: 'center', color: '#fff', boxShadow: '0 16px 44px rgba(6,22,54,.18)' }}>
-          <h2 style={{ margin: '0 0 12px', fontSize: 'clamp(28px,3.4vw,42px)', letterSpacing: '-0.035em' }}>Need to make critical hires before your next board update?</h2>
+          <h2 style={{ margin: '0 0 12px', fontSize: 'clamp(28px,3.4vw,42px)', letterSpacing: '-0.035em' }}>Ready for a retained partner that can close mission-critical hires?</h2>
           <p style={{ margin: '0 auto 20px', color: 'rgba(255,255,255,.72)', fontSize: '16px', lineHeight: 1.6, maxWidth: 720 }}>Alivio gives founders, CTOs, CFOs, and VP Product leaders a focused recruiting partner for technical and operational healthcare hiring—optimized for speed, precision, and long-term fit.</p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: 10, flexWrap: 'wrap' }}>
-            <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary-lg" style={{ display: 'inline-flex', height: 48, background: '#fff', color: '#061636' }}>Book Founder Intake Call <ArrowRight size={16} /></a>
-            <a href="/platform" className="mkt-btn-secondary" style={{ display: 'inline-flex', height: 48, color: '#fff', borderColor: 'rgba(255,255,255,.35)' }}>See How We Run Search</a>
+            <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary-lg" style={{ display: 'inline-flex', height: 48, background: '#fff', color: '#061636' }}>Book Managing Partner Call <ArrowRight size={16} /></a>
+            <a href="/platform" className="mkt-btn-secondary" style={{ display: 'inline-flex', height: 48, color: '#fff', borderColor: 'rgba(255,255,255,.35)' }}>View Retained Search Process</a>
           </div>
         </div>
       </section>

@@ -5,10 +5,9 @@ import { CAL_COM_BOOKING_URL, DEMO_EVENT_DESCRIPTION, DEMO_EVENT_TITLE } from '.
 
 const navLinks = [
   { label: 'Search Specialties', href: '/#search-specialties' },
-  { label: 'Healthcare', href: '/#healthcare' },
-  { label: 'Technology', href: '/#technology' },
   { label: 'Process', href: '/#process' },
-  { label: 'About', href: '/developers' },
+  { label: 'Industries', href: '/industries' },
+  { label: 'Case Studies', href: '/case-studies' },
   { label: 'Insights', href: '/blog' },
   { label: 'Contact', href: '/#contact' },
 ];
