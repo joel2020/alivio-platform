@@ -84,6 +84,50 @@ CREATE TABLE IF NOT EXISTS legacy_import.alivio_os_id_map (
   PRIMARY KEY (source_project_ref, legacy_table, legacy_id, public_table)
 );
 
+CREATE TABLE IF NOT EXISTS legacy_import.import_jobs (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  source_project_ref TEXT NOT NULL,
+  legacy_table TEXT NOT NULL,
+  legacy_id TEXT NOT NULL,
+  payload JSONB NOT NULL DEFAULT '{}',
+  raw_record JSONB NOT NULL DEFAULT '{}',
+  exported_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (source_project_ref, legacy_table, legacy_id)
+);
+
+CREATE TABLE IF NOT EXISTS legacy_import.import_candidates (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  source_project_ref TEXT NOT NULL,
+  legacy_table TEXT NOT NULL,
+  legacy_id TEXT NOT NULL,
+  payload JSONB NOT NULL DEFAULT '{}',
+  raw_record JSONB NOT NULL DEFAULT '{}',
+  exported_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (source_project_ref, legacy_table, legacy_id)
+);
+
+CREATE TABLE IF NOT EXISTS legacy_import.import_applications (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  source_project_ref TEXT NOT NULL,
+  legacy_table TEXT NOT NULL,
+  legacy_id TEXT NOT NULL,
+  payload JSONB NOT NULL DEFAULT '{}',
+  raw_record JSONB NOT NULL DEFAULT '{}',
+  exported_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (source_project_ref, legacy_table, legacy_id)
+);
+
+CREATE TABLE IF NOT EXISTS legacy_import.import_website_applications (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  source_project_ref TEXT NOT NULL,
+  legacy_table TEXT NOT NULL,
+  legacy_id TEXT NOT NULL,
+  payload JSONB NOT NULL DEFAULT '{}',
+  raw_record JSONB NOT NULL DEFAULT '{}',
+  exported_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (source_project_ref, legacy_table, legacy_id)
+);
+
 CREATE OR REPLACE FUNCTION legacy_import.import_payload_rows(import_table REGCLASS, legacy_table_name TEXT)
 RETURNS TABLE(source_project_ref TEXT, legacy_table TEXT, legacy_id TEXT, payload JSONB)
 LANGUAGE plpgsql
@@ -292,8 +336,9 @@ BEGIN
   FROM _legacy_rows r
   JOIN public.candidates candidate_row
     ON candidate_row.org_id = target_org_id
-   AND candidate_row.email IS NOT DISTINCT FROM NULLIF(r.payload->>'email', '')
-   AND candidate_row.full_name = COALESCE(r.payload->>'full_name', r.payload->>'name', concat_ws(' ', r.payload->>'first_name', r.payload->>'last_name'), 'Legacy candidate')
+   AND candidate_row.profile_data->'legacy'->>'source_project_ref' = r.source_project_ref
+   AND candidate_row.profile_data->'legacy'->>'legacy_table' = r.legacy_table
+   AND candidate_row.profile_data->'legacy'->>'legacy_id' = r.legacy_id
   WHERE r.legacy_table IN ('candidates', 'website_applications')
   ON CONFLICT DO NOTHING;
 

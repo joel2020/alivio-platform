@@ -429,7 +429,7 @@ export default function CandidatePage() {
         }
         setTranscript(data);
       })
-      .finally(() => setTranscriptLoading(false));
+      .then(() => setTranscriptLoading(false));
   }, [selectedCallId]);
 
   useEffect(() => {

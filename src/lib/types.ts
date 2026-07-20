@@ -84,8 +84,6 @@ export interface Candidate {
   ai_scored_at: string | null;
   pipeline_stage: PipelineStage;
   archived_reason: string | null;
-  location?: string | null;
-  logo_url?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -109,22 +107,30 @@ export interface VoiceCall {
   recording_url: string | null;
   qualification_status: QualificationStatus | null;
   extracted_data: Record<string, unknown> | null;
-  ai_summary: {
-    summary?: string;
-    interest_level?: string;
-    availability?: string;
-    compensation_expectations?: string;
-    candidate_signals?: string[];
-  } | null;
   call_summary: string | null;
-  ai_summary?: string | null;
+  /* Client-side cache of the ai-voice-summary edge function result;
+     not a database column. */
+  ai_summary?: VoiceSummary | string | null;
   escalated: boolean;
   escalation_reason: string | null;
   escalated_to: string | null;
-  location?: string | null;
-  logo_url?: string | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface VoiceSummary {
+  summary?: string;
+  interest_level?: string;
+  availability?: string;
+  compensation_expectations?: string;
+  candidate_signals?: string[];
+}
+
+/** Normalize a voice-call summary (string or structured) to display text. */
+export function voiceSummaryText(value: VoiceCall['ai_summary'] | undefined, fallback: string | null = null): string | null {
+  if (typeof value === 'string' && value.trim()) return value;
+  if (value && typeof value === 'object' && value.summary) return value.summary;
+  return fallback;
 }
 
 export interface TranscriptEntry {
@@ -245,8 +251,6 @@ export interface Client {
   notes: string | null;
   last_contacted_at: string | null;
   next_followup_at: string | null;
-  location?: string | null;
-  logo_url?: string | null;
   created_at: string;
   updated_at: string;
 }
