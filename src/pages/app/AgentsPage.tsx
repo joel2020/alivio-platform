@@ -91,9 +91,9 @@ export default function AgentsPage() {
           const backendResult = await res.json();
           // leads items are shaped { candidate: {...}, freshnessSignal, confidenceSignal }
           // candidates items (future) would be the candidate object directly
-          const rawItems: any[] = backendResult.leads ?? backendResult.candidates ?? [];
-          const inserts = rawItems.map((item: any, idx: number) => {
-            const c = item?.candidate ?? item; // unwrap leads wrapper if present
+          const rawItems: Array<Record<string, unknown>> = backendResult.leads ?? backendResult.candidates ?? [];
+          const inserts = rawItems.map((item, idx: number) => {
+            const c = (item?.candidate ?? item) as Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any -- backend payload is dynamic
             return {
               org_id: role.org_id,
               role_id: role.id,

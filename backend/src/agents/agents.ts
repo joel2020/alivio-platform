@@ -3,7 +3,6 @@ import { Candidate, FitSignal, Job, MatchScore, MonitoringSummary, OutreachDraft
 import { CandidateSearchService } from '../services/candidateSearchService';
 import { EnrichmentService } from '../services/enrichmentService';
 import { FitScoringService } from '../services/fitScoringService';
-import { JobSearchService } from '../services/jobSearchService';
 import { MatchingService } from '../services/matchingService';
 import { MonitoringService } from '../services/monitoringService';
 import { OutreachService } from '../services/outreachService';
