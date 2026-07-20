@@ -204,6 +204,7 @@ export default function App() {
               <Route path="/candidates/:id" element={<CandidatePage />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/calls" element={<CallsPage />} />
+              <Route path="/tasks" element={<AdminTasksPage />} />
               <Route path="/crm" element={<Navigate to="/dashboard/crm" replace />} />
               <Route path="/crm/templates" element={<Navigate to="/dashboard/crm/templates" replace />} />
               <Route path="/dashboard/crm" element={<CrmPage />} />

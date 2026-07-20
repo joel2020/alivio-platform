@@ -104,7 +104,7 @@ export default function AdminTasksPage() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-base)' }}>
       <div className="page-header">
-        <h1 style={{ fontSize: '0.9375rem', fontWeight: 700, color: 'var(--text-primary)' }}>Admin • Tasks</h1>
+        <h1 style={{ fontSize: '0.9375rem', fontWeight: 700, color: 'var(--text-primary)' }}>Tasks</h1>
       </div>
 
       <div className="page-content space-y-4">
