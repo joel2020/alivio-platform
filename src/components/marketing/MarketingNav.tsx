@@ -4,13 +4,14 @@ import { Menu, X } from 'lucide-react';
 import { CAL_COM_BOOKING_URL, DEMO_EVENT_DESCRIPTION, DEMO_EVENT_TITLE } from '../../lib/demoBooking';
 
 const navLinks = [
-  { label: 'Search Specialties', href: '/#search-specialties' },
-  { label: 'Healthcare', href: '/#healthcare' },
-  { label: 'Technology', href: '/#technology' },
-  { label: 'Process', href: '/#process' },
-  { label: 'About', href: '/developers' },
+  { label: 'Services', href: '/services' },
+  { label: 'Healthcare', href: '/industries/healthcare' },
+  { label: 'Technology', href: '/industries/technology' },
+  { label: 'AI Engine', href: '/product' },
+  { label: 'About', href: '/about' },
   { label: 'Insights', href: '/blog' },
-  { label: 'Contact', href: '/#contact' },
+  { label: 'Careers', href: '/careers' },
+  { label: 'Contact', href: '/contact' },
 ];
 
 function handleHashLink(href: string, e: React.MouseEvent, closeMenu?: () => void) {
