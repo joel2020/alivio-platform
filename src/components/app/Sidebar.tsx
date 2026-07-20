@@ -41,6 +41,7 @@ export default function Sidebar() {
     { label: 'Admin Dashboard', href: '/admin', icon: Shield },
     { label: 'Email Inbox', href: '/admin/email-inbox', icon: Inbox },
     { label: 'Tasks', href: '/admin/tasks', icon: LayoutDashboard },
+    { label: 'Leads', href: '/admin/leads', icon: Inbox },
     { label: 'CRM', href: '/crm', icon: Building2 },
     { label: 'Users', href: '/admin/users', icon: Briefcase },
     { label: 'AI Monitor', href: '/admin/ai-monitor', icon: Zap },
