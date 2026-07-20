@@ -29,6 +29,7 @@ import OnboardingRolePage from './pages/app/OnboardingRolePage';
 import NotFoundPage from './pages/NotFoundPage';
 import OGImagePage from './pages/OGImagePage';
 import ClientShortlistPage from './pages/client/ClientShortlistPage';
+import ClientReportPage from './pages/client/ClientReportPage';
 
 import DashboardPage from './pages/app/DashboardPage';
 import RolesPage from './pages/app/RolesPage';
@@ -36,6 +37,7 @@ import RoleNewPage from './pages/app/RoleNewPage';
 import PipelinePage from './pages/app/PipelinePage';
 import PipelineOverviewPage from './pages/app/PipelineOverviewPage';
 import OutreachPage from './pages/app/OutreachPage';
+import ShortlistsPage from './pages/app/ShortlistsPage';
 import AgentsPage from './pages/app/AgentsPage';
 import CandidatePage from './pages/app/CandidatePage';
 import RoleSettingsPage from './pages/app/RoleSettingsPage';
@@ -120,7 +122,7 @@ function SeoManager() {
     title = 'Sign Up | Alivio Search Partners';
     description = 'Create your Alivio Search Partners account to accelerate healthcare recruiting and staffing workflows.';
     robots = 'noindex, nofollow';
-  } else if (pathname.startsWith('/client/shortlist')) {
+  } else if (pathname.startsWith('/client/')) {
     title = 'Client Candidate Shortlist | Alivio Search Partners';
     description = 'Review AI-ranked candidate shortlists prepared by Alivio Search Partners.';
     robots = 'noindex, nofollow';
@@ -187,6 +189,7 @@ export default function App() {
               <Route path="/signup" element={<SignupPage />} />
             </Route>
             <Route path="/client/shortlist/:token" element={<ClientShortlistPage />} />
+            <Route path="/client/report/:token" element={<ClientReportPage />} />
             <Route element={<RequireOnboarding />}>
               <Route path="/onboarding/org" element={<OnboardingOrgPage />} />
               <Route path="/onboarding/role" element={<OnboardingRolePage />} />
@@ -205,6 +208,7 @@ export default function App() {
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/calls" element={<CallsPage />} />
               <Route path="/tasks" element={<AdminTasksPage />} />
+              <Route path="/shortlists" element={<ShortlistsPage />} />
               <Route path="/crm" element={<Navigate to="/dashboard/crm" replace />} />
               <Route path="/crm/templates" element={<Navigate to="/dashboard/crm/templates" replace />} />
               <Route path="/dashboard/crm" element={<CrmPage />} />
