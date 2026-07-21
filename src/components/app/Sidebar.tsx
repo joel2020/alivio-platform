@@ -3,6 +3,7 @@ import { LayoutDashboard, GitBranch, Briefcase, Mail, Zap, Settings, LogOut, Men
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../lib/auth';
 import { useTheme } from '../../lib/theme';
+import { AlivioMark } from '../brand/AlivioLogo';
 import { supabase } from '../../lib/supabase';
 
 export default function Sidebar() {
@@ -79,9 +80,7 @@ export default function Sidebar() {
     <div className="flex flex-col h-full">
       <div className="h-14 px-5 flex items-center border-b flex-shrink-0" style={{ borderColor: 'var(--border)' }}>
         <div className="flex items-center gap-2.5">
-          <div className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, var(--accent) 0%, #3b82f6 100%)', boxShadow: '0 1px 4px rgba(26,108,247,0.4)' }}>
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 9L5 3L8 7L9.5 5L11 9" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-          </div>
+          <AlivioMark size={24} variant={theme === 'dark' ? 'dark' : 'light'} />
           <span style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '0.875rem', letterSpacing: '-0.025em' }}>Alivio</span>
         </div>
       </div>
@@ -145,7 +144,7 @@ export default function Sidebar() {
     <>
       <aside className="hidden md:flex flex-col fixed left-0 top-0 bottom-0 border-r" style={{ width: 'var(--sidebar-width)', backgroundColor: 'var(--bg-sidebar)', borderColor: 'var(--border)', zIndex: 40 }}><SidebarContent /></aside>
       <div className="md:hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 border-b" style={{ height: '56px', backgroundColor: 'var(--bg-sidebar)', borderColor: 'var(--border)' }}>
-        <div className="flex items-center gap-2"><div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ backgroundColor: 'var(--accent)' }}><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 9L5 3L8 7L9.5 5L11 9" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></div><span style={{ fontWeight: 700, fontSize: '0.875rem', letterSpacing: '-0.025em', color: 'var(--text-primary)' }}>Alivio</span></div>
+        <div className="flex items-center gap-2"><AlivioMark size={22} variant={theme === 'dark' ? 'dark' : 'light'} /><span style={{ fontWeight: 700, fontSize: '0.875rem', letterSpacing: '-0.025em', color: 'var(--text-primary)' }}>Alivio</span></div>
         <button onClick={() => setMobileOpen(!mobileOpen)} className="btn-ghost" style={{ padding: '6px 8px' }}>{mobileOpen ? <X size={18} /> : <Menu size={18} />}</button>
       </div>
       {mobileOpen && (

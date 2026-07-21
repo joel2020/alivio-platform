@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Linkedin, Mail } from 'lucide-react';
+import { AlivioLogo } from '../brand/AlivioLogo';
 import { CAL_COM_BOOKING_URL, DEMO_EVENT_DESCRIPTION, DEMO_EVENT_TITLE } from '../../lib/demoBooking';
 
 const productLinks = [
@@ -28,9 +29,8 @@ export default function MarketingFooter() {
       <div className="mkt-container" style={{ paddingTop: '64px', paddingBottom: '48px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '48px', marginBottom: '48px' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
-              <span style={{ width: '28px', height: '28px', background: 'var(--accent)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '14px', fontWeight: 700 }}>A</span>
-              <span style={{ fontSize: '18px', fontWeight: 700, color: '#FAFAFA', letterSpacing: '-0.02em' }}>Alivio Search Partners</span>
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
+              <AlivioLogo variant="dark" markSize={26} wordSize={17} />
             </div>
             <div style={{ display: 'flex', gap: '12px' }}>
               <a href="https://www.linkedin.com/company/aliviosearchpartners/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" style={{ color: '#A1A1AA' }}><Linkedin size={18} /></a>
