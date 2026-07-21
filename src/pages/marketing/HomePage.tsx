@@ -41,7 +41,7 @@ export default function HomePage() {
             <div>
               <p className="mkt-label" style={{ margin: '0 0 12px', color: '#1D55C6', letterSpacing: '0.22em', fontSize: 11 }}>AI-POWERED SEARCH. HUMAN-DRIVEN RESULTS.</p>
               <h1 style={{ fontSize: 'clamp(36px, 4.4vw, 58px)', lineHeight: 1.02, letterSpacing: '-0.04em', margin: '0 0 16px', color: '#071226', fontWeight: 750 }}>
-                Venture-Backed HealthTech Hiring, Built for AI Product Velocity
+                High-Growth HealthTech Hiring, Built for AI Product Velocity
               </h1>
               <p style={{ margin: '0 0 22px', fontSize: '17px', lineHeight: 1.6, color: '#3C4A62', maxWidth: '650px' }}>
                 Alivio helps founders and startup leadership teams hire full-stack engineers, AI-forward product leaders, and healthcare operators who can ship fast inside regulated environments.
