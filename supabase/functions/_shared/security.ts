@@ -33,8 +33,21 @@ export async function requireFunctionAuth(req: Request, functionName: string): P
   // A call is a trusted service call if it presents either the service role key
   // (legacy fallback) or the dedicated scheduler secret (preferred).
   const isServiceCall = token === serviceRoleKey;
-  const isSchedulerCall = !!schedulerSecret && token === schedulerSecret;
+  let isSchedulerCall = !!schedulerSecret && token === schedulerSecret;
   const isServiceOnly = SERVICE_ONLY_FUNCTIONS.has(functionName);
+
+  // Fallback: verify against the scheduler secret stored in Vault so the
+  // cron jobs (which read Vault) and functions share one source of truth
+  // even when the SCHEDULER_SECRET env drifts.
+  if (!isServiceCall && !isSchedulerCall && token.length >= 16) {
+    try {
+      const admin = createClient(supabaseUrl, serviceRoleKey);
+      const { data } = await admin.rpc("verify_scheduler_secret", { candidate: token });
+      isSchedulerCall = data === true;
+    } catch (_error) {
+      // Helper absent or unreachable: fall through to the normal checks.
+    }
+  }
 
   if (isServiceOnly && !(isServiceCall || isSchedulerCall)) {
     return { ok: false, status: 403, error: "Forbidden: privileged bearer token required" };

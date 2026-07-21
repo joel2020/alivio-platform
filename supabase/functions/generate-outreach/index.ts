@@ -1,6 +1,5 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { AzureOpenAI } from "npm:openai";
-import { requireAuth } from "../_shared/auth.ts";
+import OpenAI, { AzureOpenAI } from "npm:openai";
 import { requireFunctionAuth } from "../_shared/security.ts";
 
 const corsHeaders = {
@@ -57,19 +56,26 @@ function sanitizeResult(channel: OutreachChannel, content: string): OutreachResu
   return { body };
 }
 
+function isUnsupportedVersionError(error: unknown): boolean {
+  return error instanceof Error && /api version/i.test(error.message);
+}
+
 async function generateWithAzure(promptPayload: string, channel: OutreachChannel): Promise<{ parsed: OutreachResult; deployment: string }> {
   const endpoint = Deno.env.get("AZURE_OPENAI_ENDPOINT");
   const apiKey = Deno.env.get("AZURE_OPENAI_API_KEY");
-  const apiVersion = Deno.env.get("AZURE_OPENAI_API_VERSION");
+  const envApiVersion = Deno.env.get("AZURE_OPENAI_API_VERSION");
   const primaryDeployment = Deno.env.get("AZURE_OPENAI_PRIMARY_DEPLOYMENT");
   const fallbackDeployment = Deno.env.get("AZURE_OPENAI_FALLBACK_DEPLOYMENT");
 
-  if (!endpoint || !apiKey || !apiVersion || !primaryDeployment || !fallbackDeployment) {
+  if (!endpoint || !apiKey || !primaryDeployment || !fallbackDeployment) {
     throw new Error("Missing Azure OpenAI configuration.");
   }
 
-  const client = new AzureOpenAI({ endpoint, apiKey, apiVersion, deployment: primaryDeployment });
-  const fallbackClient = new AzureOpenAI({ endpoint, apiKey, apiVersion, deployment: fallbackDeployment });
+  /* The env-configured version first, then known-good fallbacks: the
+     configured value has been rejected by the resource before
+     ("API version not supported"), and a wrong-but-fixed env value
+     should degrade gracefully instead of taking the pipeline down. */
+  const apiVersions = [...new Set([envApiVersion, "2024-10-21", "2025-01-01-preview", "2024-06-01"].filter(Boolean))] as string[];
 
   const request = {
     model: primaryDeployment,
@@ -86,26 +92,51 @@ async function generateWithAzure(promptPayload: string, channel: OutreachChannel
     ],
   };
 
-  try {
-    const primaryResponse = await client.chat.completions.create(request);
-    const primaryContent = primaryResponse.choices[0]?.message?.content;
-    if (!primaryContent) throw new Error("Azure primary deployment returned empty response.");
-    return { parsed: sanitizeResult(channel, primaryContent), deployment: primaryDeployment };
-  } catch (error) {
-    if (!isRetriableError(error)) {
-      throw error;
+  let lastError: unknown = null;
+  for (const apiVersion of apiVersions) {
+    const client = new AzureOpenAI({ endpoint, apiKey, apiVersion, deployment: primaryDeployment });
+    const fallbackClient = new AzureOpenAI({ endpoint, apiKey, apiVersion, deployment: fallbackDeployment });
+    try {
+      const primaryResponse = await client.chat.completions.create(request);
+      const primaryContent = primaryResponse.choices[0]?.message?.content;
+      if (!primaryContent) throw new Error("Azure primary deployment returned empty response.");
+      return { parsed: sanitizeResult(channel, primaryContent), deployment: primaryDeployment };
+    } catch (error) {
+      if (isUnsupportedVersionError(error)) {
+        lastError = error;
+        continue;
+      }
+      if (!isRetriableError(error)) {
+        throw error;
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const fallbackResponse = await fallbackClient.chat.completions.create({
+        ...request,
+        model: fallbackDeployment,
+      });
+      const fallbackContent = fallbackResponse.choices[0]?.message?.content;
+      if (!fallbackContent) throw new Error("Azure fallback deployment returned empty response.");
+      return { parsed: sanitizeResult(channel, fallbackContent), deployment: fallbackDeployment };
     }
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    const fallbackResponse = await fallbackClient.chat.completions.create({
-      ...request,
-      model: fallbackDeployment,
-    });
-    const fallbackContent = fallbackResponse.choices[0]?.message?.content;
-    if (!fallbackContent) throw new Error("Azure fallback deployment returned empty response.");
-    return { parsed: sanitizeResult(channel, fallbackContent), deployment: fallbackDeployment };
   }
+  /* Final fallback: newer Azure AI Foundry resources expose only the
+     v1 endpoint (no api-version query parameter at all). */
+  try {
+    const v1 = new OpenAI({
+      apiKey,
+      baseURL: `${endpoint.replace(/\/+$/, "")}/openai/v1`,
+      defaultHeaders: { "api-key": apiKey },
+    });
+    const v1Response = await v1.chat.completions.create({ ...request, model: primaryDeployment });
+    const v1Content = v1Response.choices[0]?.message?.content;
+    if (!v1Content) throw new Error("Azure v1 endpoint returned empty response.");
+    return { parsed: sanitizeResult(channel, v1Content), deployment: primaryDeployment };
+  } catch (v1Error) {
+    lastError = v1Error;
+  }
+  throw lastError instanceof Error ? lastError : new Error("Azure OpenAI request failed for all API versions.");
 }
 
 Deno.serve(async (req: Request) => {
@@ -118,8 +149,9 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    await requireAuth(req);
-
+    /* requireFunctionAuth accepts service-role, scheduler-secret, or a
+       user JWT — the old extra requireAuth() call rejected legitimate
+       service-to-service invocations (auto-followup). */
     const auth = await requireFunctionAuth(req, "generate-outreach");
     if (!auth.ok) {
       return new Response(JSON.stringify({ error: auth.error }), {
