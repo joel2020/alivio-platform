@@ -136,7 +136,7 @@ function SeoManager() {
     robots = 'noindex, nofollow';
   }
   const structuredData: Record<string, unknown>[] = [{ '@context': 'https://schema.org', '@type': 'WebPage', name: title, description, url: canonicalUrl, inLanguage: 'en-US' }];
-  if (pathname === '/' || pathname === '/product') structuredData.push({ '@context': 'https://schema.org', '@type': 'Organization', name: 'Alivio Search Partners', url: SITE_URL, description: 'AI-powered recruitment infrastructure for healthcare and tech organizations', contactPoint: { '@type': 'ContactPoint', email: 'joel@aliviosearchpartners.com', contactType: 'sales' } });
+  if (pathname === '/' || pathname === '/product') structuredData.push({ '@context': 'https://schema.org', '@type': 'Organization', name: 'Alivio Search Partners', url: SITE_URL, description: 'AI-powered recruitment infrastructure for healthcare and tech organizations', contactPoint: { '@type': 'ContactPoint', email: 'hello@aliviosearchpartners.com', contactType: 'sales' } });
   if (pathname === '/product') structuredData.push({ '@context': 'https://schema.org', '@type': 'SoftwareApplication', name: 'Alivio AI Candidate Engine', applicationCategory: 'BusinessApplication', description: 'AI-powered hiring system for healthcare and tech recruiting teams' });
   useSeo({ title, description, keywords, ogTitle: title, ogDescription: description, canonicalUrl, ogImage: DEFAULT_OG_IMAGE, ogType: pathname.startsWith('/blog/') ? 'article' : 'website', robots, structuredData });
   return null;
