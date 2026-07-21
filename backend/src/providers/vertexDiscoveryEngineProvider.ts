@@ -61,6 +61,7 @@ export class VertexDiscoveryEngineProvider implements RetrievalProvider {
   }
 
   private normalizeCandidate(doc: VertexDocument, idx: number): Candidate {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Vertex struct data is schemaless
     const d = (doc.derivedStructData ?? doc.structData ?? {}) as Record<string, any>;
     return {
       id: d.id ?? doc.id ?? `vertex-candidate-${idx}`,
@@ -94,6 +95,7 @@ export class VertexDiscoveryEngineProvider implements RetrievalProvider {
   async searchJobs(query: SearchQuery): Promise<Job[]> {
     const docs = await this.callSearch(query);
     return docs.map((doc, idx) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Vertex struct data is schemaless
       const d = (doc.derivedStructData ?? doc.structData ?? {}) as Record<string, any>;
       return {
         id: d.id ?? doc.id ?? `vertex-job-${idx}`,

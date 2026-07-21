@@ -1,4 +1,4 @@
-import { ArrowRight, BarChart3, Bot, Brain, CheckCircle2, FileText, Gauge, MessageSquare, Search, ShieldCheck, Sparkles, Target, Users } from 'lucide-react';
+import { ArrowRight, BarChart3, Bot, Brain, CheckCircle2, Gauge, MessageSquare, Search, ShieldCheck, Sparkles, Target } from 'lucide-react';
 import { CAL_COM_BOOKING_URL } from '../../lib/demoBooking';
 
 const engineModules = [
@@ -67,7 +67,7 @@ export default function ProductPage() {
       </section>
 
       <section style={{ padding: '72px 0', background: '#F6F9FF' }}>
-        <div className="mkt-container" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 28 }} className="engine-two-col">
+        <div className="mkt-container engine-two-col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 28 }}>
           <div style={{ border: '1px solid #DCE4F2', borderRadius: 24, padding: 30, background: '#fff' }}>
             <Bot size={30} color="#1D55C6" />
             <h2>AI where it speeds the work.</h2>

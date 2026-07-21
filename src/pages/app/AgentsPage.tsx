@@ -8,11 +8,11 @@ import LiveActivityFeed from '../../components/app/LiveActivityFeed';
 import Toast from '../../components/app/Toast';
 
 interface ParsedResumePreview {
-  fullName?: string;
-  currentTitle?: string;
-  currentCompany?: string;
-  location?: string;
-  yearsExperience?: number;
+  fullName?: string | null;
+  currentTitle?: string | null;
+  currentCompany?: string | null;
+  location?: string | null;
+  yearsExperience?: number | null;
   skills?: string[];
   licenses?: string[];
   certifications?: string[];
@@ -91,9 +91,9 @@ export default function AgentsPage() {
           const backendResult = await res.json();
           // leads items are shaped { candidate: {...}, freshnessSignal, confidenceSignal }
           // candidates items (future) would be the candidate object directly
-          const rawItems: any[] = backendResult.leads ?? backendResult.candidates ?? [];
-          const inserts = rawItems.map((item: any, idx: number) => {
-            const c = item?.candidate ?? item; // unwrap leads wrapper if present
+          const rawItems: Array<Record<string, unknown>> = backendResult.leads ?? backendResult.candidates ?? [];
+          const inserts = rawItems.map((item, idx: number) => {
+            const c = (item?.candidate ?? item) as Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any -- backend payload is dynamic
             return {
               org_id: role.org_id,
               role_id: role.id,

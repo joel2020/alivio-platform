@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Settings, Download, Pause, Play, Search, ChevronUp, ChevronDown, Loader2, Sparkles } from 'lucide-react';
+import { Settings, Download, Pause, Play, Search, ChevronUp, ChevronDown, Loader2, Sparkles, Upload } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import type { Role, Candidate, PipelineStage, VoiceCall } from '../../lib/types';
 import { PIPELINE_STAGES, STAGE_LABELS } from '../../lib/types';
 import Toast from '../../components/app/Toast';
+import CandidateImportModal from '../../components/app/CandidateImportModal';
 
 function ScoreBadge({ score }: { score: number | null }) {
   if (score === null) return <span style={{ color: 'var(--text-muted)' }}>—</span>;
@@ -118,6 +119,7 @@ export default function PipelinePage() {
   const [matching, setMatching] = useState(false);
   const [scoring, setScoring] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [importOpen, setImportOpen] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [unauthorized, setUnauthorized] = useState(false);
 
@@ -396,6 +398,9 @@ export default function PipelinePage() {
           <button className="btn-secondary" style={{ fontSize: '0.75rem', padding: '5px 11px' }}>
             <Download size={12} strokeWidth={2} /> Export
           </button>
+          <button onClick={() => setImportOpen(true)} className="btn-secondary" style={{ fontSize: '0.75rem', padding: '5px 11px' }}>
+            <Upload size={12} strokeWidth={2} /> Import CSV
+          </button>
           <button onClick={handleRunAIMatch} className="btn-secondary" style={{ fontSize: '0.75rem', padding: '5px 11px' }} disabled={matching}>
             {matching ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} strokeWidth={2} />} Match Candidates
           </button>
@@ -645,6 +650,17 @@ export default function PipelinePage() {
           </div>
         )}
       </div>
+      {id ? (
+        <CandidateImportModal
+          roleId={id}
+          isOpen={importOpen}
+          onClose={() => setImportOpen(false)}
+          onImported={(created) => {
+            setToast(`Imported ${created} candidate${created === 1 ? '' : 's'}.`);
+            void loadData();
+          }}
+        />
+      ) : null}
       {toast && <Toast message={toast} onDismiss={() => setToast(null)} />}
     </div>
   );

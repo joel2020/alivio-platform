@@ -184,13 +184,13 @@ export default function CrmPage() {
       </div>
       <div style={{ padding: '24px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))', gap: '12px', marginBottom: '16px' }}>
-          {[
+          {([
             ['Total pipeline', formatMoney(stats.totalPipeline), DollarSign],
             ['Weighted pipeline', formatMoney(stats.weightedPipeline), Target],
             ['Closing this month', stats.closingThisMonth, CalendarClock],
             ['Overdue follow-ups', stats.overdueFollowUps, AlertTriangle],
             ['Contacted this week', stats.contactedThisWeek, Building2],
-          ].map(([label, value, Icon]) => (
+          ] as Array<[string, string | number, typeof DollarSign]>).map(([label, value, Icon]) => (
             <div key={String(label)} className="card p-4">
               <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
                 <div><p className="section-label">{label}</p><p className="metric-value">{value}</p></div>

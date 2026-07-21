@@ -3,13 +3,17 @@ import { Linkedin, Mail } from 'lucide-react';
 import { CAL_COM_BOOKING_URL, DEMO_EVENT_DESCRIPTION, DEMO_EVENT_TITLE } from '../../lib/demoBooking';
 
 const productLinks = [
-  { label: 'How It Works', href: '/#how-it-works' },
-  { label: 'Features', href: '/#how-it-works' },
+  { label: 'Recruitment Services', href: '/services' },
+  { label: 'AI Candidate Engine', href: '/product' },
+  { label: 'Healthcare Practice', href: '/industries/healthcare' },
+  { label: 'Technology Practice', href: '/industries/technology' },
 ];
 
 const companyLinks = [
+  { label: 'About', href: '/about', external: false },
+  { label: 'Careers', href: '/careers', external: false },
+  { label: 'Request a Search Plan', href: '/start', external: false },
   { label: 'Book a Demo', href: CAL_COM_BOOKING_URL, external: true },
-  { label: 'Changelog', href: '/developers', external: false },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/company/aliviosearchpartners/', external: true },
 ];
 

@@ -26,7 +26,7 @@ export class InMemoryMonitoringProvider implements MonitoringProvider {
       : 0;
 
     const matchScores = this.logs
-      .map((l) => (l.outputSummary as any)?.fitScore)
+      .map((l) => (l.outputSummary as { fitScore?: unknown } | undefined)?.fitScore)
       .filter((s): s is number => typeof s === 'number');
     const dist = {
       low: matchScores.filter((s) => s < 50).length,
@@ -36,7 +36,7 @@ export class InMemoryMonitoringProvider implements MonitoringProvider {
 
     const enrichRuns = this.logs.filter((l) => l.agentName === 'EnrichReady');
     const enrichmentCompletionRate = enrichRuns.length
-      ? enrichRuns.filter((l) => ((l.outputSummary as any)?.completenessScore ?? 0) >= 0.8).length / enrichRuns.length
+      ? enrichRuns.filter((l) => (((l.outputSummary as { completenessScore?: number } | undefined)?.completenessScore) ?? 0) >= 0.8).length / enrichRuns.length
       : 0;
 
     const recommendedAction: MonitoringSummary['recommendedAction'] =

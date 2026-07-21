@@ -31,13 +31,15 @@ export default function BlogPostPage() {
       return;
     }
 
+    const activeSlug = slug;
+
     async function loadPost() {
       setLoading(true);
       setError(null);
       setNotFound(false);
 
       try {
-        const loadedPost = await fetchPublishedBlogPostBySlug(slug);
+        const loadedPost = await fetchPublishedBlogPostBySlug(activeSlug);
         setPost(loadedPost);
 
         if (loadedPost) {

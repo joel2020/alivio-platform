@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, GitBranch, Briefcase, Mail, Zap, Settings, LogOut, Menu, X, Sun, Moon, Building2, Shield, Inbox, PhoneCall } from 'lucide-react';
+import { LayoutDashboard, GitBranch, Briefcase, Mail, Zap, Settings, LogOut, Menu, X, Sun, Moon, Building2, Shield, Inbox, PhoneCall, ClipboardList, ListChecks } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../lib/auth';
 import { useTheme } from '../../lib/theme';
@@ -41,6 +41,7 @@ export default function Sidebar() {
     { label: 'Admin Dashboard', href: '/admin', icon: Shield },
     { label: 'Email Inbox', href: '/admin/email-inbox', icon: Inbox },
     { label: 'Tasks', href: '/admin/tasks', icon: LayoutDashboard },
+    { label: 'Leads', href: '/admin/leads', icon: Inbox },
     { label: 'CRM', href: '/crm', icon: Building2 },
     { label: 'Users', href: '/admin/users', icon: Briefcase },
     { label: 'AI Monitor', href: '/admin/ai-monitor', icon: Zap },
@@ -53,6 +54,8 @@ export default function Sidebar() {
     { label: 'Roles', href: '/roles', icon: Briefcase, badge: activeRoleCount },
     { label: 'Outreach', href: '/outreach', icon: Mail },
     { label: 'Calls', href: '/calls', icon: PhoneCall },
+    { label: 'Tasks', href: '/tasks', icon: ClipboardList },
+    { label: 'Shortlists', href: '/shortlists', icon: ListChecks },
     { label: 'CRM', href: '/crm', icon: Building2 },
     { label: 'Agents', href: '/agents', icon: Zap },
     { label: 'Settings', href: '/settings', icon: Settings },

@@ -3,6 +3,7 @@ import { Plus, X, Download, Search } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../lib/auth';
 import type { Candidate, Role, VoiceCall, VoiceTranscript } from '../../lib/types';
+import { voiceSummaryText } from '../../lib/types';
 import Toast from '../../components/app/Toast';
 
 type CallFilterStatus = 'all' | 'completed' | 'no-answer' | 'scheduled' | 'failed';
@@ -333,7 +334,7 @@ export default function CallsPage() {
         }
         setDetailTranscript(data);
       })
-      .finally(() => setTranscriptLoading(false));
+      .then(() => setTranscriptLoading(false));
   }, [detailCall]);
 
   const callRows = useMemo<CallRow[]>(() => {
@@ -362,7 +363,7 @@ export default function CallsPage() {
   function exportCsv() {
     const headers = ['Candidate Name', 'Role', 'Date/Time', 'Duration', 'Status', 'AI Summary'];
     const lines = filteredRows.map((row) => {
-      const summary = (row.call.ai_summary ?? row.call.call_summary ?? '').replace(/"/g, '""');
+      const summary = (voiceSummaryText(row.call.ai_summary, row.call.call_summary) ?? '').replace(/"/g, '""');
       return [
         `"${row.candidateName.replace(/"/g, '""')}"`,
         `"${row.roleTitle.replace(/"/g, '""')}"`,
@@ -526,7 +527,7 @@ export default function CallsPage() {
                       <td style={{ padding: '12px', color: 'var(--text-secondary)', fontSize: '0.8125rem' }}>{formatDuration(row.call.duration_seconds)}</td>
                       <td style={{ padding: '12px' }}><StatusBadge status={row.call.status} /></td>
                       <td style={{ padding: '12px', color: 'var(--text-muted)', fontSize: '0.75rem', maxWidth: '320px' }}>
-                        {(row.call.ai_summary ?? row.call.call_summary ?? 'No summary yet.').slice(0, 120)}
+                        {(voiceSummaryText(row.call.ai_summary, row.call.call_summary) ?? 'No summary yet.').slice(0, 120)}
                       </td>
                     </tr>
                   ))
@@ -554,7 +555,7 @@ export default function CallsPage() {
                 <div className="card" style={{ padding: '12px' }}>
                   <p style={{ fontSize: '0.6875rem', color: 'var(--text-muted)', marginBottom: '4px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>AI Summary</p>
                   <p style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                    {detailCall.call.ai_summary ?? detailCall.call.call_summary ?? 'Summary not available yet.'}
+                    {voiceSummaryText(detailCall.call.ai_summary, detailCall.call.call_summary) ?? 'Summary not available yet.'}
                   </p>
                 </div>
 
@@ -609,7 +610,7 @@ export default function CallsPage() {
         onSubmit={handleCreateCall}
       />
 
-      <Toast message={toast} onClose={() => setToast(null)} />
+      {toast ? <Toast message={toast} onDismiss={() => setToast(null)} /> : null}
     </div>
   );
 }

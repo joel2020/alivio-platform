@@ -416,7 +416,7 @@ export default function PipelineOverviewPage() {
         )}
       </div>
 
-      <Toast message={toast} onClose={() => setToast(null)} />
+      {toast ? <Toast message={toast} onDismiss={() => setToast(null)} /> : null}
     </div>
   );
 }

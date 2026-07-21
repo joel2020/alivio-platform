@@ -13,6 +13,12 @@ import TermsPage from './pages/marketing/TermsPage';
 import BlogPage from './pages/marketing/BlogPage';
 import BlogPostPage from './pages/marketing/BlogPostPage';
 import ContactPage from './pages/marketing/ContactPage';
+import ServicesPage from './pages/marketing/ServicesPage';
+import AboutPage from './pages/marketing/AboutPage';
+import CareersPage from './pages/marketing/CareersPage';
+import CareersJobPage from './pages/marketing/CareersJobPage';
+import IndustriesPage from './pages/marketing/IndustriesPage';
+import StartPage from './pages/marketing/StartPage';
 
 import LoginPage from './pages/auth/LoginPage';
 import SignupPage from './pages/auth/SignupPage';
@@ -23,6 +29,7 @@ import OnboardingRolePage from './pages/app/OnboardingRolePage';
 import NotFoundPage from './pages/NotFoundPage';
 import OGImagePage from './pages/OGImagePage';
 import ClientShortlistPage from './pages/client/ClientShortlistPage';
+import ClientReportPage from './pages/client/ClientReportPage';
 
 import DashboardPage from './pages/app/DashboardPage';
 import RolesPage from './pages/app/RolesPage';
@@ -30,6 +37,7 @@ import RoleNewPage from './pages/app/RoleNewPage';
 import PipelinePage from './pages/app/PipelinePage';
 import PipelineOverviewPage from './pages/app/PipelineOverviewPage';
 import OutreachPage from './pages/app/OutreachPage';
+import ShortlistsPage from './pages/app/ShortlistsPage';
 import AgentsPage from './pages/app/AgentsPage';
 import CandidatePage from './pages/app/CandidatePage';
 import RoleSettingsPage from './pages/app/RoleSettingsPage';
@@ -49,6 +57,7 @@ import AdminBlogPage from './pages/admin/AdminBlogPage';
 import AdminBlogEditorPage from './pages/admin/AdminBlogEditorPage';
 import AdminAiMonitorPage from './pages/admin/AdminAiMonitorPage';
 import AdminTasksPage from './pages/admin/AdminTasksPage';
+import AdminLeadsPage from './pages/admin/AdminLeadsPage';
 import AdminSystemCheckPage from './pages/admin/AdminSystemCheckPage';
 
 const SITE_URL = 'https://aliviosearchpartners.com';
@@ -81,6 +90,24 @@ function SeoManager() {
     description = 'Explore expert content on healthcare recruiting, staffing operations, and talent acquisition performance.';
     keywords = `${DEFAULT_KEYWORDS}, healthcare recruiting blog, nurse hiring strategies`;
     if (location.search) robots = 'noindex, follow';
+  } else if (pathname === '/services') {
+    title = 'Recruitment Services | Alivio Search Partners';
+    description = 'Retained search, pipeline programs, and AI-powered recruiting for healthcare and technology teams.';
+  } else if (pathname === '/about') {
+    title = 'About | Alivio Search Partners';
+    description = 'The AI-enabled recruiting firm for healthcare and technology teams: an AI Candidate Engine paired with senior recruiters.';
+  } else if (pathname === '/careers') {
+    title = 'Careers & Open Positions | Alivio Search Partners';
+    description = 'Open clinical, technical, and recruiting positions with Alivio Search Partners and our clients. Apply online.';
+  } else if (pathname.startsWith('/careers/')) {
+    title = 'Open Position | Alivio Search Partners';
+    description = 'Apply for an open position with Alivio Search Partners.';
+  } else if (pathname.startsWith('/industries/')) {
+    title = 'Industry Recruiting Practices | Alivio Search Partners';
+    description = 'Healthcare and technology recruiting practices at Alivio Search Partners.';
+  } else if (pathname === '/start') {
+    title = 'Request a Search Plan | Alivio Search Partners';
+    description = 'Tell us about the roles you need to fill and get a search plan with market mapping and timeline.';
   } else if (pathname === '/privacy') {
     title = 'Privacy Policy | Alivio Search Partners';
     description = 'Review the Alivio Search Partners privacy policy for our healthcare recruiting platform.';
@@ -95,7 +122,7 @@ function SeoManager() {
     title = 'Sign Up | Alivio Search Partners';
     description = 'Create your Alivio Search Partners account to accelerate healthcare recruiting and staffing workflows.';
     robots = 'noindex, nofollow';
-  } else if (pathname.startsWith('/client/shortlist')) {
+  } else if (pathname.startsWith('/client/')) {
     title = 'Client Candidate Shortlist | Alivio Search Partners';
     description = 'Review AI-ranked candidate shortlists prepared by Alivio Search Partners.';
     robots = 'noindex, nofollow';
@@ -110,7 +137,7 @@ function SeoManager() {
   }
   const structuredData: Record<string, unknown>[] = [{ '@context': 'https://schema.org', '@type': 'WebPage', name: title, description, url: canonicalUrl, inLanguage: 'en-US' }];
   if (pathname === '/' || pathname === '/product') structuredData.push({ '@context': 'https://schema.org', '@type': 'Organization', name: 'Alivio Search Partners', url: SITE_URL, description: 'AI-powered recruitment infrastructure for healthcare and tech organizations', contactPoint: { '@type': 'ContactPoint', email: 'joel@aliviosearchpartners.com', contactType: 'sales' } });
-  if (pathname === '/product') structuredData.push({ '@context': 'https://schema.org', '@type': 'SoftwareApplication', name: 'Alivio Search Partners', applicationCategory: 'BusinessApplication', description: 'AI-powered hiring system for healthcare and tech recruiting teams', offers: { '@type': 'Offer', price: '499', priceCurrency: 'USD' } });
+  if (pathname === '/product') structuredData.push({ '@context': 'https://schema.org', '@type': 'SoftwareApplication', name: 'Alivio AI Candidate Engine', applicationCategory: 'BusinessApplication', description: 'AI-powered hiring system for healthcare and tech recruiting teams' });
   useSeo({ title, description, keywords, ogTitle: title, ogDescription: description, canonicalUrl, ogImage: DEFAULT_OG_IMAGE, ogType: pathname.startsWith('/blog/') ? 'article' : 'website', robots, structuredData });
   return null;
 }
@@ -144,20 +171,25 @@ export default function App() {
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:slug" element={<BlogPostPage />} />
               <Route path="/contact" element={<ContactPage />} />
+              <Route path="/services" element={<ServicesPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/careers" element={<CareersPage />} />
+              <Route path="/careers/:id" element={<CareersJobPage />} />
+              <Route path="/industries/:slug" element={<IndustriesPage />} />
+              <Route path="/start" element={<StartPage />} />
             </Route>
             <Route path="/pricing" element={<Navigate to="/product" replace />} />
-            <Route path="/about/*" element={<Navigate to="/" replace />} />
-            <Route path="/services/*" element={<Navigate to="/" replace />} />
-            <Route path="/team/*" element={<Navigate to="/" replace />} />
-            <Route path="/careers/*" element={<Navigate to="/" replace />} />
-            <Route path="/case-studies/*" element={<Navigate to="/" replace />} />
+            <Route path="/platform" element={<Navigate to="/product" replace />} />
+            <Route path="/team/*" element={<Navigate to="/about" replace />} />
+            <Route path="/case-studies/*" element={<Navigate to="/services" replace />} />
             <Route path="/industries/*" element={<Navigate to="/" replace />} />
-            <Route path="/resources/*" element={<Navigate to="/" replace />} />
+            <Route path="/resources/*" element={<Navigate to="/blog" replace />} />
             <Route element={<RequireLoggedOut />}>
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
             </Route>
             <Route path="/client/shortlist/:token" element={<ClientShortlistPage />} />
+            <Route path="/client/report/:token" element={<ClientReportPage />} />
             <Route element={<RequireOnboarding />}>
               <Route path="/onboarding/org" element={<OnboardingOrgPage />} />
               <Route path="/onboarding/role" element={<OnboardingRolePage />} />
@@ -175,6 +207,8 @@ export default function App() {
               <Route path="/candidates/:id" element={<CandidatePage />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/calls" element={<CallsPage />} />
+              <Route path="/tasks" element={<AdminTasksPage />} />
+              <Route path="/shortlists" element={<ShortlistsPage />} />
               <Route path="/crm" element={<Navigate to="/dashboard/crm" replace />} />
               <Route path="/crm/templates" element={<Navigate to="/dashboard/crm/templates" replace />} />
               <Route path="/dashboard/crm" element={<CrmPage />} />
@@ -192,6 +226,7 @@ export default function App() {
                 <Route path="/admin/email-inbox" element={<EmailInboxPage />} />
                 <Route path="/admin/emails" element={<Navigate to="/admin/email-inbox" replace />} />
                 <Route path="/admin/tasks" element={<AdminTasksPage />} />
+              <Route path="/admin/leads" element={<AdminLeadsPage />} />
                 <Route path="/admin/system-check" element={<AdminSystemCheckPage />} />
               </Route>
             </Route>
