@@ -7,16 +7,24 @@
       {
         "rank": 1,
         "candidate_name": "Alex Morgan, RN",
-        "fit_score": 0.92
+        "fit_score": 0.92,
+        "confidence": {
+          "level": "high",
+          "rationale": "Direct multi-site DON ownership with quantified staffing outcomes closely matching the search brief."
+        }
       },
       {
         "rank": 2,
         "candidate_name": "Jordan Lee, MSN",
-        "fit_score": 0.87
+        "fit_score": 0.87,
+        "confidence": {
+          "level": "medium",
+          "rationale": "Strong compliance transformation depth but less direct census-growth ownership than the top match."
+        }
       }
     ],
     "explanation": "Interview Alex first for direct DON ownership and measurable staffing outcomes; Jordan is a close second with strong compliance transformation depth.",
-    "outreach_draft": "Subject: Quick intro re: NJ Director of Nursing role\n\nHi Alex — based on your multi-site SNF leadership track record, we'd value a 20-minute conversation about a Director of Nursing opening in Newark."
+    "outreach_draft": "Subject: Quick intro re: NJ Director of Nursing role\n\nHi Alex \u2014 based on your multi-site SNF leadership track record, we'd value a 20-minute conversation about a Director of Nursing opening in Newark."
   },
   "grounded": {
     "results": [
