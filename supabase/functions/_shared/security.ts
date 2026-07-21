@@ -44,7 +44,7 @@ export async function requireFunctionAuth(req: Request, functionName: string): P
       const admin = createClient(supabaseUrl, serviceRoleKey);
       const { data } = await admin.rpc("verify_scheduler_secret", { candidate: token });
       isSchedulerCall = data === true;
-    } catch (_error) {
+    } catch {
       // Helper absent or unreachable: fall through to the normal checks.
     }
   }

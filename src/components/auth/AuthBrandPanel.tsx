@@ -1,3 +1,5 @@
+import { AlivioMark } from '../brand/AlivioLogo';
+
 const features = [
   'AI-powered candidate sourcing',
   'Automated outreach generation',
@@ -19,23 +21,7 @@ export default function AuthBrandPanel() {
 
       <div className="flex flex-col items-center text-center" style={{ maxWidth: '360px' }}>
         <div className="flex items-center gap-2.5 mb-8">
-          <div
-            style={{
-              width: '28px',
-              height: '28px',
-              borderRadius: '8px',
-              background: 'linear-gradient(135deg, #2563EB 0%, #3b82f6 100%)',
-              boxShadow: '0 2px 8px rgba(37,99,235,0.4)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-            }}
-          >
-            <svg width="14" height="14" viewBox="0 0 12 12" fill="none">
-              <path d="M2 9L5 3L8 7L9.5 5L11 9" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
+          <AlivioMark size={28} variant="dark" />
           <span
             style={{
               color: '#FAFAFA',

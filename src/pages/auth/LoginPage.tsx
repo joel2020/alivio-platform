@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { AlivioMark } from '../../components/brand/AlivioLogo';
 import { useAuth } from '../../lib/auth';
 import AuthBrandPanel from '../../components/auth/AuthBrandPanel';
 import { getSafeNextPath, withNextParam } from '../../lib/nextRedirect';
@@ -89,21 +90,7 @@ export default function LoginPage() {
       >
         <div style={{ width: '100%', maxWidth: '400px' }}>
           <div className="lg:hidden flex items-center gap-2 mb-8">
-            <div
-              style={{
-                width: '24px',
-                height: '24px',
-                borderRadius: '6px',
-                backgroundColor: '#2563EB',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <path d="M2 9L5 3L8 7L9.5 5L11 9" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
+            <AlivioMark size={26} variant="light" />
             <span style={{ fontWeight: 700, fontSize: '16px', color: '#09090B', letterSpacing: '-0.02em' }}>Alivio</span>
           </div>
 

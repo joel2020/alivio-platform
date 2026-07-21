@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
+import { AlivioLogo } from '../brand/AlivioLogo';
 import { CAL_COM_BOOKING_URL, DEMO_EVENT_DESCRIPTION, DEMO_EVENT_TITLE } from '../../lib/demoBooking';
 
 const navLinks = [
@@ -64,9 +65,8 @@ export default function MarketingNav() {
         }}
       >
         <div className="mkt-container" style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Link to="/" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2px', textDecoration: 'none' }}>
-            <span style={{ fontSize: '34px', fontWeight: 700, color: '#0B1530', letterSpacing: '0.24em' }}>ALIVIO</span>
-            <span style={{ fontSize: '12px', fontWeight: 600, color: '#2D5CE5', letterSpacing: '0.48em', marginLeft: '2px' }}>SEARCH PARTNERS</span>
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }} aria-label="Alivio Search Partners — home">
+            <AlivioLogo variant="light" markSize={34} wordSize={26} />
           </Link>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }} className="hidden-mobile">
