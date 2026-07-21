@@ -26,7 +26,7 @@ const industries = {
     label: 'Technology',
     headline: 'Engineering, product, and data teams for healthtech velocity.',
     intro:
-      'Venture-backed healthtech and AI companies hire with us when the roadmap can’t wait. We recruit engineers, product leaders, and data teams calibrated to startup pace, equity-stage compensation, and healthcare domain constraints.',
+      'High-growth healthtech and AI companies hire with us when the roadmap can’t wait. We recruit engineers, product leaders, and data teams calibrated to startup pace, equity-stage compensation, and healthcare domain constraints.',
     roles: [
       'Software engineers — full-stack, backend, ML/AI',
       'Founding engineers & technical leads',

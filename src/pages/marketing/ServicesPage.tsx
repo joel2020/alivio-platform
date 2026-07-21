@@ -17,7 +17,7 @@ const practices = [
   {
     icon: Users2,
     title: 'Technology & Product Search',
-    copy: 'Engineers, product leaders, and data teams for venture-backed healthtech and AI companies — calibrated to startup velocity and equity-stage compensation.',
+    copy: 'Engineers, product leaders, and data teams for high-growth healthtech and AI companies — calibrated to startup velocity and equity-stage compensation.',
   },
   {
     icon: Bot,
