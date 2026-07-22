@@ -199,7 +199,7 @@ export default function HomePage() {
         <div className="mkt-container case-grid" style={{ maxWidth: 1180, display: 'grid', gridTemplateColumns: 'repeat(3,minmax(0,1fr))', gap: 14 }}>
           {[
             ['AI behavioral health platform', 'Building AI-powered clinical workflows takes product and engineering talent that ships fast while respecting documentation integrity, reimbursement logic, and compliance. We map and recruit Full-Stack Engineers and AI-forward Technical PMs ready to execute immediately after a raise.'],
-            ['Physician group', 'Mapped passive physicians for a hard-to-fill specialty search with compensation and schedule sensitivity.'],
+            ['Physician group — Gastroenterology search', 'Search opened mid-April; fourteen days later a scored shortlist of 10 gastroenterologists — from 16 sourced and matched — was live in the client portal, each with fit rationale, risks, and suggested interview questions.'],
             ['Multi-site healthcare operator', 'Created a leadership pipeline for DON, administrator, and clinical operations searches.'],
           ].map(([title, copy]) => <div key={title} style={{ border: '1px solid #DCE4F2', borderRadius: 16, padding: 20, background: '#fff' }}><h3 style={{ marginTop: 0, marginBottom: 8, color: '#102344', fontSize: 18 }}>{title}</h3><p style={{ color: '#4D5E7B', lineHeight: 1.55, fontSize: 14, margin: 0 }}>{copy}</p></div>)}
         </div>
