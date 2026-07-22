@@ -11,9 +11,9 @@ const engineModules = [
 ];
 
 const offers = [
-  ['AI Candidate Engine Install', '$5K–$10K setup', 'For companies that want a repeatable recruiting engine configured around their ICP, role scorecards, outbound workflows, and reporting.'],
-  ['Managed Search Engine', '$2K–$3K monthly retainer', 'For healthcare and technology teams that want Alivio to run sourcing, outreach, screening support, pipeline review, and optimization.'],
-  ['Search + Success Fee', 'Custom', 'For priority searches where Alivio combines retained search discipline with AI-enabled execution and shortlist delivery.'],
+  ['AI Candidate Engine Install', 'One-time setup', 'For companies that want a repeatable recruiting engine configured around their ICP, role scorecards, outbound workflows, and reporting.'],
+  ['Managed Search Engine', 'Monthly program', 'For healthcare and technology teams that want Alivio to run sourcing, outreach, screening support, pipeline review, and optimization.'],
+  ['Search + Success Fee', 'Per search', 'For priority searches where Alivio combines retained search discipline with AI-enabled execution and shortlist delivery.'],
 ];
 
 const useCases = [
@@ -50,6 +50,22 @@ export default function ProductPage() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section style={{ padding: '64px 0 8px' }}>
+        <div className="mkt-container" style={{ maxWidth: 1000 }}>
+          <p className="mkt-label" style={{ color: '#1D55C6', textAlign: 'center' }}>SEE IT IN ACTION</p>
+          <h2 style={{ fontSize: 'clamp(28px,3.4vw,44px)', letterSpacing: '-.035em', margin: '10px 0 22px', textAlign: 'center' }}>A 60-second walkthrough of the platform.</h2>
+          <video
+            controls
+            preload="metadata"
+            poster="/walkthrough-poster.jpg"
+            style={{ width: '100%', borderRadius: 20, border: '1px solid #DCE4F2', boxShadow: '0 18px 46px rgba(8,19,48,0.18)', display: 'block' }}
+          >
+            <source src="/alivio-walkthrough.mp4" type="video/mp4" />
+            Your browser does not support embedded video. Download it at /alivio-walkthrough.mp4
+          </video>
         </div>
       </section>
 
@@ -92,8 +108,9 @@ export default function ProductPage() {
 
       <section id="pricing" style={{ padding: '72px 0' }}>
         <div className="mkt-container">
-          <p className="mkt-label" style={{ color: '#1D55C6' }}>PRODUCTIZED OFFER</p>
-          <h2 style={{ fontSize: 'clamp(34px,4vw,54px)', letterSpacing: '-.04em', margin: '12px 0 28px' }}>Install the engine, run the pipeline, improve every month.</h2>
+          <p className="mkt-label" style={{ color: '#1D55C6' }}>ENGAGEMENT MODELS</p>
+          <h2 style={{ fontSize: 'clamp(34px,4vw,54px)', letterSpacing: '-.04em', margin: '12px 0 10px' }}>Install the engine, run the pipeline, improve every month.</h2>
+          <p style={{ color: '#4D5E7B', fontSize: 17, lineHeight: 1.7, maxWidth: 680, margin: '0 0 28px' }}>Pricing is scoped to the engagement — roles, volume, and timeline. Book a call and we will put a number on your exact situation.</p>
           <div className="offers" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,minmax(0,1fr))', gap: 18 }}>
             {offers.map(([name, price, copy]) => <div key={name} style={{ border: '1px solid #DCE4F2', borderRadius: 22, padding: 28, background: '#fff', boxShadow: '0 10px 32px rgba(7,25,62,.06)' }}><h3 style={{ marginTop: 0, fontSize: 24 }}>{name}</h3><p style={{ color: '#1D55C6', fontWeight: 800, fontSize: 22 }}>{price}</p><p style={{ color: '#4D5E7B', lineHeight: 1.7 }}>{copy}</p></div>)}
           </div>
