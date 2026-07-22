@@ -288,7 +288,7 @@ function CreateShortlistModal({
           client_id: clientId || null,
           title: title.trim(),
           share_token: token,
-          status: 'active',
+          status: 'sent',
           created_by: user.id,
         })
         .select('id, share_token')
@@ -354,7 +354,7 @@ function CreateShortlistModal({
                     <span>
                       <span style={{ display: 'block', fontWeight: 600, fontSize: '0.8125rem', color: 'var(--text-primary)' }}>
                         {match.candidates?.full_name ?? 'Candidate'}
-                        {match.match_score != null ? <span style={{ color: 'var(--accent)', marginLeft: 8 }}>{Math.round(match.match_score)}</span> : null}
+                        {match.match_score != null ? <span style={{ color: 'var(--accent)', marginLeft: 8 }}>{Math.round(match.match_score * 100)}%</span> : null}
                       </span>
                       <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
                         {[match.candidates?.current_title, match.candidates?.current_company].filter(Boolean).join(' · ') || '—'}

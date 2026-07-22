@@ -19,6 +19,7 @@ import CareersPage from './pages/marketing/CareersPage';
 import CareersJobPage from './pages/marketing/CareersJobPage';
 import IndustriesPage from './pages/marketing/IndustriesPage';
 import StartPage from './pages/marketing/StartPage';
+import AccessibilityPage from './pages/marketing/AccessibilityPage';
 
 import LoginPage from './pages/auth/LoginPage';
 import SignupPage from './pages/auth/SignupPage';
@@ -108,6 +109,9 @@ function SeoManager() {
   } else if (pathname === '/start') {
     title = 'Request a Search Plan | Alivio Search Partners';
     description = 'Tell us about the roles you need to fill and get a search plan with market mapping and timeline.';
+  } else if (pathname === '/accessibility') {
+    title = 'Accessibility Statement | Alivio Search Partners';
+    description = 'Our commitment to an accessible website and platform, and how to report an accessibility issue.';
   } else if (pathname === '/privacy') {
     title = 'Privacy Policy | Alivio Search Partners';
     description = 'Review the Alivio Search Partners privacy policy for our healthcare recruiting platform.';
@@ -177,6 +181,7 @@ export default function App() {
               <Route path="/careers/:id" element={<CareersJobPage />} />
               <Route path="/industries/:slug" element={<IndustriesPage />} />
               <Route path="/start" element={<StartPage />} />
+              <Route path="/accessibility" element={<AccessibilityPage />} />
             </Route>
             <Route path="/pricing" element={<Navigate to="/product" replace />} />
             <Route path="/platform" element={<Navigate to="/product" replace />} />

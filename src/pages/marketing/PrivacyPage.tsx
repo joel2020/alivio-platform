@@ -100,7 +100,42 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 style={sectionTitleStyle}>10. Your Privacy Rights</h2>
+              <h2 style={sectionTitleStyle}>10. Subprocessors</h2>
+              <p style={paragraphStyle}>
+                We use the following subprocessors to operate the Services. Each processes data only as needed to
+                provide its function: Vercel (website and application hosting), Supabase (database, authentication, and
+                file storage), Microsoft Azure OpenAI (AI processing — candidate scoring, matching, and outreach
+                drafting), Resend (transactional email delivery), Cal.com (meeting scheduling), Google Cloud Vertex AI
+                (candidate sourcing search), and GitHub (source code hosting). We will update this list when
+                subprocessors change.
+              </p>
+            </section>
+
+            <section>
+              <h2 style={sectionTitleStyle}>11. Data Subject Requests</h2>
+              <p style={paragraphStyle}>
+                To request access to, correction of, or deletion of your personal information, email
+                privacy@aliviosearchpartners.com with the subject line "Data Request". We will acknowledge your
+                request within 7 days and respond within 30 days. If we process your data on behalf of a customer
+                (for example, as a recruiting services provider), we may direct the request to that customer or
+                coordinate with them to fulfill it.
+              </p>
+            </section>
+
+            <section>
+              <h2 style={sectionTitleStyle}>12. AI Processing and Call Recording</h2>
+              <p style={paragraphStyle}>
+                We use AI systems to assist with candidate sourcing, scoring, and outreach drafting. A human recruiter
+                reviews AI-assisted outputs before candidates are advanced or presented to clients; no hiring
+                recommendation is made by AI alone. AI-assisted screening calls disclose at the start of the call that
+                they are automated and may be recorded and transcribed; continuing the call constitutes consent where
+                permitted by law, and any candidate may decline recording or request a human callback at any time. See
+                also the Responsible AI commitments on our About page.
+              </p>
+            </section>
+
+            <section>
+              <h2 style={sectionTitleStyle}>13. Your Privacy Rights</h2>
               <p style={paragraphStyle}>
                 Depending on your jurisdiction, you may have rights to access, correct, delete, restrict, object to processing, and request portability of personal information,
                 and to appeal certain decisions. U.S. state residents may have rights under laws such as the CCPA/CPRA. If we process data on behalf of a customer,
@@ -109,7 +144,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 style={sectionTitleStyle}>11. Children</h2>
+              <h2 style={sectionTitleStyle}>14. Children</h2>
               <p style={paragraphStyle}>
                 The Services are intended for business users and are not directed to children under 16. If you believe information from a child was provided to us,
                 please contact us so we can take appropriate action.
@@ -117,14 +152,14 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 style={sectionTitleStyle}>12. Changes to This Policy</h2>
+              <h2 style={sectionTitleStyle}>15. Changes to This Policy</h2>
               <p style={paragraphStyle}>
                 We may update this Privacy Policy periodically. If we make material changes, we will update the "Last updated" date and provide additional notice when required by law.
               </p>
             </section>
 
             <section>
-              <h2 style={sectionTitleStyle}>13. Contact Us</h2>
+              <h2 style={sectionTitleStyle}>16. Contact Us</h2>
               <p style={paragraphStyle}>
                 Alivio Search Partners, Inc.<br />
                 Website: aliviosearchpartners.com<br />
