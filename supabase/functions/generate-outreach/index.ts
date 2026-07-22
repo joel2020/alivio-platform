@@ -136,7 +136,10 @@ async function generateWithAzure(promptPayload: string, channel: OutreachChannel
   } catch (v1Error) {
     lastError = v1Error;
   }
-  throw lastError instanceof Error ? lastError : new Error("Azure OpenAI request failed for all API versions.");
+  const host = (() => { try { return new URL(endpoint).host; } catch { return "invalid-endpoint"; } })();
+  const finalError = lastError instanceof Error ? lastError : new Error("Azure OpenAI request failed for all API versions.");
+  finalError.message = `${finalError.message} [azure host: ${host}, deployment: ${primaryDeployment}]`;
+  throw finalError;
 }
 
 Deno.serve(async (req: Request) => {
