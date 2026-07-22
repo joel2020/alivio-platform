@@ -41,10 +41,10 @@ export default function HomePage() {
             <div>
               <p className="mkt-label" style={{ margin: '0 0 12px', color: '#1D55C6', letterSpacing: '0.22em', fontSize: 11 }}>AI-POWERED SEARCH. HUMAN-DRIVEN RESULTS.</p>
               <h1 style={{ fontSize: 'clamp(36px, 4.4vw, 58px)', lineHeight: 1.02, letterSpacing: '-0.04em', margin: '0 0 16px', color: '#071226', fontWeight: 750 }}>
-                High-Growth HealthTech Hiring, Built for AI Product Velocity
+                AI-Powered Recruitment for Healthcare and Technology Teams
               </h1>
               <p style={{ margin: '0 0 22px', fontSize: '17px', lineHeight: 1.6, color: '#3C4A62', maxWidth: '650px' }}>
-                Alivio helps founders and startup leadership teams hire full-stack engineers, AI-forward product leaders, and healthcare operators who can ship fast inside regulated environments.
+                Alivio pairs an AI Candidate Engine with senior recruiters to source, score, and screen physicians, clinical leaders, engineers, and operators — delivering a reviewed first shortlist in as little as 48 hours.
               </p>
               <div className="hero-cta" style={{ display: 'flex', gap: '10px', marginBottom: '22px', flexWrap: 'wrap' }}>
                 <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary-lg" style={{ minWidth: '180px', height: 48, justifyContent: 'center', background: '#061636', boxShadow: '0 12px 26px rgba(6,22,54,0.16)' }}>Book a Hiring Strategy Call <ArrowRight size={16} /></a>
@@ -53,9 +53,9 @@ export default function HomePage() {
               </div>
               <div className="proof-badges" style={{ display: 'grid', gridTemplateColumns: 'repeat(2,minmax(0,1fr))', gap: '10px', color: '#30415F', fontSize: '13px', maxWidth: 560 }}>
                 {[
-                  ['HealthTech + AI Startup Search', ShieldCheck],
+                  ['Healthcare + Technology Search', ShieldCheck],
                   ['AI Candidate Engine', Sparkles],
-                  ['48-Hour Speed-to-Slate', Users],
+                  ['48-Hour First Shortlist', Users],
                   ['Retention-Focused Hiring', Target],
                 ].map(([label, Icon]) => (
                   <div key={String(label)} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
@@ -110,9 +110,9 @@ export default function HomePage() {
 
       <section style={{ background: 'linear-gradient(100deg, #081F4A 0%, #052255 45%, #02183E 100%)', padding: '18px 0', color: '#fff' }}>
         <div className="mkt-container" style={{ textAlign: 'center', maxWidth: 1180 }}>
-          <p style={{ margin: '0 0 12px', fontSize: '11px', letterSpacing: '0.22em', color: '#B8C8E9', textTransform: 'uppercase' }}>built for high-growth healthcare + ai teams</p>
+          <p style={{ margin: '0 0 12px', fontSize: '11px', letterSpacing: '0.22em', color: '#B8C8E9', textTransform: 'uppercase' }}>trusted by healthcare and technology hiring teams</p>
           <div className="trust-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', gap: '12px', fontSize: '13px', fontWeight: 700, color: '#EAF0FF', alignItems: 'center' }}>
-            {['Seed to Series B HealthTech', 'AI-Native Product Teams', 'Behavioral Health Platforms', 'Provider Operators', 'Revenue Cycle Teams', 'Clinical Software Builders', 'Founder-Led Startups'].map((name) => <div key={name}>{name}</div>)}
+            {['Health Systems & Hospitals', 'Physician Groups', 'Skilled Nursing & Senior Living', 'Behavioral Health Platforms', 'HealthTech & AI Startups', 'Revenue Cycle Teams', 'Founder-Led Companies'].map((name) => <div key={name}>{name}</div>)}
           </div>
         </div>
       </section>
@@ -151,7 +151,7 @@ export default function HomePage() {
           {[
             ['20+', 'Years Search Experience'],
             ['1,000+', 'Placements Supported'],
-            ['48-Hour', 'Shortlist Sprint'],
+            ['48-Hour', 'First Shortlist'],
             ['AI + Human', 'Quality Control'],
             ['Nationwide', 'U.S. + Nearshore'],
           ].map(([value, label]) => <div key={label} style={{ borderLeft: '1px solid rgba(255,255,255,.1)' }}><p style={{ margin: 0, fontSize: 24, fontWeight: 700 }}>{value}</p><p style={{ margin: '5px 0 0', color: 'rgba(255,255,255,.62)', fontSize: 12 }}>{label}</p></div>)}
@@ -198,7 +198,7 @@ export default function HomePage() {
       <section style={{ padding: '42px 0 22px' }}>
         <div className="mkt-container case-grid" style={{ maxWidth: 1180, display: 'grid', gridTemplateColumns: 'repeat(3,minmax(0,1fr))', gap: 14 }}>
           {[
-            ['For companies like JotPsych', 'If you are building AI-powered behavioral health workflows, you need product and engineering talent that can ship quickly while respecting documentation integrity, reimbursement logic, and compliance requirements. We map and recruit on-site or hybrid-ready Full-Stack Engineers and AI-forward Technical PMs who can execute immediately after a raise.'],
+            ['AI behavioral health platform', 'Building AI-powered clinical workflows takes product and engineering talent that ships fast while respecting documentation integrity, reimbursement logic, and compliance. We map and recruit Full-Stack Engineers and AI-forward Technical PMs ready to execute immediately after a raise.'],
             ['Physician group', 'Mapped passive physicians for a hard-to-fill specialty search with compensation and schedule sensitivity.'],
             ['Multi-site healthcare operator', 'Created a leadership pipeline for DON, administrator, and clinical operations searches.'],
           ].map(([title, copy]) => <div key={title} style={{ border: '1px solid #DCE4F2', borderRadius: 16, padding: 20, background: '#fff' }}><h3 style={{ marginTop: 0, marginBottom: 8, color: '#102344', fontSize: 18 }}>{title}</h3><p style={{ color: '#4D5E7B', lineHeight: 1.55, fontSize: 14, margin: 0 }}>{copy}</p></div>)}
@@ -207,10 +207,10 @@ export default function HomePage() {
 
       <section id="contact" style={{ padding: '28px 0 54px' }}>
         <div className="mkt-container" style={{ maxWidth: 1000, borderRadius: '24px', border: '1px solid #DCE4F2', background: '#061636', padding: '38px 28px', textAlign: 'center', color: '#fff', boxShadow: '0 16px 44px rgba(6,22,54,.18)' }}>
-          <h2 style={{ margin: '0 0 12px', fontSize: 'clamp(28px,3.4vw,42px)', letterSpacing: '-0.035em' }}>Need to make critical hires before your next board update?</h2>
-          <p style={{ margin: '0 auto 20px', color: 'rgba(255,255,255,.72)', fontSize: '16px', lineHeight: 1.6, maxWidth: 720 }}>Alivio gives founders, CTOs, CFOs, and VP Product leaders a focused recruiting partner for technical and operational healthcare hiring—optimized for speed, precision, and long-term fit.</p>
+          <h2 style={{ margin: '0 0 12px', fontSize: 'clamp(28px,3.4vw,42px)', letterSpacing: '-0.035em' }}>Need critical roles filled before your next board meeting or survey window?</h2>
+          <p style={{ margin: '0 auto 20px', color: 'rgba(255,255,255,.72)', fontSize: '16px', lineHeight: 1.6, maxWidth: 720 }}>Alivio gives founders, CTOs, CNOs, and talent acquisition leaders one accountable recruiting partner for clinical, technical, and operational hiring — optimized for time-to-fill, submittal quality, and first-year retention.</p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: 10, flexWrap: 'wrap' }}>
-            <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary-lg" style={{ display: 'inline-flex', height: 48, background: '#fff', color: '#061636' }}>Book Founder Intake Call <ArrowRight size={16} /></a>
+            <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary-lg" style={{ display: 'inline-flex', height: 48, background: '#fff', color: '#061636' }}>Book an Intake Call <ArrowRight size={16} /></a>
             <a href="/platform" className="mkt-btn-secondary" style={{ display: 'inline-flex', height: 48, color: '#fff', borderColor: 'rgba(255,255,255,.35)' }}>See How We Run Search</a>
           </div>
         </div>

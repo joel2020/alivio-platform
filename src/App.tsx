@@ -62,14 +62,14 @@ import AdminSystemCheckPage from './pages/admin/AdminSystemCheckPage';
 
 const SITE_URL = 'https://aliviosearchpartners.com';
 const DEFAULT_KEYWORDS = 'ai recruitment, healthcare recruiting, healthcare staffing, nurse recruitment, clinician sourcing, tech leadership hiring, AI talent engine';
-const DEFAULT_OG_IMAGE = `${SITE_URL}/og`;
+const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
 
 function SeoManager() {
   const location = useLocation();
   const pathname = location.pathname;
   const canonicalUrl = `${SITE_URL}${pathname}`;
-  let title = 'Alivio Search Partners | Healthcare & Technology Recruiting Firm';
-  let description = 'Alivio Search Partners helps healthcare and technology organizations hire hard-to-find talent through senior recruiting expertise, AI-enabled sourcing, and client-ready candidate shortlists.';
+  let title = 'Alivio Search Partners | AI-Powered Recruitment for Healthcare & Technology';
+  let description = 'Alivio Search Partners is an AI-powered recruitment firm for healthcare and technology: AI sourcing, scoring, and screening with senior recruiter oversight, first shortlists in as little as 48 hours.';
   let keywords = DEFAULT_KEYWORDS;
   let robots = 'index, follow';
   if (pathname === '/product') {

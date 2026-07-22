@@ -94,6 +94,32 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <section id="responsible-ai" style={{ padding: '0 0 72px' }}>
+        <div className="mkt-container">
+          <div style={{ border: '1px solid #DCE4F2', borderRadius: 24, padding: 'clamp(24px,4vw,40px)', background: '#fff' }}>
+            <p className="mkt-label">Responsible AI</p>
+            <h2 style={{ fontSize: 'clamp(26px,3.2vw,40px)', letterSpacing: '-.03em', margin: '10px 0 12px' }}>How we use AI in recruiting.</h2>
+            <p style={{ color: '#4D5E7B', lineHeight: 1.75, maxWidth: 760, marginBottom: 22 }}>
+              AI moves the volume work — sourcing, first-pass scoring, screening logistics, follow-ups. People make
+              the decisions. These are the commitments behind every Alivio search:
+            </p>
+            <ul style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 14, padding: 0, listStyle: 'none' }}>
+              {[
+                'A recruiter reviews every shortlist before it reaches a client — no candidate is advanced or rejected by AI alone.',
+                'AI-assisted screening calls disclose that they are automated, and any candidate can request a human callback.',
+                'Match scores come with written rationale, so clients see why a candidate ranks — never a black-box number.',
+                'Candidate data is encrypted, organization-scoped, never indexed by search engines, and never sold or shared without consent.',
+              ].map((item) => (
+                <li key={item} style={{ display: 'flex', gap: 10, color: '#233657', lineHeight: 1.65, fontSize: 15 }}>
+                  <span aria-hidden="true" style={{ flexShrink: 0, marginTop: 7, width: 8, height: 8, borderRadius: 999, background: '#1D55C6' }} />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
       <section style={{ padding: '0 0 80px' }}>
         <div className="mkt-container">
           <div style={{ background: 'linear-gradient(135deg,#061636,#0A2352)', borderRadius: 28, padding: 'clamp(28px,5vw,56px)', textAlign: 'center' }}>

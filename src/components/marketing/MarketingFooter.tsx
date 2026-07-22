@@ -21,6 +21,7 @@ const companyLinks = [
 const legalLinks = [
   { label: 'Privacy Policy', to: '/privacy' },
   { label: 'Terms of Service', to: '/terms' },
+  { label: 'Responsible AI', to: '/about#responsible-ai' },
 ];
 
 export default function MarketingFooter() {
