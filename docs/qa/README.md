@@ -50,9 +50,8 @@ The initial six regression tests reproduced four failures before fixes (320px,
 390px, 1024px, and homepage contrast). All pass after the changes.
 
 Lighthouse reports are local production-build lab measurements, not production
-field measurements or an overall business/conversion score. The optimized mobile
-report preceded the final logo accessible-name and sample-count corrections;
-the final desktop report and 26-test production suite include those corrections.
+field measurements or an overall business/conversion score. The mobile and desktop reports and 26-test production suite cover the final
+release candidate.
 Automated accessibility checks do not replace a full assistive-technology audit.
 
 ## Review artifacts
