@@ -39,7 +39,8 @@ repository and its existing rebuild were not changed.
 | `npm run typecheck` | Passed |
 | `npm run lint` | 0 errors; one existing Fast Refresh warning in SeoRecoveryPage.tsx |
 | `npm run build` | Passed |
-| Production browser suite | 26 passed |
+| Local production browser suite | 26 passed |
+| Authenticated Vercel preview suite | 26 passed |
 | Core routes at 320px | No document overflow; zero automated WCAG A/AA violations in the selected rules |
 | Main JavaScript bundle | 367.32 KB / 110.03 KB gzip, versus 842.32 KB / 217.25 KB gzip before splitting |
 | Desktop Lighthouse | Performance 100 / Accessibility 100 / Best practices 100 / SEO 100 |
@@ -103,3 +104,17 @@ Claude plan/diff review was attempted per the workspace instructions, but the
 Claude CLI returned `Not logged in · Please run /login`. That independent review
 remains pending; it was not represented as completed. The implementation was
 checked directly, built, and tested with the evidence above.
+
+## Protected preview verification
+
+The deployed preview at
+https://alivio-platform-wnhercxh0-joel-carias-projects.vercel.app
+(commit `92cf99b`) passed the same 26 tests with temporary Vercel preview access.
+An initial unauthenticated run reached Vercel’s sign-in page and was discarded
+as an invalid application test. No deployment protection setting was changed.
+
+For protected preview runs, `PLAYWRIGHT_STORAGE_STATE` can reference an existing
+Playwright authentication-state file stored securely outside the repository.
+Never commit cookies or access links. The temporary state used for this review
+was removed after verification. Public application source is unchanged by this
+QA configuration/documentation follow-up.
