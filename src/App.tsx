@@ -1,65 +1,67 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider } from './lib/auth';
 import { ThemeProvider } from './lib/theme';
 import { isSupabaseConfigured, supabaseConfigError } from './lib/supabase';
+import RouteErrorBoundary from './components/RouteErrorBoundary';
 import MarketingLayout from './components/marketing/MarketingLayout';
-import AppLayout from './components/app/AppLayout';
+const AppLayout = lazy(() => import('./components/app/AppLayout'));
 
 import HomePage from './pages/marketing/HomePage';
-import ProductPage from './pages/marketing/ProductPage';
-import DevelopersPage from './pages/marketing/DevelopersPage';
-import PrivacyPage from './pages/marketing/PrivacyPage';
-import TermsPage from './pages/marketing/TermsPage';
-import BlogPage from './pages/marketing/BlogPage';
-import BlogPostPage from './pages/marketing/BlogPostPage';
-import ContactPage from './pages/marketing/ContactPage';
-import ServicesPage from './pages/marketing/ServicesPage';
-import AboutPage from './pages/marketing/AboutPage';
-import CareersPage from './pages/marketing/CareersPage';
-import CareersJobPage from './pages/marketing/CareersJobPage';
-import IndustriesPage from './pages/marketing/IndustriesPage';
-import StartPage from './pages/marketing/StartPage';
-import AccessibilityPage from './pages/marketing/AccessibilityPage';
+const ProductPage = lazy(() => import('./pages/marketing/ProductPage'));
+const DevelopersPage = lazy(() => import('./pages/marketing/DevelopersPage'));
+const PrivacyPage = lazy(() => import('./pages/marketing/PrivacyPage'));
+const TermsPage = lazy(() => import('./pages/marketing/TermsPage'));
+const BlogPage = lazy(() => import('./pages/marketing/BlogPage'));
+const BlogPostPage = lazy(() => import('./pages/marketing/BlogPostPage'));
+const ContactPage = lazy(() => import('./pages/marketing/ContactPage'));
+const ServicesPage = lazy(() => import('./pages/marketing/ServicesPage'));
+const AboutPage = lazy(() => import('./pages/marketing/AboutPage'));
+const CareersPage = lazy(() => import('./pages/marketing/CareersPage'));
+const CareersJobPage = lazy(() => import('./pages/marketing/CareersJobPage'));
+const IndustriesPage = lazy(() => import('./pages/marketing/IndustriesPage'));
+const StartPage = lazy(() => import('./pages/marketing/StartPage'));
+const AccessibilityPage = lazy(() => import('./pages/marketing/AccessibilityPage'));
 
-import LoginPage from './pages/auth/LoginPage';
-import SignupPage from './pages/auth/SignupPage';
+const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
+const SignupPage = lazy(() => import('./pages/auth/SignupPage'));
 import { RequireLoggedOut, RequireOnboarding } from './components/auth/RouteGuards';
 
-import OnboardingOrgPage from './pages/app/OnboardingOrgPage';
-import OnboardingRolePage from './pages/app/OnboardingRolePage';
-import NotFoundPage from './pages/NotFoundPage';
-import OGImagePage from './pages/OGImagePage';
-import ClientShortlistPage from './pages/client/ClientShortlistPage';
-import ClientReportPage from './pages/client/ClientReportPage';
+const OnboardingOrgPage = lazy(() => import('./pages/app/OnboardingOrgPage'));
+const OnboardingRolePage = lazy(() => import('./pages/app/OnboardingRolePage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
+const OGImagePage = lazy(() => import('./pages/OGImagePage'));
+const ClientShortlistPage = lazy(() => import('./pages/client/ClientShortlistPage'));
+const ClientReportPage = lazy(() => import('./pages/client/ClientReportPage'));
 
-import DashboardPage from './pages/app/DashboardPage';
-import RolesPage from './pages/app/RolesPage';
-import RoleNewPage from './pages/app/RoleNewPage';
-import PipelinePage from './pages/app/PipelinePage';
-import PipelineOverviewPage from './pages/app/PipelineOverviewPage';
-import OutreachPage from './pages/app/OutreachPage';
-import ShortlistsPage from './pages/app/ShortlistsPage';
-import AgentsPage from './pages/app/AgentsPage';
-import CandidatePage from './pages/app/CandidatePage';
-import RoleSettingsPage from './pages/app/RoleSettingsPage';
-import SettingsPage from './pages/app/SettingsPage';
-import CallsPage from './pages/app/CallsPage';
-import EmailInboxPage from './pages/app/admin/EmailInboxPage';
-import CrmPage from './pages/app/crm/CrmPage';
-import CrmTemplatesPage from './pages/app/crm/CrmTemplatesPage';
-import CrmClientPage from './pages/app/crm/CrmClientPage';
+const DashboardPage = lazy(() => import('./pages/app/DashboardPage'));
+const RolesPage = lazy(() => import('./pages/app/RolesPage'));
+const RoleNewPage = lazy(() => import('./pages/app/RoleNewPage'));
+const PipelinePage = lazy(() => import('./pages/app/PipelinePage'));
+const PipelineOverviewPage = lazy(() => import('./pages/app/PipelineOverviewPage'));
+const OutreachPage = lazy(() => import('./pages/app/OutreachPage'));
+const ShortlistsPage = lazy(() => import('./pages/app/ShortlistsPage'));
+const AgentsPage = lazy(() => import('./pages/app/AgentsPage'));
+const CandidatePage = lazy(() => import('./pages/app/CandidatePage'));
+const RoleSettingsPage = lazy(() => import('./pages/app/RoleSettingsPage'));
+const SettingsPage = lazy(() => import('./pages/app/SettingsPage'));
+const CallsPage = lazy(() => import('./pages/app/CallsPage'));
+const EmailInboxPage = lazy(() => import('./pages/app/admin/EmailInboxPage'));
+const CrmPage = lazy(() => import('./pages/app/crm/CrmPage'));
+const CrmTemplatesPage = lazy(() => import('./pages/app/crm/CrmTemplatesPage'));
+const CrmClientPage = lazy(() => import('./pages/app/crm/CrmClientPage'));
 import { useSeo } from './lib/seo';
 
 import AdminRoute from './components/admin/AdminRoute';
-import AdminDashboardPage from './pages/admin/AdminDashboardPage';
-import AdminUsersPage from './pages/admin/AdminUsersPage';
-import AdminOrganizationsPage from './pages/admin/AdminOrganizationsPage';
-import AdminBlogPage from './pages/admin/AdminBlogPage';
-import AdminBlogEditorPage from './pages/admin/AdminBlogEditorPage';
-import AdminAiMonitorPage from './pages/admin/AdminAiMonitorPage';
-import AdminTasksPage from './pages/admin/AdminTasksPage';
-import AdminLeadsPage from './pages/admin/AdminLeadsPage';
-import AdminSystemCheckPage from './pages/admin/AdminSystemCheckPage';
+const AdminDashboardPage = lazy(() => import('./pages/admin/AdminDashboardPage'));
+const AdminUsersPage = lazy(() => import('./pages/admin/AdminUsersPage'));
+const AdminOrganizationsPage = lazy(() => import('./pages/admin/AdminOrganizationsPage'));
+const AdminBlogPage = lazy(() => import('./pages/admin/AdminBlogPage'));
+const AdminBlogEditorPage = lazy(() => import('./pages/admin/AdminBlogEditorPage'));
+const AdminAiMonitorPage = lazy(() => import('./pages/admin/AdminAiMonitorPage'));
+const AdminTasksPage = lazy(() => import('./pages/admin/AdminTasksPage'));
+const AdminLeadsPage = lazy(() => import('./pages/admin/AdminLeadsPage'));
+const AdminSystemCheckPage = lazy(() => import('./pages/admin/AdminSystemCheckPage'));
 
 const SITE_URL = 'https://aliviosearchpartners.com';
 const DEFAULT_KEYWORDS = 'ai recruitment, healthcare recruiting, healthcare staffing, nurse recruitment, clinician sourcing, tech leadership hiring, AI talent engine';
@@ -70,7 +72,7 @@ function SeoManager() {
   const pathname = location.pathname;
   const canonicalUrl = `${SITE_URL}${pathname}`;
   let title = 'Alivio Search Partners | AI-Powered Recruitment for Healthcare & Technology';
-  let description = 'Alivio Search Partners is an AI-powered recruitment firm for healthcare and technology: AI sourcing, scoring, and screening with senior recruiter oversight, first shortlists in as little as 48 hours.';
+  let description = 'Recruit physicians, healthcare leaders, engineers, and operators with Alivio Search Partners. AI-enabled sourcing, recruiter-reviewed shortlists, and a search plan tailored to your roles.';
   let keywords = DEFAULT_KEYWORDS;
   let robots = 'index, follow';
   if (pathname === '/product') {
@@ -165,6 +167,8 @@ export default function App() {
       <AuthProvider>
         <BrowserRouter>
           <SeoManager />
+          <RouteErrorBoundary>
+          <Suspense fallback={<div role="status" style={{ padding: '120px 24px', color: '#102344', background: '#fff', minHeight: '70vh' }}>Loading page…</div>}>
           <Routes>
             <Route element={<MarketingLayout />}>
               <Route path="/" element={<HomePage />} />
@@ -238,6 +242,8 @@ export default function App() {
             <Route path="/og" element={<OGImagePage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
+          </Suspense>
+          </RouteErrorBoundary>
         </BrowserRouter>
       </AuthProvider>
     </ThemeProvider>

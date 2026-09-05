@@ -11,9 +11,9 @@ const engineModules = [
 ];
 
 const offers = [
-  ['AI Candidate Engine Install', 'One-time setup', 'For companies that want a repeatable recruiting engine configured around their ICP, role scorecards, outbound workflows, and reporting.'],
-  ['Managed Search Engine', 'Monthly program', 'For healthcare and technology teams that want Alivio to run sourcing, outreach, screening support, pipeline review, and optimization.'],
-  ['Search + Success Fee', 'Per search', 'For priority searches where Alivio combines retained search discipline with AI-enabled execution and shortlist delivery.'],
+  ['Retained search', 'A critical hire', 'A dedicated search with calibrated scorecards, recruiter-reviewed shortlists, weekly reporting, and support through the offer.'],
+  ['Pipeline program', 'Ongoing hiring', 'For healthcare and technology teams that want Alivio to run sourcing, outreach, screening support, pipeline review, and optimization.'],
+  ['Project / RPO support', 'A defined hiring initiative', 'A recruiting team for a launch, expansion, or hiring backlog, with an agreed scope, reporting cadence, and handover.'],
 ];
 
 const useCases = [
@@ -25,26 +25,27 @@ const useCases = [
 
 export default function ProductPage() {
   return (
-    <main style={{ background: '#fff', color: '#071226' }}>
-      <section style={{ padding: '86px 0 70px', background: 'radial-gradient(circle at 78% 18%, rgba(85,130,255,.2), transparent 30%), linear-gradient(135deg,#061636 0%,#081F4A 55%,#020A1A 100%)', color: '#fff', overflow: 'hidden' }}>
+    <div style={{ background: '#fff', color: '#071226' }}>
+      <section className="mkt-dark" style={{ padding: '86px 0 70px', background: 'radial-gradient(circle at 78% 18%, rgba(85,130,255,.2), transparent 30%), linear-gradient(135deg,#061636 0%,#081F4A 55%,#020A1A 100%)', color: '#fff', overflow: 'hidden' }}>
         <div className="mkt-container" style={{ maxWidth: 1240 }}>
-          <div className="engine-hero" style={{ display: 'grid', gridTemplateColumns: '0.95fr 1.05fr', gap: 40, alignItems: 'center' }}>
+          <div className="engine-hero" style={{ display: 'grid', gridTemplateColumns: 'minmax(0,0.95fr) minmax(0,1.05fr)', gap: 40, alignItems: 'center' }}>
             <div>
               <p className="mkt-label" style={{ color: '#9DBBFF', letterSpacing: '.3em' }}>ALIVIO AI CANDIDATE ENGINE</p>
-              <h1 style={{ fontSize: 'clamp(44px,5.6vw,78px)', lineHeight: .96, letterSpacing: '-.055em', margin: '16px 0 22px' }}>Install an AI-powered recruiting engine for hard-to-fill hiring.</h1>
-              <p style={{ fontSize: 19, lineHeight: 1.75, color: 'rgba(255,255,255,.76)', maxWidth: 720 }}>Alivio helps technology companies, physician groups, and healthcare organizations build a repeatable candidate engine for sourcing, outreach, matching, shortlist delivery, and pipeline optimization — with human recruiter oversight built in.</p>
+              <h1 style={{ fontSize: 'clamp(44px,5.6vw,78px)', lineHeight: .96, letterSpacing: '-.055em', margin: '16px 0 22px' }}>The technology behind your next great hire.</h1>
+              <p style={{ fontSize: 19, lineHeight: 1.75, color: 'rgba(255,255,255,.76)', maxWidth: 720 }}>Our AI Candidate Engine supports Alivio recruiters with sourcing, matching, outreach, and pipeline reporting. Engage our team for a search or an ongoing program, with human review at every shortlist.</p>
               <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 28 }}>
-                <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary-lg" style={{ background: '#fff', color: '#061636' }}>Book an Intro Call <ArrowRight size={18} /></a>
-                <a href="#pricing" className="mkt-btn-secondary" style={{ color: '#fff', borderColor: 'rgba(255,255,255,.35)' }}>View Engine Options</a>
+                <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary-lg" style={{ background: '#fff', color: '#061636' }}>Book a Hiring Strategy Call <ArrowRight size={18} /></a>
+                <a href="#pricing" className="mkt-btn-secondary mkt-btn-on-dark" style={{ color: '#fff', borderColor: 'rgba(255,255,255,.35)' }}>View Engine Options</a>
               </div>
             </div>
             <div style={{ border: '1px solid rgba(157,187,255,.25)', background: 'rgba(255,255,255,.045)', borderRadius: 24, padding: 22, boxShadow: '0 28px 70px rgba(0,0,0,.28)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}><strong>Engine Command Center</strong><span style={{ color: '#7EE6A6' }}>Live</span></div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}><strong>Engine Command Center</strong><span style={{ color: '#7EE6A6' }}>Sample data</span></div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12 }} className="engine-metrics">
                 {[
                   ['Target Accounts', '186'], ['Candidate Matches', '742'], ['Outreach Queued', '328'], ['Shortlists', '18'], ['Interview Ready', '41'], ['Avg Match', '91%'],
-                ].map(([k, v]) => <div key={k} style={{ border: '1px solid rgba(157,187,255,.18)', borderRadius: 14, padding: 14, background: 'rgba(5,16,40,.48)' }}><p style={{ margin: 0, color: 'rgba(255,255,255,.58)', fontSize: 12 }}>{k}</p><p style={{ margin: '8px 0 0', fontSize: 28, fontWeight: 800 }}>{v}</p></div>)}
+                ].map(([k, v]) => <div key={k} style={{ border: '1px solid rgba(157,187,255,.18)', borderRadius: 14, padding: 14, background: 'rgba(5,16,40,.48)' }}><p style={{ margin: 0, color: 'rgba(255,255,255,.8)', fontSize: 12 }}>{k}</p><p style={{ margin: '8px 0 0', fontSize: 28, fontWeight: 800 }}>{v}</p></div>)}
               </div>
+              <p style={{ color: '#C1D0EB', fontSize: 13, lineHeight: 1.6 }}>Illustrative product preview. Figures and activity below are sample data.</p>
               <div style={{ marginTop: 16, border: '1px solid rgba(157,187,255,.18)', borderRadius: 16, padding: 16, background: 'rgba(5,16,40,.48)' }}>
                 {['AI/ML Engineer search calibrated', 'Emergency Medicine Physician target list built', 'DON shortlist report generated', 'Technical PM outreach sequence approved'].map((item) => <div key={item} style={{ display: 'flex', gap: 10, alignItems: 'center', padding: '9px 0', color: 'rgba(255,255,255,.82)' }}><CheckCircle2 size={16} color="#7EE6A6" />{item}</div>)}
               </div>
@@ -97,7 +98,7 @@ export default function ProductPage() {
         </div>
       </section>
 
-      <section style={{ padding: '72px 0', background: '#061636', color: '#fff' }}>
+      <section className="mkt-dark" style={{ padding: '72px 0', background: '#061636', color: '#fff' }}>
         <div className="mkt-container">
           <h2 style={{ fontSize: 'clamp(34px,4vw,54px)', letterSpacing: '-.04em', marginTop: 0 }}>Built for high-value searches and repeatable pipeline creation.</h2>
           <div className="use-cases" style={{ display: 'grid', gridTemplateColumns: 'repeat(2,minmax(0,1fr))', gap: 16, marginTop: 28 }}>
@@ -109,8 +110,8 @@ export default function ProductPage() {
       <section id="pricing" style={{ padding: '72px 0' }}>
         <div className="mkt-container">
           <p className="mkt-label" style={{ color: '#1D55C6' }}>ENGAGEMENT MODELS</p>
-          <h2 style={{ fontSize: 'clamp(34px,4vw,54px)', letterSpacing: '-.04em', margin: '12px 0 10px' }}>Install the engine, run the pipeline, improve every month.</h2>
-          <p style={{ color: '#4D5E7B', fontSize: 17, lineHeight: 1.7, maxWidth: 680, margin: '0 0 28px' }}>Pricing is scoped to the engagement — roles, volume, and timeline. Book a call and we will put a number on your exact situation.</p>
+          <h2 style={{ fontSize: 'clamp(34px,4vw,54px)', letterSpacing: '-.04em', margin: '12px 0 10px' }}>One recruiting engine. Three ways to engage.</h2>
+          <p style={{ color: '#4D5E7B', fontSize: 17, lineHeight: 1.7, maxWidth: 680, margin: '0 0 28px' }}>Pricing reflects your roles, hiring volume, and timeline. Each model includes the engine and human recruiter review. For internal teams that need an engine setup, we can scope a separate implementation.</p>
           <div className="offers" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,minmax(0,1fr))', gap: 18 }}>
             {offers.map(([name, price, copy]) => <div key={name} style={{ border: '1px solid #DCE4F2', borderRadius: 22, padding: 28, background: '#fff', boxShadow: '0 10px 32px rgba(7,25,62,.06)' }}><h3 style={{ marginTop: 0, fontSize: 24 }}>{name}</h3><p style={{ color: '#1D55C6', fontWeight: 800, fontSize: 22 }}>{price}</p><p style={{ color: '#4D5E7B', lineHeight: 1.7 }}>{copy}</p></div>)}
           </div>
@@ -118,15 +119,15 @@ export default function ProductPage() {
       </section>
 
       <section style={{ padding: '34px 0 78px' }}>
-        <div className="mkt-container" style={{ borderRadius: 28, background: '#061636', color: '#fff', padding: '54px 34px', textAlign: 'center' }}>
+        <div className="mkt-container mkt-dark" style={{ borderRadius: 28, background: '#061636', color: '#fff', padding: '54px 34px', textAlign: 'center' }}>
           <Sparkles size={34} color="#9DBBFF" />
           <h2 style={{ fontSize: 'clamp(34px,4vw,54px)', letterSpacing: '-.04em', margin: '16px 0' }}>Want to see how the AI Engine would run your searches?</h2>
           <p style={{ color: 'rgba(255,255,255,.74)', fontSize: 18, lineHeight: 1.75, maxWidth: 760, margin: '0 auto 26px' }}>Book a short call and we will map your roles, target market, candidate sources, outreach workflows, and reporting structure.</p>
-          <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary-lg" style={{ background: '#fff', color: '#061636', display: 'inline-flex' }}>Book an Intro Call <ArrowRight size={18} /></a>
+          <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary-lg" style={{ background: '#fff', color: '#061636', display: 'inline-flex' }}>Book a Hiring Strategy Call <ArrowRight size={18} /></a>
         </div>
       </section>
 
       <style>{`@media(max-width:1100px){.engine-hero,.engine-two-col,.offers{grid-template-columns:1fr!important}.engine-modules,.use-cases{grid-template-columns:1fr!important}}@media(max-width:760px){.engine-metrics{grid-template-columns:1fr!important}}`}</style>
-    </main>
+    </div>
   );
 }

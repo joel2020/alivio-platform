@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { AlivioLogo } from '../brand/AlivioLogo';
-import { CAL_COM_BOOKING_URL, DEMO_EVENT_DESCRIPTION, DEMO_EVENT_TITLE } from '../../lib/demoBooking';
+import { CAL_COM_BOOKING_URL } from '../../lib/demoBooking';
 
 const navLinks = [
   { label: 'Services', href: '/services' },
@@ -15,130 +15,99 @@ const navLinks = [
   { label: 'Contact', href: '/contact' },
 ];
 
-function handleHashLink(href: string, e: React.MouseEvent, closeMenu?: () => void) {
-  if (href.startsWith('/#')) {
-    e.preventDefault();
-    const id = href.replace('/#', '');
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-    closeMenu?.();
-  }
-}
-
 export default function MarketingNav() {
   const location = useLocation();
-  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => { setMobileOpen(false); }, [location.pathname, location.hash]);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    const desktop = window.matchMedia('(min-width: 1200px)');
+    const closeOnDesktop = () => { if (desktop.matches) setMobileOpen(false); };
+    desktop.addEventListener('change', closeOnDesktop);
+    return () => desktop.removeEventListener('change', closeOnDesktop);
   }, []);
 
   useEffect(() => {
-    setMobileOpen(false);
-  }, [location.pathname]);
+    if (!mobileOpen) return;
+    const panel = panelRef.current;
+    const previousOverflow = document.body.style.overflow;
+    const background = Array.from(document.querySelectorAll<HTMLElement>('main, footer, .skip-link'));
+    const previousInert = background.map(element => element.inert);
+    document.body.style.overflow = 'hidden';
+    background.forEach(element => { element.inert = true; });
+    panel?.querySelector<HTMLElement>('button, a')?.focus();
 
-  useEffect(() => {
-    document.body.style.overflow = mobileOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setMobileOpen(false);
+        toggleRef.current?.focus();
+      }
+      if (event.key !== 'Tab' || !panel) return;
+      const items = Array.from(panel.querySelectorAll<HTMLElement>('a[href], button'));
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (event.shiftKey && (document.activeElement === first || !panel.contains(document.activeElement))) {
+        event.preventDefault(); last?.focus();
+      } else if (!event.shiftKey && (document.activeElement === last || !panel.contains(document.activeElement))) {
+        event.preventDefault(); first?.focus();
+      }
+    };
+    document.addEventListener('keydown', handleKey);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      background.forEach((element, index) => { element.inert = previousInert[index]; });
+      document.removeEventListener('keydown', handleKey);
+    };
   }, [mobileOpen]);
+
+  const closeMenu = () => { setMobileOpen(false); toggleRef.current?.focus(); };
 
   return (
     <>
-      <nav
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 100,
-          backgroundColor: scrolled ? 'rgba(255,255,255,0.95)' : 'transparent',
-          backdropFilter: scrolled ? 'blur(12px)' : 'none',
-          WebkitBackdropFilter: scrolled ? 'blur(12px)' : 'none',
-          borderBottom: scrolled ? '1px solid rgba(228,228,231,0.5)' : '1px solid transparent',
-          height: '64px',
-          boxShadow: scrolled ? '0 1px 3px rgba(0,0,0,0.04)' : 'none',
-          transition: 'all 0.3s ease',
-        }}
-      >
-        <div className="mkt-container" style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }} aria-label="Alivio Search Partners — home">
-            <AlivioLogo variant="light" markSize={34} wordSize={26} />
+      <nav className="mkt-navigation" aria-label="Main navigation">
+        <div className="mkt-container mkt-nav-inner">
+          <Link to="/" className="mkt-nav-logo" title="Alivio Search Partners — home">
+            <AlivioLogo variant="light" markSize={32} wordSize={23} />
           </Link>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }} className="hidden-mobile">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                to={link.href}
-                onClick={(e) => handleHashLink(link.href, e)}
-                style={{
-                  fontSize: '14px',
-                  fontWeight: 500,
-                  color: location.pathname === link.href ? 'var(--text-primary)' : 'var(--text-secondary)',
-                  textDecoration: 'none',
-                  padding: '6px 12px',
-                  borderRadius: '8px',
-                  transition: 'color 0.15s ease, background 0.15s ease',
-                }}
-              >
+          <div className="mkt-desktop-nav">
+            {navLinks.map(link => (
+              <Link key={link.href} to={link.href} aria-current={location.pathname === link.href ? 'page' : undefined}>
                 {link.label}
               </Link>
             ))}
+            <Link to="/login">Sign In</Link>
+            <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary">Book a Call</a>
           </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Link to="/login" className="mkt-btn-ghost hidden-mobile" style={{ height: '40px' }}>Sign In</Link>
-            <a
-              href={CAL_COM_BOOKING_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={`${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}`}
-              aria-label={`${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}`}
-              className="mkt-btn-primary hidden-mobile"
-              style={{ height: '40px' }}
-            >
-              Book a Call
-            </a>
-            <button
-              onClick={() => setMobileOpen((o) => !o)}
-              className="mobile-only"
-              style={{ display: 'none', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-primary)', padding: '8px', borderRadius: '8px', transition: 'background 0.15s ease' }}
-              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-            >
-              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
-          </div>
+          <button ref={toggleRef} type="button" className="mkt-menu-toggle" onClick={() => setMobileOpen(open => !open)}
+            aria-label={mobileOpen ? 'Close menu' : 'Open menu'} aria-expanded={mobileOpen} aria-controls="mobile-navigation">
+            {mobileOpen ? <X size={24} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
+          </button>
         </div>
       </nav>
-
-      <div onClick={() => setMobileOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 98, background: 'rgba(9,9,11,0.4)', opacity: mobileOpen ? 1 : 0, pointerEvents: mobileOpen ? 'auto' : 'none', transition: 'opacity 0.3s ease' }} />
-
-      <div style={{ position: 'fixed', top: '64px', left: 0, right: 0, zIndex: 99, background: '#FFFFFF', borderBottom: '1px solid #E4E4E7', padding: '8px 24px 24px', boxShadow: '0 8px 24px rgba(0,0,0,0.08)', transform: mobileOpen ? 'translateY(0)' : 'translateY(-8px)', opacity: mobileOpen ? 1 : 0, pointerEvents: mobileOpen ? 'auto' : 'none', transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '16px' }}>
-          {navLinks.map((link) => (
-            <Link key={link.href} to={link.href} onClick={(e) => handleHashLink(link.href, e, () => setMobileOpen(false))} style={{ display: 'block', fontSize: '16px', fontWeight: 500, color: 'var(--text-primary)', textDecoration: 'none', padding: '13px 12px', borderRadius: '10px', borderBottom: '1px solid #F4F4F5' }}>
-              {link.label}
-            </Link>
-          ))}
-        </div>
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary" style={{ flex: 1, justifyContent: 'center' }} title={`${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}`}>
-            Book a Call
-          </a>
-          <Link to="/login" className="mkt-btn-primary" style={{ flex: 1, justifyContent: 'center' }}>Sign In</Link>
-        </div>
-      </div>
-
-      <style>{`
-        @media (max-width: 768px) {
-          .hidden-mobile { display: none !important; }
-          .mobile-only { display: flex !important; }
-        }
-      `}</style>
+      {mobileOpen && (
+        <>
+          <div className="mkt-menu-backdrop" onClick={closeMenu} aria-hidden="true" />
+          <div id="mobile-navigation" ref={panelRef} className="mkt-mobile-panel" role="dialog" aria-modal="true" aria-label="Navigation menu">
+            <div className="mkt-mobile-panel-heading">
+              <strong>Explore Alivio</strong>
+              <button type="button" className="mkt-menu-close" onClick={closeMenu} aria-label="Close navigation menu"><X size={24} aria-hidden="true" /></button>
+            </div>
+            <nav aria-label="Mobile navigation">
+              {navLinks.map(link => (
+                <Link key={link.href} to={link.href} onClick={() => setMobileOpen(false)} aria-current={location.pathname === link.href ? 'page' : undefined}>{link.label}</Link>
+              ))}
+            </nav>
+            <div className="mkt-mobile-actions">
+              <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary" onClick={closeMenu}>Book a Call</a>
+              <Link to="/login" className="mkt-btn-secondary" onClick={() => setMobileOpen(false)}>Sign In</Link>
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 }

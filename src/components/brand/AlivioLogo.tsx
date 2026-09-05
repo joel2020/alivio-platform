@@ -68,7 +68,7 @@ export function AlivioLogo({
             style={{
               fontSize: Math.max(8, Math.round(wordSize * 0.36)),
               fontWeight: 600,
-              color: BRAND_TEAL,
+              color: variant === 'dark' ? BRAND_TEAL : '#16776D',
               letterSpacing: '0.44em',
               lineHeight: 1,
               marginTop: 2,

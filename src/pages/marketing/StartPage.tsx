@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 import { supabaseFunctionsUrl } from '../../lib/supabase';
 import { useSeo } from '../../lib/seo';
@@ -10,7 +10,8 @@ const inputStyle: React.CSSProperties = {
   borderRadius: 10,
   border: '1px solid #DCE4F2',
   background: '#fff',
-  fontSize: 14,
+  fontSize: 16,
+  color: '#102344',
 };
 
 const services = [
@@ -36,6 +37,9 @@ export default function StartPage() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  useEffect(() => { if (submitted || error) feedbackRef.current?.focus(); }, [submitted, error]);
+
   useSeo({
     title: 'Request a Search Plan | Alivio Search Partners',
     description:
@@ -45,6 +49,7 @@ export default function StartPage() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submitting) return;
     setSubmitting(true);
     setError(null);
     try {
@@ -54,13 +59,13 @@ export default function StartPage() {
         body: JSON.stringify({ kind: 'lead', source: 'start-page', ...form }),
       });
       const payload = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setError(payload.error ?? 'Submission failed. Please try again.');
+      if (!res.ok || payload.ok !== true) {
+        setError(res.status === 429 ? 'Please wait a moment before trying again, or email hello@aliviosearchpartners.com.' : 'We could not confirm your request. Your details are still here. Please try again or email hello@aliviosearchpartners.com.');
         return;
       }
       setSubmitted(true);
     } catch {
-      setError('Network error. Please try again.');
+      setError('We could not connect. Your details are still here. Check your connection and try again, or email hello@aliviosearchpartners.com.');
     } finally {
       setSubmitting(false);
     }
@@ -82,10 +87,10 @@ export default function StartPage() {
       </section>
 
       <section style={{ padding: '44px 0 80px' }}>
-        <div className="mkt-container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(320px,1fr))', gap: 24, alignItems: 'start' }}>
+        <div className="mkt-container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,320px),1fr))', gap: 24, alignItems: 'start' }}>
           <div style={{ border: '1px solid #DCE4F2', borderRadius: 20, padding: 28, background: '#fff' }}>
             {submitted ? (
-              <div>
+              <div ref={feedbackRef} role="status" tabIndex={-1}>
                 <CheckCircle2 size={30} color="#188653" />
                 <h2 style={{ fontSize: 21, margin: '12px 0 8px' }}>Request received.</h2>
                 <p style={{ color: '#4D5E7B', lineHeight: 1.7 }}>
@@ -98,32 +103,36 @@ export default function StartPage() {
                 </p>
               </div>
             ) : (
-              <form onSubmit={(event) => void handleSubmit(event)}>
-                <div style={{ display: 'grid', gap: 12 }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                    <input required placeholder="Full name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} style={inputStyle} aria-label="Full name" />
-                    <input required type="email" placeholder="Work email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} style={inputStyle} aria-label="Work email" />
+              <form onSubmit={(event) => void handleSubmit(event)} aria-busy={submitting}>
+                <p className="mkt-form-note" style={{ margin: '0 0 20px' }}>Fields marked * are required.</p>
+                <div className="mkt-form-fields">
+                  <div className="mkt-form-row">
+                    <label className="mkt-field" htmlFor="search-name">Full name *
+                      <input id="search-name" name="name" required autoComplete="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} style={inputStyle} />
+                    </label>
+                    <label className="mkt-field" htmlFor="search-email">Work email *
+                      <input id="search-email" name="email" required type="email" autoComplete="email" spellCheck={false} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} style={inputStyle} />
+                    </label>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                    <input required placeholder="Company / health system" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} style={inputStyle} aria-label="Company" />
-                    <input placeholder="Your title" value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })} style={inputStyle} aria-label="Your title" />
+                  <div className="mkt-form-row">
+                    <label className="mkt-field" htmlFor="search-company">Company *
+                      <input id="search-company" name="company" required autoComplete="organization" value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} style={inputStyle} />
+                    </label>
+                    <label className="mkt-field" htmlFor="search-role">Your title (optional)
+                      <input id="search-role" name="role" autoComplete="organization-title" value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })} style={inputStyle} />
+                    </label>
                   </div>
-                  <select value={form.service} onChange={(e) => setForm({ ...form, service: e.target.value })} style={inputStyle} aria-label="Service needed">
-                    {services.map((option) => (
-                      <option key={option} value={option}>{option}</option>
-                    ))}
-                  </select>
-                  <textarea
-                    required
-                    rows={5}
-                    placeholder="Which roles do you need to fill, where, and by when?"
-                    value={form.message}
-                    onChange={(e) => setForm({ ...form, message: e.target.value })}
-                    style={inputStyle}
-                    aria-label="Roles to fill"
-                  />
-                  <input tabIndex={-1} autoComplete="off" value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} style={{ position: 'absolute', left: -9999, height: 0, opacity: 0 }} aria-hidden="true" />
-                  {error ? <p style={{ color: '#B4232A', fontSize: 13 }}>{error}</p> : null}
+                  <label className="mkt-field" htmlFor="search-service">Service needed
+                    <select id="search-service" name="service" value={form.service} onChange={(e) => setForm({ ...form, service: e.target.value })} style={inputStyle}>
+                      {services.map(option => <option key={option} value={option}>{option}</option>)}
+                    </select>
+                  </label>
+                  <label className="mkt-field" htmlFor="search-message">Roles to fill *
+                    <textarea id="search-message" name="message" required rows={5} placeholder="Which roles, locations, and hiring timelines should we plan for?" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} style={inputStyle} />
+                  </label>
+                  <input name="website" tabIndex={-1} autoComplete="off" value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} className="mkt-honeypot" aria-hidden="true" />
+                  <p className="mkt-form-note">We use these details to respond to your inquiry. Please leave out candidate records and sensitive personal information. <a href="/privacy">Privacy policy</a></p>
+                  {error ? <div ref={feedbackRef} role="alert" tabIndex={-1} style={{ color: '#B4232A', fontSize: 14 }}>{error}</div> : null}
                   <button type="submit" disabled={submitting} className="mkt-btn-primary-lg" style={{ opacity: submitting ? 0.7 : 1 }}>
                     {submitting ? 'Sending…' : 'Request my search plan'}
                   </button>

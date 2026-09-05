@@ -54,7 +54,7 @@ export default function AboutPage() {
         <div className="mkt-container">
           <p className="mkt-label">How we work</p>
           <h2 style={{ fontSize: 'clamp(28px,3.4vw,44px)', letterSpacing: '-.03em', margin: '10px 0 28px' }}>The principles behind every search.</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 18 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,260px),1fr))', gap: 18 }}>
             {values.map(({ icon: Icon, title, copy }) => (
               <div key={title} style={{ border: '1px solid #DCE4F2', borderRadius: 20, padding: 26, background: '#fff', boxShadow: '0 10px 32px rgba(7,25,62,.06)' }}>
                 <Icon size={26} color="#1D55C6" />
@@ -67,7 +67,7 @@ export default function AboutPage() {
       </section>
 
       <section style={{ padding: '0 0 72px' }}>
-        <div className="mkt-container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 20 }}>
+        <div className="mkt-container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,300px),1fr))', gap: 20 }}>
           <div style={{ border: '1px solid #DCE4F2', borderRadius: 24, padding: 30, background: '#fff' }}>
             <h2 style={{ fontSize: 24, marginBottom: 10 }}>Where we operate</h2>
             <p style={{ color: '#4D5E7B', lineHeight: 1.75 }}>
@@ -103,7 +103,7 @@ export default function AboutPage() {
               AI moves the volume work — sourcing, first-pass scoring, screening logistics, follow-ups. People make
               the decisions. These are the commitments behind every Alivio search:
             </p>
-            <ul style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 14, padding: 0, listStyle: 'none' }}>
+            <ul style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,280px),1fr))', gap: 14, padding: 0, listStyle: 'none' }}>
               {[
                 'A recruiter reviews every shortlist before it reaches a client — no candidate is advanced or rejected by AI alone.',
                 'AI-assisted screening calls disclose that they are automated, and any candidate can request a human callback.',
