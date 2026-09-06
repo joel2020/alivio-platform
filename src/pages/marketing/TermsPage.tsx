@@ -17,9 +17,9 @@ export default function TermsPage() {
     <div style={{ backgroundColor: '#0A0A0A', minHeight: 'calc(100vh - 64px)' }}>
       <section className="max-w-4xl mx-auto px-6 pt-20 pb-24">
         <div className="rounded-2xl border p-8 md:p-12" style={{ backgroundColor: '#141414', borderColor: '#1E1E1E' }}>
-          <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: '#4F46E5' }}>Legal</p>
+          <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: '#A5B4FC' }}>Legal</p>
           <h1 className="font-bold text-white mb-3" style={{ fontSize: '48px', lineHeight: '1.05' }}>Terms of Service</h1>
-          <p className="text-sm mb-10" style={{ color: '#6B6B6B' }}>
+          <p className="text-sm mb-10" style={{ color: '#A0A0A0' }}>
             Last updated: April 13, 2026
           </p>
 
@@ -150,7 +150,7 @@ export default function TermsPage() {
             </section>
           </div>
 
-          <p className="text-xs mt-12 pt-6 border-t" style={{ color: '#6B6B6B', borderColor: '#1E1E1E' }}>
+          <p className="text-xs mt-12 pt-6 border-t" style={{ color: '#A0A0A0', borderColor: '#1E1E1E' }}>
             © 2026 Alivio Search Partners. All rights reserved.
           </p>
         </div>

@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, Briefcase, CheckCircle2, MapPin } from 'lucide-react';
 import { supabase, supabaseFunctionsUrl } from '../../lib/supabase';
@@ -23,7 +23,7 @@ const inputStyle: React.CSSProperties = {
   borderRadius: 10,
   border: '1px solid #DCE4F2',
   background: '#fff',
-  fontSize: 14,
+  fontSize: 16,
 };
 
 export default function CareersJobPage() {
@@ -45,6 +45,8 @@ export default function CareersJobPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  useEffect(() => { if (submitted || submitError) feedbackRef.current?.focus(); }, [submitted, submitError]);
 
   useSeo({
     title: job ? `${job.title} | Careers | Alivio Search Partners` : 'Open Position | Alivio Search Partners',
@@ -99,7 +101,11 @@ export default function CareersJobPage() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!job) return;
+    if (!job || submitting) return;
+    if (!form.linkedin_url.trim() && !form.resume_url.trim()) {
+      setSubmitError('Add a LinkedIn URL or resume link so we can review your background.');
+      return;
+    }
     setSubmitting(true);
     setSubmitError(null);
     try {
@@ -109,13 +115,15 @@ export default function CareersJobPage() {
         body: JSON.stringify({ kind: 'application', job_id: job.id, ...form }),
       });
       const payload = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setSubmitError(payload.error ?? 'Submission failed. Please try again.');
+      if (!res.ok || payload?.ok !== true) {
+        setSubmitError(res.status === 429
+          ? 'Please wait a moment before trying again, or email hello@aliviosearchpartners.com.'
+          : 'We could not confirm your application. Your details are still here. Please try again or email hello@aliviosearchpartners.com.');
         return;
       }
       setSubmitted(true);
     } catch {
-      setSubmitError('Network error. Please try again.');
+      setSubmitError('We could not connect. Your details are still here. Check your connection and try again, or email hello@aliviosearchpartners.com.');
     } finally {
       setSubmitting(false);
     }
@@ -158,7 +166,7 @@ export default function CareersJobPage() {
       </section>
 
       <section style={{ padding: '48px 0 80px' }}>
-        <div className="mkt-container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(320px,1fr))', gap: 24, alignItems: 'start' }}>
+        <div className="mkt-container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,320px),1fr))', gap: 24, alignItems: 'start' }}>
           <div style={{ border: '1px solid #DCE4F2', borderRadius: 20, padding: 28, background: '#fff' }}>
             {job.description ? (
               <>
@@ -194,7 +202,7 @@ export default function CareersJobPage() {
 
           <div style={{ border: '1px solid #DCE4F2', borderRadius: 20, padding: 28, background: '#fff', position: 'sticky', top: 90 }}>
             {submitted ? (
-              <div>
+              <div ref={feedbackRef} role="status" tabIndex={-1}>
                 <CheckCircle2 size={30} color="#188653" />
                 <h2 style={{ fontSize: 20, margin: '12px 0 8px' }}>Application received.</h2>
                 <p style={{ color: '#4D5E7B', lineHeight: 1.7 }}>
@@ -203,22 +211,23 @@ export default function CareersJobPage() {
                 </p>
               </div>
             ) : (
-              <form onSubmit={(event) => void handleSubmit(event)}>
+              <form onSubmit={(event) => void handleSubmit(event)} aria-busy={submitting}>
                 <h2 style={{ fontSize: 20, marginBottom: 14 }}>Apply for this role</h2>
-                <div style={{ display: 'grid', gap: 10 }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                    <input required placeholder="First name" value={form.first_name} onChange={(e) => setForm({ ...form, first_name: e.target.value })} style={inputStyle} aria-label="First name" />
-                    <input required placeholder="Last name" value={form.last_name} onChange={(e) => setForm({ ...form, last_name: e.target.value })} style={inputStyle} aria-label="Last name" />
+                <div className="mkt-form-fields">
+                  <div className="mkt-form-row">
+                    <label className="mkt-field">First name<input required name="first_name" autoComplete="given-name" value={form.first_name} onChange={(e) => setForm({ ...form, first_name: e.target.value })} style={inputStyle} /></label>
+                    <label className="mkt-field">Last name<input required name="last_name" autoComplete="family-name" value={form.last_name} onChange={(e) => setForm({ ...form, last_name: e.target.value })} style={inputStyle} /></label>
                   </div>
-                  <input required type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} style={inputStyle} aria-label="Email" />
-                  <input placeholder="Phone (optional)" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} style={inputStyle} aria-label="Phone" />
-                  <input placeholder="LinkedIn URL" value={form.linkedin_url} onChange={(e) => setForm({ ...form, linkedin_url: e.target.value })} style={inputStyle} aria-label="LinkedIn URL" />
-                  <input placeholder="Resume link (Drive, Dropbox…)" value={form.resume_url} onChange={(e) => setForm({ ...form, resume_url: e.target.value })} style={inputStyle} aria-label="Resume link" />
-                  <textarea rows={4} placeholder="Anything we should know? (optional)" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} style={inputStyle} aria-label="Message" />
+                  <label className="mkt-field">Email<input required type="email" name="email" autoComplete="email" spellCheck={false} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} style={inputStyle} /></label>
+                  <label className="mkt-field">Phone (optional)<input type="tel" name="phone" autoComplete="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} style={inputStyle} /></label>
+                  <label className="mkt-field">LinkedIn URL<input type="url" name="linkedin_url" autoComplete="url" placeholder="https://www.linkedin.com/in/your-name" aria-describedby="application-profile-note" value={form.linkedin_url} onChange={(e) => setForm({ ...form, linkedin_url: e.target.value })} style={inputStyle} /></label>
+                  <label className="mkt-field">Resume link<input type="url" name="resume_url" placeholder="https://…" aria-describedby="application-profile-note" value={form.resume_url} onChange={(e) => setForm({ ...form, resume_url: e.target.value })} style={inputStyle} /></label>
+                  <p id="application-profile-note" className="mkt-form-note">Provide either a LinkedIn URL or a resume link that our recruiters can open.</p>
+                  <label className="mkt-field">Message (optional)<textarea name="message" rows={4} placeholder="Anything we should know?" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} style={inputStyle} /></label>
                   {/* Honeypot — hidden from real users */}
                   <input tabIndex={-1} autoComplete="off" value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} style={{ position: 'absolute', left: -9999, height: 0, opacity: 0 }} aria-hidden="true" />
-                  <p style={{ color: '#8A94A6', fontSize: 12, lineHeight: 1.5 }}>Provide a LinkedIn URL or a resume link so we can review your background.</p>
-                  {submitError ? <p style={{ color: '#B4232A', fontSize: 13 }}>{submitError}</p> : null}
+                  <p className="mkt-form-note">We use your details to review your application. Read our <Link to="/privacy">privacy policy</Link>.</p>
+                  {submitError ? <div ref={feedbackRef} role="alert" tabIndex={-1} style={{ color: '#B4232A', fontSize: 14 }}>{submitError}</div> : null}
                   <button type="submit" disabled={submitting} className="mkt-btn-primary" style={{ opacity: submitting ? 0.7 : 1 }}>
                     {submitting ? 'Submitting…' : 'Submit application'}
                   </button>

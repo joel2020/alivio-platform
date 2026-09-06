@@ -34,22 +34,24 @@ export default function BlogPage() {
   }, []);
 
   useEffect(() => {
+    let cancelled = false;
     async function loadPosts() {
       setLoading(true);
       setError(null);
       try {
         const { posts: pagePosts, totalCount: count } = await fetchPublishedBlogPostsPage(page, activeSearch, activeCategory);
+        if (cancelled) return;
         setPosts(pagePosts);
         setTotalCount(count);
-      } catch (err) {
-        const message = err instanceof Error ? err.message : 'Failed to load blog posts.';
-        setError(message);
+      } catch {
+        if (!cancelled) setError('We could not load the articles. Please try again, or contact hello@aliviosearchpartners.com.');
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     }
 
     void loadPosts();
+    return () => { cancelled = true; };
   }, [page, activeSearch, activeCategory, reloadToken]);
 
   const setParamState = (next: { page?: number; q?: string; category?: string }) => {
@@ -79,7 +81,11 @@ export default function BlogPage() {
       </header>
 
       <section className="card" style={{ padding: '18px', marginBottom: '20px' }}>
+        <label htmlFor="blog-search" className="mkt-field" style={{ marginBottom: 6 }}>Search blog posts</label>
         <input
+          id="blog-search"
+          name="q"
+          type="search"
           className="input w-full"
           placeholder="Search blog posts"
           value={activeSearch}
@@ -89,6 +95,7 @@ export default function BlogPage() {
           {categories.map((category) => (
             <button
               key={category}
+              aria-pressed={activeCategory === category}
               onClick={() => setParamState({ page: 1, category })}
               className={activeCategory === category ? 'mkt-btn-primary' : 'mkt-btn-secondary'}
               style={{ minHeight: '36px', padding: '0 14px' }}
@@ -114,7 +121,7 @@ export default function BlogPage() {
 
       {error ? (
         <div className="card" style={{ borderColor: 'var(--error)', padding: '18px', marginBottom: '20px' }}>
-          <p style={{ color: 'var(--error)', marginBottom: '12px' }}>We couldn&apos;t load blog posts. {error}</p>
+          <p role="alert" style={{ color: '#B4232A', marginBottom: '12px' }}>{error}</p>
           <button className="mkt-btn-primary" style={{ minHeight: '44px' }} onClick={() => setReloadToken((prev) => prev + 1)}>
             Retry loading posts
           </button>
