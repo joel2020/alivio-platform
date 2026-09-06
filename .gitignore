@@ -30,3 +30,8 @@ dist-ssr
 gcp-key.json
 *-key.json
 *credentials*.json
+
+# Local QA artifacts
+playwright-report/
+test-results/
+.serena/

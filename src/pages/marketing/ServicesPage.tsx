@@ -68,7 +68,7 @@ export default function ServicesPage() {
           </p>
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 28 }}>
             <Link to="/start" className="mkt-btn-primary-lg">Request a Search Plan</Link>
-            <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-secondary" style={{ color: '#fff', borderColor: 'rgba(255,255,255,.3)' }}>
+            <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-secondary mkt-btn-on-dark" style={{ color: '#fff', borderColor: 'rgba(255,255,255,.3)' }}>
               Book a Hiring Strategy Call
             </a>
           </div>
@@ -80,7 +80,7 @@ export default function ServicesPage() {
         <div className="mkt-container">
           <p className="mkt-label">What we recruit</p>
           <h2 style={{ fontSize: 'clamp(28px,3.4vw,44px)', letterSpacing: '-.03em', margin: '10px 0 28px' }}>Four practices. One quality bar.</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 18 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,280px),1fr))', gap: 18 }}>
             {practices.map(({ icon: Icon, title, copy }) => (
               <div key={title} style={{ border: '1px solid #DCE4F2', borderRadius: 20, padding: 26, background: '#fff', boxShadow: '0 10px 32px rgba(7,25,62,.06)' }}>
                 <Icon size={26} color="#1D55C6" />
@@ -101,7 +101,7 @@ export default function ServicesPage() {
             Pricing is scoped to the engagement — no seat licenses, no self-serve tier. Every model includes the AI
             Candidate Engine, human recruiter review, and weekly reporting.
           </p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 18, marginTop: 30 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,280px),1fr))', gap: 18, marginTop: 30 }}>
             {engagement.map((tier) => (
               <div
                 key={tier.title}
@@ -137,7 +137,7 @@ export default function ServicesPage() {
 
       {/* AI + human */}
       <section style={{ padding: '72px 0' }}>
-        <div className="mkt-container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 20 }}>
+        <div className="mkt-container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,300px),1fr))', gap: 20 }}>
           <div style={{ border: '1px solid #DCE4F2', borderRadius: 24, padding: 30, background: '#fff' }}>
             <Layers size={28} color="#1D55C6" />
             <h2 style={{ fontSize: 24, margin: '12px 0 8px' }}>What the AI does</h2>
