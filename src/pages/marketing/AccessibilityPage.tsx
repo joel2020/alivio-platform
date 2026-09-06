@@ -15,7 +15,7 @@ export default function AccessibilityPage() {
     <div style={{ backgroundColor: '#0A0A0A' }}>
       <section className="max-w-3xl mx-auto px-6 py-20">
         <h1 className="font-bold text-white mb-2" style={{ fontSize: '36px' }}>Accessibility Statement</h1>
-        <p className="mb-10" style={{ color: '#6B6B6B', fontSize: '14px' }}>Last updated: July 22, 2026</p>
+        <p className="mb-10" style={{ color: '#A0A0A0', fontSize: '14px' }}>Last updated: July 22, 2026</p>
 
         <div className="space-y-8">
           <section>
@@ -57,7 +57,7 @@ export default function AccessibilityPage() {
           </section>
         </div>
 
-        <p className="text-xs mt-12 pt-6 border-t" style={{ color: '#6B6B6B', borderColor: '#1E1E1E' }}>
+        <p className="text-xs mt-12 pt-6 border-t" style={{ color: '#A0A0A0', borderColor: '#1E1E1E' }}>
           © 2026 Alivio Search Partners. All rights reserved.
         </p>
       </section>

@@ -1,0 +1,88 @@
+import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+
+const job = { id: 912345, title: 'Clinical operations director', location: 'New York', type: 'Full time', category: 'Healthcare', salary: null, description: 'Lead clinical operations and support the care team.', responsibilities: ['Support the team'], qualifications: ['Relevant leadership experience'], created_at: '2026-09-01T12:00:00Z' };
+
+for (const path of ['/blog', '/careers', '/privacy', '/terms', '/accessibility']) {
+  test(`${path} secondary page is accessible on a small phone`, async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 850 });
+    await page.goto(path);
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+    expect(results.violations.map(({ id, nodes }) => ({ id, targets: nodes.map(n => n.target) }))).toEqual([]);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320);
+  });
+}
+
+test.describe('career application', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.route('**/rest/v1/jobs?*', route => route.fulfill({ json: job }));
+    // Every application request is intercepted; these tests never submit a real application.
+    await page.route('**/functions/v1/public-intake', route => route.fulfill({ json: { ok: true } }));
+    await page.goto('/careers/912345');
+    await expect(page.getByRole('heading', { name: job.title, exact: true })).toBeVisible();
+  });
+
+  test('fits a small phone with readable labels and feedback', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 850 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320);
+    const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+    expect(results.violations.map(({ id, nodes }) => ({ id, targets: nodes.map(n => n.target) }))).toEqual([]);
+    await expect(page.getByLabel('First name', { exact: true })).toHaveAttribute('autocomplete', 'given-name');
+  });
+
+  test('retains details through invalid responses and only confirms acceptance', async ({ page }) => {
+    let attempts = 0;
+    await page.route('**/functions/v1/public-intake', async route => {
+      attempts++;
+      expect(route.request().postDataJSON()).toMatchObject({ kind: 'application', job_id: job.id, first_name: 'Website', last_name: 'QA', email: 'qa@example.com', website: '' });
+      if (attempts === 1) await route.fulfill({ status: 200, contentType: 'text/html', body: '<html>Unavailable</html>' });
+      else if (attempts === 2) await route.fulfill({ status: 503, json: { error: 'private provider detail' } });
+      else await route.fulfill({ json: { ok: true } });
+    });
+    await page.getByLabel('First name', { exact: true }).fill('Website');
+    await page.getByLabel('Last name', { exact: true }).fill('QA');
+    await page.getByLabel('Email', { exact: true }).fill('qa@example.com');
+    await page.getByLabel('LinkedIn URL', { exact: true }).fill('https://www.linkedin.com/in/website-qa');
+    for (let attempt = 0; attempt < 2; attempt++) {
+      await page.getByRole('button', { name: 'Submit application' }).click();
+      await expect(page.getByRole('alert')).toContainText('We could not confirm');
+      await expect(page.getByRole('alert')).toBeFocused();
+      await expect(page.getByLabel('Email', { exact: true })).toHaveValue('qa@example.com');
+      await expect(page.getByText('private provider detail')).toHaveCount(0);
+    }
+    await page.getByRole('button', { name: 'Submit application' }).click();
+    await expect(page.getByRole('status')).toContainText('Application received');
+    await expect(page.getByRole('status')).toBeFocused();
+    expect(attempts).toBe(3);
+  });
+
+  test('asks for a profile before sending an application', async ({ page }) => {
+    let requests = 0;
+    await page.route('**/functions/v1/public-intake', route => { requests++; return route.fulfill({ json: { ok: true } }); });
+    await page.getByLabel('First name', { exact: true }).fill('Website');
+    await page.getByLabel('Last name', { exact: true }).fill('QA');
+    await page.getByLabel('Email', { exact: true }).fill('qa@example.com');
+    await page.getByRole('button', { name: 'Submit application' }).click();
+    await expect(page.getByRole('alert')).toContainText('LinkedIn URL or resume link');
+    await expect(page.getByRole('alert')).toBeFocused();
+    expect(requests).toBe(0);
+  });
+});
+
+test('blog search is labeled and a failed request can be retried', async ({ page }) => {
+  let failing = true;
+  await page.route('**/rest/v1/blog_posts?*', route => failing
+    ? route.fulfill({ status: 503, json: { message: 'private provider detail' } })
+    : route.fulfill({ json: [], headers: { 'content-range': '*/0' } }));
+  await page.goto('/blog');
+  await expect(page.getByRole('alert')).toContainText('try again');
+  await expect(page.getByText('private provider detail')).toHaveCount(0);
+  await expect(page.getByLabel('Search blog posts', { exact: true })).toBeVisible();
+  const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+  expect(results.violations).toEqual([]);
+  failing = false;
+  await page.getByRole('button', { name: 'Retry loading posts' }).click();
+  await expect(page.getByRole('heading', { name: 'No posts found' })).toBeVisible();
+  await expect(page.getByRole('alert')).toHaveCount(0);
+});

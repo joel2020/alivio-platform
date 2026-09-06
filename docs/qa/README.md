@@ -89,9 +89,12 @@ created with these QA values.
 
 ## Release and review limits
 
-Production has not been replaced by this patch. Before merging/releasing, review
-the preview with real deployment environment settings and verify the booking
-link. Confirm actual lead delivery separately with an authorized test submission.
+The initial patch was published on September 6, 2026 via PR #127 (production
+commit `38fcccafb3b3a4493e74c20a9e18f15f4dbbfa5b`). All 26 original browser
+checks passed against the public domain after release. Confirm actual lead
+delivery separately with an authorized test submission. See
+[the follow-up review](secondary-page-review.md) for the subsequently discovered
+Supabase DNS outage and expanded accessibility checks.
 The authenticated CRM/admin workflows were not exercised with a real account;
 login and signup pages were smoke-tested after route splitting.
 
