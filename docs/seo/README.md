@@ -1,5 +1,10 @@
 # Alivio search visibility: audit and execution plan
 
+September 8 follow-up: direct Search Console access is now verified. See the
+[measured baseline and URL recovery](search-console-recovery.md) for actual
+Web/Google AI metrics, indexing exclusions and confirmed sitemap submission.
+The original access limitations below describe the earlier audit.
+
 Reviewed September 8, 2026. Scope: production `aliviosearchpartners.com`, repository `joel2020/alivio-platform`, Vercel project `alivio-platform`, Supabase `Alivio-OS`. This is a technical and content baseline, not a measured ranking improvement.
 
 ## What the evidence shows
