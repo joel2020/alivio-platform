@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 const paths = ['/', '/services', '/about', '/product', '/industries/healthcare', '/industries/technology', '/privacy', '/terms', '/accessibility'];
 for (const path of paths) {
   test(`${path} has useful content and its own canonical before JavaScript`, async ({ browser, baseURL }) => {
-    const context = await browser.newContext({ javaScriptEnabled: false });
+    const context = await browser.newContext({ javaScriptEnabled: false, storageState: process.env.PLAYWRIGHT_STORAGE_STATE });
     const page = await context.newPage();
     await page.goto(`${baseURL}${path}`);
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
@@ -25,7 +25,7 @@ test('industry metadata remains specific after client navigation', async ({ page
 });
 
 test('article dates and organization authors match their structured data', async ({ browser, baseURL }) => {
-  const context = await browser.newContext({ timezoneId: 'America/Los_Angeles' });
+  const context = await browser.newContext({ timezoneId: 'America/Los_Angeles', storageState: process.env.PLAYWRIGHT_STORAGE_STATE });
   const page = await context.newPage();
   const post = { id: 'seo-test', slug: 'seo-test', title: 'Search planning checklist', content: 'A checklist for agreeing hiring priorities.', excerpt: 'Plan a search.', author_name: 'Alivio Search Partners', category: 'Insights', published_date: '2026-04-13', cover_image_url: null, status: 'published' };
   await page.route('**/rest/v1/blog_posts?*', route => route.fulfill({ json: new URL(route.request().url()).searchParams.has('slug') ? post : [] }));

@@ -100,3 +100,10 @@ Passing browser and build checks establishes technical behavior. It does not est
 Local production build and TypeScript checks passed. ESLint reports zero errors and the pre-existing `SeoRecoveryPage.tsx` Fast Refresh warning. The expanded Playwright suite passed 46 checks locally; the one deployment-only HTTP/header check is intentionally skipped until Vercel verification. Tests cover initial content without JavaScript, canonical URLs, client navigation metadata, article date/author consistency, and the original mobile/accessibility/form scenarios. All intake/application requests are intercepted.
 
 Claude authentication was checked during this phase and still reports `loggedIn: false`. No independent Claude review is claimed. Deployment results will be recorded separately after the preview is available.
+
+Protected Vercel preview `alivio-platform-ifv7a6x7o-joel-carias-projects.vercel.app`
+(application commit `0419feb`) passed **all 47 checks**, including actual HTTP 404s
+for missing pages/assets, noindex/no-store headers on private routes, nine pages
+readable with JavaScript disabled, and the existing application checks. Temporary
+preview access was used; deployment protection was not changed. Test-only browser
+contexts explicitly inherit the optional preview session state.
