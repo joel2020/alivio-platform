@@ -251,11 +251,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <style>{`
-      @media (max-width: 1100px){.hero-grid,.ai-engine-grid{grid-template-columns:minmax(0,1fr)!important}.specialty-cards{grid-template-columns:repeat(2,minmax(0,1fr))!important}.trust-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
-      @media (max-width: 767px){.dashboard-bottom,.process-grid,.specialty-lists,.case-grid{grid-template-columns:minmax(0,1fr)!important}.overview-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}.trust-grid,.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.hero-cta{flex-direction:column}}
-      @media (max-width: 479px){.specialty-cards,.proof-badges{grid-template-columns:minmax(0,1fr)!important}.candidate-row{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}.engine-cards,.specialty-lists div[style*="repeat(2"]{grid-template-columns:minmax(0,1fr)!important}}
-      `}</style>
+
     </div>
   );
 }
