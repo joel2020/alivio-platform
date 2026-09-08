@@ -4,6 +4,7 @@ import { AlivioLogo } from '../brand/AlivioLogo';
 import { CAL_COM_BOOKING_URL, DEMO_EVENT_DESCRIPTION, DEMO_EVENT_TITLE } from '../../lib/demoBooking';
 
 const productLinks = [
+  { label: 'LATAM Recruiting', href: '/nearshore-latam-recruiting' },
   { label: 'Pricing & Engagements', href: '/pricing' },
   { label: 'Recruitment Services', href: '/services' },
   { label: 'AI Candidate Engine', href: '/product' },
@@ -12,6 +13,7 @@ const productLinks = [
 ];
 
 const companyLinks = [
+  { label: 'Medellín Recruiting', href: '/recruiting-agency-medellin', external: false },
   { label: 'Westchester Recruiting', href: '/recruiting-agency-westchester', external: false },
   { label: 'About', href: '/about', external: false },
   { label: 'Careers', href: '/careers', external: false },

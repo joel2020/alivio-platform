@@ -1,0 +1,7 @@
+# Restore LATAM and Medellín search pages
+
+The user approved restoring the historical LATAM recruiting and Medellín pages after reviewing Search Console evidence. Restore `/nearshore-latam-recruiting` and `/recruiting-agency-medellin` using the existing search-page design, independent useful content and current search-plan intake. LATAM covers regional sourcing, role definition, language assessment, time-zone overlap and recruiting deliverables. Medellín covers a city-focused search, bilingual assessment, working arrangements and candidate evaluation. Reuse the service scope in the archived SeoRecoveryPage; do not invent an office, local legal advice, EOR/payroll services, guarantees, prices, clients or placement outcomes.
+
+Consolidate the overlapping `/nearshore-latam-talent` and `/recruiters-ny-medellin` into their respective restored pages with permanent server redirects and client navigation fallbacks. Only the two canonical pages belong in the sitemap. Preserve the existing Westchester and pricing pages and all private/404 handling.
+
+Dedicated components use existing CSS; wire React routes, SSR prerendering, preloading, metadata/Organization identity, footer and a services link. Test raw deployed HTML, self-canonicals, indexability, redirects, navigation, hydration and small-phone accessibility. Run build/types/lint and independent Claude plan/diff review; publish through the existing Git/Vercel pipeline, verify production and submit the sitemap and two URLs to Google. No ranking gains are promised.

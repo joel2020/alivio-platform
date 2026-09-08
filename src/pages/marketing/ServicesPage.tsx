@@ -92,6 +92,13 @@ export default function ServicesPage() {
         </div>
       </section>
 
+      <section className="search-page search-page-section search-page-tint">
+        <div className="mkt-container search-page-reading">
+          <h2>Hiring across Latin America</h2>
+          <p>Explore <Link to="/nearshore-latam-recruiting" className="search-page-link">nearshore LATAM recruiting</Link> for technology and operations roles, or focus your search on <Link to="/recruiting-agency-medellin" className="search-page-link">bilingual and technical talent in Medellín</Link>.</p>
+        </div>
+      </section>
+
       {/* Engagement models */}
       <section id="engagement-models" style={{ padding: '72px 0', background: '#F6F9FF', scrollMarginTop: 88 }}>
         <div className="mkt-container">

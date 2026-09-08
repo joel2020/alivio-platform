@@ -1,6 +1,8 @@
 import { test, expect } from '@playwright/test';
 
 const restored = [
+  { path: '/nearshore-latam-recruiting', heading: 'Nearshore LATAM recruiting for U.S. teams', link: 'LATAM Recruiting' },
+  { path: '/recruiting-agency-medellin', heading: 'Recruiting in Medellín for bilingual and technical talent', link: 'Medellín Recruiting' },
   { path: '/pricing', heading: 'Recruiting pricing built around your search', link: 'Pricing & Engagements' },
   { path: '/recruiting-agency-westchester', heading: 'Recruiting for Westchester healthcare and technology teams', link: 'Westchester Recruiting' },
 ];
@@ -51,3 +53,17 @@ test('pricing links to the visible services engagement section', async ({ page }
     return box !== null && box.y >= 72 && box.y <= 120;
   }).toBe(true);
 });
+
+for (const [source, target] of [
+  ['/nearshore-latam-talent', '/nearshore-latam-recruiting'],
+  ['/recruiters-ny-medellin', '/recruiting-agency-medellin'],
+]) {
+  test(`${source} permanently redirects to its regional recruiting page`, async ({ request }) => {
+    test.skip(!process.env.PLAYWRIGHT_DEPLOYMENT, 'Verify Vercel redirects on deployment.');
+    const response = await request.get(source, { maxRedirects: 0 });
+    expect(response.status()).toBe(308);
+    expect(new URL(response.headers().location, 'https://aliviosearchpartners.com').pathname).toBe(target);
+    const destination = await request.get(target, { maxRedirects: 0 });
+    expect(destination.status()).toBe(200);
+  });
+}

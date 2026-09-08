@@ -64,9 +64,27 @@
       "source": "/services/recruitment-as-a-service",
       "destination": "/services#engagement-models",
       "permanent": true
+    },
+    {
+      "source": "/nearshore-latam-talent",
+      "destination": "/nearshore-latam-recruiting",
+      "permanent": true
+    },
+    {
+      "source": "/recruiters-ny-medellin",
+      "destination": "/recruiting-agency-medellin",
+      "permanent": true
     }
   ],
   "rewrites": [
+    {
+      "source": "/nearshore-latam-recruiting",
+      "destination": "/nearshore-latam-recruiting.html"
+    },
+    {
+      "source": "/recruiting-agency-medellin",
+      "destination": "/recruiting-agency-medellin.html"
+    },
     {
       "source": "/pricing",
       "destination": "/pricing.html"
