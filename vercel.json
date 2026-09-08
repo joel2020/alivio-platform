@@ -34,6 +34,41 @@
       "source": "/resources/:path*",
       "destination": "/blog",
       "permanent": true
+    },
+    {
+      "source": "/privacy-policy",
+      "destination": "/privacy",
+      "permanent": true
+    },
+    {
+      "source": "/terms-of-service",
+      "destination": "/terms",
+      "permanent": true
+    },
+    {
+      "source": "/jobs",
+      "destination": "/careers",
+      "permanent": true
+    },
+    {
+      "source": "/apply",
+      "destination": "/careers",
+      "permanent": true
+    },
+    {
+      "source": "/schedule",
+      "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/services/retained-search",
+      "destination": "/services#engagement-models",
+      "permanent": true
+    },
+    {
+      "source": "/services/recruitment-as-a-service",
+      "destination": "/services#engagement-models",
+      "permanent": true
     }
   ],
   "rewrites": [

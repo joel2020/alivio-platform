@@ -1,0 +1,27 @@
+{
+  "observedOn": "2026-09-08",
+  "property": "sc-domain:aliviosearchpartners.com",
+  "source": "Authenticated Google Search Console browser UI",
+  "window": { "start": "2026-08-10", "end": "2026-09-06", "searchType": "Web" },
+  "webPerformance": { "clicks": 10, "impressionsDisplayed": "1.12K", "impressionsApproximate": 1120, "ctrDisplayed": "0.9%", "averagePosition": 11.2 },
+  "googleGenerativeAi": { "impressions": 31, "pageRows": [ { "path": "/", "impressions": 23 }, { "path": "/about", "impressions": 7 }, { "path": "/careers", "impressions": 5 }, { "path": "/pricing", "impressions": 1 } ] },
+  "topLandingPages": [
+    { "path": "/", "clicks": 5, "impressions": 614 },
+    { "path": "/careers", "clicks": 3, "impressions": 362 },
+    { "path": "/about", "clicks": 1, "impressions": 223 },
+    { "path": "/recruiting-agency-westchester", "clicks": 1, "impressions": 5 },
+    { "path": "/industries/technology", "clicks": 0, "impressions": 57 },
+    { "path": "/pricing", "clicks": 0, "impressions": 53 },
+    { "path": "/industries/healthcare", "clicks": 0, "impressions": 38 },
+    { "path": "/services", "clicks": 0, "impressions": 37 },
+    { "path": "/blog", "clicks": 0, "impressions": 30 },
+    { "path": "/blog/building-a-practical-recruitment-tech-stack-in-2026", "clicks": 0, "impressions": 18 }
+  ],
+  "topLandingPageRowsAvailable": 19,
+  "indexing": {
+    "reportLastUpdated": "2026-09-03", "indexed": 9, "notIndexed": 162,
+    "reasons": { "Soft 404": 44, "Page with redirect": 4, "Excluded by noindex tag": 1, "Not found (404)": 1, "Alternate page with proper canonical tag": 1, "Discovered - currently not indexed": 68, "Crawled - currently not indexed": 23, "Duplicate, Google chose different canonical than user": 20 }
+  },
+  "sitemap": { "url": "https://aliviosearchpartners.com/sitemap.xml", "httpStatus": 200, "liveUrlCount": 80, "resubmittedOn": "2026-09-08", "googleLastRead": "2026-09-08", "googleStatus": "Success", "googleDiscoveredPages": 80 },
+  "limitations": [ "Performance dates precede the September 8 deployment, so these are baseline observations, not gains caused by the changes.", "Impressions marked approximate were rounded in the UI.", "Property and page totals are preserved separately and must not be reconstructed by summing displayed page rows.", "Google generative AI impressions do not establish ChatGPT, Claude, Copilot or Perplexity recommendations or visits.", "Indexing report is delayed; not every excluded URL should be indexed.", "GSC Wizard returned payment_required; direct existing browser access was used without purchasing a subscription.", "GA4 conversions and Bing performance were not assessed in this phase." ]
+}

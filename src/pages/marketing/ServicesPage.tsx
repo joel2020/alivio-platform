@@ -93,7 +93,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Engagement models */}
-      <section style={{ padding: '72px 0', background: '#F6F9FF' }}>
+      <section id="engagement-models" style={{ padding: '72px 0', background: '#F6F9FF', scrollMarginTop: 88 }}>
         <div className="mkt-container">
           <p className="mkt-label">How engagements work</p>
           <h2 style={{ fontSize: 'clamp(28px,3.4vw,44px)', letterSpacing: '-.03em', margin: '10px 0 8px' }}>Pick the shape. Keep the standard.</h2>

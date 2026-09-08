@@ -72,6 +72,26 @@ test('article dates and organization authors match their structured data', async
   await context.close();
 });
 
+test('legacy search URLs reach their relevant replacement without reviving retired jobs', async ({ request, baseURL }) => {
+  test.skip(!process.env.PLAYWRIGHT_DEPLOYMENT, 'Permanent redirects are checked on Vercel.');
+  const replacements = [
+    ['/privacy-policy', '/privacy'], ['/terms-of-service', '/terms'],
+    ['/jobs', '/careers'], ['/apply', '/careers'], ['/schedule', '/contact'],
+    ['/services/retained-search', '/services#engagement-models'],
+    ['/services/recruitment-as-a-service', '/services#engagement-models'],
+  ];
+  for (const [source, destination] of replacements) {
+    const response = await request.get(source, { maxRedirects: 0 });
+    expect(response.status(), source).toBe(308);
+    expect(new URL(response.headers().location, baseURL).pathname + new URL(response.headers().location, baseURL).hash, source).toBe(destination);
+    expect((await request.get(destination)).status(), destination).toBe(200);
+  }
+  expect(await (await request.get('/services')).text()).toContain('id="engagement-models"');
+  for (const path of ['/jobs/medical-laboratory-technician-nyc', '/services/no-such-service', '/roi-calculator']) {
+    expect((await request.get(path)).status(), path).toBe(404);
+  }
+});
+
 test('deployment returns real 404s and excludes private URLs from search', async ({ request }) => {
   test.skip(!process.env.PLAYWRIGHT_DEPLOYMENT, 'Vercel routing and headers are verified on the deployed preview/production.');
   for (const path of ['/seo-check-no-such-page', '/assets/seo-check-missing.js', '/fonts/seo-check-missing.woff2']) {
