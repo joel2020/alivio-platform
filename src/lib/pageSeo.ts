@@ -9,7 +9,13 @@ export function getPageSeo(path: string, search = '') {
   let description = 'Recruit physicians, healthcare leaders, engineers, and operators with Alivio Search Partners. AI-enabled sourcing, recruiter-reviewed shortlists, and a search plan tailored to your roles.';
   let keywords = DEFAULT_KEYWORDS;
   let robots = 'index, follow';
-  if (pathname === '/product') {
+  if (pathname === '/pricing') {
+    title = 'Recruiting Pricing & Engagements | Alivio Search Partners';
+    description = 'Compare retained search, pipeline programs and project recruiting support. Learn what shapes an Alivio quote and request a search plan for your hiring needs.';
+  } else if (pathname === '/recruiting-agency-westchester') {
+    title = 'Westchester Recruiting Agency | Alivio Search Partners';
+    description = 'Healthcare and technology recruiting for Westchester employers. Explore supported roles, local and regional search planning, and recruiter-reviewed shortlists.';
+  } else if (pathname === '/product') {
     title = 'Alivio Talent Engine | AI-Powered Hiring System';
     description = 'Explore the Alivio Talent Engine: AI agents for autonomous sourcing, fit scoring, outreach orchestration, and human-validated shortlist delivery.';
   } else if (pathname === '/developers') {
@@ -82,7 +88,7 @@ export function getPageSeo(path: string, search = '') {
     title = 'Technology & Healthtech Recruiting | Alivio Search Partners';
     description = 'Recruit software engineers, AI and data specialists, product leaders, and CTOs with Alivio. Recruiting for technology and healthtech teams.';
   }
-  const publicPaths = ['/', '/product', '/contact', '/blog', '/services', '/about', '/careers', '/industries/healthcare', '/industries/technology', '/start', '/accessibility', '/privacy', '/terms'];
+  const publicPaths = ['/pricing', '/recruiting-agency-westchester', '/', '/product', '/contact', '/blog', '/services', '/about', '/careers', '/industries/healthcare', '/industries/technology', '/start', '/accessibility', '/privacy', '/terms'];
   const publicDetail = /^\/blog\/[^/]+$/.test(pathname) || /^\/careers\/\d+$/.test(pathname);
   if (!publicPaths.includes(pathname) && !publicDetail && robots === 'index, follow') {
     title = 'Page Not Found | Alivio Search Partners';
@@ -90,7 +96,7 @@ export function getPageSeo(path: string, search = '') {
     robots = 'noindex, follow';
   }
   const structuredData: Record<string, unknown>[] = [{ '@context': 'https://schema.org', '@type': 'WebPage', name: title, description, url: canonicalUrl, inLanguage: 'en-US' }];
-  if (pathname === '/' || pathname === '/product') structuredData.push({ '@context': 'https://schema.org', '@type': 'Organization', name: 'Alivio Search Partners', url: SITE_URL, description: 'AI-powered recruitment infrastructure for healthcare and tech organizations', contactPoint: { '@type': 'ContactPoint', email: 'hello@aliviosearchpartners.com', contactType: 'sales' } });
+  if (['/', '/product', '/pricing', '/recruiting-agency-westchester'].includes(pathname)) structuredData.push({ '@context': 'https://schema.org', '@type': 'Organization', '@id': `${SITE_URL}/#organization`, name: 'Alivio Search Partners', url: SITE_URL, description: 'AI-powered recruitment infrastructure for healthcare and tech organizations', contactPoint: { '@type': 'ContactPoint', email: 'hello@aliviosearchpartners.com', contactType: 'sales' } });
   if (pathname === '/product') structuredData.push({ '@context': 'https://schema.org', '@type': 'SoftwareApplication', name: 'Alivio AI Candidate Engine', applicationCategory: 'BusinessApplication', description: 'AI-powered hiring system for healthcare and tech recruiting teams' });
   return { title, description, keywords, ogTitle: title, ogDescription: description, canonicalUrl, ogImage: DEFAULT_OG_IMAGE, ogType: pathname.startsWith('/blog/') ? 'article' : 'website', robots, structuredData };
 }

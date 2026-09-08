@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const paths = ['/', '/services', '/about', '/product', '/industries/healthcare', '/industries/technology', '/privacy', '/terms', '/accessibility'];
+const paths = ['/pricing', '/recruiting-agency-westchester', '/', '/services', '/about', '/product', '/industries/healthcare', '/industries/technology', '/privacy', '/terms', '/accessibility'];
 
 test('a slow route chunk preserves server content and hydrates without errors', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
