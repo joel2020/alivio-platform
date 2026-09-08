@@ -1,0 +1,79 @@
+{
+  "source": "Google Search Console, domain property aliviosearchpartners.com, Web search",
+  "checked": "2026-09-08",
+  "start": "2025-05-07",
+  "end": "2026-09-06",
+  "page_filter_regex": "medell|nearshore-latam",
+  "pages": [
+    {
+      "path": "/recruiting-agency-medellin",
+      "clicks": 3,
+      "impressions": 1100,
+      "average_position": 28.4
+    },
+    {
+      "path": "/nearshore-latam-recruiting",
+      "clicks": 1,
+      "impressions": 3356,
+      "average_position": 15.5
+    },
+    {
+      "path": "/nearshore-latam-talent",
+      "clicks": 1,
+      "impressions": 1980,
+      "average_position": 14.9
+    },
+    {
+      "path": "/recruiters-ny-medellin",
+      "clicks": 1,
+      "impressions": 93,
+      "average_position": 10.8
+    }
+  ],
+  "query_filter_regex": "medell|latam|latin america|colombia",
+  "query_filter_summary": {
+    "clicks": 0,
+    "impressions_display": "3.37K",
+    "average_position": 25.9,
+    "visible_queries": 150
+  },
+  "selected_queries": [
+    {
+      "query": "it recruitment medellin colombia",
+      "clicks": 0,
+      "impressions": 113,
+      "average_position": 18.3
+    },
+    {
+      "query": "medellin recruiters",
+      "clicks": 0,
+      "impressions": 18,
+      "average_position": 20.0
+    },
+    {
+      "query": "executive recruitment medellin colombia",
+      "clicks": 0,
+      "impressions": 5,
+      "average_position": 16.8
+    },
+    {
+      "query": "nearshore latam",
+      "clicks": 0,
+      "impressions": 252,
+      "average_position": 33.5
+    },
+    {
+      "query": "latam executive search",
+      "clicks": 0,
+      "impressions": 50,
+      "average_position": 50.8
+    },
+    {
+      "query": "latam recruiting",
+      "clicks": 0,
+      "impressions": 1,
+      "average_position": 82.0
+    }
+  ],
+  "limitations": "Historical averages, not current fixed ranks. Query-filtered results may be partial; page totals cover all queries. No lead/conversion or LLM citation data assessed."
+}

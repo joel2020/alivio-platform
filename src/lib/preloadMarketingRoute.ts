@@ -1,6 +1,8 @@
 /** Keep static HTML visible until the matching lazy page can hydrate. */
 export function preloadMarketingRoute(path: string): Promise<unknown> {
   switch (path) {
+    case '/nearshore-latam-recruiting': return import('../pages/marketing/LatamPage');
+    case '/recruiting-agency-medellin': return import('../pages/marketing/MedellinPage');
     case '/pricing': return import('../pages/marketing/PricingPage');
     case '/recruiting-agency-westchester': return import('../pages/marketing/WestchesterPage');
     case '/services': return import('../pages/marketing/ServicesPage');

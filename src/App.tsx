@@ -8,6 +8,8 @@ import MarketingLayout from './components/marketing/MarketingLayout';
 const AppLayout = lazy(() => import('./components/app/AppLayout'));
 
 import HomePage from './pages/marketing/HomePage';
+const LatamPage = lazy(() => import('./pages/marketing/LatamPage'));
+const MedellinPage = lazy(() => import('./pages/marketing/MedellinPage'));
 const PricingPage = lazy(() => import('./pages/marketing/PricingPage'));
 const WestchesterPage = lazy(() => import('./pages/marketing/WestchesterPage'));
 const ProductPage = lazy(() => import('./pages/marketing/ProductPage'));
@@ -96,6 +98,8 @@ export default function App() {
           <Routes>
             <Route element={<MarketingLayout />}>
               <Route path="/" element={<HomePage />} />
+              <Route path="/nearshore-latam-recruiting" element={<LatamPage />} />
+              <Route path="/recruiting-agency-medellin" element={<MedellinPage />} />
               <Route path="/pricing" element={<PricingPage />} />
               <Route path="/recruiting-agency-westchester" element={<WestchesterPage />} />
               <Route path="/product" element={<ProductPage />} />
@@ -113,6 +117,8 @@ export default function App() {
               <Route path="/start" element={<StartPage />} />
               <Route path="/accessibility" element={<AccessibilityPage />} />
             </Route>
+            <Route path="/nearshore-latam-talent" element={<Navigate to="/nearshore-latam-recruiting" replace />} />
+            <Route path="/recruiters-ny-medellin" element={<Navigate to="/recruiting-agency-medellin" replace />} />
             <Route path="/platform" element={<Navigate to="/product" replace />} />
             <Route path="/team/*" element={<Navigate to="/about" replace />} />
             <Route path="/case-studies/*" element={<Navigate to="/services" replace />} />
