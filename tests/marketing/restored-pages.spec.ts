@@ -17,16 +17,20 @@ for (const entry of restored) {
   });
 }
 
-test('restored URLs serve their own indexable HTML without redirects', async ({ request }) => {
+test('restored URLs serve their own indexable HTML without redirects', async ({ request, baseURL }) => {
   test.skip(!process.env.PLAYWRIGHT_DEPLOYMENT, 'Verify real Vercel routes on the deployed preview and production.');
   for (const { path, heading } of restored) {
     const response = await request.get(path, { maxRedirects: 0 });
     expect(response.status(), path).toBe(200);
     expect(response.headers().location, path).toBeUndefined();
-    expect(response.headers()['x-robots-tag'] ?? '', path).not.toContain('noindex');
+    // Vercel adds noindex to protected previews; production must be indexable.
+    if (new URL(baseURL!).hostname === 'aliviosearchpartners.com') {
+      expect(response.headers()['x-robots-tag'] ?? '', path).not.toContain('noindex');
+    }
     const html = await response.text();
     expect(html).toContain(heading);
     expect(html).toContain(`data-prerendered="${path}"`);
     expect(html).toContain(`href="https://aliviosearchpartners.com${path}"`);
+    expect(html).toContain('<meta name="robots" content="index, follow"');
   }
 });
