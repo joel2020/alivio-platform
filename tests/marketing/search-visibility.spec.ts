@@ -27,6 +27,16 @@ test('a slow route chunk preserves server content and hydrates without errors', 
   expect(errors).toEqual([]);
 });
 for (const path of paths) {
+  test(`${path} hydrates without browser errors`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', error => errors.push(error.message));
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(path);
+    await page.waitForLoadState('networkidle');
+    await page.getByRole('button', { name: 'Open menu', exact: true }).click();
+    await expect(page.getByRole('dialog', { name: 'Navigation menu' })).toBeVisible();
+    expect(errors).toEqual([]);
+  });
   test(`${path} has useful content and its own canonical before JavaScript`, async ({ browser, baseURL }) => {
     const context = await browser.newContext({ javaScriptEnabled: false, storageState: process.env.PLAYWRIGHT_STORAGE_STATE });
     const page = await context.newPage();

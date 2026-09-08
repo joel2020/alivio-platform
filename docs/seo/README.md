@@ -122,3 +122,10 @@ text column. The mobile regression explicitly loads a long-title job before
 checking accessibility and width. The delayed-chunk test retries interaction while
 the released remote script downloads, rather than treating release as hydration
 completion. Final deployment results are recorded in the pull request.
+
+Production verification of PR #129 passed all 48 checks. A separate Lighthouse
+run exposed a homepage hydration mismatch: React 18 escaped quotation marks in
+an inline style selector during server rendering. Those responsive rules are now
+in the stylesheet. The regression suite additionally checks all nine static
+pages for browser errors after hydration; follow-up deployment evidence is
+recorded with the correction pull request.
