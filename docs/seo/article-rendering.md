@@ -1,0 +1,15 @@
+# Fresh article rendering — September 8, 2026
+
+Published articles now use a Node Vercel function that reads the current public Supabase record with status=published, renders the existing React article and supplies matching initial metadata. It uses the existing public URL/anon key, an explicit field projection, validated slugs and a six-second fetch timeout. No service-role credential or visitor auth is used. Article text is not changed by this phase.
+
+Publication freshness: no database content is copied into the build. Browser and CDN caches receive no-store. An update appears on the next request; an unpublished or missing row returns 404. A database, malformed-record or rendering failure returns a temporary 503 with Retry-After and noindex. HTML and JSON are escaped; public data is projected again before serialization. The generated renderer/template live outside public dist. Optional related-post errors do not hide the article, and an unavailable client refresh preserves the content verified by the server moments earlier.
+
+Validation: 14 server tests cover publication/update/unpublish lifecycle, published filters, field projection, request validation, HEAD, failures and stored-markup injection. New CI runs build/types/lint and server tests. Local browser suite passed 73 checks with nine deployment-only skips. On the first preview, 79 checks passed and three tests exposed an incorrect historical-article assumption; the corrected four article checks then passed. All 67 published inventory URLs returned 200 with article HTML and correct canonical URLs. A user-supplied slug query did not replace the path's article. The representative article passed axe at 320px without horizontal overflow; desktop/mobile screenshots were reviewed. Final preview and production results are on the PR.
+
+Inventory correction: the older audit called /blog/passive-candidate-outreach-messages a current article based on Search Console's historical soft-404 report. It is absent from the published inventory, so this phase preserves it as 404. The published regression and recrawl target is /blog/succession-planning-for-growing-staffing-organizations.
+
+Independent review: Claude was supplied the plan, diff, tests and server code, but its session limit prevented review. Codex performed direct review; CodeRabbit was rate limited. No completed independent review is claimed. Rollback reference: 05a7f4e13bcf683ac653800b55c3cfd7ca648119.
+
+Google follow-up: Search Console reports both restored regional pages indexed. Medellín was crawled September 8 at 6:40:38 PM and LATAM at 6:38:07 PM, as displayed in the UI; both fetched successfully and allowed indexing. The sitemap still reports Success with 84 pages. This is indexing evidence, not ranking or lead-growth evidence. No repeat indexing requests were sent for those two pages.
+
+Remaining separate work: blog-list initial HTML, automatic sitemap publication freshness and article quality/original expertise. Do not equate improved retrieval with guaranteed indexing or citations.
