@@ -127,7 +127,7 @@ export async function deleteBlogPost(id: string) {
 }
 
 export function formatPublicationDate(dateValue: string) {
-  return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' }).format(new Date(dateValue));
+  return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: /^\d{4}-\d{2}-\d{2}$/.test(dateValue) ? 'UTC' : undefined }).format(new Date(dateValue));
 }
 
 export function estimateReadingTime(text: string) {

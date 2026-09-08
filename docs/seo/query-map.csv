@@ -1,0 +1,17 @@
+Priority,Buyer intent,Query family,Target,Action,Conversion
+1,Choose a partner,healthcare recruiting firm,/industries/healthcare,Improve existing practice page,Request a search plan
+1,Choose a partner,physician recruitment firm,/industries/healthcare,Expand physician section with verified search examples,Request a search plan
+1,Choose a partner,healthcare executive search firm,/industries/healthcare,Clarify leadership roles and decision process,Book a hiring strategy call
+1,Choose a partner,healthtech recruiting firm,/industries/technology,Explain domain and stage fit,Request a search plan
+1,Choose a partner,technology recruiting partner,/industries/technology,Clarify engineering product and data scope,Request a search plan
+1,Select engagement,retained search vs recruiting pipeline,/services,Add buyer comparison draft after review,Discuss engagement fit
+1,Select engagement,project recruiting RPO support,/services,Clarify scope ownership and handover,Book a hiring strategy call
+2,Understand method,AI recruiting with human review,/product,Explain recruiter checks and limits,Book a hiring strategy call
+2,Prepare a search,physician search kickoff checklist,/blog,Develop one original checklist with recruiter review,Request a search plan
+2,Prepare a search,healthtech engineering hiring scorecard,/blog,Develop an annotated sample scorecard,Request a search plan
+2,Evaluate delivery,what should a recruiting shortlist include,/product,Explain rationale tradeoffs and evidence with example,Book a hiring strategy call
+2,Evaluate partner,Alivio Search Partners reviews,/about,Add permissioned attributed proof and verified founder profile,Contact Alivio
+2,Plan hiring,how long does physician recruitment take,/blog,Use audited search milestones and clearly stated uncertainty,Discuss a role
+3,Check cost,physician recruiting fees,/services,Explain fee variables only after owner confirms terms,Discuss scope
+3,Choose a partner,nearshore engineering recruiting LATAM,/industries/technology,Validate countries and actual service capacity before expansion,Request a search plan
+3,Understand evidence,healthcare search case study,/industries/healthcare,Build documented anonymized example and distinguish shortlist from placement,Book a hiring strategy call
