@@ -124,13 +124,14 @@ export default function CareersPage() {
           ) : visibleJobs.length === 0 ? (
             <p style={{ color: '#4D5E7B' }}>No positions match that filter. Try clearing the search.</p>
           ) : (
-            <div style={{ display: 'grid', gap: 12 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: 12 }}>
               {visibleJobs.map((job) => (
                 <Link
                   key={job.id}
                   to={`/careers/${job.id}`}
                   style={{
                     display: 'flex',
+                    flexWrap: 'wrap',
                     justifyContent: 'space-between',
                     gap: 16,
                     alignItems: 'center',
@@ -142,7 +143,7 @@ export default function CareersPage() {
                     boxShadow: '0 6px 20px rgba(7,25,62,.05)',
                   }}
                 >
-                  <div>
+                  <div style={{ flex: '1 1 180px', minWidth: 0, overflowWrap: 'anywhere' }}>
                     <h2 style={{ fontSize: 17, fontWeight: 700, color: '#0B1B36', marginBottom: 6 }}>{job.title}</h2>
                     <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', color: '#4D5E7B', fontSize: 13 }}>
                       {job.location ? (

@@ -6,8 +6,10 @@ const job = { id: 912345, title: 'Clinical operations director', location: 'New 
 for (const path of ['/blog', '/careers', '/privacy', '/terms', '/accessibility']) {
   test(`${path} secondary page is accessible on a small phone`, async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 850 });
+    if (path === '/careers') await page.route('**/rest/v1/jobs?*', route => route.fulfill({ json: [{ ...job, title: 'Principal Machine Learning Engineer (Healthcare AI)', category: 'Data Science' }] }));
     await page.goto(path);
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    if (path === '/careers') await expect(page.getByRole('heading', { level: 2, name: 'Principal Machine Learning Engineer (Healthcare AI)' })).toBeVisible();
     const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
     expect(results.violations.map(({ id, nodes }) => ({ id, targets: nodes.map(n => n.target) }))).toEqual([]);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320);

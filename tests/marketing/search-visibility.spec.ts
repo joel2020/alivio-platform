@@ -17,8 +17,13 @@ test('a slow route chunk preserves server content and hydrates without errors', 
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   await expect(page.getByText('Loading page…', { exact: true })).toHaveCount(0);
   release();
-  await page.getByRole('button', { name: 'Open menu', exact: true }).click();
-  await expect(page.getByRole('dialog', { name: 'Navigation menu' })).toBeVisible();
+  // Releasing the intercepted request does not mean the remote script has
+  // downloaded and hydrated yet. Retry interaction until the page is ready.
+  await expect(async () => {
+    const dialog = page.getByRole('dialog', { name: 'Navigation menu' });
+    if (!(await dialog.isVisible())) await page.getByRole('button', { name: 'Open menu', exact: true }).click();
+    await expect(dialog).toBeVisible({ timeout: 500 });
+  }).toPass({ timeout: 10000 });
   expect(errors).toEqual([]);
 });
 for (const path of paths) {

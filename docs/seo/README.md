@@ -115,3 +115,10 @@ Services chunk test keeps the H1 visible throughout loading, then verifies the m
 works and no hydration errors occur. The revised local suite passes 47 checks,
 with only the deployment-specific HTTP/header check skipped. Build, typecheck and
 lint passed again (the same pre-existing lint warning remains).
+
+The deployed checks also exposed horizontal overflow after live careers records
+loaded on a 320px viewport. Job cards now wrap their category and constrain their
+text column. The mobile regression explicitly loads a long-title job before
+checking accessibility and width. The delayed-chunk test retries interaction while
+the released remote script downloads, rather than treating release as hydration
+completion. Final deployment results are recorded in the pull request.
