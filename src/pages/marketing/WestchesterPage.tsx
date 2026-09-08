@@ -43,7 +43,7 @@ export default function WestchesterPage() {
             <article className="search-page-card"><p className="search-page-eyebrow">02 / Source &amp; assess</p><h3>Build a relevant pipeline</h3><p>Use targeted research and outreach to find candidates. Recruiters evaluate the evidence, motivation and role alignment before advancing a shortlist.</p></article>
             <article className="search-page-card"><p className="search-page-eyebrow">03 / Decide</p><h3>Keep the process clear</h3><p>Review candidates against the agreed criteria, record open questions and coordinate interview feedback and next steps.</p></article>
           </div>
-          <div className="search-page-callout"><h2>Plan your next Westchester hire</h2><p>Share the role, work location and hiring goals. Explore <Link className="search-page-link" to="/pricing">retained search, pipeline programs and project support</Link> or bring your questions to the first conversation.</p><Link to="/start" className="mkt-btn-primary-lg">Request a Search Plan</Link><p>Looking for a role? <Link className="search-page-link" to="/careers">View current openings</Link>.</p></div>
+          <div className="search-page-callout"><h3>Plan your next Westchester hire</h3><p>Share the role, work location and hiring goals. Explore <Link className="search-page-link" to="/pricing">retained search, pipeline programs and project support</Link> or bring your questions to the first conversation.</p><Link to="/start" className="mkt-btn-primary-lg">Request a Search Plan</Link><p>Looking for a role? <Link className="search-page-link" to="/careers">View current openings</Link>.</p></div>
         </div>
       </section>
     </div>

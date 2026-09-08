@@ -56,7 +56,7 @@ export default function PricingPage() {
           <h3>Is this a software subscription?</h3><p>These options describe recruiting engagements. The <Link className="search-page-link" to="/product">AI Candidate Engine</Link> supports sourcing, evaluation and reporting within Alivio's recruiter-led process.</p>
           <h3>Do I need to choose a model before contacting you?</h3><p>No. Bring the role, location, hiring priorities and internal capacity to the first conversation. Those details help define the appropriate scope.</p>
           <h3>Can you quote a search without a finished job description?</h3><p>Start with the role's expected outcomes, reporting line, work arrangements and compensation parameters. Note what is still undecided so it can be addressed when defining the search.</p>
-          <div className="search-page-callout"><h2>Tell us what you need to hire</h2><p>Describe the role and the recruiting support you need to start a conversation about scope and pricing.</p><Link to="/start" className="mkt-btn-primary-lg">Request a Search Plan</Link></div>
+          <div className="search-page-callout"><h3>Tell us what you need to hire</h3><p>Describe the role and the recruiting support you need to start a conversation about scope and pricing.</p><Link to="/start" className="mkt-btn-primary-lg">Request a Search Plan</Link></div>
         </div>
       </section>
     </div>

@@ -544,10 +544,14 @@ a:focus-visible, button:focus-visible {
 .search-page-card p, .search-page-card li, .search-page-list, .search-page-brief dd { color: #4d5e7b; }
 .search-page-card ul, .search-page-list { padding-left: 20px; }
 .search-page li + li { margin-top: 10px; }
-.search-page-eyebrow { color: #1d55c6 !important; font-size: 13px; font-weight: 700; margin: 0 0 12px; }
+.search-page p.search-page-eyebrow { color: #1d55c6; font-size: 13px; font-weight: 700; margin: 0 0 12px; }
 .search-page-link { color: #1d55c6; text-decoration: underline; text-underline-offset: 3px; }
 .search-page-brief { display: grid; gap: 20px; }
 .search-page-brief dt { font-weight: 700; font-size: 18px; margin-bottom: 6px; }
 .search-page-brief dd { margin: 0; }
 .search-page-callout { padding: 32px; margin-top: 40px; border: 1px solid #dce4f2; border-radius: 18px; background: #fff; }
 @media (max-width: 479px) { .search-page-hero { padding: 56px 0 44px; } .search-page-section { padding: 44px 0; } .search-page-card, .search-page-callout { padding: 22px; } }
+
+.search-page-callout h3 { margin-top: 0; font-size: clamp(24px, 2.8vw, 32px); }
+.search-page-callout .mkt-btn-primary-lg { margin-top: 16px; }
+.search-page-callout .mkt-btn-primary-lg + p { margin-top: 16px; }
