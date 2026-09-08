@@ -26,7 +26,7 @@ try {
     ].join('\n');
     return template.replace(/<title>[\s\S]*?<\/title>|<meta\s+(?:name="(?:description|keywords|robots|twitter:[^"]+)"|property="og:[^"]+")[^>]*>|<link\s+rel="canonical"[^>]*>/g, '')
       .replace('</head>', `${head}\n</head>`)
-      .replace('<div id="root"></div>', `<div id="root">${body}</div>`);
+      .replace('<div id="root"></div>', `<div id="root"${routes.includes(path) ? ` data-prerendered="${escape(path)}"` : ''}>${body}</div>`);
   }
   for (const path of routes) {
     const file = path === '/' ? 'dist/index.html' : `dist${path}.html`;

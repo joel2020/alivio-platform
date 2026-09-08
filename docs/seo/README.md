@@ -33,7 +33,7 @@ Impact is a reasoned hypothesis, not a forecast of rankings or revenue.
 
 - Vite's existing build now renders nine stable public pages from the same React components: home, services, about, product, both practices, privacy, terms and accessibility. No framework migration or paid dependency.
 - A shared metadata function supplies distinct initial titles, descriptions, canonicals, social tags and WebPage data. Industry metadata stays specific after client navigation.
-- Dynamic pages retain the original empty application shell. No jobs, candidates, reports, credentials or CRM data are serialized into static HTML. The client still uses its established render path; this is prerendering, not full application hydration.
+- Dynamic pages retain the original empty application shell. No jobs, candidates, reports, credentials or CRM data are serialized into static HTML. Prerendered public documents hydrate matching Suspense boundaries to preserve content during lazy route downloads; dynamic/private shells retain the existing client render path.
 - Vercel routes known application URLs to that shell. Unmatched URLs and missing assets can return a real 404. Legacy public aliases have permanent redirects.
 - Account, client and internal application routes receive exclusion and no-store headers. Existing robots rules already permit public crawling under `User-agent: *`; AI-training preferences are unchanged.
 - Organization-authored articles now use Organization author schema, and date-only publication values display their actual calendar date in western time zones. Unavailable articles receive client-side noindex; a real dynamic article 404 is a follow-up.
@@ -107,3 +107,11 @@ for missing pages/assets, noindex/no-store headers on private routes, nine pages
 readable with JavaScript disabled, and the existing application checks. Temporary
 preview access was used; deployment protection was not changed. Test-only browser
 contexts explicitly inherit the optional preview session state.
+
+Final review identified an early-loading regression on lazy public routes. The
+client now waits for the path-matched marketing module and hydrates the matching
+server Suspense boundaries instead of replacing the content. A deliberately delayed
+Services chunk test keeps the H1 visible throughout loading, then verifies the menu
+works and no hydration errors occur. The revised local suite passes 47 checks,
+with only the deployment-specific HTTP/header check skipped. Build, typecheck and
+lint passed again (the same pre-existing lint warning remains).

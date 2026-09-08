@@ -1,4 +1,5 @@
 import { renderToString } from 'react-dom/server';
+import { Suspense } from 'react';
 import { StaticRouter, Routes, Route } from 'react-router-dom';
 import MarketingLayout from './components/marketing/MarketingLayout';
 import HomePage from './pages/marketing/HomePage';
@@ -29,6 +30,7 @@ export const routes = Object.keys(pages);
 export function render(path: string) {
   return renderToString(
     <StaticRouter location={path}>
+      <Suspense fallback={null}>
       <Routes>
         <Route element={<MarketingLayout />}>
           {Object.entries(pages).filter(([route]) => !route.startsWith('/industries/')).map(([route, element]) => <Route key={route} path={route} element={element} />)}
@@ -36,6 +38,7 @@ export function render(path: string) {
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
+      </Suspense>
     </StaticRouter>,
   );
 }

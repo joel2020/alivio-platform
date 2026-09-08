@@ -1,6 +1,26 @@
 import { test, expect } from '@playwright/test';
 
 const paths = ['/', '/services', '/about', '/product', '/industries/healthcare', '/industries/technology', '/privacy', '/terms', '/accessibility'];
+
+test('a slow route chunk preserves server content and hydrates without errors', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const errors: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  page.on('console', message => { if (message.type() === 'error' && /hydrat|Minified React error/i.test(message.text())) errors.push(message.text()); });
+  let release!: () => void;
+  const delayed = new Promise<void>(resolve => { release = resolve; });
+  let requested = false;
+  await page.route(/ServicesPage[^/]*\.js$/, async route => { requested = true; await delayed; await route.continue(); });
+  await page.goto('/services', { waitUntil: 'domcontentloaded' });
+  await expect.poll(() => requested).toBe(true);
+  await page.waitForTimeout(1500);
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  await expect(page.getByText('Loading page…', { exact: true })).toHaveCount(0);
+  release();
+  await page.getByRole('button', { name: 'Open menu', exact: true }).click();
+  await expect(page.getByRole('dialog', { name: 'Navigation menu' })).toBeVisible();
+  expect(errors).toEqual([]);
+});
 for (const path of paths) {
   test(`${path} has useful content and its own canonical before JavaScript`, async ({ browser, baseURL }) => {
     const context = await browser.newContext({ javaScriptEnabled: false, storageState: process.env.PLAYWRIGHT_STORAGE_STATE });
