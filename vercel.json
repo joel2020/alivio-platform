@@ -78,6 +78,10 @@
   ],
   "rewrites": [
     {
+      "source": "/blog/:slug",
+      "destination": "/api/article?slug=:slug"
+    },
+    {
       "source": "/nearshore-latam-recruiting",
       "destination": "/nearshore-latam-recruiting.html"
     },
@@ -158,7 +162,7 @@
       ]
     },
     {
-      "source": "/(about|blog|blog/.*)",
+      "source": "/(about|blog)",
       "headers": [
         {
           "key": "x-robots-tag",
@@ -234,5 +238,11 @@
         }
       ]
     }
-  ]
+  ],
+  "functions": {
+    "api/article.mjs": {
+      "includeFiles": ".server/**",
+      "maxDuration": 15
+    }
+  }
 }

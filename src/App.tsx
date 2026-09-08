@@ -70,6 +70,11 @@ const AdminSystemCheckPage = lazy(() => import('./pages/admin/AdminSystemCheckPa
 
 function SeoManager() {
   const { pathname, search } = useLocation();
+  // Article metadata is owned by the current article, including SSR hydration.
+  return /^\/blog\/[^/]+\/?$/.test(pathname) ? null : <DefaultRouteSeo pathname={pathname} search={search} />;
+}
+
+function DefaultRouteSeo({ pathname, search }: { pathname: string; search: string }) {
   useSeo(getPageSeo(pathname, search));
   return null;
 }

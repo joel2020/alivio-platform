@@ -15,7 +15,8 @@
     "backend:typecheck": "tsc --noEmit -p backend/tsconfig.json",
     "launch:check": "node scripts/launch-readiness-check.mjs",
     "supabase:consolidate": "node scripts/consolidate-supabase.mjs",
-    "test:marketing": "playwright test"
+    "test:marketing": "playwright test",
+    "test:article-server": "node --test tests/server/article-handler.test.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.4",

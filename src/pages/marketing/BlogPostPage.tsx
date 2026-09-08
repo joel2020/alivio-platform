@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { estimateReadingTime, fetchPublishedBlogPostBySlug, fetchRelatedPublishedPosts, formatPublicationDate, type BlogPost } from '../../lib/blog';
 import { renderMarkdownToHtml } from '../../lib/markdown';
 import { useSeo } from '../../lib/seo';
+import { getArticleSeo, readInitialArticle, type ArticleState } from '../../lib/blogSeo';
 
 const SITE_URL = 'https://aliviosearchpartners.com';
 
@@ -15,13 +16,18 @@ function stripDuplicateHeading(content: string, title: string) {
   return lines.join('\n').trim();
 }
 
-export default function BlogPostPage() {
+export default function BlogPostPage({ initialState }: { initialState?: ArticleState } = {}) {
   const { slug } = useParams();
-  const [post, setPost] = useState<BlogPost | null>(null);
+  return <BlogPostContent key={slug} slug={slug} initialState={initialState} />;
+}
+
+function BlogPostContent({ slug, initialState }: { slug?: string; initialState?: ArticleState }) {
+  const [initial] = useState(() => initialState ?? readInitialArticle(slug));
+  const [post, setPost] = useState<BlogPost | null>(initial?.post ?? null);
   const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [notFound, setNotFound] = useState(false);
+  const [loading, setLoading] = useState(!initial);
+  const [error, setError] = useState<string | null>(initial?.status === 'unavailable' ? 'Please try again shortly.' : null);
+  const [notFound, setNotFound] = useState(initial?.status === 'not-found');
   const [reloadToken, setReloadToken] = useState(0);
 
   useEffect(() => {
@@ -32,64 +38,45 @@ export default function BlogPostPage() {
     }
 
     const activeSlug = slug;
+    let cancelled = false;
+    document.getElementById('alivio-article-data')?.remove();
 
     async function loadPost() {
-      setLoading(true);
+      if (!initial?.post || reloadToken > 0) setLoading(true);
       setError(null);
       setNotFound(false);
-
       try {
         const loadedPost = await fetchPublishedBlogPostBySlug(activeSlug);
+        if (cancelled) return;
         setPost(loadedPost);
-
-        if (loadedPost) {
-          const related = await fetchRelatedPublishedPosts(loadedPost.id, loadedPost.category);
-          setRelatedPosts(related);
-        } else {
-          setNotFound(true);
-          setRelatedPosts([]);
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unable to load this post.');
-      } finally {
+        setNotFound(!loadedPost);
         setLoading(false);
+        setRelatedPosts([]);
+        if (loadedPost) {
+          // Recommendations are optional; their failure must not hide the article.
+          try {
+            const related = await fetchRelatedPublishedPosts(loadedPost.id, loadedPost.category);
+            if (!cancelled) setRelatedPosts(related);
+          } catch { /* Keep the successfully loaded article visible. */ }
+        }
+      } catch {
+        if (!cancelled) {
+          if (!initial?.post) {
+            setPost(null);
+            setError('Please try again shortly.');
+          }
+          setLoading(false);
+        }
       }
     }
-
     void loadPost();
-  }, [slug, reloadToken]);
+    return () => { cancelled = true; };
+  }, [slug, reloadToken, initial]);
 
   const sanitizedContent = useMemo(() => (post ? stripDuplicateHeading(post.content, post.title) : ''), [post]);
   const canonicalUrl = `${SITE_URL}/blog/${slug ?? ''}`;
 
-  useSeo({
-    title: post ? `${post.title} | Alivio Search Partners Blog` : 'Healthcare Recruiting Insights | Alivio Search Partners Blog',
-    description: post?.meta_description || post?.excerpt || 'Healthcare recruiting insights and clinical staffing strategies from Alivio Search Partners.',
-    canonicalUrl,
-    ogType: 'article',
-    robots: notFound ? 'noindex, follow' : 'index, follow',
-    structuredData: post
-      ? {
-        '@context': 'https://schema.org',
-        '@type': 'Article',
-        headline: post.title,
-        description: post.meta_description || post.excerpt,
-        datePublished: post.published_date,
-        author: {
-          '@type': post.author_name === 'Alivio Search Partners' ? 'Organization' : 'Person',
-          name: post.author_name,
-        },
-        articleSection: post.category,
-        image: post.cover_image_url ?? undefined,
-        mainEntityOfPage: canonicalUrl,
-        publisher: {
-          '@type': 'Organization',
-          name: 'Alivio Search Partners',
-          url: SITE_URL,
-        },
-      }
-      : undefined,
-  });
+  useSeo(getArticleSeo(post, slug ?? '', Boolean(error)));
 
   const shareUrl = canonicalUrl;
   const shareText = post ? `${post.title} | Alivio Search Partners` : 'Alivio Search Partners Blog';
@@ -100,6 +87,7 @@ export default function BlogPostPage() {
       {loading ? <section style={{ marginTop: '20px' }} aria-label="Loading post"><div className="skeleton h-56 w-full" /></section> : null}
       {error ? (
         <div className="card" style={{ marginTop: '18px', borderColor: 'var(--error)', padding: '18px' }}>
+          <h1 style={{ fontSize: '28px', marginBottom: '12px' }}>Article temporarily unavailable</h1>
           <p style={{ color: 'var(--error)', marginBottom: '12px' }}>We couldn&apos;t load this article. {error}</p>
           <button className="mkt-btn-primary" style={{ minHeight: '44px' }} onClick={() => setReloadToken((prev) => prev + 1)}>Retry</button>
         </div>
@@ -146,7 +134,7 @@ export default function BlogPostPage() {
       {!loading && !error && !post ? (
         <section style={{ marginTop: '30px' }} className="card">
           <div style={{ padding: '24px', textAlign: 'center' }}>
-            <h2 style={{ marginBottom: '8px' }}>This article isn&apos;t available</h2>
+            <h1 style={{ fontSize: '28px', marginBottom: '8px' }}>This article isn&apos;t available</h1>
             {notFound && slug ? <p style={{ color: 'var(--text-secondary)', marginBottom: '16px' }}>We couldn&apos;t find a published post for <code>{slug}</code>.</p> : null}
             <Link to="/blog" className="mkt-btn-primary" style={{ minHeight: '44px' }}>Browse all blog posts</Link>
           </div>

@@ -1,0 +1,9 @@
+# Fresh article rendering
+
+Continue the authorized SEO repair by fixing a confirmed defect: /blog/passive-candidate-outreach-messages returns 200 with an empty root, no heading and generic homepage metadata. Serve the same React article and marketing layout on the server using current published Supabase content. Never snapshot posts in the build.
+
+Create a Node Vercel function for /blog/:slug, backed by the existing public Supabase URL/anon key and an explicit status=published filter. Only GET/HEAD, validated historical slug syntax, bounded fetch timeout and explicit public field projection. Read current data on every request with no-store at browser and CDN layers. No service-role key or auth cookie forwarding. Missing/unpublished returns real 404; database/runtime failure returns 503 with retry guidance and noindex, not a false 404. Error details must not disclose database information.
+
+Build a server renderer and HTML template from current app assets outside the public dist tree. Reuse BlogPostPage through validated initial state and matching client hydration. Escape document attributes, structured JSON and bootstrap JSON; existing Markdown escaping must remain. Keep client navigation/retry and related posts, guard stale async responses, and isolate optional related-post failures from article visibility. No changes to article text, job lifecycle, authentication or external integrations.
+
+Tests cover current content, unpublish between requests, failures, malformed slugs, draft exclusion, unsafe stored text, HTTP response headers, SSR markup and hydration, navigation and existing flows. Preview and production routing must match, including direct endpoint errors. Rollback baseline: 05a7f4e13bcf683ac653800b55c3cfd7ca648119. Submit the repaired known article to Google only after live checks; do not repeatedly request the recently restored pages.
