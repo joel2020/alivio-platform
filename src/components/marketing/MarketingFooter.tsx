@@ -4,6 +4,7 @@ import { AlivioLogo } from '../brand/AlivioLogo';
 import { CAL_COM_BOOKING_URL, DEMO_EVENT_DESCRIPTION, DEMO_EVENT_TITLE } from '../../lib/demoBooking';
 
 const productLinks = [
+  { label: 'Pricing & Engagements', href: '/pricing' },
   { label: 'Recruitment Services', href: '/services' },
   { label: 'AI Candidate Engine', href: '/product' },
   { label: 'Healthcare Practice', href: '/industries/healthcare' },
@@ -11,6 +12,7 @@ const productLinks = [
 ];
 
 const companyLinks = [
+  { label: 'Westchester Recruiting', href: '/recruiting-agency-westchester', external: false },
   { label: 'About', href: '/about', external: false },
   { label: 'Careers', href: '/careers', external: false },
   { label: 'Request a Search Plan', href: '/start', external: false },

@@ -101,6 +101,7 @@ export default function ServicesPage() {
             Pricing is scoped to the engagement — no seat licenses, no self-serve tier. Every model includes the AI
             Candidate Engine, human recruiter review, and weekly reporting.
           </p>
+          <p><Link to="/pricing" className="search-page-link">Compare pricing and engagement options</Link></p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,280px),1fr))', gap: 18, marginTop: 30 }}>
             {engagement.map((tier) => (
               <div

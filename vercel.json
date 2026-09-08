@@ -11,11 +11,6 @@
       "permanent": true
     },
     {
-      "source": "/pricing",
-      "destination": "/product",
-      "permanent": true
-    },
-    {
       "source": "/platform",
       "destination": "/product",
       "permanent": true
@@ -72,6 +67,14 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/pricing",
+      "destination": "/pricing.html"
+    },
+    {
+      "source": "/recruiting-agency-westchester",
+      "destination": "/recruiting-agency-westchester.html"
+    },
     {
       "source": "/services",
       "destination": "/services.html"

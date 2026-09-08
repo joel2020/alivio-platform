@@ -8,6 +8,8 @@ import MarketingLayout from './components/marketing/MarketingLayout';
 const AppLayout = lazy(() => import('./components/app/AppLayout'));
 
 import HomePage from './pages/marketing/HomePage';
+const PricingPage = lazy(() => import('./pages/marketing/PricingPage'));
+const WestchesterPage = lazy(() => import('./pages/marketing/WestchesterPage'));
 const ProductPage = lazy(() => import('./pages/marketing/ProductPage'));
 const DevelopersPage = lazy(() => import('./pages/marketing/DevelopersPage'));
 const PrivacyPage = lazy(() => import('./pages/marketing/PrivacyPage'));
@@ -94,6 +96,8 @@ export default function App() {
           <Routes>
             <Route element={<MarketingLayout />}>
               <Route path="/" element={<HomePage />} />
+              <Route path="/pricing" element={<PricingPage />} />
+              <Route path="/recruiting-agency-westchester" element={<WestchesterPage />} />
               <Route path="/product" element={<ProductPage />} />
               <Route path="/developers" element={<DevelopersPage />} />
               <Route path="/privacy" element={<PrivacyPage />} />
@@ -109,7 +113,6 @@ export default function App() {
               <Route path="/start" element={<StartPage />} />
               <Route path="/accessibility" element={<AccessibilityPage />} />
             </Route>
-            <Route path="/pricing" element={<Navigate to="/product" replace />} />
             <Route path="/platform" element={<Navigate to="/product" replace />} />
             <Route path="/team/*" element={<Navigate to="/about" replace />} />
             <Route path="/case-studies/*" element={<Navigate to="/services" replace />} />

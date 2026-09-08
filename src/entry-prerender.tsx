@@ -2,6 +2,8 @@ import { renderToString } from 'react-dom/server';
 import { Suspense } from 'react';
 import { StaticRouter, Routes, Route } from 'react-router-dom';
 import MarketingLayout from './components/marketing/MarketingLayout';
+import PricingPage from './pages/marketing/PricingPage';
+import WestchesterPage from './pages/marketing/WestchesterPage';
 import HomePage from './pages/marketing/HomePage';
 import ServicesPage from './pages/marketing/ServicesPage';
 import AboutPage from './pages/marketing/AboutPage';
@@ -16,6 +18,8 @@ export { getPageSeo } from './lib/pageSeo';
 // Only stable public content: never snapshot jobs, client reports, or CRM data.
 const pages = {
   '/': <HomePage />,
+  '/pricing': <PricingPage />,
+  '/recruiting-agency-westchester': <WestchesterPage />,
   '/services': <ServicesPage />,
   '/about': <AboutPage />,
   '/product': <ProductPage />,
