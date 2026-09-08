@@ -9,21 +9,74 @@
       "source": "/register/",
       "destination": "/signup",
       "permanent": true
+    },
+    {
+      "source": "/pricing",
+      "destination": "/product",
+      "permanent": true
+    },
+    {
+      "source": "/platform",
+      "destination": "/product",
+      "permanent": true
+    },
+    {
+      "source": "/team/:path*",
+      "destination": "/about",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/:path*",
+      "destination": "/services",
+      "permanent": true
+    },
+    {
+      "source": "/resources/:path*",
+      "destination": "/blog",
+      "permanent": true
     }
   ],
   "rewrites": [
     {
-      "source": "/((?!api|assets|robots\\.txt|sitemap\\.xml|favicon\\.png|favicon\\.svg|apple-touch-icon\\.png|_next|_vercel|images|icons|fonts|manifest\\.json).*)",
-      "destination": "/index.html"
+      "source": "/services",
+      "destination": "/services.html"
     },
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "source": "/about",
+      "destination": "/about.html"
+    },
+    {
+      "source": "/product",
+      "destination": "/product.html"
+    },
+    {
+      "source": "/industries/healthcare",
+      "destination": "/industries/healthcare.html"
+    },
+    {
+      "source": "/industries/technology",
+      "destination": "/industries/technology.html"
+    },
+    {
+      "source": "/privacy",
+      "destination": "/privacy.html"
+    },
+    {
+      "source": "/terms",
+      "destination": "/terms.html"
+    },
+    {
+      "source": "/accessibility",
+      "destination": "/accessibility.html"
+    },
+    {
+      "source": "/(blog|careers|start|contact|developers|login|signup|client|onboarding|dashboard|pipeline|roles|outreach|agents|candidates|settings|calls|tasks|shortlists|crm|admin|og)(/.*)?",
+      "destination": "/app.html"
     }
   ],
   "headers": [
     {
-      "source": "/(dashboard|crm|candidates|roles|settings|pipeline|calls|outreach|agents|onboarding|admin)(.*)",
+      "source": "/(dashboard|crm|candidates|roles|settings|pipeline|calls|outreach|agents|onboarding|admin|client|tasks|shortlists|login|signup|developers|og)(/.*)?",
       "headers": [
         {
           "key": "x-robots-tag",

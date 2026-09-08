@@ -67,6 +67,7 @@ export default function BlogPostPage() {
     description: post?.meta_description || post?.excerpt || 'Healthcare recruiting insights and clinical staffing strategies from Alivio Search Partners.',
     canonicalUrl,
     ogType: 'article',
+    robots: notFound ? 'noindex, follow' : 'index, follow',
     structuredData: post
       ? {
         '@context': 'https://schema.org',
@@ -75,7 +76,7 @@ export default function BlogPostPage() {
         description: post.meta_description || post.excerpt,
         datePublished: post.published_date,
         author: {
-          '@type': 'Person',
+          '@type': post.author_name === 'Alivio Search Partners' ? 'Organization' : 'Person',
           name: post.author_name,
         },
         articleSection: post.category,

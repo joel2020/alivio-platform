@@ -1,0 +1,142 @@
+[
+  {
+    "path": "/",
+    "status": 200,
+    "title": [
+      "Alivio Search Partners | AI-Powered Recruitment for Healthcare & Technology"
+    ],
+    "canonical": [
+      "https://aliviosearchpartners.com/"
+    ],
+    "h1_count": 0,
+    "root_empty": true,
+    "robots_header": "index, follow",
+    "type": "text/html; charset=utf-8"
+  },
+  {
+    "path": "/services",
+    "status": 200,
+    "title": [
+      "Alivio Search Partners | AI-Powered Recruitment for Healthcare & Technology"
+    ],
+    "canonical": [
+      "https://aliviosearchpartners.com/"
+    ],
+    "h1_count": 0,
+    "root_empty": true,
+    "robots_header": null,
+    "type": "text/html; charset=utf-8"
+  },
+  {
+    "path": "/industries/healthcare",
+    "status": 200,
+    "title": [
+      "Alivio Search Partners | AI-Powered Recruitment for Healthcare & Technology"
+    ],
+    "canonical": [
+      "https://aliviosearchpartners.com/"
+    ],
+    "h1_count": 0,
+    "root_empty": true,
+    "robots_header": null,
+    "type": "text/html; charset=utf-8"
+  },
+  {
+    "path": "/industries/technology",
+    "status": 200,
+    "title": [
+      "Alivio Search Partners | AI-Powered Recruitment for Healthcare & Technology"
+    ],
+    "canonical": [
+      "https://aliviosearchpartners.com/"
+    ],
+    "h1_count": 0,
+    "root_empty": true,
+    "robots_header": null,
+    "type": "text/html; charset=utf-8"
+  },
+  {
+    "path": "/about",
+    "status": 200,
+    "title": [
+      "Alivio Search Partners | AI-Powered Recruitment for Healthcare & Technology"
+    ],
+    "canonical": [
+      "https://aliviosearchpartners.com/"
+    ],
+    "h1_count": 0,
+    "root_empty": true,
+    "robots_header": "index, follow",
+    "type": "text/html; charset=utf-8"
+  },
+  {
+    "path": "/blog",
+    "status": 200,
+    "title": [
+      "Alivio Search Partners | AI-Powered Recruitment for Healthcare & Technology"
+    ],
+    "canonical": [
+      "https://aliviosearchpartners.com/"
+    ],
+    "h1_count": 0,
+    "root_empty": true,
+    "robots_header": "index, follow",
+    "type": "text/html; charset=utf-8"
+  },
+  {
+    "path": "/login",
+    "status": 200,
+    "title": [
+      "Alivio Search Partners | AI-Powered Recruitment for Healthcare & Technology"
+    ],
+    "canonical": [
+      "https://aliviosearchpartners.com/"
+    ],
+    "h1_count": 0,
+    "root_empty": true,
+    "robots_header": null,
+    "type": "text/html; charset=utf-8"
+  },
+  {
+    "path": "/client/report/seo-audit-nonexistent",
+    "status": 200,
+    "title": [
+      "Alivio Search Partners | AI-Powered Recruitment for Healthcare & Technology"
+    ],
+    "canonical": [
+      "https://aliviosearchpartners.com/"
+    ],
+    "h1_count": 0,
+    "root_empty": true,
+    "robots_header": null,
+    "type": "text/html; charset=utf-8"
+  },
+  {
+    "path": "/seo-audit-nonexistent",
+    "status": 200,
+    "title": [
+      "Alivio Search Partners | AI-Powered Recruitment for Healthcare & Technology"
+    ],
+    "canonical": [
+      "https://aliviosearchpartners.com/"
+    ],
+    "h1_count": 0,
+    "root_empty": true,
+    "robots_header": null,
+    "type": "text/html; charset=utf-8"
+  },
+  {
+    "path": "/assets/seo-audit-missing.js",
+    "status": 200,
+    "title": [
+      "Alivio Search Partners | AI-Powered Recruitment for Healthcare & Technology"
+    ],
+    "canonical": [
+      "https://aliviosearchpartners.com/"
+    ],
+    "h1_count": 0,
+    "root_empty": true,
+    "robots_header": null,
+    "type": "text/html; charset=utf-8"
+  }
+]

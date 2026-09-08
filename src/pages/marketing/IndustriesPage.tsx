@@ -1,6 +1,5 @@
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
-import { useSeo } from '../../lib/seo';
 
 const industries = {
   healthcare: {
@@ -47,13 +46,7 @@ export default function IndustriesPage() {
   const { slug } = useParams<{ slug: string }>();
   const industry = slug && slug in industries ? industries[slug as keyof typeof industries] : null;
 
-  useSeo({
-    title: industry
-      ? `${industry.label} Recruiting | Alivio Search Partners`
-      : 'Industries | Alivio Search Partners',
-    description: industry?.intro.slice(0, 155) ?? 'Industry recruiting practices at Alivio Search Partners.',
-    canonicalUrl: `https://aliviosearchpartners.com/industries/${slug ?? ''}`,
-  });
+
 
   if (!industry) return <Navigate to="/" replace />;
 

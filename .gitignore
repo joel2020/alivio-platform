@@ -35,3 +35,5 @@ gcp-key.json
 playwright-report/
 test-results/
 .serena/
+
+.prerender/
