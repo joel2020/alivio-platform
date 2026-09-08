@@ -32,7 +32,7 @@ The services URL was confirmed indexed in URL Inspection. Google accepted its re
 
 ## Next decisions supported by this evidence
 
-1. Improve retrieval of current blog articles with a fresh rendering/unpublishing strategy. A real article, `/blog/passive-candidate-outreach-messages`, appears in the soft-404 examples. Do not freeze database content into a build without a removal strategy.
+1. Improve retrieval of current blog articles with a fresh rendering/unpublishing strategy. The historical URL `/blog/passive-candidate-outreach-messages` appears in the soft-404 examples; the later publication-inventory check found it absent, so it should remain a real 404. See `article-rendering.md` for the current published-article work. Do not freeze database content into a build without a removal strategy.
 2. Review the 20 canonical exclusions and 23 crawled-but-not-indexed URLs before changing canonical rules or consolidating articles.
 3. Confirm current Westchester coverage before restoring the location page that earned one click. A generic redirect would not preserve its location-specific purpose. Other former locations, services and job slugs need the same evidence check.
 4. Use the existing content drafts to improve the three commercial pages already receiving impressions. Verify business promises and named expertise before expanding claims; no fabricated case studies or mass publication.

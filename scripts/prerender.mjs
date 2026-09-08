@@ -34,6 +34,8 @@ try {
     await writeFile(file, document(path, render(path)));
   }
   await writeFile('dist/404.html', document('/404', render('/404')));
+  await build({ build: { ssr: 'src/entry-article.tsx', outDir: resolve('.server'), emptyOutDir: true, copyPublicDir: false } });
+  await writeFile('.server/article-template.html', template);
   console.log(`Prerendered ${routes.length} public pages and the 404 page.`);
 } finally {
   await rm(serverDir, { recursive: true, force: true });
