@@ -71,9 +71,9 @@ export default function BlogPage() {
   };
 
   return (
-    <div className="mkt-container" style={{ paddingTop: '48px', paddingBottom: '72px' }}>
+    <div className="mkt-container firm-insights" style={{ paddingTop: '48px', paddingBottom: '72px' }}>
       <header style={{ marginBottom: '28px' }}>
-        <p className="mkt-label" style={{ marginBottom: '10px' }}>ALIVIO BLOG</p>
+        <p className="mkt-label" style={{ marginBottom: '10px' }}>ALIVIO INSIGHTS</p>
         <h1 style={{ fontSize: '42px', marginBottom: '10px', letterSpacing: '-0.03em' }}>Healthcare Recruiting Insights for Hospitals and Health Systems</h1>
         <p style={{ color: 'var(--text-secondary)', maxWidth: '740px' }}>
           Practical guidance on nurse recruiting, clinical staffing operations, and AI workflows that help reduce vacancy days.
@@ -134,18 +134,16 @@ export default function BlogPage() {
             {posts.map((post) => (
               <article
                 key={post.id}
-                className="card card-hover"
+                className="card firm-blog-article"
                 style={{ padding: '0 0 20px', display: 'flex', flexDirection: 'column', gap: '10px', overflow: 'hidden' }}
               >
                 {post.cover_image_url ? (
                   <img src={post.cover_image_url} alt={post.title} style={{ width: '100%', height: '160px', objectFit: 'cover' }} loading="lazy" />
-                ) : (
-                  <div style={{ width: '100%', height: '160px', background: 'var(--bg-subtle)' }} aria-hidden="true" />
-                )}
-                <div style={{ padding: '0 20px' }}>
+                ) : null}
+                <div style={{ padding: '24px 0' }}>
                   <span className="badge-neutral">{post.category}</span>
                   <p style={{ margin: '8px 0 0', fontSize: '13px', color: 'var(--text-muted)' }}>{formatPublicationDate(post.published_date)} · {post.author_name} · {estimateReadingTime(post.content)}</p>
-                  <h2 style={{ margin: '10px 0', fontSize: '22px', lineHeight: 1.35 }}>{post.title}</h2>
+                  <h2 style={{ margin: '10px 0', fontSize: '22px', lineHeight: 1.35 }}><Link to={`/blog/${post.slug}`}>{post.title}</Link></h2>
                   <p style={{ margin: 0, color: 'var(--text-secondary)', flexGrow: 1 }}>{post.excerpt}</p>
                   <Link to={`/blog/${post.slug}`} style={{ color: 'var(--accent)', fontWeight: 600, textDecoration: 'none', display: 'inline-block', marginTop: '10px' }}>
                     Read more →

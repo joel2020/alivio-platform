@@ -5,7 +5,7 @@ const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
 export function getPageSeo(path: string, search = '') {
   const pathname = path === '/' ? '/' : path.replace(/\/+$/, '');
   const canonicalUrl = `${SITE_URL}${pathname}`;
-  let title = 'Alivio Search Partners | AI-Powered Recruitment for Healthcare & Technology';
+  let title = 'Healthcare & Technology Recruiting | Alivio Search Partners';
   let description = 'Recruit physicians, healthcare leaders, engineers, and operators with Alivio Search Partners. AI-enabled sourcing, recruiter-reviewed shortlists, and a search plan tailored to your roles.';
   let keywords = DEFAULT_KEYWORDS;
   let robots = 'index, follow';
@@ -44,7 +44,7 @@ export function getPageSeo(path: string, search = '') {
     description = 'Retained search, pipeline programs, and AI-powered recruiting for healthcare and technology teams.';
   } else if (pathname === '/about') {
     title = 'About | Alivio Search Partners';
-    description = 'The AI-enabled recruiting firm for healthcare and technology teams: an AI Candidate Engine paired with senior recruiters.';
+    description = 'Meet Alivio Search Partners and founder Joel Carias. Specialist healthcare and technology recruiting with human judgment, intelligent research, and clear search reporting.';
   } else if (pathname === '/careers') {
     title = 'Careers & Open Positions | Alivio Search Partners';
     description = 'Open clinical, technical, and recruiting positions with Alivio Search Partners and our clients. Apply online.';

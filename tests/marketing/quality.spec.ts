@@ -46,7 +46,7 @@ test('mobile menu traps focus, closes on Escape, and restores focus and scrollin
   await expect(panel).toBeVisible();
   await expect(page.getByRole('button', { name: 'Close navigation menu', exact: true })).toBeFocused();
   await page.keyboard.press('Shift+Tab');
-  await expect(panel.getByRole('link', { name: 'Sign In', exact: true })).toBeFocused();
+  await expect(panel.getByRole('link', { name: 'Client Sign In', exact: true })).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(panel.getByRole('button', { name: 'Close navigation menu', exact: true })).toBeFocused();
   await expect(page.locator('main')).toHaveAttribute('inert', '');
@@ -69,8 +69,8 @@ test('skip link and menu navigation work with a keyboard', async ({ page }) => {
   await page.keyboard.press('Enter');
   await expect(page.locator('#main-content')).toBeFocused();
   await page.getByRole('button', { name: 'Open menu', exact: true }).click();
-  await page.getByRole('dialog').getByRole('link', { name: 'Services', exact: true }).click();
-  await expect(page).toHaveURL(/\/services$/);
+  await page.getByRole('dialog').getByRole('link', { name: 'Our Approach', exact: true }).click();
+  await expect(page).toHaveURL(/\/#process$/);
   await expect(page.getByRole('dialog')).toHaveCount(0);
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 });
@@ -116,12 +116,10 @@ for (const path of ['/start', '/contact']) {
   });
 }
 
-test('sample dashboards are labeled and the FAQ opens without leaving the page', async ({ page }) => {
+test('the FAQ opens in place and product sample data remains labeled', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByText('Sample pipeline', { exact: true })).toBeVisible();
-  await expect(page.getByText(/All names, scores, and activity figures below are sample data/)).toBeVisible();
   await page.getByText('Am I buying recruiting services or software?', { exact: true }).click();
-  await expect(page.getByText(/Alivio provides recruiting services powered by/)).toBeVisible();
+  await expect(page.getByText(/Alivio is your recruiting partner/)).toBeVisible();
   await page.goto('/product');
   await expect(page.getByText('Sample data', { exact: true })).toBeVisible();
 });

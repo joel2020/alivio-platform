@@ -1,12 +1,13 @@
 import { Link, Navigate, useParams } from 'react-router-dom';
-import { ArrowRight, CheckCircle2 } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import { DiscussSearchLink, SearchEvidence, SearchInvitation } from '../../components/marketing/RecruitingFirmSections';
 
 const industries = {
   healthcare: {
     label: 'Healthcare',
     headline: 'Clinical and healthcare leadership search.',
     intro:
-      'Physicians, advanced practice providers, nurses, and the leaders who run clinical enterprises — recruited by a team that speaks licensure, acuity, and payer mix, and screened by AI before a human ever books an interview.',
+      'Physicians, advanced practice providers, nurses, and the leaders who run clinical enterprises. We define the clinical setting, role requirements, and market constraints before building a targeted search.',
     roles: [
       'Physicians & medical directors (primary care, behavioral health, specialty)',
       'Nurse practitioners & physician associates',
@@ -16,9 +17,9 @@ const industries = {
       'Revenue cycle, quality, and compliance leadership',
     ],
     proof: [
-      'Voice-screened candidates with licensure and availability verified before you meet them',
-      'Market maps that show the whole field, not a shortlist of the willing',
-      'Weekly pipeline reports with transcripts and scorecards attached',
+      'Role scorecards that account for clinical setting, licensure requirements, and availability',
+      'Targeted market research and recruiter-reviewed candidate profiles',
+      'Weekly search reporting, fit rationale, and questions to explore in interviews',
     ],
   },
   technology: {
@@ -51,56 +52,33 @@ export default function IndustriesPage() {
   if (!industry) return <Navigate to="/" replace />;
 
   return (
-    <div style={{ backgroundColor: '#FAFAFA' }}>
-      <section style={{ background: 'linear-gradient(180deg,#061636 0%,#04132F 100%)', padding: '120px 0 64px' }}>
+    <div className="firm-page">
+      <section className="firm-inner-hero">
         <div className="mkt-container">
-          <p className="mkt-label" style={{ color: '#8FB4FF' }}>{industry.label} practice</p>
-          <h1 style={{ color: '#fff', fontSize: 'clamp(32px,4.4vw,54px)', lineHeight: 1.05, letterSpacing: '-.03em', margin: '14px 0 16px', maxWidth: 800 }}>
-            {industry.headline}
-          </h1>
-          <p style={{ color: '#B9C6E4', fontSize: 17, lineHeight: 1.75, maxWidth: 680 }}>{industry.intro}</p>
-          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 26 }}>
-            <Link to="/start" className="mkt-btn-primary-lg">Request a Search Plan</Link>
-            <Link to="/services" className="mkt-btn-secondary" style={{ color: '#fff', borderColor: 'rgba(255,255,255,.3)' }}>All services</Link>
-          </div>
+          <p className="firm-eyebrow">{industry.label} practice</p>
+          <h1>{industry.headline}</h1>
+          <p className="firm-lead">{industry.intro}</p>
+          <DiscussSearchLink />
         </div>
       </section>
-
-      <section style={{ padding: '64px 0 80px' }}>
-        <div className="mkt-container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 20, alignItems: 'start' }}>
-          <div style={{ border: '1px solid #DCE4F2', borderRadius: 20, padding: 28, background: '#fff' }}>
-            <h2 style={{ fontSize: 22, marginBottom: 14 }}>Roles we fill</h2>
-            <ul style={{ display: 'grid', gap: 10, padding: 0, listStyle: 'none' }}>
-              {industry.roles.map((role) => (
-                <li key={role} style={{ display: 'flex', gap: 10, color: '#233657', lineHeight: 1.6, fontSize: 15 }}>
-                  <CheckCircle2 size={16} color="#1D55C6" style={{ flexShrink: 0, marginTop: 3 }} /> {role}
-                </li>
-              ))}
-            </ul>
+      <section className="firm-section">
+        <div className="mkt-container firm-split">
+          <div>
+            <p className="firm-eyebrow">Our focus</p><h2>Roles that make<br />a difference.</h2>
+            <ul className="firm-role-list">{industry.roles.map(role => <li key={role}>{role}</li>)}</ul>
+            <div className="firm-assessment"><h3>Define the criteria before the search.</h3><p>{slug === 'healthcare' ? 'We discuss specialty, care setting, leadership scope, location, and schedule alongside compensation and credential requirements. That brief guides the search and the questions your team takes into interviews.' : 'We discuss technical scope, company stage, product context, compensation, and working arrangements. Those criteria shape the target market and the evidence your team needs to assess fit.'}</p></div>
           </div>
-          <div style={{ display: 'grid', gap: 20 }}>
-            <div style={{ border: '1px solid #DCE4F2', borderRadius: 20, padding: 28, background: '#fff' }}>
-              <h2 style={{ fontSize: 22, marginBottom: 14 }}>How the engine helps</h2>
-              <ul style={{ display: 'grid', gap: 10, padding: 0, listStyle: 'none' }}>
-                {industry.proof.map((item) => (
-                  <li key={item} style={{ display: 'flex', gap: 10, color: '#233657', lineHeight: 1.6, fontSize: 15 }}>
-                    <CheckCircle2 size={16} color="#1D55C6" style={{ flexShrink: 0, marginTop: 3 }} /> {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div style={{ background: 'linear-gradient(135deg,#061636,#0A2352)', borderRadius: 20, padding: 28 }}>
-              <h2 style={{ color: '#fff', fontSize: 21, marginBottom: 10 }}>See the platform behind the practice.</h2>
-              <p style={{ color: '#B9C6E4', lineHeight: 1.7, marginBottom: 16, fontSize: 15 }}>
-                The AI Candidate Engine sources, scores, and screens for every {industry.label.toLowerCase()} search we run.
-              </p>
-              <Link to="/product" style={{ color: '#8FB4FF', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-                Explore the AI Candidate Engine <ArrowRight size={15} />
-              </Link>
-            </div>
-          </div>
+          <aside className="firm-deliverables" aria-labelledby="deliverables-heading">
+            <p className="firm-eyebrow">Your search deliverables</p><h2 id="deliverables-heading">Context for<br />every decision.</h2>
+            <ul className="firm-role-list">{industry.proof.map(item => <li key={item}>{item}</li>)}</ul>
+            <p>The AI Candidate Engine supports research, matching, and outreach. Recruiters review the shortlist and explain the fit and trade-offs.</p>
+            <Link to="/services" className="firm-text-link">Compare engagement models <ArrowRight size={16} aria-hidden="true" /></Link>
+            <Link to="/product" className="firm-text-link">Explore the AI Candidate Engine <ArrowRight size={16} aria-hidden="true" /></Link>
+          </aside>
         </div>
       </section>
+      {slug === 'healthcare' ? <SearchEvidence /> : <section className="firm-section firm-evidence"><div className="mkt-container firm-split"><div><p className="firm-eyebrow">Nearshore recruiting</p><h2>Extend the search<br />across Latin America.</h2></div><div><p className="firm-lead">Explore bilingual, technical, and operations talent for U.S. teams. Define language requirements, working hours, and role expectations as part of the search brief.</p><Link to="/nearshore-latam-recruiting" className="firm-text-link">Explore LATAM recruiting <ArrowRight size={16} aria-hidden="true" /></Link></div></div></section>}
+      <SearchInvitation />
     </div>
   );
 }
