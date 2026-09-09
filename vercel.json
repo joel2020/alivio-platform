@@ -130,13 +130,13 @@
       "destination": "/accessibility.html"
     },
     {
-      "source": "/(blog|careers|start|contact|developers|login|signup|client|onboarding|dashboard|pipeline|roles|outreach|agents|candidates|settings|calls|tasks|shortlists|crm|admin|og)(/.*)?",
+      "source": "/(blog|careers|start|contact|developers|login|signup|client|onboarding|dashboard|pipeline|roles|outreach|agents|candidates|applications|settings|calls|tasks|shortlists|crm|admin|og)(/.*)?",
       "destination": "/app.html"
     }
   ],
   "headers": [
     {
-      "source": "/(dashboard|crm|candidates|roles|settings|pipeline|calls|outreach|agents|onboarding|admin|client|tasks|shortlists|login|signup|developers|og)(/.*)?",
+      "source": "/(dashboard|crm|candidates|applications|roles|settings|pipeline|calls|outreach|agents|onboarding|admin|client|tasks|shortlists|login|signup|developers|og)(/.*)?",
       "headers": [
         {
           "key": "x-robots-tag",
