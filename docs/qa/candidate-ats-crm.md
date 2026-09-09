@@ -1,6 +1,6 @@
 # Candidate ATS/CRM release notes
 
-Implementation branch: `codex/candidate-ats-crm`. This phase implements and verifies the system; production activation awaits the designated ATS administrator login. The public website design is unchanged.
+Launched September 9, 2026. Administrator: joel@aliviosearchpartners.com. See [production launch evidence](2026-09-09-ats-launch.md). The sections below preserve the implementation and preview verification record. The public website design is unchanged.
 
 ## Included
 
@@ -14,7 +14,7 @@ Implementation branch: `codex/candidate-ats-crm`. This phase implements and veri
 
 1. Obtain the user's chosen administrator login and resolve its current auth UUID. Do not infer access from an organization admin role or grant every Alivio account global access.
 2. Review the branch preview and run the deployment-only article regression tests against it.
-3. Coordinate the frontend release with migration `20260909031210_candidate_ats_email_workflow.sql`. The migration intentionally removes the legacy anonymous direct-table submission path, so do not apply it early while the old form remains live.
+3. Coordinate the frontend release with migration `20260909051734_candidate_ats_email_workflow.sql`. The migration intentionally removes the legacy anonymous direct-table submission path, so do not apply it early while the old form remains live.
 4. Deploy the three functions using their custom authentication as documented in `supabase/functions/application-messages/README.md`; apply the migration, grant the chosen administrator, then activate the new frontend. Verify the live public application boundary and private inbox.
 5. Verify the existing Resend sender with a synthetic provider test recipient before enabling live delivery. Install the documented worker cron using the existing Vault scheduler secret. Do not test by contacting real candidates.
 6. Connect public jobs to internal recruiting roles in the administrator inbox. Unmapped applications remain administrator triage.
@@ -22,7 +22,7 @@ Implementation branch: `codex/candidate-ats-crm`. This phase implements and veri
 
 ## Known activation requirements
 
-Administrator login is pending user selection. Required existing email secret names and the scheduler Vault entry were verified present; this is not evidence of successful provider delivery. No production ATS migration, function deployment, candidate submission, or email was performed during implementation. Receiving-domain/webhook setup is pending, so scheduled follow-ups remain disabled.
+Administrator access, production deployment, and queued email processing are active. A synthetic live application and private resume download were verified; Resend accepted both test messages. Receiving-domain/webhook setup remains pending, so scheduled follow-ups remain disabled.
 
 Claude review could not run because the local CLI is not logged in. Independent Codex review found and rechecked tenant-access, safe retry, reply handling, and draft-preservation fixes; no remaining actionable findings in the scoped final review.
 
@@ -46,4 +46,4 @@ The original preview returned 404 at `/applications`. Added the route to the Ver
 
 All 12 selected deployed-browser tests passed: nine formerly skipped deployment-only checks, recruiter workflow with safe email retry, login requirement, and candidate multipart submission. Candidate/API writes were intercepted; no real application or email was created. All GitHub CI jobs passed for this commit. Typecheck and focused lint passed for the routing change.
 
-Production activation, administrator selection, sender verification, and incoming-reply setup remain pending.
+Production activation and provider acceptance were subsequently verified; incoming-reply setup remains pending.
