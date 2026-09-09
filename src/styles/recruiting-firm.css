@@ -1,0 +1,171 @@
+/* Public brand tokens are scoped to marketing; the recruiting app is unchanged. */
+.marketing-site {
+  --firm-ink: #102D35; --firm-ivory: #F7F5EF; --firm-paper: #FFFFFF;
+  --firm-teal: #16776D; --firm-mint: #BCE0D6; --firm-muted: #52666A; --firm-rule: #D1DAD5;
+  --firm-display: Georgia, 'Times New Roman', serif;
+  --accent: #16776D; --accent-hover: #105E56; --radius-btn: 3px;
+}
+.marketing-site .mkt-navigation { background: var(--firm-ivory); border-color: var(--firm-rule); }
+.marketing-site .mkt-desktop-nav { gap: 8px; }
+.marketing-site .mkt-desktop-nav > a { color: var(--firm-ink); border-radius: 2px; }
+.marketing-site .mkt-desktop-nav > a:hover, .marketing-site .mkt-desktop-nav > a[aria-current] { background: #E7EEE8; color: var(--firm-teal); }
+.marketing-site .mkt-desktop-nav > .mkt-nav-utility { font-size: 11px; margin-left: 12px; border-left: 1px solid var(--firm-rule); border-radius: 0; padding-left: 16px; color: var(--firm-muted); }
+.marketing-site .mkt-desktop-nav > .mkt-btn-primary { background: var(--firm-ink); color: white; box-shadow: none; }
+.marketing-site .mkt-desktop-nav > .mkt-btn-primary:hover { background: var(--firm-teal); }
+.marketing-site .mkt-mobile-panel { background: var(--firm-ivory); }
+.marketing-site .mkt-mobile-practices { border-block: 1px solid var(--firm-rule); padding-block: 12px; margin-block: 12px; }
+.marketing-site .mkt-mobile-practices > p { padding-inline: 12px; margin-bottom: 8px; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--firm-muted); }
+.marketing-site .mkt-btn-primary, .marketing-site .mkt-btn-primary-lg { box-shadow: none; }
+.firm-page { background: var(--firm-ivory); color: var(--firm-muted); }
+.firm-page h1, .firm-page h2, .firm-page h3 { color: var(--firm-ink); }
+.firm-page h1, .firm-page h2 { font-family: var(--firm-display); font-weight: 400; letter-spacing: -.045em; }
+.firm-page h2 { font-size: clamp(34px, 3.8vw, 49px); line-height: 1.12; margin: 0 0 24px; }
+.firm-page h3 { font-size: 22px; font-weight: 500; line-height: 1.35; letter-spacing: -.025em; }
+.firm-page p { line-height: 1.8; }
+.firm-page .firm-eyebrow, .firm-eyebrow { color: var(--firm-teal); font-family: Inter, sans-serif; font-size: 10px; font-weight: 600; letter-spacing: .17em; line-height: 1.7; text-transform: uppercase; margin: 0 0 24px; }
+.marketing-site .firm-section { padding: 92px 0; }
+.firm-hero { background: var(--firm-ink); color: #CBD8D7; padding: 74px 0 0; }
+.firm-hero > .mkt-container > .firm-eyebrow { color: var(--firm-mint); margin-bottom: 38px; }
+.firm-hero-grid { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 1fr); gap: 86px; align-items: end; }
+.firm-hero h1 { color: var(--firm-ivory); font-size: clamp(44px, 5.5vw, 74px); line-height: 1.08; max-width: 780px; margin: 0 0 28px; text-wrap: initial; }
+.firm-hero h1 em { color: var(--firm-mint); font-weight: 400; }
+.firm-hero-intro { max-width: 590px; font-size: 16px; margin: 0 0 32px; }
+.firm-hero-actions { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+.marketing-site .firm-button { display: inline-flex; align-items: center; justify-content: center; gap: 24px; min-height: 52px; padding: 14px 23px; background: var(--firm-teal); color: #fff; text-decoration: none; border: 1px solid transparent; border-radius: 2px; font-size: 13px; font-weight: 600; line-height: 1.5; transition: background-color .18s ease; }
+.marketing-site .firm-button:hover { background: #105E56; }
+.firm-text-link { display: inline-flex; gap: 14px; align-items: center; min-height: 44px; color: var(--firm-teal); font-size: 13px; font-weight: 600; text-decoration: none; line-height: 1.6; }
+.firm-text-link:hover { text-decoration: underline; text-underline-offset: 5px; }
+.firm-text-link svg, .firm-button svg { flex-shrink: 0; }
+.firm-hero .firm-text-link { color: var(--firm-ivory); }
+.firm-hero-aside { border-left: 1px solid #426066; padding-left: 28px; padding-bottom: 3px; }
+.firm-hero-aside .firm-eyebrow { color: var(--firm-mint); margin-bottom: 28px; }
+.firm-hero-aside > a { color: var(--firm-ivory); display: flex; align-items: center; justify-content: space-between; gap: 14px; border-bottom: 1px solid #426066; padding: 17px 0; font-family: var(--firm-display); font-size: 24px; text-decoration: none; }
+.firm-hero-aside a:hover { color: var(--firm-mint); }
+.firm-hero-geography { margin-top: 30px; font-size: 12px; }
+.firm-hero-geography a { display: inline-flex; align-items: center; gap: 8px; color: #CBD8D7; min-height: 32px; }
+.firm-hero-footnote { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; border-top: 1px solid #426066; margin-top: 60px; padding: 20px 0; font-size: 11px; color: #B5C8C6; letter-spacing: .025em; }
+.firm-section-heading { display: flex; justify-content: space-between; align-items: end; gap: 48px; margin-bottom: 32px; }
+.firm-section-heading > p { max-width: 340px; margin-bottom: 24px; font-size: 15px; }
+.firm-section-heading > .firm-text-link { margin-bottom: 24px; }
+.firm-practices { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); border-block: 1px solid var(--firm-rule); }
+.firm-practices article { padding: 38px 40px 38px 0; }
+.firm-practices article + article { padding-left: 40px; padding-right: 0; border-left: 1px solid var(--firm-rule); }
+.firm-practices .firm-eyebrow { margin-bottom: 16px; }
+.firm-practices h3 { font-family: var(--firm-display); font-weight: 400; font-size: 31px; margin-bottom: 16px; }
+.firm-practices p { font-size: 15px; }
+.firm-practices .firm-practice-roles { font-size: 11px; margin: 24px 0 16px; color: var(--firm-muted); }
+.firm-regional { display: flex; justify-content: space-between; align-items: center; gap: 32px; padding-top: 32px; }
+.firm-regional h3 { font-size: 18px; margin-bottom: 8px; }
+.firm-regional p { font-size: 14px; max-width: 610px; }
+.firm-regional > a { flex-shrink: 0; }
+.firm-evidence { background: #E8EEE8; }
+.firm-evidence-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.18fr); align-items: center; gap: 70px; }
+.firm-lead { font-size: 16px; margin-bottom: 22px; max-width: 480px; }
+.firm-search-brief { background: var(--firm-paper); border-top: 3px solid var(--firm-teal); padding: 30px 34px; box-shadow: 0 10px 35px #102D3508; }
+.firm-brief-heading { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.firm-brief-heading .firm-eyebrow { margin: 0; }
+.firm-brief-heading > span:last-child { font-size: 10px; color: var(--firm-muted); }
+.firm-search-brief h3 { font-family: var(--firm-display); font-size: 30px; font-weight: 400; margin-bottom: 20px; }
+.firm-brief-metrics { display: grid; grid-template-columns: 1fr 1fr; border-block: 1px solid var(--firm-rule); margin-bottom: 22px; padding: 20px 0; gap: 20px; }
+.firm-brief-metrics strong { display: block; font-family: var(--firm-display); font-size: 52px; font-weight: 400; line-height: 1.1; color: var(--firm-ink); }
+.firm-brief-metrics span { display: block; font-size: 11px; margin-top: 8px; }
+.firm-brief-details > div + div { margin-top: 16px; }
+.firm-brief-details dt { color: var(--firm-ink); font-size: 12px; font-weight: 600; margin-bottom: 3px; }
+.firm-brief-details dd { font-size: 13px; line-height: 1.75; margin: 0; }
+.firm-caption { font-size: 11px; color: var(--firm-muted); }
+.firm-search-brief > .firm-caption { border-top: 1px solid var(--firm-rule); padding-top: 18px; margin-top: 24px; }
+.firm-process { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 36px; }
+.firm-process li { padding-top: 22px; border-top: 1px solid var(--firm-rule); }
+.firm-step { display: block; font-size: 12px; color: var(--firm-teal); margin-bottom: 28px; }
+.firm-process h3 { font-size: 20px; margin-bottom: 14px; }
+.firm-process p { font-size: 14px; }
+.firm-technology-note { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; gap: 40px; margin-top: 48px; padding-top: 28px; border-top: 1px solid var(--firm-rule); }
+.firm-technology-note .firm-eyebrow { margin-bottom: 8px; }
+.firm-technology-note p { font-size: 13px; }
+.firm-founder { background: #EAE8DF; --firm-teal: #105E56; }
+.firm-founder-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: 100px; }
+.firm-founder-identity { border-left: 2px solid var(--firm-teal); padding-left: 30px; }
+.firm-founder-identity h2 { margin-bottom: 8px; }
+.firm-founder-role { font-size: 12px; }
+.firm-founder-focus { margin-top: 45px; }
+.firm-founder-focus > span { font-size: 10px; text-transform: uppercase; letter-spacing: .12em; color: var(--firm-teal); }
+.firm-founder-focus p { margin-top: 12px; font-family: var(--firm-display); font-size: 23px; line-height: 1.5; color: var(--firm-ink); }
+.firm-founder-story h3 { font-family: var(--firm-display); font-size: 33px; font-weight: 400; margin-bottom: 22px; }
+.firm-founder-story > p { font-size: 15px; margin-bottom: 18px; }
+.firm-reading { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 38px; }
+.firm-reading article { border-top: 1px solid var(--firm-rule); padding-top: 24px; display: flex; flex-direction: column; }
+.firm-reading h3 { font-family: var(--firm-display); font-size: 26px; font-weight: 400; margin-bottom: 24px; }
+.firm-reading h3 a { color: var(--firm-ink); text-decoration: none; }
+.firm-reading h3 a:hover { color: var(--firm-teal); }
+.firm-reading h3 svg { display: inline; margin-left: 12px; }
+.firm-reading .firm-caption { margin-top: auto; }
+.firm-faq { border-top: 1px solid var(--firm-rule); }
+.firm-faq-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: 80px; }
+.firm-faq details { border-bottom: 1px solid var(--firm-rule); }
+.firm-faq summary { padding: 20px 0; color: var(--firm-ink); font-size: 14px; font-weight: 500; cursor: pointer; }
+.firm-faq details p { font-size: 14px; padding-bottom: 22px; }
+.firm-invitation { background: var(--firm-ink); color: #CBD8D7; }
+.firm-invitation .firm-eyebrow { color: var(--firm-mint); }
+.firm-invitation h2 { color: var(--firm-ivory); }
+.firm-invitation-grid { display: grid; grid-template-columns: minmax(0,1.5fr) minmax(0,1fr); gap: 80px; align-items: center; }
+.firm-invitation p { max-width: 580px; font-size: 15px; }
+.firm-invitation-actions { display: flex; flex-direction: column; align-items: start; gap: 14px; }
+.firm-invitation .firm-text-link { color: var(--firm-mint); }
+.firm-candidate-link { font-size: 11px; color: #CBD8D7; text-underline-offset: 4px; padding-block: 8px; }
+.firm-inner-hero { background: var(--firm-ink); color: #CBD8D7; padding: 76px 0; }
+.firm-inner-hero .firm-eyebrow { color: var(--firm-mint); }
+.firm-inner-hero h1 { color: var(--firm-ivory); font-size: clamp(42px,5vw,66px); max-width: 850px; margin-bottom: 28px; line-height: 1.1; }
+.firm-inner-hero .firm-lead { max-width: 700px; }
+.firm-inner-hero .firm-text-link { color: var(--firm-mint); }
+.firm-values { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 36px 64px; }
+.firm-values article { padding-top: 24px; border-top: 1px solid var(--firm-rule); }
+.firm-values h3 { margin-bottom: 16px; }
+.firm-values p { font-size: 15px; }
+.firm-split { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 72px; }
+.firm-split h3 { margin: 28px 0 16px; }
+.firm-role-list { list-style: none; padding: 0; }
+.firm-role-list li { padding: 16px 0; border-bottom: 1px solid var(--firm-rule); font-size: 14px; }
+.firm-deliverables { background: #E8EEE8; padding: 34px; align-self: start; }
+.firm-deliverables h2 { font-size: 35px; }
+.firm-deliverables p { font-size: 14px; margin: 18px 0; }
+.firm-assessment { margin-top: 28px; }
+.marketing-site .firm-insights { padding-top: 64px !important; }
+.firm-insights > header h1 { font-family: var(--firm-display); font-size: clamp(34px,4vw,52px) !important; font-weight: 400; color: var(--firm-ink); max-width: 860px; }
+.firm-insights .card { border-radius: 3px; box-shadow: none; }
+.firm-insights .firm-blog-article { background: transparent; border: 0; border-top: 1px solid var(--firm-rule); }
+.firm-blog-article h2 { font-family: var(--firm-display); font-weight: 400; }
+.firm-blog-article h2 a { color: var(--firm-ink); text-decoration: none; }
+.firm-blog-article h2 a:hover { color: var(--firm-teal); }
+@media (max-width: 1000px) {
+  .firm-hero-grid { gap: 40px; grid-template-columns: minmax(0,2.3fr) minmax(0,1fr); }
+  .firm-evidence-grid, .firm-founder-grid, .firm-faq-grid, .firm-split { gap: 38px; }
+  .firm-invitation-grid { gap: 40px; }
+}
+@media (max-width: 767px) {
+  .marketing-site .firm-section { padding: 56px 0; }
+  .marketing-site .firm-hero, .marketing-site .firm-inner-hero { padding-top: 46px; }
+  .marketing-site .firm-hero { padding-bottom: 0; }
+  .firm-hero-grid, .firm-evidence-grid, .firm-founder-grid, .firm-faq-grid, .firm-invitation-grid, .firm-split { grid-template-columns: minmax(0,1fr); gap: 36px; }
+  .firm-hero h1 { max-width: 640px; }
+  .firm-hero > .mkt-container > .firm-eyebrow { margin-bottom: 28px; }
+  .firm-hero-aside { border-left: 0; padding-left: 0; }
+  .firm-hero-aside > .firm-eyebrow { display: none; }
+  .firm-hero-aside > a { font-size: 23px; }
+  .firm-hero-geography { margin-top: 20px; }
+  .firm-hero-footnote { margin-top: 30px; }
+  .firm-section-heading, .firm-regional { flex-direction: column; align-items: start; gap: 8px; }
+  .firm-section-heading { margin-bottom: 20px; }
+  .firm-section-heading > p { max-width: 100%; margin-bottom: 14px; }
+  .firm-section-heading > .firm-text-link { margin-bottom: 12px; }
+  .firm-practices, .firm-process, .firm-reading, .firm-values, .firm-technology-note { grid-template-columns: minmax(0,1fr); }
+  .firm-practices article, .firm-practices article + article { padding: 30px 0; border-left: none; }
+  .firm-practices article + article { border-top: 1px solid var(--firm-rule); }
+  .firm-technology-note { gap: 12px; }
+  .firm-search-brief { padding: 25px 22px; }
+  .firm-brief-metrics strong { font-size: 46px; }
+  .firm-founder-focus { margin-top: 26px; }
+  .firm-founder-story h3 { font-size: 30px; }
+  .firm-founder-identity { padding-left: 22px; }
+  .firm-deliverables { padding: 26px 22px; }
+  .firm-hero-actions { gap: 14px; }
+}

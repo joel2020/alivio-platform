@@ -5,14 +5,16 @@ import { AlivioLogo } from '../brand/AlivioLogo';
 import { CAL_COM_BOOKING_URL } from '../../lib/demoBooking';
 
 const navLinks = [
-  { label: 'Services', href: '/services' },
-  { label: 'Healthcare', href: '/industries/healthcare' },
-  { label: 'Technology', href: '/industries/technology' },
-  { label: 'AI Engine', href: '/product' },
-  { label: 'About', href: '/about' },
+  { label: 'Expertise', href: '/#search-specialties' },
+  { label: 'Our Approach', href: '/#process' },
+  { label: 'Our Firm', href: '/about' },
   { label: 'Insights', href: '/blog' },
   { label: 'Careers', href: '/careers' },
-  { label: 'Contact', href: '/contact' },
+];
+const practiceLinks = [
+  { label: 'Healthcare recruiting', href: '/industries/healthcare' },
+  { label: 'Technology recruiting', href: '/industries/technology' },
+  { label: 'LATAM recruiting', href: '/nearshore-latam-recruiting' },
 ];
 
 export default function MarketingNav() {
@@ -64,6 +66,10 @@ export default function MarketingNav() {
     };
   }, [mobileOpen]);
 
+  const isCurrent = (href: string) => href.includes('#')
+    ? `${location.pathname}${location.hash}` === href
+    : location.pathname === href;
+
   const closeMenu = () => { setMobileOpen(false); toggleRef.current?.focus(); };
 
   return (
@@ -75,12 +81,12 @@ export default function MarketingNav() {
           </Link>
           <div className="mkt-desktop-nav">
             {navLinks.map(link => (
-              <Link key={link.href} to={link.href} aria-current={location.pathname === link.href ? 'page' : undefined}>
+              <Link key={link.href} to={link.href} aria-current={isCurrent(link.href) ? 'page' : undefined}>
                 {link.label}
               </Link>
             ))}
-            <Link to="/login">Sign In</Link>
-            <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary">Book a Call</a>
+            <Link to="/login" className="mkt-nav-utility">Client Sign In</Link>
+            <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary">Discuss a Search</a>
           </div>
           <button ref={toggleRef} type="button" className="mkt-menu-toggle" onClick={() => setMobileOpen(open => !open)}
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'} aria-expanded={mobileOpen} aria-controls="mobile-navigation">
@@ -98,12 +104,16 @@ export default function MarketingNav() {
             </div>
             <nav aria-label="Mobile navigation">
               {navLinks.map(link => (
-                <Link key={link.href} to={link.href} onClick={() => setMobileOpen(false)} aria-current={location.pathname === link.href ? 'page' : undefined}>{link.label}</Link>
+                <Link key={link.href} to={link.href} onClick={() => setMobileOpen(false)} aria-current={isCurrent(link.href) ? 'page' : undefined}>{link.label}</Link>
               ))}
             </nav>
+            <div className="mkt-mobile-practices">
+              <p>Our practices & coverage</p>
+              <nav aria-label="Recruiting practices">{practiceLinks.map(link => <Link key={link.href} to={link.href} onClick={() => setMobileOpen(false)}>{link.label}</Link>)}</nav>
+            </div>
             <div className="mkt-mobile-actions">
-              <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary" onClick={closeMenu}>Book a Call</a>
-              <Link to="/login" className="mkt-btn-secondary" onClick={() => setMobileOpen(false)}>Sign In</Link>
+              <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary" onClick={closeMenu}>Discuss a Search</a>
+              <Link to="/login" className="mkt-btn-secondary" onClick={() => setMobileOpen(false)}>Client Sign In</Link>
             </div>
           </div>
         </>
