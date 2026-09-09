@@ -98,10 +98,9 @@ export default function AppLayout() {
         style={{ marginLeft: '0' }}
       >
         <div
-          className="md:block hidden"
-          style={{ marginLeft: 'var(--sidebar-width)' }}
+          className="md:ml-[var(--sidebar-width)]"
         >
-          <div style={{ height: '52px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '0 20px', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, zIndex: 30, backgroundColor: 'var(--bg-surface)' }}>
+          <div className="hidden md:flex" style={{ height: '52px', justifyContent: 'flex-end', alignItems: 'center', padding: '0 20px', borderBottom: '1px solid var(--border)', position: 'sticky', top: 0, zIndex: 30, backgroundColor: 'var(--bg-surface)' }}>
             <div style={{ position: 'relative' }}>
               <button
                 className="btn-ghost"
@@ -134,9 +133,6 @@ export default function AppLayout() {
               ) : null}
             </div>
           </div>
-          <Outlet />
-        </div>
-        <div className="md:hidden">
           <Outlet />
         </div>
       </main>

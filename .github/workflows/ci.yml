@@ -134,3 +134,21 @@ jobs:
           VITE_SUPABASE_URL: https://alivio-qa.invalid
           VITE_SUPABASE_ANON_KEY: local-browser-tests
       - run: npm run test:article-server
+
+  candidate-ats:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - name: Install isolated PostgreSQL test runtime
+        run: npm install --prefix "$RUNNER_TEMP/ats-sql" --no-save --package-lock=false @electric-sql/pglite@0.5.8
+      - name: Test application validation and delivery
+        run: npx tsx --test tests/server/application-workflow.test.ts
+      - name: Test migration, tenant policies, and durable messaging
+        run: node --test tests/server/application-database.test.mjs
+        env:
+          ATS_PGLITE_MODULE: ${{ runner.temp }}/ats-sql/node_modules/@electric-sql/pglite/dist/index.js

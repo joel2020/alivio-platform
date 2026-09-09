@@ -97,8 +97,9 @@ test('deployment returns real 404s and excludes private URLs from search', async
   for (const path of ['/seo-check-no-such-page', '/assets/seo-check-missing.js', '/fonts/seo-check-missing.woff2']) {
     expect((await request.get(path)).status(), path).toBe(404);
   }
-  for (const path of ['/login', '/signup', '/client/report/seo-check', '/client/shortlist/seo-check', '/shortlists', '/tasks']) {
+  for (const path of ['/login', '/signup', '/client/report/seo-check', '/client/shortlist/seo-check', '/shortlists', '/tasks', '/applications']) {
     const response = await request.get(path);
+    expect(response.status(), path).toBe(200);
     expect(response.headers()['x-robots-tag'], path).toContain('noindex');
     expect(response.headers()['cache-control'], path).toContain('no-store');
     expect(await response.text()).not.toContain('AI-POWERED SEARCH. HUMAN-DRIVEN RESULTS.');

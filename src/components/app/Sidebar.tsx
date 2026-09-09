@@ -53,6 +53,7 @@ export default function Sidebar() {
     { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { label: 'Pipeline', href: '/pipeline', icon: GitBranch },
     { label: 'Roles', href: '/roles', icon: Briefcase, badge: activeRoleCount },
+    ...(isPlatformAdmin || (user && user.role !== 'viewer') ? [{ label: 'Applications', href: '/applications', icon: Inbox }] : []),
     { label: 'Outreach', href: '/outreach', icon: Mail },
     { label: 'Calls', href: '/calls', icon: PhoneCall },
     { label: 'Tasks', href: '/tasks', icon: ClipboardList },
