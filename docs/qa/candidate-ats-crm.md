@@ -36,4 +36,14 @@ Claude review could not run because the local CLI is not logged in. Independent 
 - All three Edge Function Deno checks and focused backend lint passed. Independent reviewer cleared the final targeted fixes.
 - `.github/workflows/ci.yml` now runs ATS helpers and the real migration/policy tests with an isolated pinned PGlite runtime.
 
-No end-to-end production delivery claim is made. Deployment-only routing, live provider acceptance, and incoming-reply delivery must be verified during activation.
+No end-to-end production delivery claim is made. Live provider acceptance and incoming-reply delivery must be verified during activation. Deployment-only routing was verified on the protected preview as recorded below.
+
+## Deployed preview verification — 2026-09-09
+
+Commit `59344d95a913531dfcb09ce75373ed3463d5dcd7`, deployment `dpl_HooQupye7REsAQCKbCqHgi8CyYSU`, preview `https://alivio-platform-2xll1y8kf-joel-carias-projects.vercel.app`.
+
+The original preview returned 404 at `/applications`. Added the route to the Vercel SPA rewrite and private noindex/no-store headers. The regression failed on the original deployment and passed after the fix.
+
+All 12 selected deployed-browser tests passed: nine formerly skipped deployment-only checks, recruiter workflow with safe email retry, login requirement, and candidate multipart submission. Candidate/API writes were intercepted; no real application or email was created. All GitHub CI jobs passed for this commit. Typecheck and focused lint passed for the routing change.
+
+Production activation, administrator selection, sender verification, and incoming-reply setup remain pending.
