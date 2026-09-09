@@ -40,3 +40,7 @@ Backend unit tests: valid/invalid PDF and DOCX; missing/oversized input; wrong f
 Design approved by user. Implementation branch: `codex/candidate-ats-crm`. Implementation and scoped security review are complete. Final local regression verification passed: 83 browser tests, 21 server/database tests, typecheck and build; the nine deployment-only checks also passed on the protected preview, together with three ATS flow checks. Release is held for the user to identify the ATS administrator login; no allowlist account is inferred. Claude review was attempted but the local Claude CLI is not authenticated; an independent Codex reviewer reviewed the implementation and fixes. No production migrations, deployments, or candidate emails have been performed.
 
 - [ ] Activate: identify administrator login, coordinate schema/functions/frontend release, verify provider sender and delivery, and configure verified inbound replies before enabling scheduled follow-ups.
+
+## Production activation — September 9, 2026
+
+Activated for joel@aliviosearchpartners.com. PR137 merged and production routes, private storage, administrator access, synthetic intake, first-attempt provider acceptance, and Vault-backed cron were verified. See `docs/qa/2026-09-09-ats-launch.md`. Incoming-reply setup and scheduled follow-ups remain pending.
