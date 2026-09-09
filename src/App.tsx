@@ -44,6 +44,7 @@ const RoleNewPage = lazy(() => import('./pages/app/RoleNewPage'));
 const PipelinePage = lazy(() => import('./pages/app/PipelinePage'));
 const PipelineOverviewPage = lazy(() => import('./pages/app/PipelineOverviewPage'));
 const OutreachPage = lazy(() => import('./pages/app/OutreachPage'));
+const ApplicationsPage = lazy(() => import('./pages/app/ApplicationsPage'));
 const ShortlistsPage = lazy(() => import('./pages/app/ShortlistsPage'));
 const AgentsPage = lazy(() => import('./pages/app/AgentsPage'));
 const CandidatePage = lazy(() => import('./pages/app/CandidatePage'));
@@ -148,6 +149,7 @@ export default function App() {
               <Route path="/roles/:id/pipeline" element={<PipelinePage />} />
               <Route path="/roles/:id/settings" element={<RoleSettingsPage />} />
               <Route path="/outreach" element={<OutreachPage />} />
+              <Route path="/applications" element={<ApplicationsPage />} />
               <Route path="/agents" element={<AgentsPage />} />
               <Route path="/candidates/:id" element={<CandidatePage />} />
               <Route path="/settings" element={<SettingsPage />} />

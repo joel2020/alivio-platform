@@ -33,43 +33,8 @@ test.describe('career application', () => {
     await expect(page.getByLabel('First name', { exact: true })).toHaveAttribute('autocomplete', 'given-name');
   });
 
-  test('retains details through invalid responses and only confirms acceptance', async ({ page }) => {
-    let attempts = 0;
-    await page.route('**/functions/v1/public-intake', async route => {
-      attempts++;
-      expect(route.request().postDataJSON()).toMatchObject({ kind: 'application', job_id: job.id, first_name: 'Website', last_name: 'QA', email: 'qa@example.com', website: '' });
-      if (attempts === 1) await route.fulfill({ status: 200, contentType: 'text/html', body: '<html>Unavailable</html>' });
-      else if (attempts === 2) await route.fulfill({ status: 503, json: { error: 'private provider detail' } });
-      else await route.fulfill({ json: { ok: true } });
-    });
-    await page.getByLabel('First name', { exact: true }).fill('Website');
-    await page.getByLabel('Last name', { exact: true }).fill('QA');
-    await page.getByLabel('Email', { exact: true }).fill('qa@example.com');
-    await page.getByLabel('LinkedIn URL', { exact: true }).fill('https://www.linkedin.com/in/website-qa');
-    for (let attempt = 0; attempt < 2; attempt++) {
-      await page.getByRole('button', { name: 'Submit application' }).click();
-      await expect(page.getByRole('alert')).toContainText('We could not confirm');
-      await expect(page.getByRole('alert')).toBeFocused();
-      await expect(page.getByLabel('Email', { exact: true })).toHaveValue('qa@example.com');
-      await expect(page.getByText('private provider detail')).toHaveCount(0);
-    }
-    await page.getByRole('button', { name: 'Submit application' }).click();
-    await expect(page.getByRole('status')).toContainText('Application received');
-    await expect(page.getByRole('status')).toBeFocused();
-    expect(attempts).toBe(3);
-  });
+  // Submission validation, retries, and confirmations are covered by candidate-application.spec.ts.
 
-  test('asks for a profile before sending an application', async ({ page }) => {
-    let requests = 0;
-    await page.route('**/functions/v1/public-intake', route => { requests++; return route.fulfill({ json: { ok: true } }); });
-    await page.getByLabel('First name', { exact: true }).fill('Website');
-    await page.getByLabel('Last name', { exact: true }).fill('QA');
-    await page.getByLabel('Email', { exact: true }).fill('qa@example.com');
-    await page.getByRole('button', { name: 'Submit application' }).click();
-    await expect(page.getByRole('alert')).toContainText('LinkedIn URL or resume link');
-    await expect(page.getByRole('alert')).toBeFocused();
-    expect(requests).toBe(0);
-  });
 });
 
 test('blog search is labeled and a failed request can be retried', async ({ page }) => {

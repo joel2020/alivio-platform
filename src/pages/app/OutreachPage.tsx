@@ -101,7 +101,7 @@ export default function OutreachPage() {
   const [sequences, setSequences] = useState<OutreachSequence[]>([]);
   const [messagesBySequence, setMessagesBySequence] = useState<Record<string, OutreachMessage[]>>({});
 
-  const [statusFilter, setStatusFilter] = useState<'all' | SequenceStatus>('active');
+  const [statusFilter, setStatusFilter] = useState<'all' | SequenceStatus>('all');
   const [roleFilter, setRoleFilter] = useState('all');
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -267,7 +267,7 @@ export default function OutreachPage() {
           org_id: user.org_id,
           candidate_id: selectedCandidate.id,
           role_id: selectedRole.id,
-          status: 'active',
+          status: 'pending',
           current_step: 1,
         })
         .select('*')
@@ -282,8 +282,8 @@ export default function OutreachPage() {
         step_number: draft.stepNumber,
         channel: 'email',
         message_body: `Subject: ${draft.subject}\n\n${draft.body}`,
-        status: draft.stepNumber === 1 ? 'sent' : 'pending',
-        sent_at: draft.stepNumber === 1 ? new Date().toISOString() : null,
+        status: 'draft',
+        sent_at: null,
       }));
 
       const { error: messagesError } = await supabase.from('outreach_messages').insert(rows);
@@ -291,12 +291,12 @@ export default function OutreachPage() {
         throw new Error(messagesError.message);
       }
 
-      setToast('Outreach sequence started.');
+      setToast('Outreach drafts saved. No emails have been sent. Use Applications to send reviewed candidate messages.');
       closeModal();
       await loadData();
     } catch (error) {
       console.error(error);
-      setToast('Failed to start outreach sequence.');
+      setToast('Failed to save outreach drafts.');
     } finally {
       setSaving(false);
     }
@@ -326,7 +326,7 @@ export default function OutreachPage() {
           </div>
 
           <button onClick={openStartModal} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-white" style={{ backgroundColor: 'var(--accent)' }}>
-            <Plus size={14} /> Start Outreach
+            <Plus size={14} /> Create drafts
           </button>
         </div>
 
@@ -375,7 +375,7 @@ export default function OutreachPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
           <div className="w-full max-w-3xl rounded-xl border max-h-[90vh] overflow-auto" style={{ borderColor: 'var(--border)', backgroundColor: 'var(--bg-base)' }}>
             <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: 'var(--border)' }}>
-              <h2 className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>Start Outreach</h2>
+              <h2 className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>Create outreach drafts</h2>
               <button onClick={closeModal} className="rounded-md p-1" style={{ color: 'var(--text-secondary)' }}><X size={16} /></button>
             </div>
 
@@ -434,7 +434,7 @@ export default function OutreachPage() {
                 Cancel
               </button>
               <button onClick={confirmSequence} disabled={saving || drafts.length !== 3} className="rounded-lg px-3 py-2 text-sm font-semibold text-white disabled:opacity-70" style={{ backgroundColor: 'var(--accent)' }}>
-                {saving ? 'Saving...' : 'Confirm & Start'}
+                {saving ? 'Saving...' : 'Save drafts'}
               </button>
             </div>
           </div>
