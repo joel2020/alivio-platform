@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { DiscussSearchLink, FounderSection, SearchEvidence, SearchInvitation } from '../../components/marketing/RecruitingFirmSections';
+import PremiumRecruitingHero from '../../components/marketing/PremiumRecruitingHero';
+import { FounderSection, SearchEvidence, SearchInvitation } from '../../components/marketing/RecruitingFirmSections';
 
 const practices = [
   { label: 'Healthcare', headline: 'The people behind better care.', copy: 'Physician, clinical, and operational leadership search for health systems, physician groups, and healthcare organizations.', roles: 'Physicians · Nursing leadership · Clinical operations', href: '/industries/healthcare' },
@@ -20,25 +21,7 @@ const reading = [
 export default function HomePage() {
   return (
     <div className="firm-page">
-      <section className="firm-hero">
-        <div className="mkt-container">
-          <p className="firm-eyebrow">Alivio Search Partners · Specialist recruiting</p>
-          <div className="firm-hero-grid">
-            <div>
-              <h1>Specialist recruiting for <em>healthcare</em> and technology.</h1>
-              <p className="firm-hero-intro">Recruiter-led search for critical clinical, technical, and leadership roles. Intelligent research. Careful assessment. One accountable recruiting partner.</p>
-              <div className="firm-hero-actions"><DiscussSearchLink /><a href="#search-specialties" className="firm-text-link">Explore our expertise <ArrowRight size={16} aria-hidden="true" /></a></div>
-            </div>
-            <aside className="firm-hero-aside" aria-label="Our focus">
-              <p className="firm-eyebrow">Specialized by practice.<br />Connected by purpose.</p>
-              <Link to="/industries/healthcare">Healthcare <ArrowRight size={18} aria-hidden="true" /></Link>
-              <Link to="/industries/technology">Technology <ArrowRight size={18} aria-hidden="true" /></Link>
-              <p className="firm-hero-geography">United States<br /><Link to="/nearshore-latam-recruiting">Nearshore Latin America <ArrowRight size={14} aria-hidden="true" /></Link></p>
-            </aside>
-          </div>
-          <div className="firm-hero-footnote"><span>Human judgment at every shortlist.</span><span>Clarity at every stage of the search.</span></div>
-        </div>
-      </section>
+      <PremiumRecruitingHero />
 
       <section id="search-specialties" className="firm-section" aria-labelledby="practice-heading">
         <div className="mkt-container">

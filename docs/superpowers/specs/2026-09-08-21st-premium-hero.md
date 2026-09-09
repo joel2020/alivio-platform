@@ -1,0 +1,9 @@
+# 21st.dev premium hero refinement
+
+User requested a more premium site using the 21st.dev plugin. The configured MCP server was not exposed in this session and API_KEY_21ST was unavailable. The official 21st CLI had an expired saved session; renewed through the normal browser authorization for the existing alivio.studio.ops account. Catalog search and component retrieval now work through the same official service. No raw credential was printed or written to the repository.
+
+Retrieved Editorial Collage Hero, id 19074, by felipemenezes098: https://21st.dev/@felipemenezes098/components/hero-04. Adapt its two-column composition, layered media, restrained reveal and serif hierarchy to the existing React/Vite site. Use existing buttons, React Router and CSS rather than adding Motion, Radix, or balancing dependencies. Keep all copy available in initial HTML and respect reduced motion.
+
+The first redesign is already live and passed 85 production checks. This bounded follow-up changes the homepage opening only: ivory text column, original abstract stone/teal sculpture, overlapping search-standards panel, direct practice links, and a restrained entrance animation. Preserve the H1 wording, search evidence, founder section, navigation, all SEO URLs, and inquiry behavior. Generated art is decorative, not a company office or team photograph. Responsive JPEG derivatives are self-hosted with explicit dimensions, srcset, sizes and eager/high-priority loading.
+
+Implementation: create PremiumRecruitingHero.tsx and premium-hero.css; replace the previous hero block in HomePage.tsx; add local artwork and source attribution. Verify build/types/lint, existing navigation/mobile/axe checks, image loading, desktop/mobile screenshots, then Git/Vercel preview and release. Claude plan/diff review is attempted but the previously reported usage limit may remain active.

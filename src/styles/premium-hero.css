@@ -1,0 +1,90 @@
+/* 21st Editorial Collage Hero composition, adapted to Alivio's public brand. */
+.marketing-site .premium-hero {
+  padding: 64px 0 0;
+  background: var(--firm-ivory);
+  color: var(--firm-muted);
+  overflow: hidden;
+}
+.premium-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 68px;
+  align-items: center;
+}
+.premium-hero-copy { padding: 12px 0 24px; }
+.premium-hero-copy .firm-eyebrow { margin-bottom: 30px; }
+.premium-hero h1 {
+  color: var(--firm-ink);
+  font-size: clamp(42px, 4.7vw, 66px);
+  line-height: 1.06;
+  letter-spacing: -.048em;
+  margin: 0 0 26px;
+  text-wrap: initial;
+}
+.premium-hero h1 em { color: var(--firm-teal); font-weight: 400; }
+.premium-hero-intro { max-width: 430px; font-size: 16px; margin-bottom: 28px; }
+.premium-hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 24px; }
+.premium-hero-actions .firm-button { background: var(--firm-ink); }
+.premium-hero-actions .firm-button:hover { background: var(--firm-teal); }
+.premium-hero-signoff { margin-top: 30px; padding-left: 16px; border-left: 1px solid #90B5A8; font-size: 12px; }
+.premium-hero-media { position: relative; padding: 0 0 48px 24px; min-width: 0; }
+.premium-hero-media::before {
+  content: '';
+  position: absolute;
+  inset: -35px -65px 20px -75px;
+  background: radial-gradient(ellipse at center, #DFD9C980, transparent 70%);
+  pointer-events: none;
+}
+.premium-art { position: relative; aspect-ratio: 4 / 5; background: #C8C1B3; overflow: hidden; }
+.premium-art img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.premium-art-label { position: absolute; top: 21px; right: 22px; writing-mode: vertical-rl; font-size: 10px; color: #FFF; letter-spacing: .08em; padding: 10px 7px; background: #102D35; }
+.premium-standard {
+  position: absolute;
+  bottom: 0;
+  left: -25px;
+  width: min(285px, 75%);
+  background: #FFF;
+  padding: 26px 28px 18px;
+  border-top: 2px solid var(--firm-teal);
+  box-shadow: 0 12px 36px #102D3514;
+}
+.premium-standard .firm-eyebrow { font-size: 9px; margin-bottom: 12px; }
+.premium-standard-title { color: var(--firm-ink); font-family: var(--firm-display); font-size: 24px; letter-spacing: -.03em; line-height: 1.3 !important; margin-bottom: 14px; }
+.premium-standard ul { list-style: none; padding: 0; margin: 0 0 10px; font-size: 11px; }
+.premium-standard li { padding: 7px 0; border-bottom: 1px solid #E5EAE6; }
+.premium-standard .firm-text-link { font-size: 11px; }
+.premium-practice-links { display: grid; grid-template-columns: 1.2fr repeat(3,1fr); align-items: center; gap: 30px; margin-top: 58px; padding: 30px 0; border-block: 1px solid var(--firm-rule); }
+.premium-practice-links > p { margin: 0; font-size: 11px; color: var(--firm-ink); }
+.premium-practice-links > p > span { color: var(--firm-muted); }
+.premium-practice-links > a { min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding-left: 26px; border-left: 1px solid var(--firm-rule); font-family: var(--firm-display); font-size: 22px; color: var(--firm-ink); text-decoration: none; }
+.premium-practice-links > a:hover { color: var(--firm-teal); }
+.premium-practice-links svg { flex-shrink: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .premium-art { animation: premium-art-enter .8s cubic-bezier(.22,1,.36,1) both; }
+  .premium-standard { animation: premium-art-enter 1s cubic-bezier(.22,1,.36,1) both; }
+  @keyframes premium-art-enter { from { transform: translateY(14px); } to { transform: translateY(0); } }
+}
+@media (max-width: 1000px) {
+  .premium-hero-grid { gap: 30px; }
+  .premium-hero-media { padding-left: 18px; }
+  .premium-standard { left: 0; padding: 22px; }
+  .premium-practice-links { gap: 18px; }
+  .premium-practice-links > a { font-size: 19px; padding-left: 16px; }
+}
+@media (max-width: 767px) {
+  .marketing-site .premium-hero { padding: 42px 0 0; }
+  .premium-hero-grid { grid-template-columns: minmax(0,1fr); gap: 30px; }
+  .premium-hero h1 { max-width: 580px; font-size: clamp(42px, 7.5vw, 60px); }
+  .premium-hero-copy { padding: 0; }
+  .premium-hero-copy .firm-eyebrow { margin-bottom: 24px; }
+  .premium-hero-intro { max-width: 520px; }
+  .premium-hero-signoff { margin-top: 22px; }
+  .premium-hero-media { max-width: 490px; width: 100%; justify-self: center; padding: 0 0 42px 20px; }
+  .premium-art { aspect-ratio: 1 / 1; }
+  .premium-standard { left: 0; width: min(268px,78%); padding: 20px 22px 12px; }
+  .premium-standard-title { font-size: 22px; }
+  .premium-art-label { top: 14px; right: 14px; }
+  .premium-practice-links { grid-template-columns: minmax(0,1fr); gap: 0; margin-top: 38px; padding: 18px 0 0; border-bottom: 0; }
+  .premium-practice-links > p { margin-bottom: 16px; }
+  .premium-practice-links > a { border-left: 0; border-top: 1px solid var(--firm-rule); padding: 15px 0; font-size: 23px; }
+}
