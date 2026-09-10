@@ -4,9 +4,6 @@
     <loc>https://aliviosearchpartners.com/</loc>
   </url>
   <url>
-    <loc>https://aliviosearchpartners.com/product</loc>
-  </url>
-  <url>
     <loc>https://aliviosearchpartners.com/blog</loc>
   </url>
   <url>
@@ -221,14 +218,11 @@
   </url>
   <url><loc>https://aliviosearchpartners.com/services</loc></url>
   <url><loc>https://aliviosearchpartners.com/about</loc></url>
-  <url><loc>https://aliviosearchpartners.com/careers</loc></url>
+  <url><loc>https://aliviosearchpartners.com/jobs</loc></url>
   <url><loc>https://aliviosearchpartners.com/industries/healthcare</loc></url>
   <url><loc>https://aliviosearchpartners.com/industries/technology</loc></url>
   <url><loc>https://aliviosearchpartners.com/start</loc></url>
   <url><loc>https://aliviosearchpartners.com/accessibility</loc></url>
-  <url>
-    <loc>https://aliviosearchpartners.com/pricing</loc>
-  </url>
   <url>
     <loc>https://aliviosearchpartners.com/recruiting-agency-westchester</loc>
   </url>
@@ -238,4 +232,8 @@
   <url>
     <loc>https://aliviosearchpartners.com/recruiting-agency-medellin</loc>
   </url>
+  <url><loc>https://aliviosearchpartners.com/employers</loc></url>
+  <url><loc>https://aliviosearchpartners.com/candidates</loc></url>
+  <url><loc>https://aliviosearchpartners.com/industries</loc></url>
+  <url><loc>https://aliviosearchpartners.com/industries/executive</loc></url>
 </urlset>

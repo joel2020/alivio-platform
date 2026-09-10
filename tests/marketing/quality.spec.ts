@@ -24,7 +24,7 @@ test('homepage dark headings and secondary call to action remain readable', asyn
   expect(issues.violations.map(({ id, nodes }) => ({ id, elements: nodes.map(n => n.target) }))).toEqual([]);
 });
 
-for (const path of ['/nearshore-latam-recruiting', '/recruiting-agency-medellin', '/pricing', '/recruiting-agency-westchester', '/', '/services', '/about', '/product', '/start', '/contact', '/industries/healthcare', '/industries/technology']) {
+for (const path of ['/nearshore-latam-recruiting', '/recruiting-agency-medellin', '/pricing', '/recruiting-agency-westchester', '/', '/services', '/about', '/product', '/start', '/contact', '/industries/healthcare', '/industries/technology', '/employers', '/candidates', '/industries', '/industries/executive']) {
   test(`${path} is accessible and fits a small phone`, async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 800 });
     await page.goto(path);
@@ -46,7 +46,7 @@ test('mobile menu traps focus, closes on Escape, and restores focus and scrollin
   await expect(panel).toBeVisible();
   await expect(page.getByRole('button', { name: 'Close navigation menu', exact: true })).toBeFocused();
   await page.keyboard.press('Shift+Tab');
-  await expect(panel.getByRole('link', { name: 'Client Sign In', exact: true })).toBeFocused();
+  await expect(panel.getByRole('link', { name: 'View Open Jobs', exact: true })).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(panel.getByRole('button', { name: 'Close navigation menu', exact: true })).toBeFocused();
   await expect(page.locator('main')).toHaveAttribute('inert', '');
@@ -69,8 +69,8 @@ test('skip link and menu navigation work with a keyboard', async ({ page }) => {
   await page.keyboard.press('Enter');
   await expect(page.locator('#main-content')).toBeFocused();
   await page.getByRole('button', { name: 'Open menu', exact: true }).click();
-  await page.getByRole('dialog').getByRole('link', { name: 'Our Approach', exact: true }).click();
-  await expect(page).toHaveURL(/\/#process$/);
+  await page.getByRole('dialog').getByRole('link', { name: 'Employers', exact: true }).click();
+  await expect(page).toHaveURL(/\/employers$/);
   await expect(page.getByRole('dialog')).toHaveCount(0);
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 });
@@ -90,7 +90,7 @@ for (const path of ['/start', '/contact']) {
     });
     await page.getByLabel(/Full name/).fill('Website QA');
     await page.getByLabel(/Work email/).fill('qa@example.com');
-    await page.getByLabel(path === '/start' ? /Company/ : /Organization/).fill('QA organization');
+    await page.getByRole('textbox', { name: path === '/start' ? /Company/ : /Organization/ }).fill('QA organization');
     await page.getByLabel(/Roles to fill/).fill('A clinical leadership role in New York.');
     await page.getByRole('button', { name: path === '/start' ? 'Request my search plan' : 'Send Message' }).click();
     await expect(page.getByRole('alert')).toContainText('We could not confirm');
@@ -108,7 +108,7 @@ for (const path of ['/start', '/contact']) {
     await page.route('**/functions/v1/public-intake', route => route.fulfill({ status: 200, contentType: 'text/html', body: '<html>Unavailable</html>' }));
     await page.getByLabel(/Full name/).fill('Website QA');
     await page.getByLabel(/Work email/).fill('qa@example.com');
-    await page.getByLabel(path === '/start' ? /Company/ : /Organization/).fill('QA organization');
+    await page.getByRole('textbox', { name: path === '/start' ? /Company/ : /Organization/ }).fill('QA organization');
     await page.getByLabel(/Roles to fill/).fill('Clinical leader');
     await page.getByRole('button', { name: path === '/start' ? 'Request my search plan' : 'Send Message' }).click();
     await expect(page.getByRole('alert')).toBeVisible();
@@ -116,26 +116,25 @@ for (const path of ['/start', '/contact']) {
   });
 }
 
-test('the FAQ opens in place and product sample data remains labeled', async ({ page }) => {
-  await page.goto('/');
-  await page.getByText('Am I buying recruiting services or software?', { exact: true }).click();
-  await expect(page.getByText(/Alivio is your recruiting partner/)).toBeVisible();
+test('legacy product URLs lead to recruiting engagements', async ({ page }) => {
   await page.goto('/product');
-  await expect(page.getByText('Sample data', { exact: true })).toBeVisible();
+  await expect(page).toHaveURL(/\/employers$/);
+  await expect(page.getByRole('heading', { name: 'Retained Search', exact: true })).toBeVisible();
+  await expect(page.getByText('Sample data', { exact: true })).toHaveCount(0);
 });
 
 test('client navigation scrolls to the destination and honors section links', async ({ page }) => {
   await page.goto('/');
-  await page.locator('footer').getByRole('link', { name: 'About', exact: true }).click();
+  await page.locator('footer').getByRole('link', { name: 'About Us', exact: true }).click();
   await expect(page).toHaveURL(/\/about$/);
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
-  await page.locator('footer').getByRole('link', { name: 'Responsible AI', exact: true }).click();
-  await expect(page.locator('#responsible-ai')).toBeInViewport();
+  await page.getByRole('link', { name: /Meet our founder/ }).click();
+  await expect(page.locator('#leadership')).toBeInViewport();
 });
 
 test('a failed route download gives a usable recovery screen', async ({ page }) => {
-  await page.route(/ProductPage[^/]*\.(js|tsx)(\?|$)/, route => route.abort());
-  await page.goto('/product');
+  await page.route(/CandidatesPage[^/]*\.(js|tsx)(\?|$)/, route => route.abort());
+  await page.goto('/candidates');
   await expect(page.getByRole('heading', { name: 'We couldn’t load this page.' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Reload page' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Return to homepage' })).toHaveAttribute('href', '/');

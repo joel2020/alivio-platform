@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import '../../styles/recruiting-firm.css';
+import '../../styles/recruiting-redesign.css';
 import MarketingRouteContent from './MarketingRouteContent';
 import MarketingNav from './MarketingNav';
 import MarketingFooter from './MarketingFooter';

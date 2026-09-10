@@ -8,7 +8,12 @@ export function preloadMarketingRoute(path: string): Promise<unknown> {
     case '/recruiting-agency-westchester': return import('../pages/marketing/WestchesterPage');
     case '/services': return import('../pages/marketing/ServicesPage');
     case '/about': return import('../pages/marketing/AboutPage');
-    case '/product': return import('../pages/marketing/ProductPage');
+    case '/employers': return import('../pages/marketing/EmployersPage');
+    case '/candidates': return import('../pages/marketing/CandidatesPage');
+    case '/contact': return import('../pages/marketing/ContactPage');
+    case '/jobs': return import('../pages/marketing/CareersPage');
+    case '/industries':
+    case '/industries/executive':
     case '/industries/healthcare':
     case '/industries/technology': return import('../pages/marketing/IndustriesPage');
     case '/privacy': return import('../pages/marketing/PrivacyPage');

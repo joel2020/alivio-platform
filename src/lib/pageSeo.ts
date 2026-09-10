@@ -1,12 +1,12 @@
 const SITE_URL = 'https://aliviosearchpartners.com';
-const DEFAULT_KEYWORDS = 'ai recruitment, healthcare recruiting, healthcare staffing, nurse recruitment, clinician sourcing, tech leadership hiring, AI talent engine';
+const DEFAULT_KEYWORDS = 'specialized recruiting firm, healthcare recruiting, technology recruiting, executive search, professional search, contingency search, retained search, direct sourcing, candidate vetting';
 const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
 
 export function getPageSeo(path: string, search = '') {
   const pathname = path === '/' ? '/' : path.replace(/\/+$/, '');
   const canonicalUrl = `${SITE_URL}${pathname}`;
   let title = 'Healthcare & Technology Recruiting | Alivio Search Partners';
-  let description = 'Recruit physicians, healthcare leaders, engineers, and operators with Alivio Search Partners. AI-enabled sourcing, recruiter-reviewed shortlists, and a search plan tailored to your roles.';
+  let description = 'Recruit physicians, healthcare leaders, engineers, and operators with Alivio Search Partners. Direct sourcing, hands-on candidate vetting, and a search plan tailored to your roles.';
   let keywords = DEFAULT_KEYWORDS;
   let robots = 'index, follow';
   if (pathname === '/nearshore-latam-recruiting') {
@@ -22,31 +22,31 @@ export function getPageSeo(path: string, search = '') {
     title = 'Westchester Recruiting Agency | Alivio Search Partners';
     description = 'Healthcare and technology recruiting for Westchester employers. Explore supported roles, local and regional search planning, and recruiter-reviewed shortlists.';
   } else if (pathname === '/product') {
-    title = 'Alivio Talent Engine | AI-Powered Hiring System';
-    description = 'Explore the Alivio Talent Engine: AI agents for autonomous sourcing, fit scoring, outreach orchestration, and human-validated shortlist delivery.';
+    title = 'Recruiting Services | Alivio Search Partners';
+    description = 'Specialized recruiting, direct sourcing, candidate vetting, and professional search for healthcare and technology teams.';
   } else if (pathname === '/developers') {
     title = 'Healthcare Recruiting API & Integrations | Alivio Search Partners';
     description = 'Connect Alivio Search Partners to your ATS and healthcare recruiting stack with API-first workflows and automation.';
     robots = 'noindex, nofollow';
   } else if (pathname === '/contact') {
     title = 'Contact Alivio | Healthcare & Technology Recruiting';
-    description = 'Discuss a healthcare or technology search with Alivio Search Partners. Tell us about your hiring needs or book a hiring strategy call.';
+    description = 'Book a recruiting call with Alivio Search Partners. Discuss your open roles, market, timeline, and the recruiting support that fits your hiring needs.';
   } else if (pathname === '/blog') {
     title = 'Healthcare Recruiting Insights | Alivio Search Partners Blog';
-    description = 'Expert insights on healthcare recruiting, nursing shortage solutions, and AI-powered clinical staffing strategies.';
+    description = 'Insights on healthcare and technology recruiting, candidate experience, and talent acquisition.';
   } else if (pathname.startsWith('/blog/')) {
     title = 'Healthcare Recruiting Insights | Alivio Search Partners Blog';
     description = 'Explore expert content on healthcare recruiting, staffing operations, and talent acquisition performance.';
     keywords = `${DEFAULT_KEYWORDS}, healthcare recruiting blog, nurse hiring strategies`;
     if (search) robots = 'noindex, follow';
-  } else if (pathname === '/services') {
+  } else if (pathname === '/services' || pathname === '/employers') {
     title = 'Recruitment Services | Alivio Search Partners';
-    description = 'Retained search, pipeline programs, and AI-powered recruiting for healthcare and technology teams.';
+    description = 'Contingency, retained, executive, and contract recruiting for healthcare and technology teams. Targeted sourcing, candidate vetting, and hands-on search management.';
   } else if (pathname === '/about') {
     title = 'About | Alivio Search Partners';
     description = 'Meet Alivio Search Partners and founder Joel Carias. Specialist healthcare and technology recruiting with human judgment, intelligent research, and clear search reporting.';
-  } else if (pathname === '/careers') {
-    title = 'Careers & Open Positions | Alivio Search Partners';
+  } else if (pathname === '/careers' || pathname === '/jobs') {
+    title = 'Open Jobs | Alivio Search Partners';
     description = 'Open clinical, technical, and recruiting positions with Alivio Search Partners and our clients. Apply online.';
   } else if (pathname.startsWith('/careers/')) {
     title = 'Open Position | Alivio Search Partners';
@@ -62,7 +62,7 @@ export function getPageSeo(path: string, search = '') {
     description = 'Our commitment to an accessible website and platform, and how to report an accessibility issue.';
   } else if (pathname === '/privacy') {
     title = 'Privacy Policy | Alivio Search Partners';
-    description = 'Review the Alivio Search Partners privacy policy for our healthcare recruiting platform.';
+    description = 'Review the Alivio Search Partners privacy policy for our recruiting services.';
   } else if (pathname === '/terms') {
     title = 'Terms of Service | Alivio Search Partners';
     description = 'Read the terms of service for Alivio Search Partners healthcare recruiting solutions.';
@@ -78,7 +78,7 @@ export function getPageSeo(path: string, search = '') {
     title = 'Client Candidate Shortlist | Alivio Search Partners';
     description = 'Review AI-ranked candidate shortlists prepared by Alivio Search Partners.';
     robots = 'noindex, nofollow';
-  } else if (pathname.startsWith('/onboarding') || pathname.startsWith('/dashboard') || pathname.startsWith('/crm') || pathname.startsWith('/pipeline') || pathname.startsWith('/roles') || pathname.startsWith('/outreach') || pathname.startsWith('/calls') || pathname.startsWith('/agents') || pathname.startsWith('/candidates') || pathname.startsWith('/settings') || pathname.startsWith('/admin') || pathname.startsWith('/tasks') || pathname.startsWith('/shortlists')) {
+  } else if (pathname.startsWith('/onboarding') || pathname.startsWith('/dashboard') || pathname.startsWith('/crm') || pathname.startsWith('/pipeline') || pathname.startsWith('/roles') || pathname.startsWith('/outreach') || pathname.startsWith('/calls') || pathname.startsWith('/agents') || pathname.startsWith('/candidates/') || pathname.startsWith('/settings') || pathname.startsWith('/admin') || pathname.startsWith('/tasks') || pathname.startsWith('/shortlists')) {
     title = 'Alivio Platform | Healthcare Recruiting Workspace';
     description = 'Manage healthcare recruiting campaigns, role requirements, and clinician pipelines inside the Alivio platform.';
     robots = 'noindex, nofollow';
@@ -87,14 +87,24 @@ export function getPageSeo(path: string, search = '') {
     description = 'Open Graph image generator for Alivio Search Partners.';
     robots = 'noindex, nofollow';
   }
-  if (pathname === '/industries/healthcare') {
+  if (pathname === '/candidates') {
+    title = 'For Candidates | Alivio Search Partners';
+    description = 'Explore healthcare, technology, and professional roles that match your experience and goals. Confidential career conversations and guidance through interviews and offers.';
+    robots = 'index, follow';
+  } else if (pathname === '/industries') {
+    title = 'Recruiting Industries | Alivio Search Partners';
+    description = 'Specialized healthcare, technology, executive, and professional search. Explore the industries and roles we recruit for across the U.S.';
+  } else if (pathname === '/industries/executive') {
+    title = 'Executive & Leadership Search | Alivio Search Partners';
+    description = 'Focused executive and professional search for leadership, operations, and sales roles. Direct sourcing and candidate vetting for long-term fit.';
+  } else if (pathname === '/industries/healthcare') {
     title = 'Physician & Healthcare Leadership Recruiting | Alivio';
     description = 'Recruit physicians, medical directors, nursing leaders, and healthcare operators with Alivio. Explore supported roles and our recruiter-led search process.';
   } else if (pathname === '/industries/technology') {
     title = 'Technology & Healthtech Recruiting | Alivio Search Partners';
     description = 'Recruit software engineers, AI and data specialists, product leaders, and CTOs with Alivio. Recruiting for technology and healthtech teams.';
   }
-  const publicPaths = ['/nearshore-latam-recruiting', '/recruiting-agency-medellin', '/pricing', '/recruiting-agency-westchester', '/', '/product', '/contact', '/blog', '/services', '/about', '/careers', '/industries/healthcare', '/industries/technology', '/start', '/accessibility', '/privacy', '/terms'];
+  const publicPaths = ['/nearshore-latam-recruiting', '/recruiting-agency-medellin', '/pricing', '/recruiting-agency-westchester', '/', '/product', '/contact', '/blog', '/services', '/employers', '/candidates', '/industries', '/industries/executive', '/jobs', '/about', '/careers', '/industries/healthcare', '/industries/technology', '/start', '/accessibility', '/privacy', '/terms'];
   const publicDetail = /^\/blog\/[^/]+$/.test(pathname) || /^\/careers\/\d+$/.test(pathname);
   if (!publicPaths.includes(pathname) && !publicDetail && robots === 'index, follow') {
     title = 'Page Not Found | Alivio Search Partners';
@@ -102,7 +112,6 @@ export function getPageSeo(path: string, search = '') {
     robots = 'noindex, follow';
   }
   const structuredData: Record<string, unknown>[] = [{ '@context': 'https://schema.org', '@type': 'WebPage', name: title, description, url: canonicalUrl, inLanguage: 'en-US' }];
-  if (['/nearshore-latam-recruiting', '/recruiting-agency-medellin', '/', '/product', '/pricing', '/recruiting-agency-westchester'].includes(pathname)) structuredData.push({ '@context': 'https://schema.org', '@type': 'Organization', '@id': `${SITE_URL}/#organization`, name: 'Alivio Search Partners', url: SITE_URL, description: 'AI-powered recruitment infrastructure for healthcare and tech organizations', contactPoint: { '@type': 'ContactPoint', email: 'hello@aliviosearchpartners.com', contactType: 'sales' } });
-  if (pathname === '/product') structuredData.push({ '@context': 'https://schema.org', '@type': 'SoftwareApplication', name: 'Alivio AI Candidate Engine', applicationCategory: 'BusinessApplication', description: 'AI-powered hiring system for healthcare and tech recruiting teams' });
+  if (['/nearshore-latam-recruiting', '/recruiting-agency-medellin', '/', '/product', '/pricing', '/recruiting-agency-westchester'].includes(pathname)) structuredData.push({ '@context': 'https://schema.org', '@type': 'Organization', '@id': `${SITE_URL}/#organization`, name: 'Alivio Search Partners', url: SITE_URL, description: 'Specialized recruiting firm for healthcare, technology, and professional search', contactPoint: { '@type': 'ContactPoint', email: 'hello@aliviosearchpartners.com', contactType: 'sales' } });
   return { title, description, keywords, ogTitle: title, ogDescription: description, canonicalUrl, ogImage: DEFAULT_OG_IMAGE, ogType: pathname.startsWith('/blog/') ? 'article' : 'website', robots, structuredData };
 }
