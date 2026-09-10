@@ -30,6 +30,7 @@ test('ATS migration, transactional intake, RLS, mapping, message lifecycle and o
       create policy self_update on public.users for all to authenticated using(auth.uid()=id) with check(auth.uid()=id);
     `);
     await db.exec(await readFile(new URL('../../supabase/migrations/20260909051734_candidate_ats_email_workflow.sql', import.meta.url), 'utf8'));
+    await db.exec(await readFile(new URL('../../supabase/migrations/20260910230212_historical_resume_import.sql', import.meta.url), 'utf8'));
     await db.exec(`grant all on all tables in schema public,storage to service_role; grant all on all sequences in schema public to service_role;
       insert into auth.users values('${uid(1)}'),('${uid(2)}'),('${uid(3)}'),('${uid(4)}');
       insert into organizations(id) values('${uid(10)}'),('${uid(20)}');

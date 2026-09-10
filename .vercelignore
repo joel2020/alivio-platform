@@ -1,0 +1,11 @@
+node_modules
+dist
+.prerender
+.server
+.serena
+.private
+test-results
+playwright-report
+.env*
+!.env.example
+supabase/.temp
