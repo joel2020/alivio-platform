@@ -1,14 +1,14 @@
 /* Public brand tokens are scoped to marketing; the recruiting app is unchanged. */
 .marketing-site {
-  --firm-ink: #102D35; --firm-ivory: #F7F5EF; --firm-paper: #FFFFFF;
-  --firm-teal: #16776D; --firm-mint: #BCE0D6; --firm-muted: #52666A; --firm-rule: #D1DAD5;
-  --firm-display: Georgia, 'Times New Roman', serif;
-  --accent: #16776D; --accent-hover: #105E56; --radius-btn: 3px;
+  --firm-ink: #0A2C4C; --firm-ivory: #FFFFFF; --firm-paper: #FFFFFF;
+  --firm-teal: #0A2C4C; --firm-mint: #A5D1C7; --firm-muted: #526273; --firm-rule: #DAE2E8;
+  --firm-display: Inter, Arial, sans-serif;
+  --accent: #0A2C4C; --accent-hover: #105E56; --radius-btn: 3px;
 }
 .marketing-site .mkt-navigation { background: var(--firm-ivory); border-color: var(--firm-rule); }
 .marketing-site .mkt-desktop-nav { gap: 8px; }
 .marketing-site .mkt-desktop-nav > a { color: var(--firm-ink); border-radius: 2px; }
-.marketing-site .mkt-desktop-nav > a:hover, .marketing-site .mkt-desktop-nav > a[aria-current] { background: #E7EEE8; color: var(--firm-teal); }
+.marketing-site .mkt-desktop-nav > a:hover, .marketing-site .mkt-desktop-nav > a[aria-current] { background: #F6F8FA; color: var(--firm-teal); }
 .marketing-site .mkt-desktop-nav > .mkt-nav-utility { font-size: 11px; margin-left: 12px; border-left: 1px solid var(--firm-rule); border-radius: 0; padding-left: 16px; color: var(--firm-muted); }
 .marketing-site .mkt-desktop-nav > .mkt-btn-primary { background: var(--firm-ink); color: white; box-shadow: none; }
 .marketing-site .mkt-desktop-nav > .mkt-btn-primary:hover { background: var(--firm-teal); }
@@ -18,7 +18,7 @@
 .marketing-site .mkt-btn-primary, .marketing-site .mkt-btn-primary-lg { box-shadow: none; }
 .firm-page { background: var(--firm-ivory); color: var(--firm-muted); }
 .firm-page h1, .firm-page h2, .firm-page h3 { color: var(--firm-ink); }
-.firm-page h1, .firm-page h2 { font-family: var(--firm-display); font-weight: 400; letter-spacing: -.045em; }
+.firm-page h1, .firm-page h2 { font-family: var(--firm-display); font-weight: 600; letter-spacing: -.045em; }
 .firm-page h2 { font-size: clamp(34px, 3.8vw, 49px); line-height: 1.12; margin: 0 0 24px; }
 .firm-page h3 { font-size: 22px; font-weight: 500; line-height: 1.35; letter-spacing: -.025em; }
 .firm-page p { line-height: 1.8; }
@@ -58,10 +58,10 @@
 .firm-regional h3 { font-size: 18px; margin-bottom: 8px; }
 .firm-regional p { font-size: 14px; max-width: 610px; }
 .firm-regional > a { flex-shrink: 0; }
-.firm-evidence { background: #E8EEE8; }
+.firm-evidence { background: #F6F8FA; }
 .firm-evidence-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.18fr); align-items: center; gap: 70px; }
 .firm-lead { font-size: 16px; margin-bottom: 22px; max-width: 480px; }
-.firm-search-brief { background: var(--firm-paper); border-top: 3px solid var(--firm-teal); padding: 30px 34px; box-shadow: 0 10px 35px #102D3508; }
+.firm-search-brief { background: var(--firm-paper); border-top: 3px solid var(--firm-teal); padding: 30px 34px; box-shadow: 0 10px 35px #0A2C4C08; }
 .firm-brief-heading { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
 .firm-brief-heading .firm-eyebrow { margin: 0; }
 .firm-brief-heading > span:last-child { font-size: 10px; color: var(--firm-muted); }
@@ -125,7 +125,7 @@
 .firm-split h3 { margin: 28px 0 16px; }
 .firm-role-list { list-style: none; padding: 0; }
 .firm-role-list li { padding: 16px 0; border-bottom: 1px solid var(--firm-rule); font-size: 14px; }
-.firm-deliverables { background: #E8EEE8; padding: 34px; align-self: start; }
+.firm-deliverables { background: #F6F8FA; padding: 34px; align-self: start; }
 .firm-deliverables h2 { font-size: 35px; }
 .firm-deliverables p { font-size: 14px; margin: 18px 0; }
 .firm-assessment { margin-top: 28px; }

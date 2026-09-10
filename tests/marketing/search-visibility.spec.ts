@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const paths = ['/nearshore-latam-recruiting', '/recruiting-agency-medellin', '/pricing', '/recruiting-agency-westchester', '/', '/services', '/about', '/product', '/industries/healthcare', '/industries/technology', '/privacy', '/terms', '/accessibility'];
+const paths = ['/nearshore-latam-recruiting', '/recruiting-agency-medellin', '/recruiting-agency-westchester', '/', '/services', '/about', '/employers', '/candidates', '/industries', '/industries/executive', '/contact', '/jobs', '/industries/healthcare', '/industries/technology', '/privacy', '/terms', '/accessibility'];
 
 test('a slow route chunk preserves server content and hydrates without errors', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
@@ -10,7 +10,7 @@ test('a slow route chunk preserves server content and hydrates without errors', 
   let release!: () => void;
   const delayed = new Promise<void>(resolve => { release = resolve; });
   let requested = false;
-  await page.route(/ServicesPage[^/]*\.js$/, async route => { requested = true; await delayed; await route.continue(); });
+  await page.route(/(?:Employers|Services)Page[^/]*\.js$/, async route => { requested = true; await delayed; await route.continue(); });
   await page.goto('/services', { waitUntil: 'domcontentloaded' });
   await expect.poll(() => requested).toBe(true);
   await page.waitForTimeout(1500);
@@ -54,7 +54,7 @@ for (const path of paths) {
 test('industry metadata remains specific after client navigation', async ({ page }) => {
   await page.goto('/industries/healthcare');
   await expect(page).toHaveTitle('Physician & Healthcare Leadership Recruiting | Alivio');
-  await page.locator('footer').getByRole('link', { name: 'Technology Practice', exact: true }).click();
+  await page.locator('footer').getByRole('link', { name: 'Technology Recruiting', exact: true }).click();
   await expect(page).toHaveTitle('Technology & Healthtech Recruiting | Alivio Search Partners');
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://aliviosearchpartners.com/industries/technology');
 });
@@ -76,7 +76,7 @@ test('legacy search URLs reach their relevant replacement without reviving retir
   test.skip(!process.env.PLAYWRIGHT_DEPLOYMENT, 'Permanent redirects are checked on Vercel.');
   const replacements = [
     ['/privacy-policy', '/privacy'], ['/terms-of-service', '/terms'],
-    ['/jobs', '/careers'], ['/apply', '/careers'], ['/schedule', '/contact'],
+    ['/careers', '/jobs'], ['/apply', '/jobs'], ['/product', '/employers'], ['/platform', '/employers'], ['/pricing', '/employers#engagement-models'], ['/candidate', '/candidates'], ['/schedule', '/contact'],
     ['/services/retained-search', '/services#engagement-models'],
     ['/services/recruitment-as-a-service', '/services#engagement-models'],
   ];
@@ -97,7 +97,7 @@ test('deployment returns real 404s and excludes private URLs from search', async
   for (const path of ['/seo-check-no-such-page', '/assets/seo-check-missing.js', '/fonts/seo-check-missing.woff2']) {
     expect((await request.get(path)).status(), path).toBe(404);
   }
-  for (const path of ['/login', '/signup', '/client/report/seo-check', '/client/shortlist/seo-check', '/shortlists', '/tasks', '/applications']) {
+  for (const path of ['/login', '/signup', '/client/report/seo-check', '/client/shortlist/seo-check', '/shortlists', '/tasks', '/applications', '/candidates/123']) {
     const response = await request.get(path);
     expect(response.status(), path).toBe(200);
     expect(response.headers()['x-robots-tag'], path).toContain('noindex');

@@ -90,7 +90,7 @@ export default function CareersJobPage() {
         <div className="mkt-container">
           <h1 style={{ fontSize: 28, marginBottom: 10 }}>Position not found</h1>
           <p style={{ color: '#4D5E7B', marginBottom: 18 }}>This role may have been filled or removed.</p>
-          <Link to="/careers" className="mkt-btn-primary">Back to open positions</Link>
+          <Link to="/jobs" className="mkt-btn-primary">Back to open positions</Link>
         </div>
       </div>
     );
@@ -98,9 +98,9 @@ export default function CareersJobPage() {
 
   return (
     <div style={{ backgroundColor: '#FAFAFA' }}>
-      <section style={{ background: 'linear-gradient(180deg,#061636 0%,#04132F 100%)', padding: '110px 0 52px' }}>
+      <section style={{ background: '#0A2C4C', padding: '110px 0 52px' }}>
         <div className="mkt-container">
-          <Link to="/careers" style={{ color: '#8FB4FF', fontSize: 13, display: 'inline-flex', alignItems: 'center', gap: 6, marginBottom: 16 }}>
+          <Link to="/jobs" style={{ color: '#A5D1C7', fontSize: 13, display: 'inline-flex', alignItems: 'center', gap: 6, marginBottom: 16 }}>
             <ArrowLeft size={14} /> All open positions
           </Link>
           <h1 style={{ color: '#fff', fontSize: 'clamp(28px,3.8vw,46px)', lineHeight: 1.1, letterSpacing: '-.03em', marginBottom: 12 }}>{job.title}</h1>
