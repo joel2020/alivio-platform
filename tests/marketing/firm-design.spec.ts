@@ -28,7 +28,7 @@ test('employers and candidates have complete navigation and working destination 
 
 test('homepage has the approved eight sections and no invented proof', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Hire Better Talent Without Wasting Months on the Search');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('The right people.For what’s next.');
   await expect(page.locator('main section')).toHaveCount(8);
   await expect(page.getByText('Sample pipeline', { exact: true })).toHaveCount(0);
   await page.getByRole('link', { name: 'Meet Alivio' }).click();
