@@ -131,7 +131,7 @@ export default function App() {
             <Route path="/recruiters-ny-medellin" element={<Navigate to="/recruiting-agency-medellin" replace />} />
             <Route path="/platform" element={<Navigate to="/employers" replace />} />
             <Route path="/team/*" element={<Navigate to="/about" replace />} />
-            <Route path="/case-studies/*" element={<Navigate to="/services" replace />} />
+            <Route path="/case-studies/*" element={<Navigate to="/employers" replace />} />
             <Route path="/industries/*" element={<Navigate to="/" replace />} />
             <Route path="/resources/*" element={<Navigate to="/blog" replace />} />
             <Route element={<RequireLoggedOut />}>

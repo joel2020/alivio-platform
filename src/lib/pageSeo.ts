@@ -2,9 +2,42 @@ const SITE_URL = 'https://aliviosearchpartners.com';
 const DEFAULT_KEYWORDS = 'specialized recruiting firm, healthcare recruiting, technology recruiting, executive search, professional search, contingency search, retained search, direct sourcing, candidate vetting';
 const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
 
+const pageLabels: Record<string, string> = {
+  '/employers': 'Recruiting services', '/candidates': 'For candidates',
+  '/industries': 'Industries', '/industries/healthcare': 'Healthcare recruiting',
+  '/industries/technology': 'Technology recruiting', '/industries/executive': 'Executive search',
+  '/nearshore-latam-recruiting': 'Nearshore LATAM recruiting',
+  '/recruiting-agency-medellin': 'Medellín recruiting',
+  '/recruiting-agency-westchester': 'Westchester recruiting',
+  '/about': 'About Alivio', '/contact': 'Contact', '/start': 'Request a search plan',
+  '/jobs': 'Open jobs', '/blog': 'Recruiting insights',
+};
+
+export function getPageBreadcrumbs(path: string) {
+  const pathname = path.replace(/\/+$/, '') || '/';
+  const current = pathname === '/services' ? '/employers' : pathname;
+  if (!pageLabels[current]) return [];
+  return [
+    { name: 'Home', path: '/' },
+    ...(current.startsWith('/industries/') ? [{ name: 'Industries', path: '/industries' }] : []),
+    { name: pageLabels[current], path: current },
+  ];
+}
+
+const recruitingServices: Record<string, string> = {
+  '/employers': 'Recruiting services',
+  '/industries/healthcare': 'Healthcare recruiting',
+  '/industries/technology': 'Technology and healthtech recruiting',
+  '/industries/executive': 'Executive and leadership search',
+  '/nearshore-latam-recruiting': 'Nearshore LATAM recruiting',
+  '/recruiting-agency-medellin': 'Medellín recruiting',
+  '/recruiting-agency-westchester': 'Westchester recruiting',
+};
+
 export function getPageSeo(path: string, search = '') {
   const pathname = path === '/' ? '/' : path.replace(/\/+$/, '');
-  const canonicalUrl = `${SITE_URL}${pathname}`;
+  const canonicalPath = pathname === '/services' ? '/employers' : pathname;
+  const canonicalUrl = `${SITE_URL}${canonicalPath}`;
   let title = 'Specialist & Nearshore LATAM Recruiting | Alivio Search Partners';
   let description = 'Healthcare, technology, and leadership recruiting, plus nearshore talent searches across Latin America. Targeted sourcing and candidate screening with Alivio Search Partners.';
   let keywords = DEFAULT_KEYWORDS;
@@ -112,6 +145,22 @@ export function getPageSeo(path: string, search = '') {
     robots = 'noindex, follow';
   }
   const structuredData: Record<string, unknown>[] = [{ '@context': 'https://schema.org', '@type': 'WebPage', name: title, description, url: canonicalUrl, inLanguage: 'en-US' }];
-  if (['/nearshore-latam-recruiting', '/recruiting-agency-medellin', '/', '/product', '/pricing', '/recruiting-agency-westchester'].includes(pathname)) structuredData.push({ '@context': 'https://schema.org', '@type': 'Organization', '@id': `${SITE_URL}/#organization`, name: 'Alivio Search Partners', url: SITE_URL, description: 'Specialized recruiting firm for healthcare, technology, and professional search', contactPoint: { '@type': 'ContactPoint', email: 'hello@aliviosearchpartners.com', contactType: 'sales' } });
+  if (publicPaths.includes(pathname) && robots === 'index, follow') {
+    const organizationId = `${SITE_URL}/#organization`;
+    const websiteId = `${SITE_URL}/#website`;
+    Object.assign(structuredData[0], { '@id': `${canonicalUrl}#webpage`, isPartOf: { '@id': websiteId }, publisher: { '@id': organizationId } });
+    structuredData.push(
+      { '@context': 'https://schema.org', '@type': 'Organization', '@id': organizationId, name: 'Alivio Search Partners', url: SITE_URL, description: 'Healthcare, technology, and leadership recruiting in the U.S., with nearshore recruiting across Latin America.', email: 'hello@aliviosearchpartners.com', sameAs: ['https://www.linkedin.com/company/aliviosearchpartners/'], contactPoint: { '@type': 'ContactPoint', email: 'hello@aliviosearchpartners.com', contactType: 'Recruiting inquiries' } },
+      { '@context': 'https://schema.org', '@type': 'WebSite', '@id': websiteId, name: 'Alivio Search Partners', url: `${SITE_URL}/`, publisher: { '@id': organizationId }, inLanguage: 'en-US' },
+    );
+    const breadcrumbs = getPageBreadcrumbs(pathname);
+    if (breadcrumbs.length) structuredData.push({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: breadcrumbs.map((item, index) => ({ '@type': 'ListItem', position: index + 1, name: item.name, item: `${SITE_URL}${item.path}` })) });
+    const service = recruitingServices[canonicalPath];
+    if (service) {
+      const serviceId = `${canonicalUrl}#service`;
+      structuredData[0].mainEntity = { '@id': serviceId };
+      structuredData.push({ '@context': 'https://schema.org', '@type': 'Service', '@id': serviceId, name: service, serviceType: service, description, url: canonicalUrl, provider: { '@id': organizationId } });
+    }
+  }
   return { title, description, keywords, ogTitle: title, ogDescription: description, canonicalUrl, ogImage: DEFAULT_OG_IMAGE, ogType: pathname.startsWith('/blog/') ? 'article' : 'website', robots, structuredData };
 }

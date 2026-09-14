@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useRef, useState } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 import { supabaseFunctionsUrl } from '../../lib/supabase';
 import { useSeo } from '../../lib/seo';
+import { getPageSeo } from '../../lib/pageSeo';
 import { CAL_COM_BOOKING_URL } from '../../lib/demoBooking';
 
 const inputStyle: React.CSSProperties = {
@@ -20,6 +21,7 @@ const services = [
   'Nursing / clinical staff pipeline',
   'Technology & product search',
   'Contingency and contract recruiting',
+  'Nearshore LATAM recruiting',
   'Not sure yet — advise me',
 ];
 
@@ -40,12 +42,7 @@ export default function StartPage() {
   const feedbackRef = useRef<HTMLDivElement>(null);
   useEffect(() => { if (submitted || error) feedbackRef.current?.focus(); }, [submitted, error]);
 
-  useSeo({
-    title: 'Request a Search Plan | Alivio Search Partners',
-    description:
-      'Tell us about the roles you need to fill. Get a search plan with market mapping, compensation guidance, and a realistic timeline — before you commit to anything.',
-    canonicalUrl: 'https://aliviosearchpartners.com/start',
-  });
+  useSeo(getPageSeo('/start'));
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

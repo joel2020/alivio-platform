@@ -10,3 +10,27 @@ export const searchSteps = [
   ['Interview & Offer Support', 'We help manage candidate communication, feedback loops, offer expectations, and the close process.'],
 ];
 export const candidateBenefits = ['Confidential career conversations', 'Direct access to growing companies', 'Guidance through interviews and offers', 'Healthcare, tech, leadership, and professional roles', 'No pressure, no spam, no generic job pushing'];
+
+export const practiceSearchBriefs: Record<string, { heading: string; paragraphs: string[] }> = {
+  healthcare: {
+    heading: 'Plan a physician or healthcare leadership search.',
+    paragraphs: [
+      'For physician recruiting, define the specialty, care setting, patient population, schedule, call expectations, and required credentials. For nursing and healthcare leadership, clarify team size, reporting relationships, and operational priorities. These details guide sourcing and help candidates assess the opportunity.',
+      'We screen experience and interest against the agreed brief and coordinate interview feedback. Employers retain responsibility for clinical credentialing, licensing verification, and hiring decisions; responsibilities are agreed before the search begins.',
+    ],
+  },
+  technology: {
+    heading: 'Technology and healthtech recruiting built around the work.',
+    paragraphs: [
+      'A useful technical search brief defines what the person will build, the systems they will own, and the decisions they need to make. We discuss the stack, product stage, seniority, and collaboration requirements before sourcing engineers, data specialists, product managers, or technical leaders.',
+      'For healthtech teams, clarify which healthcare workflows, integrations, and data responsibilities the role touches. Separate essential domain experience from knowledge that can be learned. Agree the technical interview and work-sample criteria with your hiring team so candidates are assessed consistently.',
+    ],
+  },
+  executive: {
+    heading: 'Give your leadership search a clear mandate.',
+    paragraphs: [
+      'Define the outcomes a leader must deliver, the decisions they will own, and the team and resources available. Align the hiring stakeholders on essential experience, compensation parameters, and how leadership fit will be assessed before outreach begins.',
+      'A focused executive search examines relevant scope and achievements alongside interest in your organization. Agree confidentiality expectations, interview ownership, and the reference process in the search brief so both candidates and decision-makers understand the next steps.',
+    ],
+  },
+};

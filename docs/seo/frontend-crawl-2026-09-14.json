@@ -1,0 +1,859 @@
+{
+  "checkedAt": "2026-09-14T19:58:52.757Z",
+  "deployment": "https://alivio-platform-p7ke3anmi-joel-carias-projects.vercel.app",
+  "total": 85,
+  "failed": [],
+  "duplicateTitles": [],
+  "results": [
+    {
+      "path": "/",
+      "status": 200,
+      "title": "Specialist &amp; Nearshore LATAM Recruiting | Alivio Search Partners",
+      "canonical": "https://aliviosearchpartners.com/",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/about",
+      "status": 200,
+      "title": "About | Alivio Search Partners",
+      "canonical": "https://aliviosearchpartners.com/about",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/accessibility",
+      "status": 200,
+      "title": "Accessibility Statement | Alivio Search Partners",
+      "canonical": "https://aliviosearchpartners.com/accessibility",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog",
+      "status": 200,
+      "title": "Healthcare Recruiting Insights | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/ai-interview-summaries-faster-notes-better-decisions",
+      "status": 200,
+      "title": "AI Interview Summaries: Faster Notes, Better Decisions | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/ai-interview-summaries-faster-notes-better-decisions",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/ats-optimization-for-healthcare-recruiting-teams",
+      "status": 200,
+      "title": "ATS Optimization for Healthcare Recruiting Teams | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/ats-optimization-for-healthcare-recruiting-teams",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/audit-ready-documentation-workflows-for-staffing-teams",
+      "status": 200,
+      "title": "Audit-Ready Documentation Workflows for Staffing Teams | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/audit-ready-documentation-workflows-for-staffing-teams",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/automating-reference-checks-without-losing-quality",
+      "status": 200,
+      "title": "Automating Reference Checks Without Losing Quality | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/automating-reference-checks-without-losing-quality",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/avoiding-credentialing-delays-before-your-next-assignment",
+      "status": 200,
+      "title": "Avoiding Credentialing Delays Before Your Next Assignment | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/avoiding-credentialing-delays-before-your-next-assignment",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/benchmarking-fill-rates-across-high-acuity-roles",
+      "status": 200,
+      "title": "Benchmarking Fill Rates Across High-Acuity Roles | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/benchmarking-fill-rates-across-high-acuity-roles",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/bias-guardrails-for-ai-in-clinical-talent-acquisition",
+      "status": 200,
+      "title": "Bias Guardrails for AI in Clinical Talent Acquisition | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/bias-guardrails-for-ai-in-clinical-talent-acquisition",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/building-a-practical-recruitment-tech-stack-in-2026",
+      "status": 200,
+      "title": "Building a Practical Recruitment Tech Stack in 2026 | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/building-a-practical-recruitment-tech-stack-in-2026",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/building-better-candidate-matches-with-clinical-skill-graphs",
+      "status": 200,
+      "title": "Building Better Candidate Matches with Clinical Skill Graphs | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/building-better-candidate-matches-with-clinical-skill-graphs",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/building-regional-talent-pipelines-for-hard-to-fill-roles",
+      "status": 200,
+      "title": "Building Regional Talent Pipelines for Hard-to-Fill Roles | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/building-regional-talent-pipelines-for-hard-to-fill-roles",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/compliance-kpis-every-staffing-agency-should-monitor",
+      "status": 200,
+      "title": "Compliance KPIs Every Staffing Agency Should Monitor | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/compliance-kpis-every-staffing-agency-should-monitor",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/creating-a-high-performance-culture-in-remote-recruiting-teams",
+      "status": 200,
+      "title": "Creating a High-Performance Culture in Remote Recruiting Teams | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/creating-a-high-performance-culture-in-remote-recruiting-teams",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/creating-float-pool-strategies-that-lower-premium-labor-costs",
+      "status": 200,
+      "title": "Creating Float Pool Strategies That Lower Premium Labor Costs | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/creating-float-pool-strategies-that-lower-premium-labor-costs",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/credentialing-bottlenecks-how-to-shorten-time-to-start",
+      "status": 200,
+      "title": "Credentialing Bottlenecks: How to Shorten Time-to-Start | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/credentialing-bottlenecks-how-to-shorten-time-to-start",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/crm-playbooks-that-improve-clinician-re-engagement",
+      "status": 200,
+      "title": "CRM Playbooks That Improve Clinician Re-Engagement | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/crm-playbooks-that-improve-clinician-re-engagement",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/cross-training-programs-that-expand-scheduling-flexibility",
+      "status": 200,
+      "title": "Cross-Training Programs That Expand Scheduling Flexibility | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/cross-training-programs-that-expand-scheduling-flexibility",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/designing-recognition-programs-nurses-value",
+      "status": 200,
+      "title": "Designing Recognition Programs Nurses Value | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/designing-recognition-programs-nurses-value",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/early-warning-signals-of-nurse-burnout-and-what-to-do",
+      "status": 200,
+      "title": "Early Warning Signals of Nurse Burnout and What to Do | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/early-warning-signals-of-nurse-burnout-and-what-to-do",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/expanding-into-new-states-without-breaking-operations",
+      "status": 200,
+      "title": "Expanding into New States Without Breaking Operations | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/expanding-into-new-states-without-breaking-operations",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/five-data-signals-that-predict-staffing-instability",
+      "status": 200,
+      "title": "Five Data Signals That Predict Staffing Instability | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/five-data-signals-that-predict-staffing-instability",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/flexible-scheduling-models-that-improve-nurse-satisfaction",
+      "status": 200,
+      "title": "Flexible Scheduling Models That Improve Nurse Satisfaction | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/flexible-scheduling-models-that-improve-nurse-satisfaction",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/from-applicant-volume-to-quality-pipelines-with-ai-scoring",
+      "status": 200,
+      "title": "From Applicant Volume to Quality Pipelines with AI Scoring | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/from-applicant-volume-to-quality-pipelines-with-ai-scoring",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/from-founder-led-to-scalable-operating-model-upgrades",
+      "status": 200,
+      "title": "From Founder-Led to Scalable: Operating Model Upgrades | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/from-founder-led-to-scalable-operating-model-upgrades",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/healthcare-labor-market-trends-every-staffing-leader-should-track",
+      "status": 200,
+      "title": "Healthcare Labor Market Trends Every Staffing Leader Should Track | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/healthcare-labor-market-trends-every-staffing-leader-should-track",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/housing-tax-homes-and-stipends-a-practical-guide",
+      "status": 200,
+      "title": "Housing, Tax Homes, and Stipends: A Practical Guide | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/housing-tax-homes-and-stipends-a-practical-guide",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/how-chatbots-support-candidate-experience-in-healthcare",
+      "status": 200,
+      "title": "How Chatbots Support Candidate Experience in Healthcare | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/how-chatbots-support-candidate-experience-in-healthcare",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/how-consumer-care-expectations-influence-talent-demand",
+      "status": 200,
+      "title": "How Consumer Care Expectations Influence Talent Demand | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/how-consumer-care-expectations-influence-talent-demand",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/how-demographic-shifts-are-reshaping-clinical-hiring",
+      "status": 200,
+      "title": "How Demographic Shifts Are Reshaping Clinical Hiring | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/how-demographic-shifts-are-reshaping-clinical-hiring",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/how-health-systems-can-partner-better-with-staffing-firms",
+      "status": 200,
+      "title": "How Health Systems Can Partner Better with Staffing Firms | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/how-health-systems-can-partner-better-with-staffing-firms",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/how-predictive-ai-cuts-time-to-hire-in-healthcare-staffing",
+      "status": 200,
+      "title": "How Predictive AI Cuts Time-to-Hire in Healthcare Staffing | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/how-predictive-ai-cuts-time-to-hire-in-healthcare-staffing",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/how-shared-governance-supports-retention-and-trust",
+      "status": 200,
+      "title": "How Shared Governance Supports Retention and Trust | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/how-shared-governance-supports-retention-and-trust",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/how-to-balance-core-staff-per-diem-and-agency-talent",
+      "status": 200,
+      "title": "How to Balance Core Staff, Per Diem, and Agency Talent | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/how-to-balance-core-staff-per-diem-and-agency-talent",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/how-to-build-a-kpi-dashboard-for-staffing-agency-leaders",
+      "status": 200,
+      "title": "How to Build a KPI Dashboard for Staffing Agency Leaders | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/how-to-build-a-kpi-dashboard-for-staffing-agency-leaders",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/how-to-build-a-long-term-career-as-a-travel-nurse",
+      "status": 200,
+      "title": "How to Build a Long-Term Career as a Travel Nurse | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/how-to-build-a-long-term-career-as-a-travel-nurse",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/how-travel-nurses-can-evaluate-contracts-like-a-pro",
+      "status": 200,
+      "title": "How Travel Nurses Can Evaluate Contracts Like a Pro | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/how-travel-nurses-can-evaluate-contracts-like-a-pro",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/human-machine-the-best-workflow-for-healthcare-sourcers",
+      "status": 200,
+      "title": "Human + Machine: The Best Workflow for Healthcare Sourcers | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/human-machine-the-best-workflow-for-healthcare-sourcers",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/integrating-job-distribution-tools-for-better-applicant-quality",
+      "status": 200,
+      "title": "Integrating Job Distribution Tools for Better Applicant Quality | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/integrating-job-distribution-tools-for-better-applicant-quality",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/joint-commission-readiness-for-healthcare-staffing-partners",
+      "status": 200,
+      "title": "Joint Commission Readiness for Healthcare Staffing Partners | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/joint-commission-readiness-for-healthcare-staffing-partners",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/manager-coaching-habits-that-keep-nurses-engaged",
+      "status": 200,
+      "title": "Manager Coaching Habits That Keep Nurses Engaged | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/manager-coaching-habits-that-keep-nurses-engaged",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/margin-management-tactics-for-healthcare-staffing-firms",
+      "status": 200,
+      "title": "Margin Management Tactics for Healthcare Staffing Firms | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/margin-management-tactics-for-healthcare-staffing-firms",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/mental-health-benefits-nurses-will-actually-use",
+      "status": 200,
+      "title": "Mental Health Benefits Nurses Will Actually Use | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/mental-health-benefits-nurses-will-actually-use",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/multi-state-licensing-essentials-for-healthcare-recruiters",
+      "status": 200,
+      "title": "Multi-State Licensing Essentials for Healthcare Recruiters | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/multi-state-licensing-essentials-for-healthcare-recruiters",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/negotiating-travel-nurse-pay-packages-with-confidence",
+      "status": 200,
+      "title": "Negotiating Travel Nurse Pay Packages with Confidence | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/negotiating-travel-nurse-pay-packages-with-confidence",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/preventing-expired-certifications-with-automated-alerts",
+      "status": 200,
+      "title": "Preventing Expired Certifications with Automated Alerts | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/preventing-expired-certifications-with-automated-alerts",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/primary-source-verification-best-practices-that-scale",
+      "status": 200,
+      "title": "Primary Source Verification: Best Practices That Scale | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/primary-source-verification-best-practices-that-scale",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/rate-card-strategy-paying-competitively-without-overspending",
+      "status": 200,
+      "title": "Rate Card Strategy: Paying Competitively Without Overspending | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/rate-card-strategy-paying-competitively-without-overspending",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/reducing-agency-spend-with-intelligent-internal-mobility",
+      "status": 200,
+      "title": "Reducing Agency Spend with Intelligent Internal Mobility | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/reducing-agency-spend-with-intelligent-internal-mobility",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/reducing-vacancy-drag-with-proactive-requisition-planning",
+      "status": 200,
+      "title": "Reducing Vacancy Drag with Proactive Requisition Planning | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/reducing-vacancy-drag-with-proactive-requisition-planning",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/retention-starts-on-day-one-onboarding-that-actually-works",
+      "status": 200,
+      "title": "Retention Starts on Day One: Onboarding That Actually Works | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/retention-starts-on-day-one-onboarding-that-actually-works",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/sales-and-delivery-alignment-for-sustainable-growth",
+      "status": 200,
+      "title": "Sales and Delivery Alignment for Sustainable Growth | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/sales-and-delivery-alignment-for-sustainable-growth",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/service-line-staffing-models-for-ed-icu-and-med-surg",
+      "status": 200,
+      "title": "Service Line Staffing Models for ED, ICU, and Med-Surg | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/service-line-staffing-models-for-ed-icu-and-med-surg",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/smart-shift-design-to-improve-coverage-and-continuity-of-care",
+      "status": 200,
+      "title": "Smart Shift Design to Improve Coverage and Continuity of Care | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/smart-shift-design-to-improve-coverage-and-continuity-of-care",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/specialties-with-the-best-travel-opportunities-this-year",
+      "status": 200,
+      "title": "Specialties with the Best Travel Opportunities This Year | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/specialties-with-the-best-travel-opportunities-this-year",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/succession-planning-for-growing-staffing-organizations",
+      "status": 200,
+      "title": "Succession Planning for Growing Staffing Organizations | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/succession-planning-for-growing-staffing-organizations",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/texting-automation-strategies-for-faster-candidate-response",
+      "status": 200,
+      "title": "Texting Automation Strategies for Faster Candidate Response | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/texting-automation-strategies-for-faster-candidate-response",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/the-90-day-plan-for-launching-ai-recruiting-in-healthcare",
+      "status": 200,
+      "title": "The 90-Day Plan for Launching AI Recruiting in Healthcare | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/the-90-day-plan-for-launching-ai-recruiting-in-healthcare",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/the-real-cost-of-overtime-in-hospital-workforce-budgets",
+      "status": 200,
+      "title": "The Real Cost of Overtime in Hospital Workforce Budgets | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/the-real-cost-of-overtime-in-hospital-workforce-budgets",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/training-new-recruiters-faster-with-structured-playbooks",
+      "status": 200,
+      "title": "Training New Recruiters Faster with Structured Playbooks | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/training-new-recruiters-faster-with-structured-playbooks",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/travel-nursing-in-2026-where-demand-is-rising-fast",
+      "status": 200,
+      "title": "Travel Nursing in 2026: Where Demand Is Rising Fast | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/travel-nursing-in-2026-where-demand-is-rising-fast",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/using-ai-to-personalize-nurse-outreach-at-scale",
+      "status": 200,
+      "title": "Using AI to Personalize Nurse Outreach at Scale | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/using-ai-to-personalize-nurse-outreach-at-scale",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/using-workflow-automation-to-reduce-recruiter-admin-time",
+      "status": 200,
+      "title": "Using Workflow Automation to Reduce Recruiter Admin Time | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/using-workflow-automation-to-reduce-recruiter-admin-time",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/what-recruiters-need-to-know-about-traveler-preferences",
+      "status": 200,
+      "title": "What Recruiters Need to Know About Traveler Preferences | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/what-recruiters-need-to-know-about-traveler-preferences",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/what-recruiters-should-measure-in-ai-assisted-hiring",
+      "status": 200,
+      "title": "What Recruiters Should Measure in AI-Assisted Hiring | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/what-recruiters-should-measure-in-ai-assisted-hiring",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/what-vacancy-and-turnover-data-reveal-about-care-access",
+      "status": 200,
+      "title": "What Vacancy and Turnover Data Reveal About Care Access | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/what-vacancy-and-turnover-data-reveal-about-care-access",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/why-rural-health-systems-need-different-recruiting-models",
+      "status": 200,
+      "title": "Why Rural Health Systems Need Different Recruiting Models | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/why-rural-health-systems-need-different-recruiting-models",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/workforce-planning-playbook-for-hospitals-facing-seasonal-surges",
+      "status": 200,
+      "title": "Workforce Planning Playbook for Hospitals Facing Seasonal Surges | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/workforce-planning-playbook-for-hospitals-facing-seasonal-surges",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/blog/workload-equity-a-practical-framework-for-unit-leaders",
+      "status": 200,
+      "title": "Workload Equity: A Practical Framework for Unit Leaders | Alivio Search Partners Blog",
+      "canonical": "https://aliviosearchpartners.com/blog/workload-equity-a-practical-framework-for-unit-leaders",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/candidates",
+      "status": 200,
+      "title": "For Candidates | Alivio Search Partners",
+      "canonical": "https://aliviosearchpartners.com/candidates",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/contact",
+      "status": 200,
+      "title": "Contact Alivio | Healthcare &amp; Technology Recruiting",
+      "canonical": "https://aliviosearchpartners.com/contact",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/employers",
+      "status": 200,
+      "title": "Recruitment Services | Alivio Search Partners",
+      "canonical": "https://aliviosearchpartners.com/employers",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/industries",
+      "status": 200,
+      "title": "Recruiting Industries | Alivio Search Partners",
+      "canonical": "https://aliviosearchpartners.com/industries",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/industries/executive",
+      "status": 200,
+      "title": "Executive &amp; Leadership Search | Alivio Search Partners",
+      "canonical": "https://aliviosearchpartners.com/industries/executive",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/industries/healthcare",
+      "status": 200,
+      "title": "Physician &amp; Healthcare Leadership Recruiting | Alivio",
+      "canonical": "https://aliviosearchpartners.com/industries/healthcare",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/industries/technology",
+      "status": 200,
+      "title": "Technology &amp; Healthtech Recruiting | Alivio Search Partners",
+      "canonical": "https://aliviosearchpartners.com/industries/technology",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/jobs",
+      "status": 200,
+      "title": "Open Jobs | Alivio Search Partners",
+      "canonical": "https://aliviosearchpartners.com/jobs",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/nearshore-latam-recruiting",
+      "status": 200,
+      "title": "Nearshore LATAM Recruiting | Alivio Search Partners",
+      "canonical": "https://aliviosearchpartners.com/nearshore-latam-recruiting",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/privacy",
+      "status": 200,
+      "title": "Privacy Policy | Alivio Search Partners",
+      "canonical": "https://aliviosearchpartners.com/privacy",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/recruiting-agency-medellin",
+      "status": 200,
+      "title": "Medellín Recruiting Agency | Alivio Search Partners",
+      "canonical": "https://aliviosearchpartners.com/recruiting-agency-medellin",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/recruiting-agency-westchester",
+      "status": 200,
+      "title": "Westchester Recruiting Agency | Alivio Search Partners",
+      "canonical": "https://aliviosearchpartners.com/recruiting-agency-westchester",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/start",
+      "status": 200,
+      "title": "Request a Search Plan | Alivio Search Partners",
+      "canonical": "https://aliviosearchpartners.com/start",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    },
+    {
+      "path": "/terms",
+      "status": 200,
+      "title": "Terms of Service | Alivio Search Partners",
+      "canonical": "https://aliviosearchpartners.com/terms",
+      "h1Count": 1,
+      "robots": "index, follow",
+      "schema": true,
+      "issues": []
+    }
+  ]
+}

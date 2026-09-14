@@ -29,7 +29,7 @@ export default function PricingPage() {
               <ul>{model.points.map(point => <li key={point}>{point}</li>)}</ul>
             </article>)}
           </div>
-          <p><Link className="search-page-link" to="/services#engagement-models">Explore our recruitment services</Link></p>
+          <p><Link className="search-page-link" to="/employers#engagement-models">Explore our recruitment services</Link></p>
         </div>
       </section>
 

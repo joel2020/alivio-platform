@@ -17,7 +17,7 @@ export default function MedellinPage() {
           <p className="mkt-label">A focused search</p><h2>Roles we help teams recruit in Medellín</h2>
           <div className="search-page-grid">
             <article className="search-page-card"><h3>Technical and product talent</h3><p>Source software, data, product and technical support professionals against the actual responsibilities of the role. Agree the technical assessment and evidence needed before interviews.</p><Link to="/industries/technology" className="search-page-link">Explore our technology practice</Link></article>
-            <article className="search-page-card"><h3>Customer and business operations</h3><p>Find candidates for customer success, recruiting support, administrative and operational work. Assess the communication, judgment and workflow experience needed for your team.</p><Link to="/services" className="search-page-link">Explore recruitment services</Link></article>
+            <article className="search-page-card"><h3>Customer and business operations</h3><p>Find candidates for customer success, recruiting support, administrative and operational work. Assess the communication, judgment and workflow experience needed for your team.</p><Link to="/employers" className="search-page-link">Explore recruitment services</Link></article>
           </div>
         </div>
       </section>

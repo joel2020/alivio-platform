@@ -11,6 +11,8 @@ import AboutPage from './pages/marketing/AboutPage';
 import EmployersPage from './pages/marketing/EmployersPage';
 import CandidatesPage from './pages/marketing/CandidatesPage';
 import ContactPage from './pages/marketing/ContactPage';
+import StartPage from './pages/marketing/StartPage';
+import BlogPage from './pages/marketing/BlogPage';
 import CareersPage from './pages/marketing/CareersPage';
 import IndustriesPage from './pages/marketing/IndustriesPage';
 import PrivacyPage from './pages/marketing/PrivacyPage';
@@ -30,6 +32,8 @@ const pages = {
   '/employers': <EmployersPage />,
   '/candidates': <CandidatesPage />,
   '/contact': <ContactPage />,
+  '/start': <StartPage />,
+  '/blog': <BlogPage />,
   '/jobs': <CareersPage />,
   '/industries': <IndustriesPage />,
   '/industries/executive': <IndustriesPage />,

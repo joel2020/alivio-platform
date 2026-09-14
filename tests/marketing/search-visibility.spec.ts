@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const paths = ['/nearshore-latam-recruiting', '/recruiting-agency-medellin', '/recruiting-agency-westchester', '/', '/services', '/about', '/employers', '/candidates', '/industries', '/industries/executive', '/contact', '/jobs', '/industries/healthcare', '/industries/technology', '/privacy', '/terms', '/accessibility'];
+const paths = ['/nearshore-latam-recruiting', '/recruiting-agency-medellin', '/recruiting-agency-westchester', '/', '/services', '/about', '/employers', '/candidates', '/industries', '/industries/executive', '/contact', '/jobs', '/industries/healthcare', '/industries/technology', '/privacy', '/terms', '/accessibility', '/start', '/blog'];
 
 test('a slow route chunk preserves server content and hydrates without errors', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
@@ -42,11 +42,12 @@ for (const path of paths) {
     const page = await context.newPage();
     await page.goto(`${baseURL}${path}`);
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `https://aliviosearchpartners.com${path}`);
+    const canonicalPath = path === '/services' ? '/employers' : path;
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `https://aliviosearchpartners.com${canonicalPath}`);
     expect((await page.locator('main').innerText()).length).toBeGreaterThan(150);
     await expect(page.locator('meta[name="description"]')).toHaveCount(1);
     const data = await page.locator('#alivio-structured-data').textContent();
-    expect(JSON.parse(data!)[0].url).toBe(`https://aliviosearchpartners.com${path}`);
+    expect(JSON.parse(data!)[0].url).toBe(`https://aliviosearchpartners.com${canonicalPath}`);
     await context.close();
   });
 }
@@ -77,8 +78,9 @@ test('legacy search URLs reach their relevant replacement without reviving retir
   const replacements = [
     ['/privacy-policy', '/privacy'], ['/terms-of-service', '/terms'],
     ['/careers', '/jobs'], ['/apply', '/jobs'], ['/product', '/employers'], ['/platform', '/employers'], ['/pricing', '/employers#engagement-models'], ['/candidate', '/candidates'], ['/schedule', '/contact'],
-    ['/services/retained-search', '/services#engagement-models'],
-    ['/services/recruitment-as-a-service', '/services#engagement-models'],
+    ['/services', '/employers'],
+    ['/services/retained-search', '/employers#engagement-models'],
+    ['/services/recruitment-as-a-service', '/employers#engagement-models'],
   ];
   for (const [source, destination] of replacements) {
     const response = await request.get(source, { maxRedirects: 0 });

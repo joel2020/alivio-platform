@@ -1,6 +1,11 @@
 {
   "redirects": [
     {
+      "source": "/services",
+      "destination": "/employers",
+      "permanent": true
+    },
+    {
       "source": "/platform",
       "destination": "/employers",
       "permanent": true
@@ -42,7 +47,7 @@
     },
     {
       "source": "/case-studies/:path*",
-      "destination": "/services",
+      "destination": "/employers",
       "permanent": true
     },
     {
@@ -72,12 +77,12 @@
     },
     {
       "source": "/services/retained-search",
-      "destination": "/services#engagement-models",
+      "destination": "/employers#engagement-models",
       "permanent": true
     },
     {
       "source": "/services/recruitment-as-a-service",
-      "destination": "/services#engagement-models",
+      "destination": "/employers#engagement-models",
       "permanent": true
     },
     {
@@ -92,6 +97,14 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/blog",
+      "destination": "/blog.html"
+    },
+    {
+      "source": "/start",
+      "destination": "/start.html"
+    },
     {
       "source": "/employers",
       "destination": "/employers.html"
