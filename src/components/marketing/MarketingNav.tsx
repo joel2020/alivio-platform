@@ -10,6 +10,7 @@ const navLinks = [
   { label: 'Industries', href: '/industries' },
   { label: 'Jobs', href: '/jobs' },
   { label: 'About', href: '/about' },
+  { label: 'Nearshore LATAM', href: '/nearshore-latam-recruiting' },
   { label: 'Contact', href: '/contact' },
 ];
 const practiceLinks = [

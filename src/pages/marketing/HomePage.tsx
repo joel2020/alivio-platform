@@ -12,7 +12,7 @@ export default function HomePage() {
           <div className="recruiting-hero-copy">
             <p className="firm-eyebrow">Alivio Search Partners</p>
             <h1 id="home-heading">The right people.<span>For what’s next.</span></h1>
-            <p>Specialist recruiting for healthcare, technology, and leadership. We find, engage, and assess candidates for the roles that matter to your organization.</p>
+            <p>Specialist recruiting for healthcare, technology, and leadership, with nearshore talent searches across Latin America. We find, engage, and assess the people your team needs.</p>
             <div className="recruiting-actions"><DiscussSearchLink /><Link to="/jobs" className="firm-text-link">View Open Jobs <ArrowUpRight size={19} aria-hidden="true" /></Link></div>
             <div className="recruiting-hero-note">Thoughtful search. Personal attention.</div>
           </div>
@@ -21,12 +21,16 @@ export default function HomePage() {
             <figcaption><span>A partnership from the first conversation.</span><strong>Good things start with people.</strong><ArrowUpRight size={27} aria-hidden="true" /></figcaption>
           </figure>
         </div>
-        <div className="mkt-container"><nav className="recruiting-focus" aria-label="Our specialist practices"><span>Expertise with purpose</span><Link to="/industries/healthcare">Healthcare <ArrowUpRight size={17} aria-hidden="true" /></Link><Link to="/industries/technology">Technology <ArrowUpRight size={17} aria-hidden="true" /></Link><Link to="/industries/executive">Executive &amp; leadership <ArrowUpRight size={17} aria-hidden="true" /></Link></nav></div>
+        <div className="mkt-container"><nav className="recruiting-focus" aria-label="Our specialist practices"><span>Expertise with purpose</span><Link to="/industries/healthcare">Healthcare <ArrowUpRight size={17} aria-hidden="true" /></Link><Link to="/industries/technology">Technology <ArrowUpRight size={17} aria-hidden="true" /></Link><Link to="/industries/executive">Executive &amp; leadership <ArrowUpRight size={17} aria-hidden="true" /></Link><Link to="/nearshore-latam-recruiting">Nearshore LATAM <ArrowUpRight size={17} aria-hidden="true" /></Link></nav></div>
       </section>
 
       <section id="search-specialties" className="firm-section" aria-labelledby="practice-heading"><div className="mkt-container">
         <div className="recruiting-section-head"><div><p className="firm-eyebrow">What we do</p><h2 id="practice-heading">A focused search.<br />A meaningful difference.</h2></div><p>We help companies identify, engage, screen, and deliver qualified candidates for critical positions.</p></div>
         <div className="recruiting-service-grid">{[...practices.map(p => ({ title: p.slug === 'executive' ? 'Executive & Professional Search' : p.title, copy: p.copy, href: `/industries/${p.slug}` })), { title: 'Contract & Project Recruiting', copy: 'Flexible recruiting support when your team needs extra sourcing and screening capacity.', href: '/employers#engagement-models' }].map(item => <Link to={item.href} key={item.title} className="recruiting-service"><ArrowUpRight size={25} aria-hidden="true" /><h3>{item.title}</h3><p>{item.copy}</p></Link>)}</div>
+        <div className="recruiting-nearshore recruiting-two-col">
+          <div><p className="firm-eyebrow">Nearshore LATAM recruiting</p><h3>Great talent.<br />Closer collaboration.</h3></div>
+          <div><p>Build your team with professionals based in Latin America. We source and assess candidates for technology, product, customer success, and business operations roles, with language requirements and working-hour overlap built into the search.</p><Link to="/nearshore-latam-recruiting" className="firm-text-link">Explore nearshore recruiting <ArrowUpRight size={18} aria-hidden="true" /></Link></div>
+        </div>
       </div></section>
 
       <section className="firm-section recruiting-why" aria-labelledby="why-heading"><div className="mkt-container recruiting-two-col">

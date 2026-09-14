@@ -1,20 +1,21 @@
 import { Link } from 'react-router-dom';
+import { DiscussSearchLink } from '../../components/marketing/RecruitingFirmSections';
 
 export default function LatamPage() {
   return (
-    <div className="search-page">
-      <section className="search-page-hero">
+    <div className="firm-page search-page">
+      <section className="firm-inner-hero">
         <div className="mkt-container">
-          <p className="mkt-label">Nearshore recruiting</p>
+          <p className="firm-eyebrow">Nearshore recruiting</p>
           <h1>Nearshore LATAM recruiting for U.S. teams</h1>
-          <p className="search-page-intro">Alivio Search Partners helps U.S. employers source and assess talent in Latin America for technology, product and business operations roles. We build the search around the work, communication requirements and hours your team needs to share.</p>
-          <div className="search-page-actions"><Link to="/start" className="mkt-btn-primary-lg">Request a Search Plan</Link><Link to="/recruiting-agency-medellin" className="mkt-btn-secondary mkt-btn-on-dark">Explore Medellín recruiting</Link></div>
+          <p className="firm-lead">Alivio Search Partners helps U.S. employers source and assess talent in Latin America for technology, product and business operations roles. We build the search around the work, communication requirements and hours your team needs to share.</p>
+          <div className="recruiting-actions"><DiscussSearchLink /><Link to="/recruiting-agency-medellin" className="firm-text-link">Explore Medellín recruiting</Link></div>
         </div>
       </section>
 
-      <section className="search-page-section">
+      <section className="firm-section">
         <div className="mkt-container">
-          <p className="mkt-label">Role coverage</p><h2>Find the skills your team needs to grow</h2>
+          <p className="firm-eyebrow">Role coverage</p><h2>Find the skills your team needs to grow</h2>
           <div className="search-page-grid">
             <article className="search-page-card"><h3>Engineering and data</h3><p>Define the systems a hire will own, the technical depth required and the evidence your interview process needs.</p><ul><li>Software engineering</li><li>Data and analytics</li><li>Technical operations and support</li></ul><Link to="/industries/technology" className="search-page-link">Explore technology recruiting</Link></article>
             <article className="search-page-card"><h3>Product and customer teams</h3><p>Look for relevant product experience and the ability to explain decisions to colleagues and customers.</p><ul><li>Product management and design</li><li>Customer success</li><li>Go-to-market operations</li></ul></article>
@@ -23,7 +24,7 @@ export default function LatamPage() {
         </div>
       </section>
 
-      <section className="search-page-section search-page-tint">
+      <section className="firm-section recruiting-about">
         <div className="mkt-container search-page-reading">
           <h2>A practical brief for hiring across LATAM</h2>
           <p>Nearshore recruiting means sourcing in nearby countries where working hours can overlap. Latin America is a region of distinct markets: agree which locations fit the role rather than assuming one salary range, language profile or schedule applies everywhere.</p>
@@ -36,7 +37,7 @@ export default function LatamPage() {
         </div>
       </section>
 
-      <section className="search-page-section">
+      <section className="firm-section">
         <div className="mkt-container">
           <h2>From target markets to a reviewed shortlist</h2>
           <div className="search-page-grid">
@@ -47,7 +48,7 @@ export default function LatamPage() {
         </div>
       </section>
 
-      <section className="search-page-section search-page-tint">
+      <section className="firm-section recruiting-about">
         <div className="mkt-container search-page-reading">
           <h2>Questions about LATAM recruiting</h2>
           <h3>Can we focus the search on Medellín?</h3><p>Yes. A search can focus on Medellín or use a broader regional brief. Our <Link to="/recruiting-agency-medellin" className="search-page-link">Medellín recruiting page</Link> explains how location, communication and working arrangements shape that search.</p>

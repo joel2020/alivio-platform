@@ -5,8 +5,8 @@ const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
 export function getPageSeo(path: string, search = '') {
   const pathname = path === '/' ? '/' : path.replace(/\/+$/, '');
   const canonicalUrl = `${SITE_URL}${pathname}`;
-  let title = 'Healthcare & Technology Recruiting | Alivio Search Partners';
-  let description = 'Recruit physicians, healthcare leaders, engineers, and operators with Alivio Search Partners. Direct sourcing, hands-on candidate vetting, and a search plan tailored to your roles.';
+  let title = 'Specialist & Nearshore LATAM Recruiting | Alivio Search Partners';
+  let description = 'Healthcare, technology, and leadership recruiting, plus nearshore talent searches across Latin America. Targeted sourcing and candidate screening with Alivio Search Partners.';
   let keywords = DEFAULT_KEYWORDS;
   let robots = 'index, follow';
   if (pathname === '/nearshore-latam-recruiting') {
@@ -41,7 +41,7 @@ export function getPageSeo(path: string, search = '') {
     if (search) robots = 'noindex, follow';
   } else if (pathname === '/services' || pathname === '/employers') {
     title = 'Recruitment Services | Alivio Search Partners';
-    description = 'Contingency, retained, executive, and contract recruiting for healthcare and technology teams. Targeted sourcing, candidate vetting, and hands-on search management.';
+    description = 'Contingency, retained, executive, contract, and nearshore LATAM recruiting. Targeted sourcing, candidate vetting, and hands-on search management.';
   } else if (pathname === '/about') {
     title = 'About | Alivio Search Partners';
     description = 'Meet Alivio Search Partners and founder Joel Carias. Specialist healthcare and technology recruiting with human judgment, intelligent research, and clear search reporting.';

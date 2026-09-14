@@ -34,7 +34,7 @@
 .recruiting-hero-visual figcaption span { display: block; font-size: 11px; margin-bottom: 7px; }
 .recruiting-hero-visual figcaption strong { font-family: Georgia, 'Times New Roman', serif; font-size: 26px; font-weight: 400; letter-spacing: -.025em; }
 .recruiting-hero-visual figcaption svg { position: absolute; right: 23px; top: 25px; }
-.recruiting-focus { display: grid; grid-template-columns: 1fr 1fr 1fr 1.15fr; align-items: center; border-top: 1px solid #38566F; margin-top: 54px; padding: 24px 0; gap: 28px; }
+.recruiting-focus { display: grid; grid-template-columns: .9fr .8fr .8fr 1.15fr 1fr; align-items: center; border-top: 1px solid #38566F; margin-top: 54px; padding: 24px 0; gap: 28px; }
 .recruiting-focus > span { color: #B1C6D6; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
 .recruiting-focus > a { color: #fff; text-decoration: none; display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 13px; padding-block: 8px; }
 .recruiting-focus > a:hover { color: #A5D1C7; }
@@ -162,3 +162,7 @@
  .firm-inner-hero h1 { font-size: clamp(33px,7.7vw,47px); }
 }
 .marketing-site .recruiting-footer-grid nav { display: flex; flex-direction: column; align-items: flex-start; }
+
+.recruiting-nearshore { margin-top: 48px; padding: 36px; background: #F0F6F4; border-left: 3px solid #A5D1C7; }
+.recruiting-nearshore h3 { font-size: clamp(28px, 3vw, 38px); line-height: 1.2; margin: 0; }
+@media (max-width: 700px) { .recruiting-nearshore { padding: 24px; } }

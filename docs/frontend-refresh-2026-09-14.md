@@ -13,3 +13,9 @@ Validate responsive layouts, navigation, metadata, forms with intercepted writes
 September 14 verification: production build, TypeScript, targeted ESLint, and whitespace checks passed. Playwright against the built site passed 105 tests; 9 deployment-specific checks were skipped locally. The initial development-server run was replaced with this built-site run so that JavaScript-disabled prerender checks exercised the correct artifact. Browser writes were intercepted; no candidates or client inquiries were submitted during testing.
 
 Desktop and mobile layouts were visually reviewed, and the hosted preview rendered successfully. Preview deployment: https://alivio-platform-agwhyk1j3-joel-carias-projects.vercel.app (Vercel deployment dpl_Fuc6rbx6X9wxyw2yMiMTRzpCna1k). Production was not promoted during this phase.
+
+## Nearshore LATAM addition
+
+User requested Latin America based nearshore recruiting. Added the service to the homepage introduction, practice links, a dedicated homepage feature, employer services, desktop/mobile navigation, footer, and metadata. Reused the existing `/nearshore-latam-recruiting` page and aligned its hero and sections with the new design. Existing role coverage, search planning, Medellín link, and inquiry flow remain available.
+
+TypeScript, targeted ESLint, production build, and whitespace checks passed. The relevant design/navigation and search-visibility suites passed 50 tests with 2 deployment-only checks skipped. Desktop and 390px mobile layouts and the nearshore navigation destination were reviewed in the browser. This addition remains a preview, without a production promotion.
