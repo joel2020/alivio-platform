@@ -1,13 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
-  <title id="title">Alivio Open Graph Image</title>
-  <desc id="desc">Alivio AI Recruiting Platform for Healthcare Staffing</desc>
-  <rect width="1200" height="630" fill="#0f1a1a" />
-  <rect x="120" y="140" width="12" height="350" fill="#01696f" opacity="0.95" />
-  <rect x="120" y="502" width="960" height="8" fill="#01696f" opacity="0.75" />
-  <text x="600" y="300" fill="#01696f" font-size="132" font-family="Inter, Arial, Helvetica, sans-serif" font-weight="700" text-anchor="middle" letter-spacing="1">
-    Alivio
-  </text>
-  <text x="600" y="372" fill="#ffffff" font-size="42" font-family="Inter, Arial, Helvetica, sans-serif" font-weight="500" text-anchor="middle">
-    AI Recruiting Platform for Healthcare Staffing
-  </text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+<title id="title">Alivio Search Partners — Specialized Recruiting</title><desc id="desc">Healthcare, technology, and professional search. Hire better talent with Alivio Search Partners.</desc>
+<rect width="1200" height="630" fill="#0A2C4C"/><path d="M1060 0H1200V630H1030V170Q1030 40 1060 0Z" fill="#A5D1C7"/>
+<text x="85" y="112" font-family="Arial,sans-serif" font-size="29" font-weight="700" letter-spacing="8" fill="white">ALIVIO</text>
+<text x="87" y="143" font-family="Arial,sans-serif" font-size="12" letter-spacing="4" fill="#A5D1C7">SEARCH PARTNERS</text>
+<text x="80" y="292" font-family="Arial,sans-serif" font-size="70" font-weight="600" letter-spacing="-2" fill="white">Hire better talent.</text>
+<text x="80" y="376" font-family="Arial,sans-serif" font-size="70" font-weight="600" letter-spacing="-2" fill="#A5D1C7">Move forward.</text>
+<text x="85" y="456" font-family="Arial,sans-serif" font-size="23" fill="#D9E5EF">Healthcare · Technology · Professional Search</text>
+<text x="85" y="558" font-family="Arial,sans-serif" font-size="18" fill="#D9E5EF">aliviosearchpartners.com</text>
 </svg>

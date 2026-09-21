@@ -5,16 +5,19 @@ import { AlivioLogo } from '../brand/AlivioLogo';
 import { CAL_COM_BOOKING_URL } from '../../lib/demoBooking';
 
 const navLinks = [
-  { label: 'Expertise', href: '/#search-specialties' },
-  { label: 'Our Approach', href: '/#process' },
-  { label: 'Our Firm', href: '/about' },
-  { label: 'Insights', href: '/blog' },
-  { label: 'Careers', href: '/careers' },
+  { label: 'Employers', href: '/employers' },
+  { label: 'Candidates', href: '/candidates' },
+  { label: 'Industries', href: '/industries' },
+  { label: 'Jobs', href: '/jobs' },
+  { label: 'About', href: '/about' },
+  { label: 'Contact', href: '/contact' },
 ];
 const practiceLinks = [
   { label: 'Healthcare recruiting', href: '/industries/healthcare' },
   { label: 'Technology recruiting', href: '/industries/technology' },
-  { label: 'LATAM recruiting', href: '/nearshore-latam-recruiting' },
+  { label: 'Executive & leadership search', href: '/industries/executive' },
+  { label: 'LATAM recruitment', href: '/nearshore-latam-recruiting' },
+  { label: 'Offshore recruitment', href: '/offshore-recruitment' },
 ];
 
 export default function MarketingNav() {
@@ -85,8 +88,7 @@ export default function MarketingNav() {
                 {link.label}
               </Link>
             ))}
-            <Link to="/login" className="mkt-nav-utility">Client Sign In</Link>
-            <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary">Discuss a Search</a>
+            <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary">Book a Recruiting Call</a>
           </div>
           <button ref={toggleRef} type="button" className="mkt-menu-toggle" onClick={() => setMobileOpen(open => !open)}
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'} aria-expanded={mobileOpen} aria-controls="mobile-navigation">
@@ -112,8 +114,8 @@ export default function MarketingNav() {
               <nav aria-label="Recruiting practices">{practiceLinks.map(link => <Link key={link.href} to={link.href} onClick={() => setMobileOpen(false)}>{link.label}</Link>)}</nav>
             </div>
             <div className="mkt-mobile-actions">
-              <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary" onClick={closeMenu}>Discuss a Search</a>
-              <Link to="/login" className="mkt-btn-secondary" onClick={() => setMobileOpen(false)}>Client Sign In</Link>
+              <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="mkt-btn-primary" onClick={closeMenu}>Book a Recruiting Call</a>
+              <Link to="/jobs" className="mkt-btn-secondary" onClick={() => setMobileOpen(false)}>View Open Jobs</Link>
             </div>
           </div>
         </>

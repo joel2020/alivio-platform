@@ -3,7 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import { CAL_COM_BOOKING_URL } from '../../lib/demoBooking';
 
 export function DiscussSearchLink() {
-  return <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="firm-button">Discuss a Search <ArrowRight size={17} aria-hidden="true" /></a>;
+  return <a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="firm-button">Book a Recruiting Call <ArrowRight size={17} aria-hidden="true" /></a>;
 }
 
 export function SearchEvidence() {
@@ -50,7 +50,7 @@ export function FounderSection({ expanded = false }: { expanded?: boolean }) {
           <p>Joel founded Alivio after recruiting for health systems and academic medical centers. That experience informs the firm’s focus on healthcare and technology, and the care taken to understand each search.</p>
           <p>A hiring strategy conversation starts with your open roles, market constraints, and business priorities. From there, Alivio defines the search and the evidence your team needs to assess candidates.</p>
           {expanded ? <>
-            <p>The AI Candidate Engine supports research, matching, and outreach. Recruiters review the shortlist and explain candidate fit, risks, and questions to explore in an interview.</p>
+            <p>Direct sourcing and thoughtful candidate vetting guide every search. Recruiters review the shortlist and explain candidate fit, risks, and questions to explore in an interview.</p>
             <a className="firm-text-link" href="https://www.linkedin.com/company/aliviosearchpartners/" target="_blank" rel="noopener noreferrer">Follow Alivio on LinkedIn <ArrowRight size={16} aria-hidden="true" /></a>
           </> : <Link to="/about#leadership" className="firm-text-link">Meet our founder and explore the firm <ArrowRight size={16} aria-hidden="true" /></Link>}
         </div>
@@ -63,8 +63,8 @@ export function SearchInvitation() {
   return (
     <section className="firm-section firm-invitation" aria-labelledby="search-invitation">
       <div className="mkt-container firm-invitation-grid">
-        <div><p className="firm-eyebrow">Your next critical hire</p><h2 id="search-invitation">Start with a conversation.</h2><p>Tell us about the role, the challenge, and what a successful hire would change for your team.</p></div>
-        <div className="firm-invitation-actions"><DiscussSearchLink /><Link to="/start" className="firm-text-link">Prefer to send a search brief? <ArrowRight size={16} aria-hidden="true" /></Link><Link to="/careers" className="firm-candidate-link">Looking for your next role? Explore careers.</Link></div>
+        <div><p className="firm-eyebrow">Your next critical hire</p><h2 id="search-invitation">Need Help Filling a Critical Role?</h2><p>Let’s talk through the position, market, timeline, and what kind of recruiting support makes sense.</p></div>
+        <div className="firm-invitation-actions"><DiscussSearchLink /><Link to="/start" className="firm-text-link">Prefer to send a search brief? <ArrowRight size={16} aria-hidden="true" /></Link><Link to="/jobs" className="firm-candidate-link">View Open Jobs</Link></div>
       </div>
     </section>
   );

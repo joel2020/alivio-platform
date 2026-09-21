@@ -1,71 +1,65 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Check } from 'lucide-react';
 import { DiscussSearchLink } from './RecruitingFirmSections';
 import '../../styles/premium-hero.css';
 
 // Adapted from 21st.dev's Editorial Collage Hero by felipemenezes098.
 // See docs/licenses/21st-editorial-collage-hero.md for source and license.
+const expertise = [
+  { title: 'Healthcare', href: '/industries/healthcare' },
+  { title: 'Technology', href: '/industries/technology' },
+  { title: 'Leadership', href: '/industries/executive' },
+  { title: 'LATAM', href: '/nearshore-latam-recruiting' },
+  { title: 'Offshore', href: '/offshore-recruitment' },
+];
+
 export default function PremiumRecruitingHero() {
   return (
-    <section className="premium-hero" aria-labelledby="premium-hero-heading">
+    <section className="premium-hero" aria-labelledby="home-heading">
       <div className="mkt-container">
         <div className="premium-hero-grid">
           <div className="premium-hero-copy">
-            <p className="firm-eyebrow">Alivio Search Partners</p>
-            <h1 id="premium-hero-heading">
-              Specialist recruiting for <em>healthcare</em> and technology.
-            </h1>
+            <p className="firm-eyebrow"><span className="recruiting-dot" /> A specialized recruiting firm</p>
+            <h1 id="home-heading">Hire Better Talent <span>Without Wasting Months</span> on the Search</h1>
             <p className="premium-hero-intro">
-              Recruiter-led search for the clinical, technical, and leadership
-              talent your next chapter depends on.
+              Alivio Search Partners is a specialized recruiting firm helping healthcare organizations, technology companies, and growing businesses find qualified professionals through targeted search, direct outreach, and hands-on candidate vetting — across the U.S., Latin America, and offshore markets.
             </p>
             <div className="premium-hero-actions">
               <DiscussSearchLink />
-              <a href="#search-specialties" className="firm-text-link">
-                Explore our expertise <ArrowRight size={16} aria-hidden="true" />
-              </a>
+              <Link to="/jobs" className="firm-text-link">View Open Jobs <ArrowUpRight size={19} aria-hidden="true" /></Link>
             </div>
-            <p className="premium-hero-signoff">
-              Intelligent research. Careful assessment.<br />
-              One accountable recruiting partner.
-            </p>
+            <p className="premium-hero-signoff">Focused search. Personal attention. The right fit.</p>
           </div>
 
           <div className="premium-hero-media">
-            <div className="premium-art">
+            <figure className="premium-art">
               <img
-                src="/images/alivio-sculpture.jpg"
-                srcSet="/images/alivio-sculpture-small.jpg 600w, /images/alivio-sculpture.jpg 1122w"
-                sizes="(max-width: 767px) calc(100vw - 52px), (max-width: 1199px) 46vw, 508px"
-                width={1122}
-                height={1402}
-                alt=""
+                src="/images/recruiting-conversation.jpg"
+                width={1000}
+                height={1500}
+                alt="Professionals collaborating in a thoughtful working conversation"
                 loading="eager"
                 fetchPriority="high"
                 decoding="async"
               />
-              <span className="premium-art-label" aria-hidden="true">A considered approach.</span>
-            </div>
+              <figcaption>People make the difference.</figcaption>
+            </figure>
             <div className="premium-standard">
-              <p className="firm-eyebrow">The Alivio standard</p>
-              <p className="premium-standard-title">Clarity at every step.</p>
+              <p className="firm-eyebrow">The Alivio approach</p>
+              <p className="premium-standard-title">A personal search.<br />A considered shortlist.</p>
               <ul>
-                <li>A role-specific search brief</li>
-                <li>Recruiter-reviewed shortlists</li>
-                <li>Weekly search reporting</li>
+                {['Direct sourcing', 'Hands-on candidate vetting', 'Clear communication'].map(item => (
+                  <li key={item}><Check size={15} aria-hidden="true" />{item}</li>
+                ))}
               </ul>
-              <Link to="/#process" className="firm-text-link">
-                Our approach <ArrowRight size={15} aria-hidden="true" />
-              </Link>
+              <Link to="/#process" className="firm-text-link">How we work <ArrowRight size={16} aria-hidden="true" /></Link>
             </div>
           </div>
         </div>
 
         <nav className="premium-practice-links" aria-label="Our recruiting expertise">
-          <p>Specialist focus.<br /><span>Connected perspective.</span></p>
-          <Link to="/industries/healthcare">Healthcare <ArrowRight size={18} aria-hidden="true" /></Link>
-          <Link to="/industries/technology">Technology <ArrowRight size={18} aria-hidden="true" /></Link>
-          <Link to="/nearshore-latam-recruiting">Latin America <ArrowRight size={18} aria-hidden="true" /></Link>
+          <p>Specialized search.<br /><span>U.S. & international.</span></p>
+          {expertise.map(item => <Link to={item.href} key={item.href}>{item.title}<ArrowUpRight size={18} aria-hidden="true" /></Link>)}
         </nav>
       </div>
     </section>

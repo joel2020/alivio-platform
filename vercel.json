@@ -1,6 +1,31 @@
 {
   "redirects": [
     {
+      "source": "/platform",
+      "destination": "/employers",
+      "permanent": true
+    },
+    {
+      "source": "/product",
+      "destination": "/employers",
+      "permanent": true
+    },
+    {
+      "source": "/pricing",
+      "destination": "/employers#engagement-models",
+      "permanent": true
+    },
+    {
+      "source": "/careers",
+      "destination": "/jobs",
+      "permanent": true
+    },
+    {
+      "source": "/candidate",
+      "destination": "/candidates",
+      "permanent": true
+    },
+    {
       "source": "/register",
       "destination": "/signup",
       "permanent": true
@@ -8,11 +33,6 @@
     {
       "source": "/register/",
       "destination": "/signup",
-      "permanent": true
-    },
-    {
-      "source": "/platform",
-      "destination": "/product",
       "permanent": true
     },
     {
@@ -41,13 +61,8 @@
       "permanent": true
     },
     {
-      "source": "/jobs",
-      "destination": "/careers",
-      "permanent": true
-    },
-    {
       "source": "/apply",
-      "destination": "/careers",
+      "destination": "/jobs",
       "permanent": true
     },
     {
@@ -78,6 +93,34 @@
   ],
   "rewrites": [
     {
+      "source": "/offshore-recruitment",
+      "destination": "/offshore-recruitment.html"
+    },
+    {
+      "source": "/employers",
+      "destination": "/employers.html"
+    },
+    {
+      "source": "/candidates",
+      "destination": "/candidates.html"
+    },
+    {
+      "source": "/industries",
+      "destination": "/industries.html"
+    },
+    {
+      "source": "/industries/executive",
+      "destination": "/industries/executive.html"
+    },
+    {
+      "source": "/contact",
+      "destination": "/contact.html"
+    },
+    {
+      "source": "/jobs",
+      "destination": "/jobs.html"
+    },
+    {
       "source": "/blog/:slug",
       "destination": "/api/article?slug=:slug"
     },
@@ -90,10 +133,6 @@
       "destination": "/recruiting-agency-medellin.html"
     },
     {
-      "source": "/pricing",
-      "destination": "/pricing.html"
-    },
-    {
       "source": "/recruiting-agency-westchester",
       "destination": "/recruiting-agency-westchester.html"
     },
@@ -104,10 +143,6 @@
     {
       "source": "/about",
       "destination": "/about.html"
-    },
-    {
-      "source": "/product",
-      "destination": "/product.html"
     },
     {
       "source": "/industries/healthcare",
@@ -136,7 +171,20 @@
   ],
   "headers": [
     {
-      "source": "/(dashboard|crm|candidates|applications|roles|settings|pipeline|calls|outreach|agents|onboarding|admin|client|tasks|shortlists|login|signup|developers|og)(/.*)?",
+      "source": "/candidates/:id/:path*",
+      "headers": [
+        {
+          "key": "x-robots-tag",
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        }
+      ]
+    },
+    {
+      "source": "/(dashboard|crm|applications|roles|settings|pipeline|calls|outreach|agents|onboarding|admin|client|tasks|shortlists|login|signup|developers|og)(/.*)?",
       "headers": [
         {
           "key": "x-robots-tag",

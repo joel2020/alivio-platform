@@ -1,29 +1,39 @@
 import { test, expect } from '@playwright/test';
 
-// Protect the consultative path through the redesign, including cross-page anchors.
-test('desktop expertise and approach links lead to the correct visible sections', async ({ page }) => {
+const pages = ['/nearshore-latam-recruiting','/offshore-recruitment','/','/employers','/candidates','/industries','/industries/healthcare','/industries/technology','/industries/executive','/jobs','/about','/contact'];
+for (const path of pages) {
+  test(`${path} presents recruiting services with its own indexable metadata`, async ({ page }) => {
+    await page.goto(path);
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `https://aliviosearchpartners.com${path}`);
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'index, follow');
+    const text = await page.locator('main').innerText();
+    expect(text).not.toMatch(/Talent Engine|AI Candidate Engine|book demo|flat monthly fee|recruiting OS/i);
+  });
+}
+
+test('employers and candidates have complete navigation and working destination links', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto('/about');
+  await page.goto('/');
   const nav = page.getByRole('navigation', { name: 'Main navigation', exact: true });
-  await nav.getByRole('link', { name: 'Expertise', exact: true }).click();
-  await expect(page).toHaveURL(/\/#search-specialties$/);
-  await expect(page.locator('#practice-heading')).toBeInViewport();
-  await nav.getByRole('link', { name: 'Our Approach', exact: true }).click();
-  await expect(page).toHaveURL(/\/#process$/);
-  await expect(page.locator('#process-heading')).toBeInViewport();
-  await expect(nav.getByRole('link', { name: 'Discuss a Search' })).toHaveAttribute('href', 'https://cal.com/alivio/intro-call30');
-  await expect(nav.getByRole('link', { name: 'Client Sign In' })).toHaveAttribute('href', '/login');
+  for (const label of ['Employers','Candidates','Industries','Jobs','About','Contact']) await expect(nav.getByRole('link', { name: label, exact: true })).toBeVisible();
+  await expect(nav.getByRole('link', { name: 'Book a Recruiting Call' })).toHaveAttribute('href', 'https://cal.com/alivio/intro-call30');
+  await nav.getByRole('link', { name: 'Employers', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Contingency Search', exact: true })).toBeVisible();
+  await nav.getByRole('link', { name: 'Candidates', exact: true }).click();
+  await expect(page.getByRole('link', { name: 'Submit Your Resume by Email' })).toHaveAttribute('href', /^mailto:hello@aliviosearchpartners.com/);
+  await nav.getByRole('link', { name: 'Jobs', exact: true }).click();
+  await expect(page).toHaveURL(/\/jobs$/);
 });
 
-test('search evidence retains the qualification and founder remains reachable', async ({ page }) => {
+test('homepage has the approved eight sections and no invented proof', async ({ page }) => {
   await page.goto('/');
-  const evidence = page.getByRole('region', { name: 'The work behind a considered shortlist.' });
-  await expect(evidence).toContainText('10');
-  await expect(evidence).toContainText('16 sourced and matched');
-  await expect(evidence).toContainText('not a placement or retention result');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Hire Better Talent Without Wasting Months on the Search');
+  await expect(page.locator('main section')).toHaveCount(8);
   await expect(page.getByText('Sample pipeline', { exact: true })).toHaveCount(0);
-  await page.getByRole('link', { name: 'Meet our founder and explore the firm' }).click();
-  await expect(page).toHaveURL(/\/about#leadership$/);
+  await page.getByRole('link', { name: 'Meet Alivio' }).click();
+  await expect(page).toHaveURL(/\/about$/);
+  await page.getByRole('link', { name: 'Meet our founder' }).click();
   await expect(page.getByRole('heading', { name: 'Joel Carias' })).toBeInViewport();
 });
 
@@ -34,6 +44,22 @@ test('mobile practice navigation opens the selected practice', async ({ page }) 
   await page.getByRole('dialog').getByRole('link', { name: 'Healthcare recruiting', exact: true }).click();
   await expect(page).toHaveURL(/\/industries\/healthcare$/);
   await expect(page.getByRole('dialog')).toHaveCount(0);
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Clinical and healthcare leadership');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Healthcare Recruiting');
   expect(await page.locator('main').evaluate(el => el.inert)).toBe(false);
+});
+
+test('LATAM and offshore recruitment are discoverable from core pages and mobile navigation', async ({ page }) => {
+  for (const path of ['/', '/employers', '/industries']) {
+    await page.goto(path);
+    const coverage = page.locator('#international-recruiting');
+    await expect(coverage.getByRole('link', { name: 'Explore LATAM Recruitment', exact: true })).toHaveAttribute('href', '/nearshore-latam-recruiting');
+    await coverage.getByRole('link', { name: 'Explore Offshore Recruitment', exact: true }).click();
+    await expect(page).toHaveURL(/\/offshore-recruitment$/);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Offshore Recruitment Built Around Your Team');
+  }
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole('button', { name: 'Open menu', exact: true }).click();
+  await page.getByRole('dialog').getByRole('link', { name: 'LATAM recruitment', exact: true }).click();
+  await expect(page).toHaveURL(/\/nearshore-latam-recruiting$/);
+  await expect(page.getByRole('dialog')).toHaveCount(0);
 });

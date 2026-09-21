@@ -1,84 +1,14 @@
 import { Link } from 'react-router-dom';
-import { Linkedin, Mail } from 'lucide-react';
 import { AlivioLogo } from '../brand/AlivioLogo';
-import { CAL_COM_BOOKING_URL, DEMO_EVENT_DESCRIPTION, DEMO_EVENT_TITLE } from '../../lib/demoBooking';
-
-const productLinks = [
-  { label: 'LATAM Recruiting', href: '/nearshore-latam-recruiting' },
-  { label: 'Pricing & Engagements', href: '/pricing' },
-  { label: 'Recruitment Services', href: '/services' },
-  { label: 'AI Candidate Engine', href: '/product' },
-  { label: 'Healthcare Practice', href: '/industries/healthcare' },
-  { label: 'Technology Practice', href: '/industries/technology' },
-];
-
-const companyLinks = [
-  { label: 'Medellín Recruiting', href: '/recruiting-agency-medellin', external: false },
-  { label: 'Westchester Recruiting', href: '/recruiting-agency-westchester', external: false },
-  { label: 'About', href: '/about', external: false },
-  { label: 'Careers', href: '/careers', external: false },
-  { label: 'Request a Search Plan', href: '/start', external: false },
-  { label: 'Discuss a Search', href: CAL_COM_BOOKING_URL, external: true },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/aliviosearchpartners/', external: true },
-];
-
-const legalLinks = [
-  { label: 'Privacy Policy', to: '/privacy' },
-  { label: 'Terms of Service', to: '/terms' },
-  { label: 'Responsible AI', to: '/about#responsible-ai' },
-  { label: 'Accessibility', to: '/accessibility' },
-];
+import { ArrowUpRight } from 'lucide-react';
+import { CAL_COM_BOOKING_URL } from '../../lib/demoBooking';
 
 export default function MarketingFooter() {
-  return (
-    <footer style={{ backgroundColor: '#102D35', color: '#B5C8C6', borderTop: '1px solid #426066' }}>
-      <div className="mkt-container" style={{ paddingTop: '64px', paddingBottom: '48px' }}>
-        <div className="mkt-footer-grid">
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
-              <AlivioLogo variant="dark" markSize={26} wordSize={17} />
-            </div>
-            <div style={{ display: 'flex', gap: '12px' }}>
-              <a href="https://www.linkedin.com/company/aliviosearchpartners/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" style={{ color: '#B5C8C6' }}><Linkedin size={18} /></a>
-              <a href="https://x.com/aliviosearch" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter" style={{ color: '#B5C8C6', fontSize: '14px', textDecoration: 'none' }}>X</a>
-              <a href="mailto:hello@aliviosearchpartners.com" aria-label="Contact email" style={{ color: '#B5C8C6' }}><Mail size={18} /></a>
-            </div>
-            <p style={{ fontSize: '13px', color: '#B5C8C6', marginTop: '14px' }}>Recruiting for Healthcare & Technology</p>
-            <p style={{ fontSize: '13px', color: '#B5C8C6', marginTop: '6px' }}>hello@aliviosearchpartners.com</p>
-            <p style={{ fontSize: '13px', color: '#B5C8C6', marginTop: '6px' }}><a href="/" style={{ color: '#B5C8C6' }}>aliviosearchpartners.com</a></p>
-          </div>
-
-          <div>
-            <p style={{ fontSize: '13px', fontWeight: 600, color: '#fff', marginBottom: '16px' }}>Recruiting</p>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {productLinks.map((item) => (<li key={item.label}><a href={item.href} style={{ fontSize: '14px', color: '#B5C8C6', textDecoration: 'none' }}>{item.label}</a></li>))}
-            </ul>
-          </div>
-
-          <div>
-            <p style={{ fontSize: '13px', fontWeight: 600, color: '#fff', marginBottom: '16px' }}>Company</p>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {companyLinks.map((item) => (
-                <li key={item.label}>
-                  <a href={item.href} target={item.external ? '_blank' : undefined} rel={item.external ? 'noopener noreferrer' : undefined} style={{ fontSize: '14px', color: '#B5C8C6', textDecoration: 'none' }} title={item.href === CAL_COM_BOOKING_URL ? `${DEMO_EVENT_TITLE}: ${DEMO_EVENT_DESCRIPTION}` : undefined}>
-                    {item.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <p style={{ fontSize: '13px', fontWeight: 600, color: '#fff', marginBottom: '16px' }}>Legal</p>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {legalLinks.map((item) => (<li key={item.label}><Link to={item.to} style={{ fontSize: '14px', color: '#B5C8C6', textDecoration: 'none' }}>{item.label}</Link></li>))}
-            </ul>
-          </div>
-        </div>
-        <div style={{ borderTop: '1px solid #426066', paddingTop: '24px' }}>
-          <p style={{ fontSize: '13px', color: '#B5C8C6', margin: 0 }}>© 2026 Alivio Search Partners. All rights reserved.</p>
-        </div>
-      </div>
-    </footer>
-  );
+  return <footer className="recruiting-footer"><div className="mkt-container">
+    <div className="recruiting-footer-grid"><div><Link to="/" title="Alivio Search Partners home"><AlivioLogo variant="dark" markSize={36} wordSize={26} /></Link><p>Specialized recruiting.<br />Personal attention. Lasting fit.</p><a href="mailto:hello@aliviosearchpartners.com">hello@aliviosearchpartners.com</a><p className="recruiting-footer-caption">Healthcare, technology, and professional search across the U.S., Latin America, and offshore markets.</p></div>
+    <nav aria-label="Recruiting"><h2>Recruiting</h2><Link to="/employers">For Employers</Link><Link to="/candidates">For Candidates</Link><Link to="/jobs">View Open Jobs</Link><Link to="/employers#engagement-models">Contingency & Retained Search</Link><a href={CAL_COM_BOOKING_URL} target="_blank" rel="noopener noreferrer">Book a Recruiting Call <ArrowUpRight size={14} aria-hidden="true" /></a></nav>
+    <nav aria-label="Industries"><h2>Our expertise</h2><Link to="/industries/healthcare">Healthcare Recruiting</Link><Link to="/industries/technology">Technology Recruiting</Link><Link to="/industries/executive">Executive & Leadership Search</Link><Link to="/nearshore-latam-recruiting">LATAM Recruitment</Link><Link to="/offshore-recruitment">Offshore Recruitment</Link><Link to="/industries">All Industries</Link></nav>
+    <nav aria-label="Company"><h2>Alivio</h2><Link to="/about">About Us</Link><Link to="/contact">Contact</Link><Link to="/blog">Recruiting Insights</Link><a href="https://www.linkedin.com/company/aliviosearchpartners/" target="_blank" rel="noopener noreferrer">LinkedIn <ArrowUpRight size={14} aria-hidden="true" /></a><Link to="/login">Client Sign In</Link></nav></div>
+    <div className="recruiting-footer-bottom"><p>© {new Date().getFullYear()} Alivio Search Partners. All rights reserved.</p><nav aria-label="Legal"><Link to="/privacy">Privacy Policy</Link><Link to="/terms">Terms of Service</Link><Link to="/accessibility">Accessibility</Link></nav></div>
+  </div></footer>;
 }

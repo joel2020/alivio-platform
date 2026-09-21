@@ -3,13 +3,16 @@ import { Suspense } from 'react';
 import { StaticRouter, Routes, Route } from 'react-router-dom';
 import MarketingLayout from './components/marketing/MarketingLayout';
 import LatamPage from './pages/marketing/LatamPage';
+import OffshorePage from './pages/marketing/OffshorePage';
 import MedellinPage from './pages/marketing/MedellinPage';
-import PricingPage from './pages/marketing/PricingPage';
 import WestchesterPage from './pages/marketing/WestchesterPage';
 import HomePage from './pages/marketing/HomePage';
 import ServicesPage from './pages/marketing/ServicesPage';
 import AboutPage from './pages/marketing/AboutPage';
-import ProductPage from './pages/marketing/ProductPage';
+import EmployersPage from './pages/marketing/EmployersPage';
+import CandidatesPage from './pages/marketing/CandidatesPage';
+import ContactPage from './pages/marketing/ContactPage';
+import CareersPage from './pages/marketing/CareersPage';
 import IndustriesPage from './pages/marketing/IndustriesPage';
 import PrivacyPage from './pages/marketing/PrivacyPage';
 import TermsPage from './pages/marketing/TermsPage';
@@ -21,12 +24,17 @@ export { getPageSeo } from './lib/pageSeo';
 const pages = {
   '/': <HomePage />,
   '/nearshore-latam-recruiting': <LatamPage />,
+  '/offshore-recruitment': <OffshorePage />,
   '/recruiting-agency-medellin': <MedellinPage />,
-  '/pricing': <PricingPage />,
   '/recruiting-agency-westchester': <WestchesterPage />,
   '/services': <ServicesPage />,
   '/about': <AboutPage />,
-  '/product': <ProductPage />,
+  '/employers': <EmployersPage />,
+  '/candidates': <CandidatesPage />,
+  '/contact': <ContactPage />,
+  '/jobs': <CareersPage />,
+  '/industries': <IndustriesPage />,
+  '/industries/executive': <IndustriesPage />,
   '/industries/healthcare': <IndustriesPage />,
   '/industries/technology': <IndustriesPage />,
   '/privacy': <PrivacyPage />,

@@ -39,3 +39,7 @@ test-results/
 .prerender/
 
 .server/
+
+# Local deployment link and redesign verification output
+.vercel/
+artifacts/

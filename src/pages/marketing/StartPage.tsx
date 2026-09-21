@@ -19,7 +19,9 @@ const services = [
   'Physician or advanced practice recruiting',
   'Nursing / clinical staff pipeline',
   'Technology & product search',
-  'AI Candidate Engine program',
+  'Contingency and contract recruiting',
+  'LATAM recruitment',
+  'Offshore recruitment',
   'Not sure yet — advise me',
 ];
 

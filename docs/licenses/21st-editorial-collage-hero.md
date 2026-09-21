@@ -5,7 +5,7 @@ The composition of `src/components/marketing/PremiumRecruitingHero.tsx` is adapt
 Source: https://21st.dev/@felipemenezes098/components/hero-04
 21st Community license documentation: https://21st.mintlify.app/community
 
-Adaptations: Alivio content and existing CTAs; locally generated decorative artwork; search-standards panel replacing secondary artwork; existing React Router; plain CSS layout and reduced-motion-aware entrance animation instead of Motion/react-wrap-balancer/shadcn dependencies. Original demo assets are not used. No 21st credentials are needed by the website.
+Adaptations: Alivio content and existing CTAs; existing recruiting photography; navy search-approach panel replacing secondary artwork; healthcare, technology, leadership, LATAM, and offshore practice navigation; existing React Router; plain CSS layout and reduced-motion-aware entrance animation instead of Motion/react-wrap-balancer/shadcn dependencies. Original demo assets are not used. No 21st credentials are needed by the website.
 
 ## MIT License
 

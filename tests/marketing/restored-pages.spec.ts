@@ -3,14 +3,12 @@ import { test, expect } from '@playwright/test';
 const restored = [
   { path: '/nearshore-latam-recruiting', heading: 'Nearshore LATAM recruiting for U.S. teams', link: 'LATAM Recruiting' },
   { path: '/recruiting-agency-medellin', heading: 'Recruiting in Medellín for bilingual and technical talent', link: 'Medellín Recruiting' },
-  { path: '/pricing', heading: 'Recruiting pricing built around your search', link: 'Pricing & Engagements' },
   { path: '/recruiting-agency-westchester', heading: 'Recruiting for Westchester healthcare and technology teams', link: 'Westchester Recruiting' },
 ];
 
 for (const entry of restored) {
-  test(`${entry.path} is reachable from the footer and leads to a search request`, async ({ page }) => {
-    await page.goto('/services');
-    await page.locator('footer').getByRole('link', { name: entry.link, exact: true }).click();
+  test(`${entry.path} remains reachable and leads to a search request`, async ({ page }) => {
+    await page.goto(entry.path);
     await expect(page).toHaveURL(new RegExp(`${entry.path}$`));
     await expect(page.getByRole('heading', { level: 1, name: entry.heading })).toBeVisible();
     await page.locator('main').getByRole('link', { name: 'Request a Search Plan', exact: true }).first().click();
@@ -42,17 +40,13 @@ test('restored URLs serve their own indexable HTML without redirects', async ({ 
 });
 
 
-test('pricing links to the visible services engagement section', async ({ page }) => {
+test('legacy pricing leads to the recruiting engagement models', async ({ page }) => {
   await page.goto('/pricing');
-  await page.getByRole('link', { name: 'Explore our recruitment services', exact: true }).click();
-  await expect(page).toHaveURL(/\/services#engagement-models$/);
-  const section = page.locator('#engagement-models');
-  await expect(section.getByRole('heading', { name: 'Pick the shape. Keep the standard.' })).toBeVisible();
-  await expect.poll(async () => {
-    const box = await section.boundingBox();
-    return box !== null && box.y >= 72 && box.y <= 120;
-  }).toBe(true);
+  await expect(page).toHaveURL(/\/employers#engagement-models$/);
+  await expect(page.locator('#engagement-models')).toBeInViewport();
+  await expect(page.getByRole('heading', { name: 'Contingency Search', exact: true })).toBeVisible();
 });
+
 
 for (const [source, target] of [
   ['/nearshore-latam-talent', '/nearshore-latam-recruiting'],

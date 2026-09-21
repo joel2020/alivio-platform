@@ -22,10 +22,10 @@ export default function CareersPage() {
   const [category, setCategory] = useState('All');
 
   useSeo({
-    title: 'Careers & Open Positions | Alivio Search Partners',
+    title: 'Open Jobs | Alivio Search Partners',
     description:
       'Open clinical, technical, and recruiting positions with Alivio Search Partners and our healthcare and technology clients. Apply directly online.',
-    canonicalUrl: 'https://aliviosearchpartners.com/careers',
+    canonicalUrl: 'https://aliviosearchpartners.com/jobs',
   });
 
   useEffect(() => {
@@ -67,15 +67,14 @@ export default function CareersPage() {
 
   return (
     <div style={{ backgroundColor: '#FAFAFA', minHeight: '70vh' }}>
-      <section style={{ background: 'linear-gradient(180deg,#061636 0%,#04132F 100%)', padding: '120px 0 60px' }}>
+      <section style={{ background: '#0A2C4C', padding: '76px 0 60px' }}>
         <div className="mkt-container">
-          <p className="mkt-label" style={{ color: '#8FB4FF' }}>Careers</p>
+          <p className="mkt-label" style={{ color: '#A5D1C7' }}>Open jobs</p>
           <h1 style={{ color: '#fff', fontSize: 'clamp(32px,4.4vw,54px)', lineHeight: 1.05, letterSpacing: '-.03em', margin: '14px 0 14px' }}>
-            Open positions.
+            Find your next opportunity.
           </h1>
-          <p style={{ color: '#B9C6E4', fontSize: 17, lineHeight: 1.7, maxWidth: 640 }}>
-            Roles with Alivio and with the healthcare and technology teams we recruit for. Every application gets a
-            human read — no black holes.
+          <p style={{ color: '#D9E5EF', fontSize: 17, lineHeight: 1.7, maxWidth: 640 }}>
+            Roles with Alivio and with the healthcare and technology teams we recruit for. Explore current opportunities and apply directly to the roles that fit your experience.
           </p>
         </div>
       </section>

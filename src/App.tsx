@@ -9,10 +9,11 @@ const AppLayout = lazy(() => import('./components/app/AppLayout'));
 
 import HomePage from './pages/marketing/HomePage';
 const LatamPage = lazy(() => import('./pages/marketing/LatamPage'));
+const OffshorePage = lazy(() => import('./pages/marketing/OffshorePage'));
 const MedellinPage = lazy(() => import('./pages/marketing/MedellinPage'));
-const PricingPage = lazy(() => import('./pages/marketing/PricingPage'));
 const WestchesterPage = lazy(() => import('./pages/marketing/WestchesterPage'));
-const ProductPage = lazy(() => import('./pages/marketing/ProductPage'));
+const EmployersPage = lazy(() => import('./pages/marketing/EmployersPage'));
+const CandidatesPage = lazy(() => import('./pages/marketing/CandidatesPage'));
 const DevelopersPage = lazy(() => import('./pages/marketing/DevelopersPage'));
 const PrivacyPage = lazy(() => import('./pages/marketing/PrivacyPage'));
 const TermsPage = lazy(() => import('./pages/marketing/TermsPage'));
@@ -105,10 +106,15 @@ export default function App() {
             <Route element={<MarketingLayout />}>
               <Route path="/" element={<HomePage />} />
               <Route path="/nearshore-latam-recruiting" element={<LatamPage />} />
+              <Route path="/offshore-recruitment" element={<OffshorePage />} />
               <Route path="/recruiting-agency-medellin" element={<MedellinPage />} />
-              <Route path="/pricing" element={<PricingPage />} />
+              <Route path="/pricing" element={<Navigate to="/employers#engagement-models" replace />} />
               <Route path="/recruiting-agency-westchester" element={<WestchesterPage />} />
-              <Route path="/product" element={<ProductPage />} />
+              <Route path="/product" element={<Navigate to="/employers" replace />} />
+              <Route path="/employers" element={<EmployersPage />} />
+              <Route path="/candidates" element={<CandidatesPage />} />
+              <Route path="/industries" element={<IndustriesPage />} />
+              <Route path="/jobs" element={<CareersPage />} />
               <Route path="/developers" element={<DevelopersPage />} />
               <Route path="/privacy" element={<PrivacyPage />} />
               <Route path="/terms" element={<TermsPage />} />
@@ -117,7 +123,7 @@ export default function App() {
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/services" element={<ServicesPage />} />
               <Route path="/about" element={<AboutPage />} />
-              <Route path="/careers" element={<CareersPage />} />
+              <Route path="/careers" element={<Navigate to="/jobs" replace />} />
               <Route path="/careers/:id" element={<CareersJobPage />} />
               <Route path="/industries/:slug" element={<IndustriesPage />} />
               <Route path="/start" element={<StartPage />} />
@@ -125,7 +131,7 @@ export default function App() {
             </Route>
             <Route path="/nearshore-latam-talent" element={<Navigate to="/nearshore-latam-recruiting" replace />} />
             <Route path="/recruiters-ny-medellin" element={<Navigate to="/recruiting-agency-medellin" replace />} />
-            <Route path="/platform" element={<Navigate to="/product" replace />} />
+            <Route path="/platform" element={<Navigate to="/employers" replace />} />
             <Route path="/team/*" element={<Navigate to="/about" replace />} />
             <Route path="/case-studies/*" element={<Navigate to="/services" replace />} />
             <Route path="/industries/*" element={<Navigate to="/" replace />} />

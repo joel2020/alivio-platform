@@ -1,14 +1,15 @@
 import { Link } from 'react-router-dom';
+import { DiscussSearchLink } from '../../components/marketing/RecruitingFirmSections';
 
 export default function LatamPage() {
   return (
-    <div className="search-page">
-      <section className="search-page-hero">
+    <div className="search-page firm-page">
+      <section className="firm-inner-hero">
         <div className="mkt-container">
-          <p className="mkt-label">Nearshore recruiting</p>
+          <p className="firm-eyebrow">LATAM recruitment</p>
           <h1>Nearshore LATAM recruiting for U.S. teams</h1>
-          <p className="search-page-intro">Alivio Search Partners helps U.S. employers source and assess talent in Latin America for technology, product and business operations roles. We build the search around the work, communication requirements and hours your team needs to share.</p>
-          <div className="search-page-actions"><Link to="/start" className="mkt-btn-primary-lg">Request a Search Plan</Link><Link to="/recruiting-agency-medellin" className="mkt-btn-secondary mkt-btn-on-dark">Explore Medellín recruiting</Link></div>
+          <p className="firm-lead">Alivio Search Partners helps U.S. employers source and assess talent in Latin America for technology, product and business operations roles. We build the search around the work, communication requirements and hours your team needs to share.</p>
+          <div className="recruiting-actions"><DiscussSearchLink /><Link to="/jobs" className="firm-text-link">View Open Jobs →</Link></div>
         </div>
       </section>
 
@@ -50,10 +51,11 @@ export default function LatamPage() {
       <section className="search-page-section search-page-tint">
         <div className="mkt-container search-page-reading">
           <h2>Questions about LATAM recruiting</h2>
+          <h3>Can we recruit beyond Latin America?</h3><p>For a broader international search, explore our <Link to="/offshore-recruitment" className="search-page-link">Offshore Recruitment</Link> service. We define target markets, coverage needs, and candidate criteria around the role.</p>
           <h3>Can we focus the search on Medellín?</h3><p>Yes. A search can focus on Medellín or use a broader regional brief. Our <Link to="/recruiting-agency-medellin" className="search-page-link">Medellín recruiting page</Link> explains how location, communication and working arrangements shape that search.</p>
           <h3>Does recruiting include payroll or employer-of-record services?</h3><p>This page describes candidate sourcing and recruiting support. Do not assume payroll, employer-of-record services or employment administration are included; confirm responsibilities and any separate providers in the written engagement scope.</p>
-          <h3>How is the engagement priced?</h3><p>Scope depends on the roles, markets, volume and support required. Review our <Link to="/pricing" className="search-page-link">pricing and engagement options</Link>, then share your hiring brief for a proposal.</p>
-          <div className="search-page-callout"><h3>Build your LATAM search brief</h3><p>Tell us what the hire will do, where you are open to sourcing and when the team needs to collaborate.</p><Link to="/start" className="mkt-btn-primary-lg">Request a Search Plan</Link><p>Looking for work? <Link to="/careers" className="search-page-link">View current openings</Link>.</p></div>
+          <h3>How is the engagement priced?</h3><p>Scope depends on the roles, markets, volume and support required. Review our <Link to="/employers#engagement-models" className="search-page-link">recruiting engagement options</Link>, then share your hiring brief for a proposal.</p>
+          <div className="search-page-callout"><h3>Build your LATAM search brief</h3><p>Tell us what the hire will do, where you are open to sourcing and when the team needs to collaborate.</p><Link to="/start" className="mkt-btn-primary-lg">Request a Search Plan</Link><p>Looking for work? <Link to="/jobs" className="search-page-link">View Open Jobs</Link>.</p></div>
         </div>
       </section>
     </div>
