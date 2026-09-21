@@ -93,6 +93,10 @@
   ],
   "rewrites": [
     {
+      "source": "/offshore-recruitment",
+      "destination": "/offshore-recruitment.html"
+    },
+    {
       "source": "/employers",
       "destination": "/employers.html"
     },

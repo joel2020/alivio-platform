@@ -40,3 +40,9 @@ Implemented from the approved “Redesign Alivio Search Partners” conversation
 Local screenshots are in `artifacts/recruiting-redesign/` (not committed). Hosted preview: https://alivio-platform-4kcgsntem-joel-carias-projects.vercel.app
 
 Production publishing is a separate release step; production has not been changed.
+
+## September 21: LATAM and offshore recruitment
+
+Added a shared LATAM/offshore service section to the homepage, employer page, and industry hub; added links to mobile practice navigation and the footer. Extended homepage, about, employer, and search-intake copy to include international recruiting. Preserved the existing LATAM URL and connected it to a new `/offshore-recruitment` page with role coverage, candidate assessment criteria, the existing recruiting process, and booking/jobs CTAs. Added prerendering, page-specific SEO, deployment routing, and sitemap coverage for offshore recruitment. Payroll and employment administration are described as separately scoped services.
+
+Validation: build and typecheck passed, changed files lint cleanly, desktop/mobile layouts reviewed, and marketing browser checks passed. This remains a preview change; production has not been published. Unrelated Azure work already present in the checkout was excluded from the commit and preview.

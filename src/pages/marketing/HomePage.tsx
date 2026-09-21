@@ -2,7 +2,7 @@ import { practices, candidateBenefits } from '../../lib/recruitingContent';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { DiscussSearchLink, SearchInvitation } from '../../components/marketing/RecruitingFirmSections';
-import { Benefits, SearchProcess } from '../../components/marketing/RecruitingContent';
+import { Benefits, SearchProcess, InternationalSearches } from '../../components/marketing/RecruitingContent';
 
 export default function HomePage() {
   return (
@@ -12,7 +12,7 @@ export default function HomePage() {
           <div className="recruiting-hero-copy">
             <p className="firm-eyebrow"><span className="recruiting-dot" /> A specialized recruiting firm</p>
             <h1 id="home-heading">Hire Better Talent <span>Without Wasting Months</span> on the Search</h1>
-            <p>Alivio Search Partners is a specialized recruiting firm helping healthcare organizations, technology companies, and growing businesses find qualified professionals faster through targeted search, direct outreach, and hands-on candidate vetting.</p>
+            <p>Alivio Search Partners is a specialized recruiting firm helping healthcare organizations, technology companies, and growing businesses find qualified professionals through targeted search, direct outreach, and hands-on candidate vetting — across the U.S., Latin America, and offshore markets.</p>
             <div className="recruiting-actions"><DiscussSearchLink /><Link to="/jobs" className="firm-text-link">View Open Jobs <ArrowUpRight size={19} aria-hidden="true" /></Link></div>
             <div className="recruiting-hero-note">Focused search. Personal attention. The right fit.</div>
           </div>
@@ -21,12 +21,13 @@ export default function HomePage() {
             <figcaption><span>People make the difference.</span><strong>We help you find yours.</strong><ArrowUpRight size={31} aria-hidden="true" /></figcaption>
           </figure>
         </div>
-        <div className="mkt-container"><p className="recruiting-trust">Healthcare, technology, operations, sales, and leadership recruiting across the U.S.</p></div>
+        <div className="mkt-container"><p className="recruiting-trust">Healthcare, technology, and professional search · U.S., LATAM & offshore recruitment</p></div>
       </section>
 
       <section id="search-specialties" className="firm-section" aria-labelledby="practice-heading"><div className="mkt-container">
         <div className="recruiting-section-head"><div><p className="firm-eyebrow">What we do</p><h2 id="practice-heading">Recruiting Support for Roles That Cannot Stay Open</h2></div><p>We help companies identify, engage, screen, and deliver qualified candidates for critical positions.</p></div>
         <div className="recruiting-service-grid">{[...practices.map(p => ({ title: p.slug === 'executive' ? 'Executive & Professional Search' : p.title, copy: p.copy, href: `/industries/${p.slug}` })), { title: 'Contract & Project Recruiting', copy: 'Flexible recruiting support when your team needs extra sourcing and screening capacity.', href: '/employers#engagement-models' }].map(item => <Link to={item.href} key={item.title} className="recruiting-service"><ArrowUpRight size={25} aria-hidden="true" /><h3>{item.title}</h3><p>{item.copy}</p></Link>)}</div>
+        <InternationalSearches />
       </div></section>
 
       <section className="firm-section recruiting-why" aria-labelledby="why-heading"><div className="mkt-container recruiting-two-col">

@@ -16,6 +16,8 @@ const practiceLinks = [
   { label: 'Healthcare recruiting', href: '/industries/healthcare' },
   { label: 'Technology recruiting', href: '/industries/technology' },
   { label: 'Executive & leadership search', href: '/industries/executive' },
+  { label: 'LATAM recruitment', href: '/nearshore-latam-recruiting' },
+  { label: 'Offshore recruitment', href: '/offshore-recruitment' },
 ];
 
 export default function MarketingNav() {

@@ -2,6 +2,7 @@
 export function preloadMarketingRoute(path: string): Promise<unknown> {
   if (/^\/blog\/[^/]+$/.test(path)) return import('../pages/marketing/BlogPostPage');
   switch (path) {
+    case '/offshore-recruitment': return import('../pages/marketing/OffshorePage');
     case '/nearshore-latam-recruiting': return import('../pages/marketing/LatamPage');
     case '/recruiting-agency-medellin': return import('../pages/marketing/MedellinPage');
     case '/pricing': return import('../pages/marketing/PricingPage');

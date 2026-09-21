@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import { StaticRouter, Routes, Route } from 'react-router-dom';
 import MarketingLayout from './components/marketing/MarketingLayout';
 import LatamPage from './pages/marketing/LatamPage';
+import OffshorePage from './pages/marketing/OffshorePage';
 import MedellinPage from './pages/marketing/MedellinPage';
 import WestchesterPage from './pages/marketing/WestchesterPage';
 import HomePage from './pages/marketing/HomePage';
@@ -23,6 +24,7 @@ export { getPageSeo } from './lib/pageSeo';
 const pages = {
   '/': <HomePage />,
   '/nearshore-latam-recruiting': <LatamPage />,
+  '/offshore-recruitment': <OffshorePage />,
   '/recruiting-agency-medellin': <MedellinPage />,
   '/recruiting-agency-westchester': <WestchesterPage />,
   '/services': <ServicesPage />,

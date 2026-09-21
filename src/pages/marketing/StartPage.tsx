@@ -20,6 +20,8 @@ const services = [
   'Nursing / clinical staff pipeline',
   'Technology & product search',
   'Contingency and contract recruiting',
+  'LATAM recruitment',
+  'Offshore recruitment',
   'Not sure yet — advise me',
 ];
 

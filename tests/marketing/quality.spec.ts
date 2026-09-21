@@ -24,7 +24,7 @@ test('homepage dark headings and secondary call to action remain readable', asyn
   expect(issues.violations.map(({ id, nodes }) => ({ id, elements: nodes.map(n => n.target) }))).toEqual([]);
 });
 
-for (const path of ['/nearshore-latam-recruiting', '/recruiting-agency-medellin', '/pricing', '/recruiting-agency-westchester', '/', '/services', '/about', '/product', '/start', '/contact', '/industries/healthcare', '/industries/technology', '/employers', '/candidates', '/industries', '/industries/executive']) {
+for (const path of ['/nearshore-latam-recruiting', '/recruiting-agency-medellin', '/pricing', '/recruiting-agency-westchester', '/', '/services', '/about', '/product', '/start', '/contact', '/industries/healthcare', '/industries/technology', '/employers', '/candidates', '/industries', '/industries/executive', '/offshore-recruitment']) {
   test(`${path} is accessible and fits a small phone`, async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 800 });
     await page.goto(path);

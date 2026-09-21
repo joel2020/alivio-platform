@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const pages = ['/','/employers','/candidates','/industries','/industries/healthcare','/industries/technology','/industries/executive','/jobs','/about','/contact'];
+const pages = ['/nearshore-latam-recruiting','/offshore-recruitment','/','/employers','/candidates','/industries','/industries/healthcare','/industries/technology','/industries/executive','/jobs','/about','/contact'];
 for (const path of pages) {
   test(`${path} presents recruiting services with its own indexable metadata`, async ({ page }) => {
     await page.goto(path);
@@ -46,4 +46,20 @@ test('mobile practice navigation opens the selected practice', async ({ page }) 
   await expect(page.getByRole('dialog')).toHaveCount(0);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Healthcare Recruiting');
   expect(await page.locator('main').evaluate(el => el.inert)).toBe(false);
+});
+
+test('LATAM and offshore recruitment are discoverable from core pages and mobile navigation', async ({ page }) => {
+  for (const path of ['/', '/employers', '/industries']) {
+    await page.goto(path);
+    const coverage = page.locator('#international-recruiting');
+    await expect(coverage.getByRole('link', { name: 'Explore LATAM Recruitment', exact: true })).toHaveAttribute('href', '/nearshore-latam-recruiting');
+    await coverage.getByRole('link', { name: 'Explore Offshore Recruitment', exact: true }).click();
+    await expect(page).toHaveURL(/\/offshore-recruitment$/);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Offshore Recruitment Built Around Your Team');
+  }
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole('button', { name: 'Open menu', exact: true }).click();
+  await page.getByRole('dialog').getByRole('link', { name: 'LATAM recruitment', exact: true }).click();
+  await expect(page).toHaveURL(/\/nearshore-latam-recruiting$/);
+  await expect(page.getByRole('dialog')).toHaveCount(0);
 });

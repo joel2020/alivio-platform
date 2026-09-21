@@ -1,17 +1,20 @@
 const SITE_URL = 'https://aliviosearchpartners.com';
-const DEFAULT_KEYWORDS = 'specialized recruiting firm, healthcare recruiting, technology recruiting, executive search, professional search, contingency search, retained search, direct sourcing, candidate vetting';
+const DEFAULT_KEYWORDS = 'specialized recruiting firm, healthcare recruiting, technology recruiting, executive search, professional search, contingency search, retained search, direct sourcing, candidate vetting, LATAM recruitment, nearshore recruiting, offshore recruitment';
 const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
 
 export function getPageSeo(path: string, search = '') {
   const pathname = path === '/' ? '/' : path.replace(/\/+$/, '');
   const canonicalUrl = `${SITE_URL}${pathname}`;
   let title = 'Healthcare & Technology Recruiting | Alivio Search Partners';
-  let description = 'Recruit physicians, healthcare leaders, engineers, and operators with Alivio Search Partners. Direct sourcing, hands-on candidate vetting, and a search plan tailored to your roles.';
+  let description = 'Recruit physicians, healthcare leaders, engineers, and operators with Alivio Search Partners. U.S., LATAM, and offshore recruitment with direct sourcing and hands-on candidate vetting.';
   let keywords = DEFAULT_KEYWORDS;
   let robots = 'index, follow';
   if (pathname === '/nearshore-latam-recruiting') {
     title = 'Nearshore LATAM Recruiting | Alivio Search Partners';
     description = 'Source and assess LATAM talent for U.S. technology and operations teams. Plan role requirements, language assessment, working hours and recruiter-reviewed shortlists.';
+  } else if (pathname === '/offshore-recruitment') {
+    title = 'Offshore Recruitment | Alivio Search Partners';
+    description = 'Recruit offshore technology, customer support, administrative, and operations talent with Alivio. Direct sourcing, candidate vetting, and support through the offer.';
   } else if (pathname === '/recruiting-agency-medellin') {
     title = 'Medellín Recruiting Agency | Alivio Search Partners';
     description = 'Recruit bilingual, technical and operations talent in Medellín, Colombia. Alivio helps U.S. teams define the search, source candidates and assess role fit.';
@@ -104,7 +107,7 @@ export function getPageSeo(path: string, search = '') {
     title = 'Technology & Healthtech Recruiting | Alivio Search Partners';
     description = 'Recruit software engineers, AI and data specialists, product leaders, and CTOs with Alivio. Recruiting for technology and healthtech teams.';
   }
-  const publicPaths = ['/nearshore-latam-recruiting', '/recruiting-agency-medellin', '/pricing', '/recruiting-agency-westchester', '/', '/product', '/contact', '/blog', '/services', '/employers', '/candidates', '/industries', '/industries/executive', '/jobs', '/about', '/careers', '/industries/healthcare', '/industries/technology', '/start', '/accessibility', '/privacy', '/terms'];
+  const publicPaths = ['/offshore-recruitment', '/nearshore-latam-recruiting', '/recruiting-agency-medellin', '/pricing', '/recruiting-agency-westchester', '/', '/product', '/contact', '/blog', '/services', '/employers', '/candidates', '/industries', '/industries/executive', '/jobs', '/about', '/careers', '/industries/healthcare', '/industries/technology', '/start', '/accessibility', '/privacy', '/terms'];
   const publicDetail = /^\/blog\/[^/]+$/.test(pathname) || /^\/careers\/\d+$/.test(pathname);
   if (!publicPaths.includes(pathname) && !publicDetail && robots === 'index, follow') {
     title = 'Page Not Found | Alivio Search Partners';
@@ -112,6 +115,6 @@ export function getPageSeo(path: string, search = '') {
     robots = 'noindex, follow';
   }
   const structuredData: Record<string, unknown>[] = [{ '@context': 'https://schema.org', '@type': 'WebPage', name: title, description, url: canonicalUrl, inLanguage: 'en-US' }];
-  if (['/nearshore-latam-recruiting', '/recruiting-agency-medellin', '/', '/product', '/pricing', '/recruiting-agency-westchester'].includes(pathname)) structuredData.push({ '@context': 'https://schema.org', '@type': 'Organization', '@id': `${SITE_URL}/#organization`, name: 'Alivio Search Partners', url: SITE_URL, description: 'Specialized recruiting firm for healthcare, technology, and professional search', contactPoint: { '@type': 'ContactPoint', email: 'hello@aliviosearchpartners.com', contactType: 'sales' } });
+  if (['/nearshore-latam-recruiting', '/recruiting-agency-medellin', '/', '/product', '/pricing', '/recruiting-agency-westchester'].includes(pathname)) structuredData.push({ '@context': 'https://schema.org', '@type': 'Organization', '@id': `${SITE_URL}/#organization`, name: 'Alivio Search Partners', url: SITE_URL, description: 'Specialized recruiting firm for healthcare, technology, and professional search across U.S., LATAM, and offshore markets', contactPoint: { '@type': 'ContactPoint', email: 'hello@aliviosearchpartners.com', contactType: 'sales' } });
   return { title, description, keywords, ogTitle: title, ogDescription: description, canonicalUrl, ogImage: DEFAULT_OG_IMAGE, ogType: pathname.startsWith('/blog/') ? 'article' : 'website', robots, structuredData };
 }

@@ -9,6 +9,7 @@ const AppLayout = lazy(() => import('./components/app/AppLayout'));
 
 import HomePage from './pages/marketing/HomePage';
 const LatamPage = lazy(() => import('./pages/marketing/LatamPage'));
+const OffshorePage = lazy(() => import('./pages/marketing/OffshorePage'));
 const MedellinPage = lazy(() => import('./pages/marketing/MedellinPage'));
 const WestchesterPage = lazy(() => import('./pages/marketing/WestchesterPage'));
 const EmployersPage = lazy(() => import('./pages/marketing/EmployersPage'));
@@ -105,6 +106,7 @@ export default function App() {
             <Route element={<MarketingLayout />}>
               <Route path="/" element={<HomePage />} />
               <Route path="/nearshore-latam-recruiting" element={<LatamPage />} />
+              <Route path="/offshore-recruitment" element={<OffshorePage />} />
               <Route path="/recruiting-agency-medellin" element={<MedellinPage />} />
               <Route path="/pricing" element={<Navigate to="/employers#engagement-models" replace />} />
               <Route path="/recruiting-agency-westchester" element={<WestchesterPage />} />

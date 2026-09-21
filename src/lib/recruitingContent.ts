@@ -10,3 +10,8 @@ export const searchSteps = [
   ['Interview & Offer Support', 'We help manage candidate communication, feedback loops, offer expectations, and the close process.'],
 ];
 export const candidateBenefits = ['Confidential career conversations', 'Direct access to growing companies', 'Guidance through interviews and offers', 'Healthcare, tech, leadership, and professional roles', 'No pressure, no spam, no generic job pushing'];
+
+export const internationalSearches = [
+  { title: 'LATAM Recruitment', href: '/nearshore-latam-recruiting', copy: 'Connect with professionals across Latin America for technology, customer-facing, and business operations roles. We assess role fit, language requirements, and working-hour overlap.' },
+  { title: 'Offshore Recruitment', href: '/offshore-recruitment', copy: 'Expand your search internationally for technical, administrative, customer support, and operations talent. Direct sourcing and candidate vetting are tailored to your role, budget, and coverage needs.' },
+];
