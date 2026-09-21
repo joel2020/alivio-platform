@@ -1,3 +1,4 @@
+import PremiumRecruitingHero from '../../components/marketing/PremiumRecruitingHero';
 import { practices, candidateBenefits } from '../../lib/recruitingContent';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
@@ -7,22 +8,7 @@ import { Benefits, SearchProcess, InternationalSearches } from '../../components
 export default function HomePage() {
   return (
     <div className="firm-page recruiting-home">
-      <section className="recruiting-hero" aria-labelledby="home-heading">
-        <div className="mkt-container recruiting-hero-grid">
-          <div className="recruiting-hero-copy">
-            <p className="firm-eyebrow"><span className="recruiting-dot" /> A specialized recruiting firm</p>
-            <h1 id="home-heading">Hire Better Talent <span>Without Wasting Months</span> on the Search</h1>
-            <p>Alivio Search Partners is a specialized recruiting firm helping healthcare organizations, technology companies, and growing businesses find qualified professionals through targeted search, direct outreach, and hands-on candidate vetting — across the U.S., Latin America, and offshore markets.</p>
-            <div className="recruiting-actions"><DiscussSearchLink /><Link to="/jobs" className="firm-text-link">View Open Jobs <ArrowUpRight size={19} aria-hidden="true" /></Link></div>
-            <div className="recruiting-hero-note">Focused search. Personal attention. The right fit.</div>
-          </div>
-          <figure className="recruiting-hero-visual">
-            <img src="/images/recruiting-conversation.jpg" alt="Professionals collaborating in a thoughtful working conversation" width="1000" height="1500" fetchPriority="high" />
-            <figcaption><span>People make the difference.</span><strong>We help you find yours.</strong><ArrowUpRight size={31} aria-hidden="true" /></figcaption>
-          </figure>
-        </div>
-        <div className="mkt-container"><p className="recruiting-trust">Healthcare, technology, and professional search · U.S., LATAM & offshore recruitment</p></div>
-      </section>
+      <PremiumRecruitingHero />
 
       <section id="search-specialties" className="firm-section" aria-labelledby="practice-heading"><div className="mkt-container">
         <div className="recruiting-section-head"><div><p className="firm-eyebrow">What we do</p><h2 id="practice-heading">Recruiting Support for Roles That Cannot Stay Open</h2></div><p>We help companies identify, engage, screen, and deliver qualified candidates for critical positions.</p></div>
