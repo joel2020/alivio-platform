@@ -21,7 +21,13 @@ Deno.serve(async (req: Request) => {
     const configured = Deno.env.get('SCHEDULER_SECRET');
     let authorized = !!token && ((!!configured && token === configured) || token === Deno.env.get('SUPABASE_SERVICE_ROLE_KEY'));
     if (!authorized && token.length >= 16) { const verified = await db.rpc('verify_scheduler_secret', { candidate: token }); authorized = !verified.error && verified.data === true; }
+    if (!authorized && token.length === 64) {
+      const verified = await db.rpc('verify_application_worker_secret', { candidate: token });
+      authorized = !verified.error && verified.data === true;
+    }
     if (!authorized) throw new ApplicationError('Privileged scheduler token required.', 403);
+    // Authenticated deployment probe has no delivery or upload-cleanup side effects.
+    if (new URL(req.url).searchParams.get('probe') === '1') return json(req, { ok: true, probe: true, email_ready: emailReady() });
     // Clean only staging objects proven uncommitted, after enough time for interrupted transactions to finish.
     const stale = await db.from('application_uploads').select('path').eq('committed', false).lt('created_at', new Date(Date.now() - 24 * 3600000).toISOString()).limit(100); rpcError(stale.error);
     for (const upload of stale.data || []) {
