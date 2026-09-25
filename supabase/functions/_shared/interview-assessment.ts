@@ -47,4 +47,3 @@ export function validateAssessment(value: unknown, resume: string): Assessment {
   });
   return { items, score: items.reduce((total, item) => total + (item.status === 'met' ? 2 : item.status === 'partial' ? 1 : 0), 0) };
 }
-
