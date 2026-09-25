@@ -43,10 +43,11 @@ export async function callAiWithFallback(
 
     const payload = await safeJson(response);
     if (!response.ok) {
-      throw new Error(`Azure OpenAI HTTP ${response.status}: ${payload?.error?.message ?? "unknown error"}`);
+      throw new Error(`Azure OpenAI HTTP ${response.status}`);
     }
 
-    const content = payload?.choices?.[0]?.message?.content?.trim();
+    const value = Array.isArray(payload?.choices) ? payload.choices[0]?.message?.content : undefined;
+    const content = typeof value === "string" ? value.trim() : "";
     if (!content) {
       throw new Error("Azure OpenAI returned empty content");
     }

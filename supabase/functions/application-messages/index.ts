@@ -1,3 +1,4 @@
+import { processInterviewAssessments, cleanInterviewRecordings } from '../_shared/interview-worker.ts';
 import { ApplicationError, RESUME_BUCKET, readBoundedBody } from '../_shared/application-validation.ts';
 import { retryDecision, sendApplicationEmail, verifyWebhook } from '../_shared/application-delivery.ts';
 import { adminClient, emailReady, failure, followupsReady, json, rpcError } from '../_shared/application-runtime.ts';
@@ -29,7 +30,10 @@ Deno.serve(async (req: Request) => {
       const removed = await db.storage.from(RESUME_BUCKET).remove([upload.path]);
       if (!removed.error) await db.from('application_uploads').delete().eq('path', upload.path).eq('committed', false);
     }
-    if (!emailReady()) return json(req, { ok: true, processed: 0, email_ready: false });
+    if (!emailReady()) {
+      await cleanInterviewRecordings().catch(() => console.error('interview_recording_cleanup_failed'));
+      return json(req, { ok: true, processed: 0, email_ready: false });
+    }
     const claimed = await db.rpc('ats_claim_messages', { p_followups: followupsReady() }); rpcError(claimed.error);
     let processed = 0;
     for (const message of claimed.data || []) {
@@ -42,6 +46,10 @@ Deno.serve(async (req: Request) => {
       const finished = await db.rpc('ats_finish_message', { p_id: message.id, p_lease: message.lease_token, p_provider_id: result.providerId, p_error: result.error, p_retry_seconds: result.retryable && decision.retry ? decision.delaySeconds : null });
       rpcError(finished.error); processed++;
     }
+    await cleanInterviewRecordings().catch(() => console.error('interview_recording_cleanup_failed'));
+    const assessments = processInterviewAssessments().catch(() => console.error('application_assessment_worker_failed'));
+    const runtime = (globalThis as unknown as { EdgeRuntime?: { waitUntil(work: Promise<unknown>): void } }).EdgeRuntime;
+    if (runtime) runtime.waitUntil(assessments); else await assessments;
     return json(req, { ok: true, processed });
   } catch (error) { return failure(req, error); }
 });

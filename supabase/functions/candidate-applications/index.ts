@@ -34,7 +34,13 @@ Deno.serve(async (req: Request) => {
       const signed = await db.storage.from(RESUME_BUCKET).createSignedUrl(result.data.path, 60, { download: result.data.filename || 'resume' }); rpcError(signed.error);
       return json(req, { data: { url: signed.data?.signedUrl } });
     }
-    if (body.action === 'list') return json(req, { data: { ...result.data, email_ready: emailReady(), followups_ready: followupsReady() } });
+    if (body.action === 'list') {
+      const ids = result.data.applications.map((a: { id: number }) => a.id);
+      const reviews = ids.length ? await db.from('application_ai_reviews').select('application_id,state,score').in('application_id', ids) : { data: [] };
+      // Rollout may deploy the UI before the additive migration; core ATS stays available.
+      const applications = result.data.applications.map((a: { id: number }) => ({ ...a, ai_review: reviews.data?.find((r: { application_id: number }) => r.application_id === a.id) ?? null }));
+      return json(req, { data: { ...result.data, applications, email_ready: emailReady(), followups_ready: followupsReady() } });
+    }
     if (body.action === 'detail') return json(req, { data: result.data });
     if (body.action === 'message') enqueueWorker();
     return json(req, { ok: true });
