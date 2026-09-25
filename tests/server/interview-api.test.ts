@@ -1,0 +1,52 @@
+import assert from 'node:assert/strict';
+let handle: (request:Request)=>Promise<Response>;
+const originalServe=Deno.serve,originalFetch=globalThis.fetch;
+Object.defineProperty(Deno,'serve',{value:(handler:typeof handle)=>{handle=handler;return {};},configurable:true});
+Deno.env.set('SUPABASE_URL','https://synthetic.example.test');
+Deno.env.set('SUPABASE_SERVICE_ROLE_KEY','synthetic-service-key');Deno.env.set('SUPABASE_ANON_KEY','synthetic-anon-key');
+await import('../../supabase/functions/candidate-interviews/index.ts');
+Object.defineProperty(Deno,'serve',{value:originalServe,configurable:true});
+const token='b'.repeat(64),actor='00000000-0000-4000-8000-000000000004';
+const calls:{path:string;body:Record<string,unknown>}[]=[];
+let forbidden=false,fileExists=false;
+globalThis.fetch=async(input:RequestInfo|URL,init?:RequestInit)=>{
+ const url=new URL(input instanceof Request?input.url:String(input));
+ assert.equal(url.origin,'https://synthetic.example.test','no real network calls');
+ const body=JSON.parse(String(init?.body||'{}'));calls.push({path:url.pathname,body});
+ const response=(data:unknown,status=200)=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json'}});
+ if(url.pathname==='/auth/v1/user')return response({id:actor});
+ if(url.pathname.endsWith('/ats_rate_limit'))return response(true);
+ if(url.pathname.endsWith('/ats_interview_admin'))return forbidden?response({code:'42501',message:'forbidden'},403):response({ok:true});
+ if(url.pathname.endsWith('/ats_interview_session'))return response(body.p_action==='answer'||body.p_action==='upload'?{path:'1/test.webm',content_type:'video/webm'}:{state:'in_progress',answered:[0]});
+ if(url.pathname.includes('/storage/v1/object/list/'))return response(fileExists?[{name:'test.webm',metadata:{size:100,mimetype:'video/webm'}}]:[]);
+ if(url.pathname.includes('/storage/v1/object/upload/sign/'))return response({url:'/object/upload/sign/application-interviews/1/test.webm?token=synthetic'});
+ throw new Error('Unexpected synthetic network request: '+url.pathname);
+};
+const request=(body:unknown,auth=false)=>handle(new Request('https://synthetic.example.test/functions/v1/candidate-interviews',{method:'POST',headers:{'Content-Type':'application/json',...(auth?{Authorization:'Bearer synthetic-user'}:{})},body:JSON.stringify(body)}));
+Deno.test('interview API enforces authentication, consent, object verification and actor identity',async()=>{
+ try{
+  assert.equal((await request({action:'approve',id:1})).status,401);
+  assert.equal((await request({action:'start',token,consent:false})).status,400);
+  assert.equal((await request({action:'info',token:'invalid'})).status,404);
+  assert.equal((await request({action:'upload',token,index:8,type:'video/webm'})).status,400);
+  assert.equal((await request({action:'upload',token,index:0,type:'text/html'})).status,400);
+  assert.equal(calls.length,0,'invalid public requests did not reach database');
+  forbidden=true;
+  assert.equal((await request({action:'recording',id:42,index:0},true)).status,403);
+  assert.equal(calls.some(c=>c.path.includes('/storage/')),false,'unauthorized recruiter cannot query recordings');
+  forbidden=false;calls.length=0;
+  assert.equal((await request({action:'approve',id:1,reason:'Human verified résumé and all role questions'},true)).status,503,'unconfigured invitations fail closed');
+  Deno.env.set('APPLICATION_AI_INTERVIEWS_ENABLED','true');Deno.env.set('RESEND_API_KEY','synthetic');Deno.env.set('NOTIFICATION_FROM_EMAIL','synthetic@example.test');
+  assert.equal((await request({action:'approve',id:1,actor_id:'forged',reason:'Human verified résumé and all role questions'},true)).status,200);
+  const approval=calls.find(c=>c.path.endsWith('/ats_interview_admin'))!.body;
+  assert.equal(approval.p_actor,actor);assert.match(String(approval.p_hash),/^[a-f0-9]{64}$/);
+  assert.match(String(approval.p_link),/^https:\/\/aliviosearchpartners\.com\/client\/interview#[a-f0-9]{64}$/);
+  calls.length=0;
+  assert.equal((await request({action:'confirm',token,index:0})).status,409,'missing upload cannot advance');
+  assert.equal(calls.some(c=>c.body.p_action==='confirm'),false);
+  fileExists=true;
+  assert.equal((await request({action:'confirm',token,index:0})).status,200);
+  const recovered=await request({action:'upload',token,index:0,type:'video/webm'});
+  assert.equal((await recovered.json()).data.recovered.state,'in_progress','recover uncertain prior upload');
+ }finally{globalThis.fetch=originalFetch;}
+});

@@ -11,6 +11,7 @@ Deno.serve(async (req: Request) => {
     if (!body || typeof body !== 'object' || Array.isArray(body)) throw new ApplicationError('Invalid request.');
     const allowed = ['list', 'detail', 'update', 'resume', 'map-job', 'message', 'stop-messages', 'record-reply'];
     if (!allowed.includes(String(body.action))) throw new ApplicationError('Invalid action.');
+    if (body.action === 'list' && body.before != null && (!Number.isSafeInteger(body.before) || Number(body.before) < 1)) throw new ApplicationError('Invalid page cursor.');
     if (!['list', 'map-job'].includes(String(body.action)) && (!Number.isSafeInteger(body.id) || Number(body.id) < 1)) throw new ApplicationError('Invalid application.');
     if (body.action === 'map-job' && (!Number.isSafeInteger(body.job_id) || Number(body.job_id) < 1 || typeof body.role_id !== 'string' || !UUID.test(body.role_id))) throw new ApplicationError('Invalid job mapping.');
     if (body.action === 'message') {
@@ -34,7 +35,15 @@ Deno.serve(async (req: Request) => {
       const signed = await db.storage.from(RESUME_BUCKET).createSignedUrl(result.data.path, 60, { download: result.data.filename || 'resume' }); rpcError(signed.error);
       return json(req, { data: { url: signed.data?.signedUrl } });
     }
-    if (body.action === 'list') return json(req, { data: { ...result.data, email_ready: emailReady(), followups_ready: followupsReady() } });
+    if (body.action === 'list') {
+      const page = await db.rpc('ats_application_page', { p_actor: user.id, p_before: body.before ?? null }); rpcError(page.error);
+      const data = { ...result.data, ...page.data };
+      const ids = data.applications.map((a: { id: number }) => a.id);
+      const reviews = ids.length ? await db.from('application_ai_reviews').select('application_id,state,score').in('application_id', ids) : { data: [] };
+      // Rollout may deploy the UI before the additive migration; core ATS stays available.
+      const applications = data.applications.map((a: { id: number }) => ({ ...a, ai_review: reviews.data?.find((r: { application_id: number }) => r.application_id === a.id) ?? null }));
+      return json(req, { data: { ...data, applications, email_ready: emailReady(), followups_ready: followupsReady() } });
+    }
     if (body.action === 'detail') return json(req, { data: result.data });
     if (body.action === 'message') enqueueWorker();
     return json(req, { ok: true });

@@ -44,6 +44,7 @@ const RoleNewPage = lazy(() => import('./pages/app/RoleNewPage'));
 const PipelinePage = lazy(() => import('./pages/app/PipelinePage'));
 const PipelineOverviewPage = lazy(() => import('./pages/app/PipelineOverviewPage'));
 const OutreachPage = lazy(() => import('./pages/app/OutreachPage'));
+const InterviewPage = lazy(() => import('./pages/InterviewPage'));
 const ApplicationsPage = lazy(() => import('./pages/app/ApplicationsPage'));
 const ShortlistsPage = lazy(() => import('./pages/app/ShortlistsPage'));
 const AgentsPage = lazy(() => import('./pages/app/AgentsPage'));
@@ -134,6 +135,7 @@ export default function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
             </Route>
+            <Route path="/client/interview" element={<InterviewPage />} />
             <Route path="/client/shortlist/:token" element={<ClientShortlistPage />} />
             <Route path="/client/report/:token" element={<ClientReportPage />} />
             <Route element={<RequireOnboarding />}>
