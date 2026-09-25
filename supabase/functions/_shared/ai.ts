@@ -4,6 +4,7 @@ export type AiCallOptions = {
   temperature?: number;
   timeoutMs?: number;
   maxTokens?: number;
+  jsonMode?: boolean;
 };
 
 export async function callAiWithFallback(
@@ -11,18 +12,18 @@ export async function callAiWithFallback(
 ): Promise<{ content: string; provider: "azure-openai"; model: string }> {
   const endpoint = Deno.env.get("AZURE_OPENAI_ENDPOINT")?.trim();
   const apiKey = Deno.env.get("AZURE_OPENAI_API_KEY")?.trim();
-  const apiVersion = Deno.env.get("AZURE_OPENAI_API_VERSION")?.trim();
   const primaryDeployment = Deno.env.get("AZURE_OPENAI_PRIMARY_DEPLOYMENT")?.trim();
   const fallbackDeployment = Deno.env.get("AZURE_OPENAI_FALLBACK_DEPLOYMENT")?.trim();
 
-  if (!endpoint || !apiKey || !apiVersion || !primaryDeployment || !fallbackDeployment) {
+  if (!endpoint || !apiKey || !primaryDeployment || !fallbackDeployment) {
     throw new Error("Missing Azure OpenAI environment variables");
   }
 
   const timeoutMs = options.timeoutMs ?? 60_000;
 
   const attempt = async (deployment: string): Promise<{ content: string; model: string }> => {
-    const url = `${endpoint}/openai/deployments/${deployment}/chat/completions?api-version=${apiVersion}`;
+    const url = new URL('/openai/v1/chat/completions', endpoint).toString();
+    const reasoningModel = /^gpt[-_.]?5|^o[134]/i.test(deployment);
 
     const response = await fetch(url, {
       method: "POST",
@@ -31,8 +32,11 @@ export async function callAiWithFallback(
         "api-key": apiKey,
       },
       body: JSON.stringify({
-        temperature: options.temperature ?? 0.2,
-        max_tokens: options.maxTokens ?? 1200,
+        model: deployment,
+        ...(!reasoningModel ? { temperature: options.temperature ?? 0.2 } : {}),
+        ...(/^gpt[-_.]?5[.-][1-9]/i.test(deployment) ? { reasoning_effort: 'none' } : {}),
+        max_completion_tokens: options.maxTokens ?? 1200,
+        ...(options.jsonMode ? { response_format: { type: 'json_object' } } : {}),
         messages: [
           ...(options.systemPrompt ? [{ role: "system", content: options.systemPrompt }] : []),
           { role: "user", content: options.prompt },

@@ -1,6 +1,6 @@
 # Candidate AI assessment and video interviews — implementation handoff
 
-Status: implemented and tested locally, **not activated in production**. Production Supabase project is `ovxttubotjebnaoedllu`. The connected Supabase account only exposes another project's database, so no production migration, function deployment, real candidate assessment, recording, or invitation was attempted. Do not deploy this feature to that other project.
+Status: **live and enabled in production on September 25, 2026**. The authenticated local Supabase CLI can administer `ovxttubotjebnaoedllu`; the MCP connector still points to a different account and was not used for this release.
 
 ## Product flow
 
@@ -23,9 +23,23 @@ Recordings expire after 30 days. The existing scheduled worker deletes expired r
 - Frontend typecheck, ESLint and production build; Deno checks for all three affected functions. ESLint has one existing Fast Refresh warning in SeoRecoveryPage.tsx, no new errors.
 - Claude review was attempted but its OAuth session had expired. Direct security and complexity review completed; an invitation-confirmation UI issue and pre-send withdrawal check were fixed and retested.
 
-No real applicant data or live recipient addresses were used. Local tests do not establish Azure model quality, production inbox delivery, or deployed operation. A synthetic staging/end-to-end check is required before activation.
+No real applicant data was used. Production QA sent only to `delivered@resend.dev`; internal synthetic notifications were cancelled before they became visible to the delivery worker. Provider acceptance was verified, not human inbox delivery. Two synthetic model examples validate the integration, not general hiring-assessment quality.
 
-## Release sequence after account access is restored
+## Production release verification
+
+- Applied only migration `20260925182949`, with its history record in the same transaction. No historical migrations were pushed or rewritten.
+- Deployed `candidate-interviews`, `candidate-applications`, and `application-messages`, preserving disabled gateway JWT checks, their own endpoint authorization, worker secret validation, pagination, and cron job 5.
+- `APPLICATION_AI_INTERVIEWS_ENABLED=true`. Existing Azure and Resend credentials reused. Corrected the invalid Azure API-version setting to `2025-04-01-preview`; interview calls use Azure's v1 endpoint, JSON mode, and GPT-5.5-compatible parameters. Errors retain only stage names and allowlisted diagnostic codes, never provider bodies or résumé text.
+- Platform: `dpl_89S19ifYroY5sJtg9GKeiRqYAncC`, with the stable proxy alias preserved. Website proxy: `dpl_4djFvbxAm7P1Y5aRQbjFexgdtnvk`, preserving the deployed case-study copy. Camera and microphone allowed only on `/client/interview`; video CSP supports preview and private playback.
+- A synthetic matching résumé scored 10/10; all five evidence quotations and eight questions were inspected against the synthetic job. A retail résumé scored 0/10 and remained in human review without an invitation or rejection.
+- Public submission retry returned the same reference. Exactly one acknowledgement and one explicitly approved invitation were accepted by Resend. Repeated approval did not duplicate the invitation. Synthetic intake used the production transaction with internal notifications cancelled atomically, then exercised the public endpoint's matching retry.
+- Live Chrome verification on `aliviosearchpartners.com`: consent, camera/microphone, eight actual synthetic video uploads, reload without resetting the deadline, successful completion, no browser errors, recruiter-only signed playback, and denied public video access. One network step exceeded the initial five-second test wait; the test resumed the existing session successfully with a realistic wait.
+- The authenticated live Applications UI displayed the assessment and all eight recordings. A controlled expired timestamp on the synthetic session rejected further recording; requesting a human interview created a recruiter follow-up.
+- Synthetic applications, uploaded files, reviewer account, organization, job and cached rubric removed after verification. New real applicants were not used for QA.
+- Additional local verification: 9 Node tests, 2 PostgreSQL integration tests, and 3 Deno test groups passed; production frontend builds, website typecheck, targeted ESLint, and all affected edge-function typechecks passed. Added an Azure v1 request regression test.
+- Receipts and screenshots: `/Users/joel/.codex/visualizations/2026/09/25/01a0d72d-908f-7483-980d-ae340c087baa/candidate-interviews/live/`.
+
+## Repeat-release runbook
 
 1. Verify the account can administer **ovxttubotjebnaoedllu**, and compare its active schema/functions with this source. Keep `APPLICATION_AI_INTERVIEWS_ENABLED` unset/false initially. Existing Azure OpenAI and Resend configuration are reused; do not provision substitute credentials or another project's database.
 2. Apply only `20260925182949_candidate_ai_interviews.sql` after checking migration history. Do not bulk-push unrelated historical migrations or rewrite their recorded versions.
@@ -46,7 +60,7 @@ npm run build
 node --import tsx --test tests/server/application-workflow.test.ts tests/server/interview-assessment.test.ts
 ATS_PGLITE_MODULE=/path/to/@electric-sql/pglite/dist/index.js node --test tests/server/application-database.test.mjs tests/server/interview-database.test.mjs
 npx deno check --node-modules-dir=none supabase/functions/candidate-interviews/index.ts supabase/functions/application-messages/index.ts supabase/functions/candidate-applications/index.ts
-npx deno test --node-modules-dir=none --allow-env --allow-read tests/server/interview-resume.test.ts tests/server/interview-api.test.ts
+npx deno test --node-modules-dir=none --allow-env --allow-read tests/server/interview-resume.test.ts tests/server/interview-api.test.ts tests/server/interview-ai.test.ts
 # Start Vite on 127.0.0.1:4173 with this project's public Supabase configuration, then:
 npx playwright test tests/marketing/ai-interview.spec.ts tests/marketing/ai-interview-admin.spec.ts tests/marketing/ats-workspace.spec.ts tests/marketing/candidate-application.spec.ts
 ```
